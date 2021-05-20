@@ -1,4 +1,4 @@
-# derify-app-front
+# derify-app-web
 
-Application frontend of Derify protocol
+Web Application of Derify protocol
 
