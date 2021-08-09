@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 2720060 */
+  
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-transfers:before {
+  content: "\e67f";
+}
+
+.icon-link:before {
+  content: "\e617";
+}
+
+.icon-Group-:before {
+  content: "\e68b";
+}
+
+.icon-wenhao:before {
+  content: "\e64e";
+}

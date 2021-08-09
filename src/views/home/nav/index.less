@@ -1,0 +1,67 @@
+.nav {
+  height: 80px;
+  background: @main-block;
+  font-size: 16px;
+  padding: 0 120px;
+
+  .logo {
+    padding-right: 100px;
+  }
+
+  .menu {
+    &-item {
+      padding-right: 40px;
+      font-weight: 700;
+      cursor: pointer;
+
+      &.active {
+        color: @main-yellow;
+
+      }
+    }
+  }
+
+  .tool {
+    margin: 0 12px;
+
+    &-item {
+      display: inline-block;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      margin: 0 12px;
+      text-align: center;
+      border-radius: 50%;
+      line-height: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      ;
+    }
+
+    .network-list,.wallet-list{
+      >.ant-col {
+        position: relative;
+        padding-top: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        overflow: hidden;
+        width: 77px;
+        height: 112px;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        text-align: center;
+        &.active{
+          border-color: @primary-color;
+          .derify-iconfont{
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: @primary-color;
+          }
+        }
+      }
+
+    }
+  }
+}
