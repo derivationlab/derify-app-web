@@ -1,6 +1,6 @@
 import React,{useEffect} from "react";
 import { Row, Col, Modal } from "antd";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 import { FormattedMessage } from "react-intl";
 import { useToggle } from "react-use";
 import { OpenType, RateType } from "./index";
