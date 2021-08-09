@@ -2,7 +2,7 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 import { Modal, Row, Col, Input, Radio } from "antd";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 
 interface CloseModalProps extends ModalProps {}
 
