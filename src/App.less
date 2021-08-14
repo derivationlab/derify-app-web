@@ -1,34 +1,52 @@
-
 @import '~antd/dist/antd.less';
 @import './assets/styles/reset.less';
 
 //common class
-.main-block{background-color: @main-block;padding: 16px 24px; border-radius:16px;}
+.main-block {
+  background-color: @main-block;
+  padding: 16px 24px;
+  border-radius: 16px;
+}
 
 //color text
-.main-color{
+.main-color {
   color: @primary-color;
 }
-.main-red{
-  color:@main-red
+
+.main-red {
+  color: @main-red
 }
-.main-green{
-  color:@main-green
+
+.main-green {
+  color: @main-green
 }
-.main-white{
+
+.main-white {
   color: @main-white;
 }
+
+//margin
+@margin: {
+  s: 8px;
+  m: 12px;
+  l: 24px;
+  max:48px;
+}
+
+each(@margin, {
+    .margin-b-@{key} {
+      margin-bottom: @value
+    }
+  }
+
+);
+
+
 
 
 
 
 //other
-.derify-pointer{cursor: pointer;}
-
-
-
-
-
-
-
-
+.derify-pointer {
+  cursor: pointer;
+}

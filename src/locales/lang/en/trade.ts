@@ -34,5 +34,12 @@ const trade = {
     'trade.modal.buy': 'Buy',
     'trade.modal.sell': 'Sell',
     'trade.close': 'Close',
+    'trade.current.order.type':"Order Type",
+    'trade.current.order.price':"Order Price",
+    'trade.current.order.price.ep':"Target execution price of this order.",
+    'trade.current.order.volume':"Order Volume",
+    'trade.current.order.volume.ep':"The volume of asset this order will be trading.",
+    'trade.current.order.time':"Order Time",
+    'trade.current.order.time.ep':"The moment this order is placed.",
 }
 export default trade

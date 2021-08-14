@@ -34,5 +34,12 @@ const trade = {
     'trade.modal.buy': '开多',
     'trade.modal.sell': '开空',
     'trade.close': '平仓',
+    'trade.current.order.type':"委托类型",
+    'trade.current.order.price':"委托价格",
+    'trade.current.order.price.ep':"此委托的目标成交价格。",
+    'trade.current.order.volume':"委托数量",
+    'trade.current.order.volume.ep':"此委托将交易的合约的数量。",
+    'trade.current.order.time':"委托时间",
+    'trade.current.order.time.ep':"委托的下单时间。",
 }
 export default trade

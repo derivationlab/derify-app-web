@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Row, Col, Select, Button, Slider, Input } from "antd";
 import { FormattedMessage } from "react-intl";
 
-import Transfers from "./transfers";
-import ComModal from "./comModal";
+import Transfers from "@/views/CommonViews/Transfer";
+import ComModal from "./ComModal";
 const { Option } = Select;
 
 export type OpenType = "trade.modal.buy" | "trade.modal.sell" | "trade.two.way";
@@ -18,7 +18,8 @@ const selectAfter = (
 
 function Operation() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [openType, setOpenType] = useState<OpenType>('trade.modal.buy');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [openType, setOpenType] = useState<OpenType>("trade.modal.buy");
   const [rate, setRate] = useState<RateType>("10");
   return (
     <Row className="main-block operation-container">
@@ -85,7 +86,9 @@ function Operation() {
                     ：2.00000000 ETH
                   </Col>
                   <Col>
-                    <Transfers />
+                    <Button type="link" onClick={() => setModalVisible(true)}>
+                      <FormattedMessage id="trade.transfer" />
+                    </Button>
                   </Col>
                 </Row>
               </Col>
@@ -146,10 +149,13 @@ function Operation() {
         visible={isModalVisible}
         type={openType}
         rate={rate}
+        closeModal={()=>{setIsModalVisible(false)}}
         onCancel={() => {
           setIsModalVisible(false);
         }}
       />
+      <Transfers visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
+      
     </Row>
   );
 }

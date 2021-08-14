@@ -1,28 +1,58 @@
 import React, { useCallback, useState } from "react";
 import IconFont from "@/components/IconFont";
+import { ColumnsType } from "antd/es/table";
 
 import { Row, Col, Table, Button, Modal, Popover, Space } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import CloseModal from "./CloseModal";
-const dataSource = [
+import TPAndSLModal from './TPAndSLModal'
+import LongOrShort from "../../LongOrShort";
+import { MyPositionType } from "../type";
+import classNames from "classnames";
+const dataSource: MyPositionType[] = [
   {
     key: "1",
-    cw: "ETH/USDT",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
+    type: "USTD/ETH",
+    pnl_usdt: "+34.56",
+    pnl_usdt_type: "USTD",
+    pnl_usdt_percent: "12.3%",
+    power: 5,
+    ph: "1.23456789",
+    ph_type: "ETH",
+    aprice: "1234.56",
+    aprice_type: "USTD",
+    margin: "1234.56",
+    margin_type: "1234.56",
+    risk: "123%",
+    liq_price: "123.45",
+    liq_price_type: "USTD",
+    tp: "2323245445.67",
+    sl: "123.45",
   },
   {
     key: "2",
-    cw: "ETH/USDT",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
+    type: "ETH/USDT",
+    pnl_usdt: "-34.56",
+    pnl_usdt_type: "USTD",
+    pnl_usdt_percent: "12.3%",
+    power: 8,
+    ph: "1.23456789",
+    ph_type: "ETH",
+    aprice: "1234.56",
+    aprice_type: "USTD",
+    margin: "1234.56",
+    margin_type: "1234.56",
+    risk: "123%",
+    liq_price: "123.45",
+    liq_price_type: "USTD",
+    tp: "2323245445.67",
+    sl: "123.45",
   },
 ];
 
 const MyPosition: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const { formatMessage } = useIntl();
   const closePosition = useCallback(() => {
     Modal.confirm({
@@ -47,11 +77,20 @@ const MyPosition: React.FC = () => {
   const okCb = () => {};
   const cancelCb = () => {};
 
-  const columns:any = [
+  const columns: ColumnsType<MyPositionType> = [
     {
       title: "仓位",
-      dataIndex: "cw",
-      key: "cw",
+      dataIndex: "type",
+      width: 110,
+      key: "type",
+      render: (_, record) => (
+        <Row>
+          <Col className="main-white">{record.type}</Col>
+          <Col flex="100%">
+            <LongOrShort power={5} value={record.pnl_usdt} />
+          </Col>
+        </Row>
+      ),
     },
     {
       title: (
@@ -59,6 +98,9 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
+              <Col className="title" flex="100%">
+                浮动盈亏：
+              </Col>
               <Col>您当前仓位的未实现盈亏金额。</Col>
               <Col>多仓浮动盈亏 = (当前价格 - 开仓均价) * 持仓量。</Col>
               <Col>空仓浮动盈亏 = (开仓均价 - 当前价格) * 持仓量。</Col>
@@ -72,15 +114,34 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "age",
-      key: "age",
-      width: 120,
+      dataIndex: "pnl_usdt",
+      key: "pnl_usdt",
+      width: 140,
+      render: (_, record) => (
+        <div>
+          <div
+            className={classNames(
+              record.pnl_usdt.indexOf("+") === -1 ? "main-red" : "main-green"
+            )}
+          >
+            {record.pnl_usdt}({record.pnl_usdt_percent})
+          </div>
+          <div>{record.pnl_usdt_type}</div>
+        </div>
+      ),
     },
     {
       title: (
         <Popover
           placement="bottom"
-          content="持有此合约的数量。"
+          content={
+            <Row>
+              <Col className="title" flex="100%">
+                {formatMessage({ id: "trade.position.held" })}：
+              </Col>
+              <Col>持有此合约的数量</Col>
+            </Row>
+          }
           trigger="hover"
         >
           <Space>
@@ -89,14 +150,27 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "ph",
+      key: "ph",
+      render: (_, record) => (
+        <div>
+          <div>{record.ph}</div>
+          <div>{record.ph_type}</div>
+        </div>
+      ),
     },
     {
       title: (
         <Popover
           placement="bottom"
-          content="此仓位的开仓平均价格。"
+          content={
+            <Row>
+              <Col className="title" flex="100%">
+                {formatMessage({ id: "trade.average.price" })}：
+              </Col>
+              <Col>此仓位的开仓平均价格。</Col>
+            </Row>
+          }
           trigger="hover"
         >
           <Space>
@@ -105,14 +179,27 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "aprice",
+      key: "aprice",
+      render: (_, record) => (
+        <div>
+          <div>{record.aprice}</div>
+          <div>{record.aprice_type}</div>
+        </div>
+      ),
     },
     {
       title: (
         <Popover
           placement="bottom"
-          content="此仓位的持仓占用保证金金额。"
+          content={
+            <Row>
+              <Col className="title" flex="100%">
+                {formatMessage({ id: "trade.margin" })}：
+              </Col>
+              <Col>此仓位的持仓占用保证金金额。</Col>
+            </Row>
+          }
           trigger="hover"
         >
           <Space>
@@ -121,8 +208,14 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "margin",
+      key: "margin",
+      render: (_, record) => (
+        <div>
+          <div>{record.margin}</div>
+          <div>{record.margin_type}</div>
+        </div>
+      ),
     },
     {
       title: (
@@ -130,6 +223,9 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
+              <Col className="title" flex="100%">
+                {formatMessage({ id: "trade.risk" })}：
+              </Col>
               <Col>保证金比例越小，仓位的风险越小。</Col>
               <Col>当保证金率为99%时仓位将被强平。</Col>
             </Row>
@@ -142,14 +238,22 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+
+      dataIndex: "risk",
+      key: "risk",
     },
     {
       title: (
         <Popover
           placement="bottom"
-          content={"触发强平时的价格。"}
+          content={
+            <Row>
+              <Col className="title" flex="100%">
+                {formatMessage({ id: "trade.liq.price" })}：
+              </Col>
+              <Col>触发强平时的价格。</Col>
+            </Row>
+          }
           trigger="hover"
         >
           <Space>
@@ -158,8 +262,14 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "margin",
+      key: "margin",
+      render: (_, record) => (
+        <div>
+          <div>{record.liq_price}</div>
+          <div>{record.liq_price_type}</div>
+        </div>
+      ),
     },
     {
       title: (
@@ -167,13 +277,9 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
+              <Col> {formatMessage({ id: "trade.take.profit" })}：</Col>
               <Col>
-                止损设置：
                 当价格达到止损设置的价格时，将自动平仓，此时仓位属于亏损状态，平仓防止继续亏损。
-              </Col>
-              <Col>
-                止盈设置：
-                当价格达到止盈设置的价格时，将自动平仓，此时仓位属于盈利状态，平仓防止盈利回撤。
               </Col>
             </Row>
           }
@@ -185,14 +291,23 @@ const MyPosition: React.FC = () => {
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "margin",
+      key: "margin",
+      render: (_, record) => (
+        <Row onClick={()=>setModalVisible(true)}>
+          <Col className="derify-pointer">
+            <IconFont type="icon-shangxiaqiehuan" />
+          </Col>
+          <Col>
+            <div> 止盈{record.tp}</div>
+            <div>止损{record.sl}</div>
+          </Col>
+        </Row>
+      ),
     },
     {
       dataIndex: "operate",
       key: "operate",
-      fixed:"right",
-      width: 100,
       render: () => (
         <Button type="link" onClick={() => setIsModalVisible(true)}>
           <FormattedMessage id="trade.close" />
@@ -211,18 +326,14 @@ const MyPosition: React.FC = () => {
           </Col>
         </Row>
       </Col>
-      <Col>
-        <Table
-          dataSource={dataSource}
-          columns={columns}
-          pagination={false}
-          scroll={{x:'100vw'}}
-        />
+      <Col flex="100%">
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
       </Col>
       <CloseModal
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
       />
+      <TPAndSLModal  visible={modalVisible} onCancel={() => setModalVisible(false)}/ >
     </Row>
   );
 };

@@ -1,0 +1,173 @@
+.main>.partners {
+  &-page {
+    min-height: calc(100vh - 138px);
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: @main-white
+    }
+
+
+
+
+    .large {
+      font-size: 48px;
+    }
+
+
+    .opended {
+      &-container {
+        .info {
+          &-container {
+
+            padding: 20px 0px;
+            background: #140b32;
+
+            .name-wrapper {
+              color: @main-white;
+              font-size: 18px;
+              font-weight: 700;
+            }
+          }
+
+        }
+
+        .account {
+          &-container {
+            padding: 40px 30px;
+
+            .main-color {
+              &.number {
+                font-size: 48px;
+                font-weight: 700;
+              }
+
+            }
+
+            .ant-btn {
+              width: 220px;
+              height: 48px;
+              border-radius: 24px;
+            }
+
+            >.ant-col {
+              >.ant-row {
+                flex-direction: column;
+                align-items: center;
+              }
+
+              &:last-child {
+                >.ant-row {
+                  border-left: 1px solid @main-border-color;
+
+                }
+
+
+              }
+            }
+
+            .explain {
+              padding: 0 10px;
+
+              >div {
+                text-indent: 22px;
+              }
+            }
+
+            .income-wrapper {
+              >.ant-col {
+                padding: 0 60px;
+
+                &:last-child {
+                  border-left: 1px solid @main-border-color;
+                }
+              }
+            }
+          }
+        }
+
+
+      }
+    }
+
+
+    .not-opened {
+      &-container {
+        flex-direction: column;
+        align-items: center;
+
+        .main-color {
+          font-size: 30px;
+          margin-right: 4px;
+        }
+
+        >.ant-col:first-child {
+          width: 120px;
+          height: 120px;
+          margin-top: 160px;
+          margin-bottom: 40px;
+          background: url('../../assets/images/Frame.png') no-repeat 100% 100%;
+        }
+
+        .column-flex {
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
+        }
+      }
+
+    }
+
+
+    .bind {
+      &-partners-container {
+        .title {
+          font-size: 18px;
+          font-weight: 700;
+          color: @main-white
+        }
+
+        .ant-tabs {
+          min-height: 100px;
+
+          .ant-tabs-nav {
+            margin-bottom: 0;
+
+            .ant-tabs-nav-wrap {
+              display: none;
+
+            }
+          }
+
+          .partners-list-wrapper {
+            .item {
+              border-radius: 16px;
+              padding: 20px;
+              position: relative;
+              border: 1px solid @main-border-color;
+
+              &.active {
+                border-color: @primary-color;
+
+                .icon {
+                  color: @primary-color;
+                  display: inline-block;
+                }
+              }
+
+              .icon {
+                position: absolute;
+                top: 2px;
+                right: 1px;
+                display: none;
+
+              }
+            }
+          }
+        }
+      }
+    }
+
+  }
+}

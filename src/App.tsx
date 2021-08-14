@@ -1,13 +1,13 @@
-import React from 'react';
-import './App.less';
+import React from "react";
 import { Provider } from "react-redux";
-
+import "./App.less";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-
-import routes from '@/router'
+import routes from "@/router";
 import store from "./store";
 
-export const App: React.FC<any> = props => {
+export const App: React.FC = props => {
+  
+ 
   return (
     <Provider store={store}>
       <Router>
@@ -25,8 +25,7 @@ export const App: React.FC<any> = props => {
         </Switch>
       </Router>
     </Provider>
-
-  )
-}
+  );
+};
 
 export default App;

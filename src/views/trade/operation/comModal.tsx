@@ -1,10 +1,12 @@
-import React,{useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Modal } from "antd";
 import { ModalProps } from "antd/es/Modal";
 import { FormattedMessage } from "react-intl";
 import { useToggle } from "react-use";
 import { OpenType, RateType } from "./index";
 import classNames from "classnames";
+import ModalTips from "@/views/CommonViews/ModalTips";
+
 enum typeColor {
   "trade.modal.buy" = "main-green",
   "trade.modal.sell" = "main-red",
@@ -13,10 +15,12 @@ enum typeColor {
 interface ComModalProps extends ModalProps {
   type: OpenType;
   rate: RateType;
+  closeModal:()=>void
 }
 
 const ComModal: React.FC<ComModalProps> = props => {
-  const { type, rate, ...others } = props;
+  const [isModalShow, setModalShow] = useState(false);
+  const { type, rate,closeModal, ...others } = props;
   const [error, toggle] = useToggle(false);
   const data = [
     {
@@ -48,48 +52,67 @@ const ComModal: React.FC<ComModalProps> = props => {
   ];
 
   useEffect(() => {
-    props.visible&&toggle(false)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    props.visible && toggle(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.visible]);
 
-  return (
-    <Modal
-      width={320}
-      title={"开仓确认"}
-      getContainer={false}
-      focusTriggerAfterClose={false}
-      {...others}
-      onOk={toggle}
-    >
-      <Row>
-        {error && (
-          <Col className="error-wrapper">
-            双向对冲仓位默认市价开仓，无需担心，您的开仓量不受价格波动的影响
-          </Col>
-        )}
+  const checkInfo = () => {
+    if (type === "trade.modal.buy") {
+      setModalShow(true);
+    } else {
+      toggle();
+    }
+  };
 
-        {data.map((item, i) => (
-          <Col flex="100%" key={i} style={{ marginBottom: "12px" }}>
-            <Row justify="space-between">
-              <Col>
-                <FormattedMessage id={item.key} />
-              </Col>
-              <Col>
-                <span
-                  className={classNames(
-                    item.rate ? typeColor[type] : "main-white"
-                  )}
-                >
-                  {item.rate ? <FormattedMessage id={item.val} /> : item.val}
-                </span>
-                {item.rate && `${item.rate} x`}
-                {item.suffix}
-              </Col>
-            </Row>
-          </Col>
-        ))}
-      </Row>
-    </Modal>
+  return (
+    <>
+      <Modal
+        width={300}
+        title={"开仓确认"}
+        getContainer={false}
+        focusTriggerAfterClose={false}
+        {...others}
+        onOk={checkInfo}
+      >
+        <Row>
+          {error && (
+            <Col className="error-wrapper">
+              双向对冲仓位默认市价开仓，无需担心，您的开仓量不受价格波动的影响
+            </Col>
+          )}
+
+          {data.map((item, i) => (
+            <Col flex="100%" key={i} style={{ marginBottom: "12px" }}>
+              <Row justify="space-between">
+                <Col>
+                  <FormattedMessage id={item.key} />
+                </Col>
+                <Col>
+                  <span
+                    className={classNames(
+                      item.rate ? typeColor[type] : "main-white"
+                    )}
+                  >
+                    {item.rate ? <FormattedMessage id={item.val} /> : item.val}
+                  </span>
+                  {item.rate && `${item.rate} x`}
+                  {item.suffix}
+                </Col>
+              </Row>
+            </Col>
+          ))}
+        </Row>
+      </Modal>
+      <ModalTips
+        visible={isModalShow}
+        operaType="success"
+        msg="您已成功开通经纪商身份"
+        onCancel={() => {
+          setModalShow(false);
+          closeModal()
+        }}
+      />
+    </>
   );
 };
 
