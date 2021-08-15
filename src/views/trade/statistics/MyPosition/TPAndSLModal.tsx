@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Row, Col, Input } from "antd";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 
 interface TPAndSLModalProps extends ModalProps {}
 

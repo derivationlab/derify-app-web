@@ -1,5 +1,5 @@
 import React from "react";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 import { Row, Col, Button,Modal } from "antd";
 
 import SuccessImg from "@/assets/images/success.png";

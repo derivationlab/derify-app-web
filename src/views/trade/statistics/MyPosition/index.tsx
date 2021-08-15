@@ -4,7 +4,7 @@ import { ColumnsType } from "antd/es/table";
 
 import { Row, Col, Table, Button, Modal, Popover, Space } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
-import CloseModal from "./CloseModal";
+import CloseModal from "./CloseModal"
 import TPAndSLModal from './TPAndSLModal'
 import LongOrShort from "../../LongOrShort";
 import { MyPositionType } from "../type";

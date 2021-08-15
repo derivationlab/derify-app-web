@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FormattedMessage } from "react-intl";
 import IconFont from "@/components/IconFont";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 import { Button, Modal, Form, Input, Row, Col } from "antd";
 import { useCallback } from "react";
 
@@ -40,7 +40,7 @@ const Transfer: React.FC<TransferProps> = props => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[operateType,visible])
-  
+
   return (
     <Modal
       title={<FormattedMessage id="trade.transfers" />}

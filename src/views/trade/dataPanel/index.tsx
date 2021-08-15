@@ -3,7 +3,7 @@ import IconFont from "@/components/IconFont";
 import { Row, Col, Radio, Space, Modal, Statistic, Popover } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 
-import Chart from "./Chart";
+import Chart from "./chart";
 import { FormattedMessage } from "react-intl";
 import classNames from "classnames";
 

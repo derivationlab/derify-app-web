@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Form, Input, Avatar, Button, Space, Upload } from "antd";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 
 interface EditProps extends ModalProps {}
 const Edit: React.FC<EditProps> = props => {
@@ -13,7 +13,7 @@ const Edit: React.FC<EditProps> = props => {
         initialValues={{ remember: true }}
       >
         <Form.Item
-        
+
           label="地址"
           name="username"
           rules={[{ required: true, message: "Please input your username!" }]}

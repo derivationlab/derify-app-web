@@ -3,7 +3,7 @@ import { Row, Col, Select, Button, Slider, Input } from "antd";
 import { FormattedMessage } from "react-intl";
 
 import Transfers from "@/views/CommonViews/Transfer";
-import ComModal from "./ComModal";
+import ComModal from "./comModal";
 const { Option } = Select;
 
 export type OpenType = "trade.modal.buy" | "trade.modal.sell" | "trade.two.way";
@@ -155,7 +155,7 @@ function Operation() {
         }}
       />
       <Transfers visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
-      
+
     </Row>
   );
 }

@@ -6,9 +6,9 @@ import { Row, Col } from 'antd'
 import './index.less'
 
 
-import Operation from './Operation';
-import DataPanel from './DataPanel';
-import Statistics from './Statistics';
+import Operation from './operation';
+import DataPanel from './dataPanel';
+import Statistics from './statistics';
 function Trade() {
   return (
     <div className="trade-page">

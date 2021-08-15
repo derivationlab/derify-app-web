@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { Modal, Row, Col, Input, Button, Select } from "antd";
 import { useIntl, FormattedMessage } from "react-intl";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 
 import { RewardsType } from "../index";
 const { Option } = Select;

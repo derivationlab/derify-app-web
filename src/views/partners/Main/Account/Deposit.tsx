@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Row, Col, Select, Input } from "antd";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 import ErrorMessage from "@/components/ErrorMessage";
 const { Option } = Select;
 
 interface DepositProps extends ModalProps {}
 const Deposit: React.FC<DepositProps> = props => {
-  const [errorVis,setVis] = useState(true) 
+  const [errorVis,setVis] = useState(true)
   return (
     <Modal {...props} title="燃烧" width={400}>
       <Row>

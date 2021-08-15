@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Row, Col } from "antd";
-import { ModalProps } from "antd/es/Modal";
+import { ModalProps } from "antd/es/modal";
 import { useIntl } from "react-intl";
 
 import { RewardsType } from "./index";
