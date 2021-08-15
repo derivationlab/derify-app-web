@@ -4,7 +4,8 @@ import { FormattedMessage } from "react-intl";
 
 import { Row, Col, Tabs } from "antd";
 
-import MyPosition from "./myPosition";
+import MyPosition from "./MyPosition";
+import CurrentOrder from "./CurrentOrder";
 const { TabPane } = Tabs;
 
 function Statistics() {
@@ -20,7 +21,7 @@ function Statistics() {
             <MyPosition />
           </TabPane>
           <TabPane tab={<FormattedMessage id="trade.current.order" />} key="2">
-            {/* <Table dataSource={dataSource} columns={columns} pagination={false}/> */}
+            <CurrentOrder/>
           </TabPane>
           <TabPane tab={<FormattedMessage id="trade.trade.history" />} key="3">
             {/* <Table dataSource={dataSource} columns={columns} pagination={false}/> */}

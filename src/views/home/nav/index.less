@@ -23,7 +23,11 @@
 
   .tool {
     margin: 0 12px;
-
+    .ant-select-selector{
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid @main-border-color;
+    }
     &-item {
       display: inline-block;
       cursor: pointer;
@@ -37,7 +41,26 @@
       ;
     }
 
-    .network-list,.wallet-list{
+    .account-wrapper {
+      display: flex;
+      align-items: center;
+      span {
+        display: inline-block;
+        width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+     
+      .balance{
+        color: @primary-color;
+      }
+
+
+    }
+
+    .network-list,
+    .wallet-list {
       >.ant-col {
         position: relative;
         padding-top: 10px;
@@ -51,12 +74,19 @@
         align-items: center;
         justify-content: space-around;
         text-align: center;
-        &.active{
+
+        .derify-iconfont {
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: none;
+        }
+
+        &.active {
           border-color: @primary-color;
-          .derify-iconfont{
-            position: absolute;
-            top: 0;
-            right: 0;
+
+          .derify-iconfont {
+            display: block;
             color: @primary-color;
           }
         }

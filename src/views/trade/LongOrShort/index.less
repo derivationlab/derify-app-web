@@ -1,0 +1,42 @@
+.long-or-short{
+    display: flex;
+    align-items: center;
+    &.long{
+        span{
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            font-size: 12px;
+            text-align: center;
+        }
+        >span:first-child{
+            background:@main-green;
+            color: @main-black;
+        }
+        >span:last-child{
+            border: 1px solid @main-green;
+            color:@main-green;
+            margin-left: 6px;
+        }
+    }
+    &.short{
+        span{
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            font-size: 12px;
+            text-align: center;
+        }
+        >span:first-child{
+            background:@main-red;
+            color: @main-black;
+        }
+        >span:last-child{
+            border: 1px solid @main-red;
+            color:@main-red;
+            margin-left: 6px;
+        }
+    }
+}

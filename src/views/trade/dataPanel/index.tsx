@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import IconFont from "@/components/IconFont";
-import { Row, Col, Radio, Space, Modal, Statistic } from "antd";
+import { Row, Col, Radio, Space, Modal, Statistic, Popover } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 
-import Chart from "./chart";
+import Chart from "./Chart";
 import { FormattedMessage } from "react-intl";
 import classNames from "classnames";
 
@@ -13,9 +13,10 @@ const timeOptions: Array<{ label: string; value: string }> = [
   { label: "15m", value: "15m" },
   { label: "1h", value: "1h" },
   { label: "4h", value: "4h" },
-  { label: "D", value: "D" },
+  { label: "1D", value: "1D" },
+  { label: "1W", value: "1W" },
+  { label: "1M", value: "1M" },
 ];
-
 function DataPanel() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -45,19 +46,49 @@ function DataPanel() {
             <Row>
               <Col flex="100%">
                 <Space size={4}>
-                  <FormattedMessage id="trade.pcf.rate" />
-                  <span>: -0.1234%</span>
-                  <IconFont type="icon-wenhao" />
+                  <Popover
+                    placement="bottom"
+                    content={
+                      <Row>
+                        <Col className="title" flex="100%">
+                          动仓费率：
+                        </Col>
+                        <Col>
+                          系统对扩大裸头寸的仓位变动（开仓/平仓）行为进行惩罚，对减少裸头寸的仓位变动行为进行奖励。该值为正，则代表开多/平空需要支付动仓费，开空/平多可以获得动仓费；该值为负，则代表开空/平多需要支付动仓费，开多/平空可以获得动仓费。
+                        </Col>
+                      </Row>
+                    }
+                    trigger="hover"
+                  >
+                    <FormattedMessage id="trade.pcf.rate" />
+                    <span>: -0.1234%</span>
+                    <IconFont type="icon-wenhao" />
+                  </Popover>
                 </Space>
               </Col>
               <Col flex="100%">
                 <Space size={4}>
                   持仓挖矿奖励
                   <span>
-                    <span className="main-red">多</span> 0.01%/{" "}
+                    <span className="main-red">多</span> 0.01%/
                     <span className="main-green">空</span> 0.01%
                   </span>
-                  <IconFont type="icon-wenhao" />
+                  <Popover
+                    placement="bottom"
+                    content={
+                      <Row>
+                        <Col className="title" flex="100%">
+                          持仓挖矿收益率：
+                        </Col>
+                        <Col>
+                          仓位杠杆越高，持仓挖矿的收益率越高。挖矿规则。
+                        </Col>
+                      </Row>
+                    }
+                    trigger="hover"
+                  >
+                    <IconFont type="icon-wenhao" />
+                  </Popover>
                 </Space>
               </Col>
             </Row>
@@ -65,17 +96,19 @@ function DataPanel() {
         </Row>
       </Col>
       <Col flex="100%">
-        <Radio.Group
-          className="time-radio"
-          options={timeOptions}
-          optionType="button"
-        />
+        <Row justify="end" className="time-radio">
+          <Radio.Group
+            defaultValue={"15m"}
+            options={timeOptions}
+            optionType="button"
+          />
+        </Row>
       </Col>
       <Col flex="100%">
         <Chart />
       </Col>
       <Modal
-        title={"连接钱包"}
+        title={"市场"}
         footer={null}
         getContainer={false}
         focusTriggerAfterClose={false}
@@ -87,7 +120,7 @@ function DataPanel() {
         <Row className="currency-list-wrapper">
           <Col flex="100%" className="active">
             <Row justify="space-between" align="middle">
-              <Col className="currency">ETH / USDT</Col>
+              <Col className="currency">BTC / USDT</Col>
               <Col>
                 <div>2345.67</div>
                 <div>
@@ -119,9 +152,9 @@ function DataPanel() {
               </Col>
             </Row>
           </Col>
-          <Col flex="100%">
+          <Col flex="100%" className="diable">
             <Row justify="space-between" align="middle">
-              <Col>ETH / USDT</Col>
+              <Col>BNB / USDT</Col>
               <Col>
                 <div>2345.67</div>
                 <Statistic
@@ -135,9 +168,9 @@ function DataPanel() {
               </Col>
             </Row>
           </Col>
-          <Col flex="100%">
+          <Col flex="100%" className="diable">
             <Row justify="space-between" align="middle">
-              <Col>ETH / USDT</Col>
+              <Col>UNI / USDT</Col>
               <Col>
                 <div>2345.67</div>
                 <Statistic
