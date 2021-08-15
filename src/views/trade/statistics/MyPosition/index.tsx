@@ -4,11 +4,11 @@ import { ColumnsType } from "antd/es/table";
 
 import { Row, Col, Table, Button, Modal, Popover, Space } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
-import CloseModal from "./CloseModal"
-import TPAndSLModal from './TPAndSLModal'
-import LongOrShort from "../../LongOrShort";
 import { MyPositionType } from "../type";
 import classNames from "classnames";
+import LongOrShort from "@/views/trade/LongOrShort";
+import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
+import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
 const dataSource: MyPositionType[] = [
   {
     key: "1",
@@ -333,7 +333,7 @@ const MyPosition: React.FC = () => {
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
       />
-      <TPAndSLModal  visible={modalVisible} onCancel={() => setModalVisible(false)}/ >
+      <TPAndSLModal  visible={modalVisible} onCancel={() => setModalVisible(false)}/>
     </Row>
   );
 };
