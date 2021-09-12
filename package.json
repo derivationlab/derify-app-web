@@ -37,7 +37,7 @@
     "web3": "^1.5.1"
   },
   "scripts": {
-    "start": "craco start",
+    "dev": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
@@ -60,5 +60,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "/"
+  "homepage": "/",
+  "devDependencies": {
+    "axios": "^0.21.4"
+  }
 }

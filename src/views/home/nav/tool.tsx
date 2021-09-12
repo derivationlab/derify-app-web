@@ -16,6 +16,7 @@ import Wallet from "@/assets/images/Metamask.png";
 import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import classNames from "classnames";
+import * as web3Utils from '@/utils/web3Utils'
 
 const { Option } = Select;
 
@@ -84,7 +85,7 @@ function Tool() {
               />
             }
           >
-            <FormattedMessage id="app.connect.wallet" />
+            <FormattedMessage id="Trade.navbar.ConnectWallet" />
           </Button>
         )}
       </Col>
@@ -112,7 +113,7 @@ function Tool() {
         <span></span>
       </Col>
       <Modal
-        title={<FormattedMessage id="app.connect.wallet" />}
+        title={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
         footer={null}
         getContainer={false}
         focusTriggerAfterClose={false}
@@ -123,7 +124,7 @@ function Tool() {
       >
         <Row>
           <Col style={{ marginBottom: "10px" }}>
-            <FormattedMessage id="app.choose.network" />
+            <FormattedMessage id="Trade.Wallet.ChooseNetwork" />
           </Col>
           <Col flex="100%">
             <Row className="network-list" justify="space-between">
@@ -143,7 +144,7 @@ function Tool() {
             </Row>
           </Col>
           <Col style={{ margin: "40px 0 10px" }}>
-            <FormattedMessage id="app.choose.wallet" />
+            <FormattedMessage id="Trade.Wallet.ChooseWallet" />
           </Col>
           <Col flex="100%">
             <Row className="wallet-list">

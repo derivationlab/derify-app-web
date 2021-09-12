@@ -7,10 +7,10 @@ import { withRouter, RouteComponentProps } from "react-router-dom";
 
 interface MenuProps extends RouteComponentProps {}
 const menu: Array<string> = [
-  "app.trade",
-  "app.rewards",
-  "app.partners",
-  "app.data",
+  "Trade.navbar.Trade",
+  "Trade.navbar.Rewards",
+  "Trade.navbar.Broker",
+  "Trade.navbar.Data",
 ];
 
 const Menu: React.FC<MenuProps> = props => {

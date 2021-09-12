@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Button } from "antd";
 import FundsDetails from "./FundsDetail";
 import Transfer,{OperateType}from "@/views/CommonViews/Transfer";
+import {FormattedMessage} from "react-intl";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,
   blance,
@@ -13,12 +14,13 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
     <Row style={{ width: 500 }}>
       <Col flex="100%" className="margin-b-m">
         <Row justify="space-between">
-          <Col>账户余额</Col>
+          <Col><FormattedMessage id="Trade.Account.MarginAccount.MarginAccount"/></Col>
           <Col>
             <Button type="link" onClick={() => setIsModalVisible(true)}>
-              资金明细
+              <FormattedMessage id="Trade.Account.MarginAccount.BalanceHistory"/>
             </Button>
-            <Button type="link">断开连接</Button>
+            <Button type="link">
+              <FormattedMessage id="Trade.Wallet.Disconnect"/></Button>
           </Col>
         </Row>
       </Col>
@@ -50,13 +52,13 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
       <Col flex="100%" className="margin-b-max">
         <Row justify="space-between">
           <Col>
-            <div>保证金余额</div>
+            <div><FormattedMessage id="Trade.Account.MarginAccount.MarginBalance"/></div>
             <div>
               <span>24.691.34</span>USDT
             </div>
           </Col>
           <Col>
-            <div>占用保证金</div>
+            <div><FormattedMessage id="Trade.Account.MarginAccount.Margin"/></div>
             <div>
               <span>24.691.34</span>USDT(52%)
             </div>
@@ -74,7 +76,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
                 setType('trade.withdraw')
               }}
             >
-              提现
+              <FormattedMessage id="Trade.Account.MarginAccount.Withdraw"/>
             </Button>
           </Col>
           <Col flex="25">
@@ -86,7 +88,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
                 setType('trade.deposit')
               }}
             >
-              充值
+              <FormattedMessage id="Trade.Account.MarginAccount.Deposit"/>
             </Button>
           </Col>
         </Row>

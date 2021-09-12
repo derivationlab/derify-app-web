@@ -1,11 +1,5 @@
-import app from "./en/app"
-import data from "./en/data"
-import trade from "./en/trade"
-import rewards from "./en/rewards"
+import enlang from "./en.json"
 const enPackage = {
-    ...app,
-    ...data,
-    ...trade,
-    ...rewards
+    ...enlang
 }
 export default enPackage

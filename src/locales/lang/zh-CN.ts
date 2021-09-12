@@ -1,11 +1,5 @@
-import app from "./zh-CN/app";
-import data from "./zh-CN/data";
-import trade from "./zh-CN/trade";
-import rewards from "./zh-CN/rewards";
+import zhlang from "./zh.json"
 const zhPackage = {
-  ...app,
-  ...data,
-  ...trade,
-  ...rewards,
+  ...zhlang,
 };
 export default zhPackage;

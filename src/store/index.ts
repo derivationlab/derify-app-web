@@ -4,11 +4,14 @@ import {
   compose,
   combineReducers,
 } from "redux";
+
 import thunkMiddleware from "redux-thunk";
 import appReducer, { AppState } from "./modules/app/reducers";
 
+import {reducers as userReducers} from "./modules/user";
 export interface RootStore {
   app: AppState
+  user: any
 }
 
 const composeEnhancers =
@@ -26,7 +29,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const rootStote  = {
-  app:appReducer,
+  app: appReducer,
+  // user: userReducers
 };
 
 const store = createStore(
