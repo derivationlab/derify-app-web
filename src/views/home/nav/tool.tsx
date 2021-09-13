@@ -17,6 +17,7 @@ import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import classNames from "classnames";
 import * as web3Utils from '@/utils/web3Utils'
+import {asyncInitWallet, getWallet} from "@/store/modules/user";
 
 const { Option } = Select;
 
@@ -35,6 +36,7 @@ function Tool() {
   const [wallet, setWallet] = useState<Partial<string>>();
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
+  const [walletInfo, setWalletInfo] = useState<Partial<any>>();
   const dispatch = useDispatch();
   const handelChangeIntl = useCallback((val: string) => {
     dispatch(changeLang(val));
@@ -53,12 +55,20 @@ function Tool() {
     }
   }, [wallet, network]);
 
+  useEffect(() => {
+    asyncInitWallet().then(() => {
+      getWallet().then(walletInfo => {
+        setWalletInfo(walletInfo)
+      })
+    })
+  }, []);
+
   return (
     <Row align={"middle"} className="tool">
       <Col style={{ marginRight: "10px" }}>
-        {account ? (
+        {walletInfo && walletInfo.isLogin ? (
           <Popover
-            content={<Account {...{ account, blance }} />}
+            content={<Account {...{ account: walletInfo.selectedAddress, blance: walletInfo.blance }} />}
             trigger="hover"
           >
             <Button
@@ -67,7 +77,7 @@ function Tool() {
               icon={<IconFont size={14} type="icon-link" />}
               type="primary"
             >
-              {account}
+              {walletInfo.selectedAddress}
             </Button>
           </Popover>
         ) : (

@@ -120,7 +120,7 @@ export async function asyncInitWallet() {
   return window.ethereum
 }
 
-export async function getWallet(){
+export async function getWallet() : Promise<any>{
 
   if(!window.ethereum){
     return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
@@ -133,7 +133,7 @@ export async function getWallet(){
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = await getBrokerIdByTrader(wethereum.selectedAddress)
+  const brokerId = "1223";//await getBrokerIdByTrader(wethereum.selectedAddress)
 
   return {
     selectedAddress: wethereum.selectedAddress,
@@ -143,6 +143,8 @@ export async function getWallet(){
     chainEnum: chainEnum,
     brokerId: brokerId,
     isEthum,
+    processStatus: 0,
+    balanceOfDUSD: 0,
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask
   }
