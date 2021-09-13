@@ -17,43 +17,80 @@ import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import classNames from "classnames";
 import * as web3Utils from '@/utils/web3Utils'
-import {asyncInitWallet, getWallet} from "@/store/modules/user";
+import {asyncInitWallet, ChainEnum, getWallet, mainChain, UserState, WalletEnum} from "@/store/modules/user";
+import {fck} from "@/utils/utils";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const { Option } = Select;
 
-const networkList: { url: string; name: string }[] = [
-  { url: Eth, name: "Ethereum (xDai)" },
-  { url: HECO, name: "HECO" },
-  { url: Binance, name: "Binance" },
-  { url: Solana, name: "Solana" },
+const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
+  { url: Eth, name: mainChain.name, chainEnum: mainChain },
+  { url: HECO, name: "HECO", chainEnum: ChainEnum.Kovan },
+  { url: Binance, name: "Binance", chainEnum: ChainEnum.Goerli},
+  { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
 ];
 
 function Tool() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
 
-  const [network, setNetwork] = useState<Partial<number>>();
-  const [wallet, setWallet] = useState<Partial<string>>();
+  const [network, setNetwork] = useState<Partial<ChainEnum|null>>();
+  const [wallet, setWallet] = useState<Partial<string|null>>();
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
-  const [walletInfo, setWalletInfo] = useState<Partial<any>>();
+  const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
+  const [walletInfo, setWalletInfo] = useState<Partial<UserState>>();
   const dispatch = useDispatch();
   const handelChangeIntl = useCallback((val: string) => {
     dispatch(changeLang(val));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (wallet && network !== undefined) {
-      Web3Class.getInstance().then(async res => {
-        const account = await res.eth.getAccounts();
-        const blance = await res.eth.getBalance(account[0]);
-        setBlance(blance);
-        setAccount(account[0]);
-      });
-      setIsModalVisible(false);
+  const handlLoginWallet = useCallback(() => {
+
+    web3Utils.enable().then( res => {
+      setIsModalVisible(false)
+    });
+
+  }, [])
+
+  const checkWallet = useCallback(() => {
+
+    if(!wallet){
+      return false
     }
-  }, [wallet, network]);
+
+    const walletIsMetaMask = wallet === WalletEnum.MetaMask;
+
+    if(!walletIsMetaMask) {
+      setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
+      return false
+    }
+    return true
+  },[])
+
+  const checkNetwork = useCallback(() => {
+
+    if(!network){
+      return false
+    }
+
+    const networkIsMain = network?.chainId === mainChain.chainId;
+
+    if(!networkIsMain) {
+      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
+      return false
+    }
+
+    return true
+  },[])
+
+
+  useEffect(() => {
+    if (checkNetwork() && checkWallet()) {
+      handlLoginWallet()
+    }
+  }, [walletInfo, network,wallet]);
 
   useEffect(() => {
     asyncInitWallet().then(() => {
@@ -68,7 +105,7 @@ function Tool() {
       <Col style={{ marginRight: "10px" }}>
         {walletInfo && walletInfo.isLogin ? (
           <Popover
-            content={<Account {...{ account: walletInfo.selectedAddress, blance: walletInfo.blance }} />}
+            content={<Account {...{ account: account, blance: blance }} />}
             trigger="hover"
           >
             <Button
@@ -133,16 +170,28 @@ function Tool() {
         }}
       >
         <Row>
+          {errorMsg?.id ? <Col style={{ marginBottom: "10px" }}>
+            <ErrorMessage msg={<FormattedMessage id={errorMsg?.id} values={{0:errorMsg?.value}}/>} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>
+          </Col>:''}
           <Col style={{ marginBottom: "10px" }}>
             <FormattedMessage id="Trade.Wallet.ChooseNetwork" />
           </Col>
+
           <Col flex="100%">
             <Row className="network-list" justify="space-between">
               {networkList.map((item, i) => (
                 <Col
-                  className={classNames({ active: i === network })}
+                  className={classNames({ active: item.chainEnum?.chainId === network?.chainId })}
                   onClick={() => {
-                    setNetwork(i);
+
+                    if(item.chainEnum?.chainId === network?.chainId) {
+                      setNetwork(null)
+                    }else{
+                      setNetwork(item.chainEnum);
+                    }
+
+                    checkNetwork()
+
                   }}
                   key={i}
                 >
@@ -159,9 +208,15 @@ function Tool() {
           <Col flex="100%">
             <Row className="wallet-list">
               <Col
-                className={classNames({ active: wallet === "metamask" })}
+                className={classNames({ active: wallet === WalletEnum.MetaMask })}
                 onClick={() => {
-                  setWallet("metamask");
+                  if(wallet === WalletEnum.MetaMask) {
+                    setWallet(null);
+                  }else{
+                    setWallet(WalletEnum.MetaMask);
+                  }
+
+                  checkWallet()
                 }}
               >
                 <IconFont size={18} type="icon-Group-" />

@@ -1,4 +1,4 @@
-import React,{CSSProperties} from "react";
+import React, {CSSProperties} from "react";
 import { Row, Col } from "antd";
 import IconFont from "@/components/IconFont";
 import classNames from "classnames";
@@ -6,7 +6,7 @@ import classNames from "classnames";
 import './index.less'
 
 interface ErrorMessageProps {
-  msg: string;
+  msg: string|React.ReactNode;
   visible: boolean;
   style?: CSSProperties;
   onCancel:()=>void

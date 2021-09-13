@@ -7,6 +7,13 @@ import { createReducer } from "redux-create-reducer";
 import { getBrokerIdByTrader } from '@/api/broker'
 // import {BIND_PARTNERS, CHANGE_LANG} from "@/store/modules/app/types";
 
+import Eth from "@/assets/images/Eth.png";
+import HECO from "@/assets/images/huobi-token-ht-logo.png";
+import Binance from "@/assets/images/binance-coin-bnb-logo.png";
+import Solana from "@/assets/images/Solana.png";
+import Wallet from "@/assets/images/Metamask.png";
+import EnIcon from "@/assets/images/en.png";
+import ZhIcon from "@/assets/images/zh.png";
 
 export class ChainEnum {
   static values : ChainEnum[] = []
@@ -14,7 +21,8 @@ export class ChainEnum {
   name:string;
   logo:string;
   disabled:boolean;
-  constructor(chainId:number, name:string, logo = require('@/assets/images/Eth.png'), disabled = true){
+
+  constructor(chainId:number, name:string, logo = Eth, disabled = true){
     this.chainId = chainId
     this.name = name
     this.logo = logo
@@ -23,11 +31,11 @@ export class ChainEnum {
   }
 
   static get ETH() {
-    return new ChainEnum(1, "mainnet", require('@/assets/images/Eth.png'))
+    return new ChainEnum(1, "mainnet", Eth)
   }
 
   static get Kovan() {
-    return new ChainEnum(42, "Kovan", true)
+    return new ChainEnum(42, "Kovan", HECO)
   }
 
   static get Goerli() {
@@ -89,7 +97,27 @@ export class UserProcessStatus {
 
 export const mainChain = ChainEnum.Rinkeby
 
-const state = {
+export type UserState = {
+  selectedAddress?: string|null,
+  showWallet?: boolean,
+  isLogin?: boolean,
+  chainEnum?: ChainEnum,
+  chainId?: string,
+  isEthum?: boolean,
+  networkVersion?: string | null,
+  isMetaMask?: boolean,
+  processStatus?: number,
+  processStatusMsg?: string,
+  balanceOfDUSD?: number,
+  brokerId?: string|null,
+  hasBroker?: boolean
+}
+
+export type WalletInfo ={
+
+}
+
+const state : UserState = {
   selectedAddress: "",
   showWallet: false,
   isLogin: false,
@@ -103,9 +131,9 @@ const state = {
   brokerId: null
 };
 
-export async function asyncInitWallet() {
+export async function asyncInitWallet() : Promise<UserState> {
   if(!window.ethereum || !!window.ethereum.chainId){
-    return {}
+    return state
   }
 
   window.ethereum.chainId = await window.ethereum.request({method: 'eth_chainId'})
@@ -120,7 +148,7 @@ export async function asyncInitWallet() {
   return window.ethereum
 }
 
-export async function getWallet() : Promise<any>{
+export async function getWallet() : Promise<UserState>{
 
   if(!window.ethereum){
     return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
