@@ -376,7 +376,7 @@ export default class Contract {
   /**
    * getTraderAccount
    * @param trader
-   * @return {TraderAccount}
+   * @return {Promise<TraderAccount>}
    */
   getTraderAccount (trader) {
     return this.DerifyExchange.methods.getTraderAccount(trader).call()
@@ -430,7 +430,7 @@ export default class Contract {
   /**
    * Get user margin information
    * @param trader
-   * @return {*}
+   * @return {Promise<TraderVariable>}
    */
   getTraderVariables (trader) {
     return this.DerifyExchange.methods.getTraderVariables(trader).call()

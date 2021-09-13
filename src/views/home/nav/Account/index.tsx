@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import { Row, Col, Button } from "antd";
 import FundsDetails from "./FundsDetail";
 import Transfer,{OperateType}from "@/views/CommonViews/Transfer";
 import {FormattedMessage} from "react-intl";
+import * as web3Utils from "@/utils/web3Utils";
+import {amountFormt, fck} from "@/utils/utils";
+import {Token} from "@/utils/contractUtil";
+import {createTokenPriceChangeEvenet} from "@/api/trade";
+import {TraderAccount} from "@/utils/types";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,
   blance,
@@ -10,6 +15,40 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [operateType,setType] = useState<Partial<OperateType>>()
+  const [traderAccount, setTraderAccount] = useState<Partial<TraderAccount>>();
+  const [spotPrice, setSpotPrice] = useState<Partial<number>>();
+  const [priceRate, setPriceRate] = useState<Partial<number>>();
+
+  const contract = web3Utils.contract(account);
+
+  const loadAccountInfo = useCallback(async() => {
+    if(account){
+
+      const traderAccount = await contract.getTraderAccount(account)
+      const traderVar = await contract.getTraderVariables(account)
+      traderAccount.totalPositionAmount = traderVar.totalPositionAmount
+      traderAccount.marginRate = traderVar.marginRate
+      traderAccount.marginBalance = traderVar.marginBalance
+      setTraderAccount(traderAccount)
+    }
+
+    const price = await contract.getSpotPrice(Token.ETH)
+    setSpotPrice(price)
+
+  }, [])
+
+
+  useEffect(() => {
+    loadAccountInfo()
+
+  },[])
+
+  useMemo(()=>{
+    return createTokenPriceChangeEvenet(Token.ETH, (pairKey:string, priceChangeRate:number) => {
+      setPriceRate(priceChangeRate)
+    })
+  },[])
+
   return (
     <Row style={{ width: 500 }}>
       <Col flex="100%" className="margin-b-m">
@@ -31,7 +70,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
             className="main-color"
             style={{ fontSize: 30, fontWeight: 700, marginRight: "10px" }}
           >
-            {blance}
+            {fck(spotPrice, -8, 2)}
           </Col>
           <Col>ETH</Col>
           <Col
@@ -44,7 +83,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
               marginLeft: "10px",
             }}
           >
-            +1,234.56
+            {amountFormt(priceRate, -8, true, "--")}
           </Col>
           {/* </Space> */}
         </Row>
@@ -54,13 +93,13 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.MarginBalance"/></div>
             <div>
-              <span>24.691.34</span>USDT
+              <span>{fck(traderAccount?.marginBalance, -8, 4)}</span>USDT
             </div>
           </Col>
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.Margin"/></div>
             <div>
-              <span>24.691.34</span>USDT(52%)
+              <span>{fck(traderAccount?.availableMargin, -8, 4)}</span>USDT({fck(traderAccount?.marginRate, -6,2)}%)
             </div>
           </Col>
         </Row>

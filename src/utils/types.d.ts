@@ -7,8 +7,18 @@ declare class TraderAccount {
   balance:number;
   marginBalance: number;
   totalMargin: number;
+  marginRate?: number;
+  totalPositionAmount?: number;
   availableMargin: number;
 }
-declare class Contract {
-  getTraderAccount(trader:string):TraderAccount
+
+export declare class TraderVariable {
+  marginBalance:number;
+  totalPositionAmount: number;
+  marginRate: number;
+}
+
+export declare class Contract {
+  getTraderAccount(trader:string): Promise<TraderAccount>
+  getTraderVariables (trader:string): Promise<TraderVariable>
 }

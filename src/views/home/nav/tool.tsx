@@ -41,6 +41,8 @@ function Tool() {
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
   const [walletInfo, setWalletInfo] = useState<Partial<UserState>>();
   const dispatch = useDispatch();
+
+
   const handelChangeIntl = useCallback((val: string) => {
     dispatch(changeLang(val));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,16 +59,14 @@ function Tool() {
 
   const loadWallet = useCallback(() => {
 
-    if(walletInfo?.isLogin){
-      asyncInitWallet().then(() => {
-        getWallet().then(walletInfo => {
-          setAccount(walletInfo.selectedAddress||"")
-          setWalletInfo(walletInfo)
-        })
+    asyncInitWallet().then(() => {
+      getWallet().then(walletInfo => {
+        setAccount(walletInfo.selectedAddress||"")
+        setWalletInfo(walletInfo)
       })
-    }
+    })
 
-  }, [walletInfo])
+  }, [])
 
   const checkWallet = useCallback(() => {
 
@@ -105,7 +105,6 @@ function Tool() {
     return true
   },[network])
 
-
   useEffect(() => {
     if (checkNetwork() && checkWallet()) {
       handlLoginWallet()
@@ -113,7 +112,7 @@ function Tool() {
   }, [walletInfo, network,wallet]);
 
   useEffect(() => {
-
+    loadWallet()
   }, []);
 
   return (
