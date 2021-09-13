@@ -50,9 +50,23 @@ function Tool() {
 
     web3Utils.enable().then( res => {
       setIsModalVisible(false)
+      loadWallet()
     });
 
   }, [])
+
+  const loadWallet = useCallback(() => {
+
+    if(walletInfo?.isLogin){
+      asyncInitWallet().then(() => {
+        getWallet().then(walletInfo => {
+          setAccount(walletInfo.selectedAddress||"")
+          setWalletInfo(walletInfo)
+        })
+      })
+    }
+
+  }, [walletInfo])
 
   const checkWallet = useCallback(() => {
 
@@ -66,10 +80,14 @@ function Tool() {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
       return false
     }
+
+    setErrorMsg(undefined)
+
     return true
-  },[])
+  },[wallet])
 
   const checkNetwork = useCallback(() => {
+
 
     if(!network){
       return false
@@ -82,8 +100,10 @@ function Tool() {
       return false
     }
 
+    setErrorMsg(undefined)
+
     return true
-  },[])
+  },[network])
 
 
   useEffect(() => {
@@ -93,11 +113,7 @@ function Tool() {
   }, [walletInfo, network,wallet]);
 
   useEffect(() => {
-    asyncInitWallet().then(() => {
-      getWallet().then(walletInfo => {
-        setWalletInfo(walletInfo)
-      })
-    })
+
   }, []);
 
   return (
@@ -185,7 +201,7 @@ function Tool() {
                   onClick={() => {
 
                     if(item.chainEnum?.chainId === network?.chainId) {
-                      setNetwork(null)
+                      setNetwork(undefined)
                     }else{
                       setNetwork(item.chainEnum);
                     }
@@ -211,12 +227,10 @@ function Tool() {
                 className={classNames({ active: wallet === WalletEnum.MetaMask })}
                 onClick={() => {
                   if(wallet === WalletEnum.MetaMask) {
-                    setWallet(null);
+                    setWallet(undefined);
                   }else{
                     setWallet(WalletEnum.MetaMask);
                   }
-
-                  checkWallet()
                 }}
               >
                 <IconFont size={18} type="icon-Group-" />
