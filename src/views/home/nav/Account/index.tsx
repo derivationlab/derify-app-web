@@ -112,7 +112,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
               type="ghost"
               onClick={() => {
                 setModalVisible(true);
-                setType('trade.withdraw')
+                setType(OperateType.withdraw)
               }}
             >
               <FormattedMessage id="Trade.Account.MarginAccount.Withdraw"/>
@@ -124,7 +124,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
               type="primary"
               onClick={() => {
                 setModalVisible(true);
-                setType('trade.deposit')
+                setType(OperateType.deposit)
               }}
             >
               <FormattedMessage id="Trade.Account.MarginAccount.Deposit"/>
