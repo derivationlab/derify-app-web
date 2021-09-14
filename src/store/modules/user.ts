@@ -1,9 +1,8 @@
 import update from "react-addons-update";
-// import { Dispatch } from "redux";
 import { createReducer } from "redux-create-reducer";
 
-// import * as web3Utils from '@/utils/web3Utils'
-// import {Token} from "@/utils/contractUtil";
+import * as web3Utils from '@/utils/web3Utils'
+import {Token} from "@/utils/contractUtil";
 import { getBrokerIdByTrader } from '@/api/broker'
 // import {BIND_PARTNERS, CHANGE_LANG} from "@/store/modules/app/types";
 
@@ -14,6 +13,7 @@ import Solana from "@/assets/images/Solana.png";
 import Wallet from "@/assets/images/Metamask.png";
 import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
+import {Dispatch} from "redux";
 
 export class ChainEnum {
   static values : ChainEnum[] = []
@@ -198,25 +198,24 @@ export const reducers = createReducer(state, {
   }
 });
 
-const effects = {
-  // getBalanceOfDUSD () {
-  //   return (async ({state}, {call, put}) => {
-  //
-  //     if (!state.selectedAddress) {
-  //       return
-  //     }
-  //
-  //     const balanceOf = await web3Utils.contract(state.selectedAddress).balanceOf(state.selectedAddress, Token.DUSD)
-  //     put({type: 'updateState', payload: {balanceOfDUSD: balanceOf}})
-  //     return balanceOf;
-  //   });
-  // },
+const actions = {
+  getBalanceOfDUSD (trader:string, token:string) {
+    return async (commit: Dispatch) => {
+
+      if (!trader) {
+        return
+      }
+
+      const balanceOf = await web3Utils.contract(trader).balanceOf(trader, token)
+      commit({type: 'updateState', payload: {balanceOfDUSD: balanceOf}})
+      return balanceOf;
+    };
+  },
 }
 
-// const userStore = {
-//   // namespace: 'user',
-//   state,
-//   reducers,
-//   subscriptions:[],
-//   effects,
-// }
+export default {
+  namespace: 'user',
+  state,
+  reducers,
+  actions
+}

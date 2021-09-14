@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, Row, Col, Select, Modal, Popover, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "@/store/index";
+
 import { changeLang } from "@/store/modules/app/actions";
 import { FormattedMessage } from "react-intl";
 import IconFont from "@/components/IconFont";
-import Web3Class from "@/utils/web3Instance";
 import Account from "./Account";
 
 import Eth from "@/assets/images/Eth.png";
@@ -113,6 +113,21 @@ function Tool() {
 
   useEffect(() => {
     loadWallet()
+
+    window.onload = function () {
+      window.ethereum.on('accountsChanged', function () {
+        loadWallet()
+      })
+
+      window.ethereum.on('chainChanged', function () {
+        loadWallet()
+      })
+
+      window.addEventListener('ethereum#initialized', loadWallet, {
+        once: true,
+      });
+    }
+
   }, []);
 
   return (

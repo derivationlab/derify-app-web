@@ -30,7 +30,7 @@ if (process.env.NODE_ENV === "development") {
 
 const rootStote  = {
   app: appReducer,
-  // user: userReducers
+  user: userReducers
 };
 
 const store = createStore(

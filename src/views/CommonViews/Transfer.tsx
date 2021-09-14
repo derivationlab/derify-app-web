@@ -4,9 +4,14 @@ import IconFont from "@/components/IconFont";
 import { ModalProps } from "antd/es/modal";
 import { Button, Modal, Form, Input, Row, Col } from "antd";
 import { useCallback } from "react";
+import * as web3Utils from "@/utils/web3Utils"
 
 import "./Transfer.less";
 import {TraderAccount} from "@/utils/types";
+import {fck} from "@/utils/utils";
+import userModel,{UserState} from "@/store/modules/user";
+import {Token} from "@/utils/contractUtil";
+import {useDispatch} from "react-redux";
 
 export enum OperateType{
   withdraw = "Trade.Account.Transfer.Withdraw",
@@ -17,19 +22,38 @@ interface TransferProps extends ModalProps {
   operateType?: OperateType
 }
 
-export type TransferData = {
-  accountData: TraderAccount,
-  balanceOfWallet: number,
-  balanceOfDerify: number,
-  maxAmount: number
+export class TransferData {
+  accountData: TraderAccount;
+  balanceOfWallet: number;
+  balanceOfDerify: number;
+  operateType: OperateType;
+  amount: string | null;
+
+  constructor() {
+    this.accountData = new TraderAccount()
+    this.balanceOfWallet = 0
+    this.balanceOfDerify = 0
+    this.operateType = OperateType.withdraw
+    this.amount = ""
+  }
+
+  get maxAmount() : number {
+    if(this.operateType === OperateType.withdraw) {
+      return this.balanceOfDerify
+    }else{
+      return this.balanceOfWallet
+    }
+  }
 }
 
 const Transfer: React.FC<TransferProps> = props => {
-  const { visible, operateType = "Trade.Account.Transfer.Withdraw" } = props;
+  const { visible, operateType = OperateType.withdraw } = props;
   const [form] = Form.useForm();
 
   const [transferType, setTransferType] = useState(operateType);
-  const [transferData, setTransferData]  = useState<TransferData>()
+  const [transferData, setTransferData]  = useState<Partial<TransferData>>(new TransferData())
+  const [walletInfo, setWalletInfo] = useState<Partial<UserState>>();
+  const dispatch = useDispatch()
 
   const ChangeType = useCallback(() => {
     form.setFieldsValue({
@@ -42,9 +66,37 @@ const Transfer: React.FC<TransferProps> = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadTransferData = useCallback(() => {
+  const loadTransferData = useCallback(async () => {
+
+    if(!walletInfo?.selectedAddress){
+      return
+    }
+
+    const trader = walletInfo?.selectedAddress
+    const contract = web3Utils.contract(trader)
+
+    const accountData = await contract.getTraderAccount(trader)
+
+    transferData.accountData = accountData
+    transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
+    transferData.balanceOfDerify = accountData.balance
+    transferData.operateType = operateType
+
+    setTransferData(transferData)
+
+    dispatch(userModel.actions.getBalanceOfDUSD(trader, Token.DUSD))
 
   }, [])
+
+  const numberFormat = (value:string) => {
+    const reg = /^?\d*(\.\d*)?$/;
+    return value.replace(reg, "")
+  }
+
+  const checkAmount = ()=>{
+
+    return true
+  }
 
   useEffect(()=>{
     setTransferType(operateType)
@@ -63,7 +115,7 @@ const Transfer: React.FC<TransferProps> = props => {
 
 
   useEffect(() => {
-
+    loadTransferData()
   }, [])
 
   return (
@@ -88,13 +140,16 @@ const Transfer: React.FC<TransferProps> = props => {
               <Input />
             </Form.Item>
             <Form.Item label={<FormattedMessage id="Trade.Account.Transfer.Size"/>}>
-              <Input bordered={false} addonAfter="USDT" />
+              <Input bordered={false} addonAfter="USDT" value={transferData.amount||""} onChange={e => {
+                const {value} = e.target
+                transferData.amount = value
+              }}/>
             </Form.Item>
             <Form.Item>
               <Row align="middle" justify="space-between">
                 <Col>
                   <FormattedMessage id="Trade.Account.Transfer.Max" />
-                  ：1234567.00000000 USDT
+                  ：{fck(transferData?.maxAmount, -8, 4)} USDT
                 </Col>
                 <Col>
                   <Button
