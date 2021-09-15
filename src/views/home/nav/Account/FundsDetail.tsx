@@ -6,7 +6,7 @@ import {RootStore} from "@/store";
 import contractModel from "@/store/modules/contract"
 import {getTradeBalanceDetail, TradeBalanceDetail} from "@/api/trade";
 import {useIntl} from "react-intl";
-import {fck} from "@/utils/utils";
+import {dateFormat, fck} from "@/utils/utils";
 
 interface FundDetailsProps extends ModalProps {}
 
@@ -61,7 +61,7 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
       title: intl('Trade.Account.FinanceDetail.Time'),
       dataIndex: "event_time",
       key: "event_time",
-      render: (event_time:string) => {{new Date(event_time).Format("yyyy-MM-dd hh:mm:ss")}}
+      render: (event_time:string) => dateFormat(new Date(event_time),"yyyy-MM-dd hh:mm:ss")
     },
   ];
 
@@ -84,7 +84,7 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
   },[walletInfo])
 
   return (
-    <Modal {...props} title={"资金明细"} width={400} footer={null}>
+    <Modal {...props} title={intl("Trade.Account.MarginAccount.BalanceHistory")} width={600} footer={null}>
       <Col flex="100%">
         <Table dataSource={dataSource} columns={columns} pagination={false} />
       </Col>

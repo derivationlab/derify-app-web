@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useState } from "react";
 import IconFont from "@/components/IconFont";
 import { Row, Col, Radio, Space, Modal, Statistic, Popover } from "antd";
 import { RightOutlined } from "@ant-design/icons";
@@ -6,87 +6,26 @@ import { RightOutlined } from "@ant-design/icons";
 import Chart from "./chart";
 import {FormattedMessage, useIntl} from "react-intl";
 import classNames from "classnames";
-import {useDispatch, useSelector} from "react-redux";
-import contractModel, {ContractState, TokenPair} from "@/store/modules/contract"
-import {RootStore} from "@/store";
-import {amountFormt, fck} from "@/utils/utils";
-import {fromContractUnit, OpenType, SideEnum, Token} from "@/utils/contractUtil";
-import {createTokenMiningFeeEvenet} from "@/api/trade";
 
 const timeOptions: Array<{ label: string; value: string }> = [
   { label: "1m", value: "1m" },
   { label: "5m", value: "5m" },
   { label: "15m", value: "15m" },
-  { label: "1h", value: "1H" },
-  { label: "4h", value: "4H" },
+  { label: "1h", value: "1h" },
+  { label: "4h", value: "4h" },
   { label: "1D", value: "1D" },
   { label: "1W", value: "1W" },
   { label: "1M", value: "1M" },
 ];
-
-declare type Context = {
-  tokenMiningRateEvent:EventSource|null
-}
-const context:Context = {
-  tokenMiningRateEvent: null
-}
-
 function DataPanel() {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const dispatch = useDispatch()
   const {formatMessage} = useIntl()
-
 
   function intl(id:string) {
     return formatMessage({id})
   }
 
-  const contractState = useSelector<RootStore,ContractState>(state => state.contract)
-
-  const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
-  const curTokenPair = useSelector<RootStore,TokenPair>(state => state.contract.curPair)
-
   const $t = intl
-
-  const curPrice = contractState.curPair.num||0
-
-
-  const curPercent = contractState.curPair.percent || 0
-  const pcRate = contractState.contractData.positionChangeFeeRatio || 0
-
-  const [timeGap, setTimeGap] = useState<Partial<string>>("15m")
-  const walletInfo = useSelector((state:RootStore) => state.user);
-  const curPair = useSelector((state:RootStore) => state.contract.curPair);
-  const [pmrRate, setPmrRate] = useState<{longPmrRate:number,shortPmrRate:number}>({longPmrRate: 0,shortPmrRate: 0})
-
-  const loadHomeData = useCallback(() => {
-
-    const trader = walletInfo.selectedAddress
-    if(!trader){
-      return
-    }
-
-    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: curPair.address,openType: OpenType.MarketOrder})
-
-    dispatch(action)
-
-  }, [walletInfo])
-
-  useEffect(() => {
-    loadHomeData()
-  },[loadHomeData])
-
-  useEffect(() => {
-
-    if(context.tokenMiningRateEvent != null){
-      context.tokenMiningRateEvent.close()
-      setPmrRate({longPmrRate:0,shortPmrRate:0})
-    }
-
-    context.tokenMiningRateEvent = createTokenMiningFeeEvenet(curPair.address, (tokenAddr:string, positionMiniRate:{longPmrRate:number,shortPmrRate:number}) => {
-      setPmrRate(positionMiniRate)
-    })
-  },[curPair])
 
   return (
     <Row className="main-block data-panel-container">
@@ -97,17 +36,16 @@ function DataPanel() {
           setIsModalVisible(true);
         }}
       >
-        <span>{contractState.curPair.name}</span>
+        <span>ETH/USDT</span>
         <RightOutlined />
       </Col>
       <Col flex="100%">
         <Row justify={"space-between"} align="bottom">
           <Col>
             <Row className="trade-data">
-              <Col className={curPercent
-              < 0 ? 'main-red' : 'main-green'}>{curPrice}</Col>
+              <Col>1234.56</Col>
               <Col>
-                <span>{amountFormt(contractState.curPair.percent, 0,true, "--",2)}%</span>
+                <span>+9999.8%</span>
               </Col>
             </Row>
           </Col>
@@ -130,7 +68,7 @@ function DataPanel() {
                     trigger="hover"
                   >
                     <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />
-                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",-8)}%</span>
+                    <span>: -0.1234%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
                 </Space>
@@ -139,8 +77,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {(pmrRate.longPmrRate,2,true,"--", 2)}%/
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(pmrRate.shortPmrRate,2,true,"--", 2)}%
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> 0.01%/
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> 0.01%
                   </span>
                   <Popover
                     placement="bottom"
@@ -167,18 +105,14 @@ function DataPanel() {
       <Col flex="100%">
         <Row justify="end" className="time-radio">
           <Radio.Group
-            defaultValue={timeGap}
+            defaultValue={"15m"}
             options={timeOptions}
             optionType="button"
-            onChange={(e) => {
-              const {value} = e.target
-              setTimeGap(value)
-            }}
           />
         </Row>
       </Col>
       <Col flex="100%">
-        <Chart token={curPair.key} curPrice={curPrice} bar={timeGap}/>
+        <Chart />
       </Col>
       <Modal
         title={$t('Trade.OpenPosition.Market.Market')}
@@ -191,47 +125,72 @@ function DataPanel() {
         }}
       >
         <Row className="currency-list-wrapper">
-          {
-            tokenPairs.map((token, index) => {
-
-              const classCurNames = []
-
-              if(curTokenPair.key === token.key){
-                classCurNames.push("active")
-              }
-
-              if(!token.enable){
-                classCurNames.push("diable")
-              }
-
-              return (
-                <Col flex="100%" className={classCurNames.join(" ")} key={index}
-                onClick={() => {
-                  if(token.enable){
-                    dispatch(contractModel.actions.updateCurTokenPair(token))
-                  }
-
-                  setIsModalVisible(false)
-                }}
-                >
-                <Row justify="space-between" align="middle">
-                  <Col className="currency">{token.name}</Col>
-                  <Col>
-                    <div>{token.num}</div>
-                    <div>
-                      <Statistic
-                        className={classNames(
-                          (token.percent||0) > 0 ? "main-green" : "main-red "
-                        )}
-                        value={amountFormt(token.percent,0,true,"--",2)}
-                        suffix="%"
-                      />
-                    </div>
-                  </Col>
-                </Row>
-              </Col>)
-            })
-          }
+          <Col flex="100%" className="active">
+            <Row justify="space-between" align="middle">
+              <Col className="currency">BTC / USDT</Col>
+              <Col>
+                <div>2345.67</div>
+                <div>
+                  <Statistic
+                    className={classNames(
+                      -123.41 > 0 ? "main-green" : "main-red "
+                    )}
+                    value={Math.abs(-123.41)}
+                    prefix={-123.41 > 0 ? "+" : "-"}
+                    suffix="%"
+                  />
+                </div>
+              </Col>
+            </Row>
+          </Col>
+          <Col flex="100%">
+            <Row justify="space-between" align="middle">
+              <Col>ETH / USDT</Col>
+              <Col>
+                <div>2345.67</div>
+                <Statistic
+                  className={classNames(
+                    +123.41 > 0 ? "main-green" : "main-red "
+                  )}
+                  value={+123.41}
+                  prefix={+123.41 > 0 ? "+" : "-"}
+                  suffix="%"
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col flex="100%" className="diable">
+            <Row justify="space-between" align="middle">
+              <Col>BNB / USDT</Col>
+              <Col>
+                <div>2345.67</div>
+                <Statistic
+                  className={classNames(
+                    +123.41 > 0 ? "main-green" : "main-red "
+                  )}
+                  value={+123.41}
+                  prefix={+123.41 > 0 ? "+" : "-"}
+                  suffix="%"
+                />
+              </Col>
+            </Row>
+          </Col>
+          <Col flex="100%" className="diable">
+            <Row justify="space-between" align="middle">
+              <Col>UNI / USDT</Col>
+              <Col>
+                <div>2345.67</div>
+                <Statistic
+                  className={classNames(
+                    +123.41 > 0 ? "main-green" : "main-red "
+                  )}
+                  value={+123.41}
+                  prefix={+123.41 > 0 ? "+" : "-"}
+                  suffix="%"
+                />
+              </Col>
+            </Row>
+          </Col>
         </Row>
       </Modal>
     </Row>
