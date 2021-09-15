@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, Row, Col, Select, Modal, Popover, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { RootStore } from "@/store";
+import { RootStore } from "@/store/index";
 
 import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app/actions";
 import { FormattedMessage } from "react-intl";
@@ -35,7 +35,6 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
 ];
 
 function Tool() {
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
   const [network, setNetwork] = useState<Partial<ChainEnum|null>>();
@@ -43,8 +42,9 @@ function Tool() {
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
+  const [walletInfo, setWalletInfo] = useState<Partial<UserState>>();
 
-  const {selectedAddress, isLogin, isEthum, showWallet} = useSelector((state : RootStore) => state.user)
+  const state = useSelector((state : RootStore) => state)
 
   const dispatch = useDispatch();
 
@@ -52,15 +52,35 @@ function Tool() {
 
   const handelChangeIntl = useCallback((val: string) => {
     dispatch(changeLang(val));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const checkWallet = useCallback((newWallet = wallet) => {
+  const handlLoginWallet = useCallback(() => {
 
-    if(!newWallet){
+    dispatch( async (commit: Dispatch) => {
+      return await web3Utils.enable();
+    })
+
+  }, [])
+
+  const loadWallet = useCallback(() => {
+
+    asyncInitWallet().then(() => {
+      getWallet().then(walletInfo => {
+        setAccount(walletInfo.selectedAddress||"")
+        setWalletInfo(walletInfo)
+      })
+    })
+
+  }, [])
+
+  const checkWallet = useCallback(() => {
+
+    if(!wallet){
       return false
     }
 
-    const walletIsMetaMask = newWallet === WalletEnum.MetaMask;
+    const walletIsMetaMask = wallet === WalletEnum.MetaMask;
 
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
@@ -72,18 +92,14 @@ function Tool() {
     return true
   },[wallet])
 
-  const checkNetwork = useCallback((newNetWork = network) => {
+  const checkNetwork = useCallback(() => {
 
-    if(!isEthum){
-      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
-      return false;
-    }
 
-    if(!newNetWork){
+    if(!network){
       return false
     }
 
-    const networkIsMain = newNetWork?.chainId === mainChain.chainId;
+    const networkIsMain = network?.chainId === mainChain.chainId;
 
     if(!networkIsMain) {
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
@@ -93,27 +109,16 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[network]);
+  },[network])
 
-
-  const checkLogin = useCallback(() => {
+  useEffect(() => {
     if (checkNetwork() && checkWallet()) {
-      const loginWalletAction = userModel.actions.loginWallet();
-      loginWalletAction(dispatch).then(() => {
-        dispatch(userModel.actions.showWallet(false));
-      }).catch(e => console.error('loginWalletAction failed', e));
+      handlLoginWallet()
     }
-  }, [wallet, network, checkNetwork, checkWallet]);
+  }, [walletInfo, network,wallet]);
 
   useEffect(() => {
-    checkLogin();
-  }, [selectedAddress, network, wallet]);
-
-  useEffect(() => {
-
-    if(isLogin){
-      return;
-    }
+    loadWallet()
 
     window.onload = function () {
       window.ethereum.on('accountsChanged', function () {
@@ -129,17 +134,12 @@ function Tool() {
       });
     }
 
-    setTimeout(() =>     {
-      if(!isLogin){
-        dispatch(userModel.actions.loadWallet())
-      }
-    }, 3000);
-  }, [isLogin]);
+  }, []);
 
   return (
     <Row align={"middle"} className="tool">
       <Col style={{ marginRight: "10px" }}>
-        {isLogin ? (
+        {walletInfo && walletInfo.isLogin ? (
           <Popover
             content={<Account {...{ account: account, blance: blance }} />}
             trigger="hover"
@@ -150,14 +150,14 @@ function Tool() {
               icon={<IconFont size={14} type="icon-link" />}
               type="primary"
             >
-              {selectedAddress}
+              {walletInfo.selectedAddress}
             </Button>
           </Popover>
         ) : (
           <Button
             type="primary"
             onClick={() => {
-              dispatch(userModel.actions.showWallet());
+              setIsModalVisible(true);
             }}
             shape="round"
             icon={
@@ -193,15 +193,16 @@ function Tool() {
             </Space>
           </Option>
         </Select>
+        <span></span>
       </Col>
       <Modal
         title={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
         footer={null}
         getContainer={false}
         focusTriggerAfterClose={false}
-        visible={showWallet}
+        visible={isModalVisible}
         onCancel={() => {
-          dispatch(userModel.actions.showWallet(false));
+          setIsModalVisible(false);
         }}
       >
         <Row>
@@ -219,15 +220,14 @@ function Tool() {
                   className={classNames({ active: item.chainEnum?.chainId === network?.chainId })}
                   onClick={() => {
 
-                    let val = undefined;
                     if(item.chainEnum?.chainId === network?.chainId) {
-                      val = undefined;
+                      setNetwork(undefined)
                     }else{
-                      val = item.chainEnum;
+                      setNetwork(item.chainEnum);
                     }
 
-                    setNetwork(val);
-                    checkLogin();
+                    checkNetwork()
+
                   }}
                   key={i}
                 >
@@ -246,17 +246,11 @@ function Tool() {
               <Col
                 className={classNames({ active: wallet === WalletEnum.MetaMask })}
                 onClick={() => {
-
-                  let val = undefined;
                   if(wallet === WalletEnum.MetaMask) {
-                    val = undefined;
                     setWallet(undefined);
                   }else{
-                    val = WalletEnum.MetaMask;
+                    setWallet(WalletEnum.MetaMask);
                   }
-
-                  setWallet(val);
-                  checkLogin();
                 }}
               >
                 <IconFont size={18} type="icon-Group-" />
@@ -269,7 +263,6 @@ function Tool() {
       </Modal>
       <Transfer
         visible={transferShow}
-        closeModal={() => dispatch(showTransfer(false, operateType))}
         operateType={operateType}
         onCancel={() => dispatch(showTransfer(false, operateType))}
       />

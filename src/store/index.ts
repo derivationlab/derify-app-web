@@ -8,19 +8,10 @@ import {
 import thunkMiddleware from "redux-thunk";
 import appReducer, { AppState } from "./modules/app/reducers";
 
-import UserModel,{UserState} from "./modules/user";
-import BrokerModel,{BrokerState} from "./modules/broker";
-import DataModel,{DataState} from "./modules/data";
-import RewardModel,{RewardState} from "./modules/reward";
-
-import ContractModel,{ContractState} from "@/store/modules/contract";
+import userModel,{reducers as userReducers, UserState} from "./modules/user";
 export interface RootStore {
   app: AppState
   user: UserState
-  contract: ContractState
-  broker: BrokerState,
-  data: DataState,
-  reward: RewardState
 }
 
 const composeEnhancers =
@@ -39,19 +30,12 @@ if (process.env.NODE_ENV === "development") {
 
 const rootStote  = {
   app: appReducer,
-  user: UserModel.reducers,
-  contract: ContractModel.reducers,
-  broker: BrokerModel.reducers,
-  reward: RewardModel.reducers
+  user: userReducers
 };
 
 const store = createStore(
   combineReducers(rootStote),
   composeEnhancers(applyMiddleware(...middlewares))
 );
-
-export {
-  ContractModel,UserModel,BrokerModel,DataModel,RewardModel
-}
 
 export default store;

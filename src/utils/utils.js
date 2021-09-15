@@ -1,17 +1,17 @@
 
 /* eslint-disable */
-export function dateFormat  (date, fmt) {
+Date.prototype.Format = function (fmt) {
   var o = {
-    'M+': date.getMonth() + 1, // month
-    'd+': date.getDate(), // day
-    'h+': date.getHours(), // hour
-    'm+': date.getMinutes(), // min
-    's+': date.getSeconds(), // sec
-    'q+': Math.floor((date.getMonth() + 3) / 3), // quarter
-    S: date.getMilliseconds(), // ms
-    W: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][date.getDay()]
+    'M+': this.getMonth() + 1, // month
+    'd+': this.getDate(), // day
+    'h+': this.getHours(), // hour
+    'm+': this.getMinutes(), // min
+    's+': this.getSeconds(), // sec
+    'q+': Math.floor((this.getMonth() + 3) / 3), // quarter
+    S: this.getMilliseconds(), // ms
+    W: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'][this.getDay()]
   }
-  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
   for (var k in o) { if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length))) }
   return fmt
 }
@@ -52,37 +52,4 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
   }
 
   return num
-}
-
-/**
- * number validate
- * @param value {string}
- * @param maxNum {number}
- * @param minNum {number}
- * @param allowMin {boolean}
- * @returns {{success: boolean, value: string|null}}
- */
-export function checkNumber(value, maxNum= Infinity, minNum = 0, allowMin = false){
-  if(/^(\d+(.\d*)?)?$/.test(value)){
-    let size = parseFloat(value)
-
-    if(size > maxNum){
-      value = maxNum.toString()
-    }
-
-    // if(allowMin && size < minNum){
-    //   value = minNum.toString();
-    // }
-
-    const retValue = value.replace(/[^0-9.]/g,'')
-
-
-    if(size <= minNum) {
-      return {success: size === minNum && allowMin, value: retValue}
-    }else{
-      return {success: true, value: retValue}
-    }
-  }
-
-  return {success: true, value: null}
 }

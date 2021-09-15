@@ -112,6 +112,7 @@ export function get (url, params) {
       params: params
     })
       .then(res => {
+        console.log(`axios get ${res}`)
         resolve(res.data)
       })
       .catch(err => {

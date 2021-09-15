@@ -1,14 +1,12 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Modal, Row, Col, Table, Pagination} from "antd";
+import React, {useEffect, useState} from "react";
+import { Modal, Row, Col, Table } from "antd";
 import { ModalProps } from "antd/es/modal";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import contractModel from "@/store/modules/contract"
 import {getTradeBalanceDetail, TradeBalanceDetail} from "@/api/trade";
 import {useIntl} from "react-intl";
-import {amountFormt, dateFormat, fck} from "@/utils/utils";
-import {Pagenation} from "@/api/types";
-import classNames from "classnames";
+import {fck} from "@/utils/utils";
 
 interface FundDetailsProps extends ModalProps {}
 
@@ -28,6 +26,7 @@ const feeTypeMap:{[key:number]:string} = {
 const FundDetails: React.FC<FundDetailsProps> = props => {
 
   const walletInfo = useSelector((state:RootStore) => state.user);
+  const [dataSource,setDataSource] = useState<TradeBalanceDetail[]>([])
 
   const {formatMessage} = useIntl()
 
@@ -50,11 +49,7 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
       title: intl('Trade.Account.FinanceDetail.Amount'),
       dataIndex: "amount",
       key: "amount",
-      render: (amount:string) => (
-        <div>
-          <div className={classNames(parseFloat(amount) > 0 ? "main-green":"main-red")}>{amountFormt(amount, 2,true, "--")}</div>
-        </div>
-      )
+      render: (amount:string) => fck(amount, 0, 2)
     },
     {
       title: intl('Trade.Account.FinanceDetail.Balance'),
@@ -66,55 +61,34 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
       title: intl('Trade.Account.FinanceDetail.Time'),
       dataIndex: "event_time",
       key: "event_time",
-      render: (event_time:string) => dateFormat(new Date(event_time),"yyyy-MM-dd hh:mm:ss")
+      render: (event_time:string) => {{new Date(event_time).Format("yyyy-MM-dd hh:mm:ss")}}
     },
   ];
 
   const dispatch = useDispatch()
-  const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
-  const [loading,setLoading] = useState(true);
-
 
   useEffect(() => {
 
-    if(!walletInfo.selectedAddress && !props.visible) {
+    if(!walletInfo.selectedAddress) {
       return
     }
 
-    setLoading(true);
-    getTradeBalanceDetail(walletInfo.selectedAddress, pagenation.current, pagenation.pageSize).then((pagenation) => {
-      setPagenation(pagenation);
+    getTradeBalanceDetail(walletInfo.selectedAddress, 0, 50).then((data:TradeBalanceDetail[]) => {
+      if(data.length > 0){
+        data.forEach(item => dataSource.push(item))
+      }
     }).catch(e => {
       console.log(`getTradeList ${e}`)
-    }).finally(() => {
-      setLoading(false);
-    });
+    })
 
-  },[walletInfo.selectedAddress,props.visible,pagenation.current, pagenation.pageSize]);
-
-
-  const onPageChange = useCallback((pageNum, pageSize) => {
-    pagenation.current = pageNum;
-    if(pageSize){
-      pagenation.pageSize = pageSize;
-    }
-    setPagenation(pagenation);
-  },[]);
+  },[walletInfo])
 
   return (
-    <Modal {...props} title={intl("Trade.Account.MarginAccount.BalanceHistory")} width={600} footer={null}>
-      <Row style={{ width: "100%" }}>
-        <Col flex="100%">
-          <Table loading={loading} dataSource={pagenation.records} columns={columns} pagination={false} />
-        </Col>
-        {
-          pagenation.totalItems > 1 ? (<Col flex="100%">
-            <Row justify="center">
-              <Pagination pageSize={pagenation.pageSize} onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalItems} showSizeChanger={false} />
-            </Row>
-          </Col>) : <></>
-        }
-      </Row>
+    <Modal {...props} title={"资金明细"} width={400} footer={null}>
+      <Col flex="100%">
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
+      </Col>
+      <Row style={{ width: "100%" }}></Row>
     </Modal>
   );
 };

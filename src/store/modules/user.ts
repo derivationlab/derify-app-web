@@ -179,13 +179,13 @@ export async function getWallet() : Promise<UserState>{
 }
 
 export const reducers = createReducer(state, {
-  'user/setShowWallet': (state, {payload}) => {
+  setShowWallet (state, showWallet) {
     return update(state, {
-      showWallet: {$set: payload}
+      showWallet: {$set: showWallet}
     })
   },
-  'user/updateState': (state, {payload})=>{
-    return update(state, {$merge: payload})
+  updateState (state, {payload}) {
+    return update(state, {$set: payload})
   }
 });
 
@@ -198,7 +198,7 @@ const actions = {
       }
 
       const balanceOf = await web3Utils.contract(trader).balanceOf(trader, token)
-      commit({type: 'user/updateState', payload: {balanceOfDUSD: balanceOf}})
+      commit({type: 'updateState', payload: {balanceOfDUSD: balanceOf}})
       return balanceOf;
     };
   },
@@ -208,15 +208,8 @@ const actions = {
 
       const walletInfo = await getWallet()
 
-      commit({type: "user/updateState", payload: walletInfo})
+      commit({type: "updateState", payload: {...walletInfo}})
       return walletInfo
-    }
-  },
-
-  showWallet(show:boolean = true) {
-    return async(commit: Dispatch) => {
-      commit({type: "user/setShowWallet", payload: show})
-      return true;
     }
   },
 
