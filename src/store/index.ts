@@ -2,16 +2,16 @@ import {
   createStore,
   applyMiddleware,
   compose,
-  combineReducers,
+  combineReducers, Dispatch,
 } from "redux";
 
 import thunkMiddleware from "redux-thunk";
 import appReducer, { AppState } from "./modules/app/reducers";
 
-import {reducers as userReducers} from "./modules/user";
+import userModel,{reducers as userReducers, UserState} from "./modules/user";
 export interface RootStore {
   app: AppState
-  user: any
+  user: UserState
 }
 
 const composeEnhancers =

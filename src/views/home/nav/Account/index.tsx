@@ -1,23 +1,29 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
 import { Row, Col, Button } from "antd";
 import FundsDetails from "./FundsDetail";
-import Transfer,{OperateType}from "@/views/CommonViews/Transfer";
+import Transfer from "@/views/CommonViews/Transfer";
+
+import {TransferOperateType} from "@/utils/types";
+
 import {FormattedMessage} from "react-intl";
 import * as web3Utils from "@/utils/web3Utils";
 import {amountFormt, fck} from "@/utils/utils";
 import {Token} from "@/utils/contractUtil";
 import {createTokenPriceChangeEvenet} from "@/api/trade";
 import {TraderAccount} from "@/utils/types";
+import {Dispatch} from "redux";
+import {useDispatch} from "react-redux";
+import {showTransfer,showFundsDetail} from "@/store/modules/app/actions";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,
   blance,
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [operateType,setType] = useState<Partial<OperateType>>()
   const [traderAccount, setTraderAccount] = useState<Partial<TraderAccount>>();
   const [spotPrice, setSpotPrice] = useState<Partial<number>>();
   const [priceRate, setPriceRate] = useState<Partial<number>>();
+
+  const dispatch = useDispatch();
 
   const contract = web3Utils.contract(account);
 
@@ -55,7 +61,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
         <Row justify="space-between">
           <Col><FormattedMessage id="Trade.Account.MarginAccount.MarginAccount"/></Col>
           <Col>
-            <Button type="link" onClick={() => setIsModalVisible(true)}>
+            <Button type="link" onClick={() => dispatch(showFundsDetail(true))}>
               <FormattedMessage id="Trade.Account.MarginAccount.BalanceHistory"/>
             </Button>
             <Button type="link">
@@ -111,8 +117,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
               block
               type="ghost"
               onClick={() => {
-                setModalVisible(true);
-                setType(OperateType.withdraw)
+                dispatch(showTransfer(true, TransferOperateType.withdraw))
               }}
             >
               <FormattedMessage id="Trade.Account.MarginAccount.Withdraw"/>
@@ -123,8 +128,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
               block
               type="primary"
               onClick={() => {
-                setModalVisible(true);
-                setType(OperateType.deposit)
+                dispatch(showTransfer(true, TransferOperateType.deposit))
               }}
             >
               <FormattedMessage id="Trade.Account.MarginAccount.Deposit"/>
@@ -132,15 +136,6 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           </Col>
         </Row>
       </Col>
-      <FundsDetails
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-      />
-      <Transfer
-        visible={modalVisible}
-        operateType={operateType}
-        onCancel={() => setModalVisible(false)}
-      />
     </Row>
   );
 };

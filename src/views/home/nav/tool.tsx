@@ -3,7 +3,7 @@ import { Button, Row, Col, Select, Modal, Popover, Space } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "@/store/index";
 
-import { changeLang } from "@/store/modules/app/actions";
+import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app/actions";
 import { FormattedMessage } from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
@@ -17,9 +17,13 @@ import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import classNames from "classnames";
 import * as web3Utils from '@/utils/web3Utils'
-import {asyncInitWallet, ChainEnum, getWallet, mainChain, UserState, WalletEnum} from "@/store/modules/user";
+import userModel, {asyncInitWallet, ChainEnum, getWallet, mainChain, UserState, WalletEnum} from "@/store/modules/user";
 import {fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
+import Transfer from "@/views/CommonViews/Transfer";
+import {TransferOperateType} from "@/utils/types";
+import {Dispatch} from "redux";
+import FundsDetails from "@/views/home/nav/Account/FundsDetail";
 
 const { Option } = Select;
 
@@ -33,15 +37,18 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
 function Tool() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
-
   const [network, setNetwork] = useState<Partial<ChainEnum|null>>();
   const [wallet, setWallet] = useState<Partial<string|null>>();
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
   const [walletInfo, setWalletInfo] = useState<Partial<UserState>>();
+
+  const state = useSelector((state : RootStore) => state)
+
   const dispatch = useDispatch();
 
+  const {transferShow, operateType, fundsDetailShow} = useSelector((state : RootStore) => state.app);
 
   const handelChangeIntl = useCallback((val: string) => {
     dispatch(changeLang(val));
@@ -50,10 +57,9 @@ function Tool() {
 
   const handlLoginWallet = useCallback(() => {
 
-    web3Utils.enable().then( res => {
-      setIsModalVisible(false)
-      loadWallet()
-    });
+    dispatch( async (commit: Dispatch) => {
+      return await web3Utils.enable();
+    })
 
   }, [])
 
@@ -116,14 +122,14 @@ function Tool() {
 
     window.onload = function () {
       window.ethereum.on('accountsChanged', function () {
-        loadWallet()
+        dispatch(userModel.actions.loadWallet())
       })
 
       window.ethereum.on('chainChanged', function () {
-        loadWallet()
+        dispatch(userModel.actions.loadWallet())
       })
 
-      window.addEventListener('ethereum#initialized', loadWallet, {
+      window.addEventListener('ethereum#initialized', () => dispatch(userModel.actions.loadWallet()), {
         once: true,
       });
     }
@@ -255,6 +261,16 @@ function Tool() {
           </Col>
         </Row>
       </Modal>
+      <Transfer
+        visible={transferShow}
+        operateType={operateType}
+        onCancel={() => dispatch(showTransfer(false, operateType))}
+      />
+
+      <FundsDetails
+        visible={fundsDetailShow}
+        onCancel={() => dispatch(showFundsDetail(false))}
+      />
     </Row>
   );
 }
