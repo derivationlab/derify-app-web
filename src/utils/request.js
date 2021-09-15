@@ -28,8 +28,6 @@ axios.interceptors.request.use(
   config => {
     // Before each request is sent, determine whether there is a token. If it exists, the token will be added to the header of the http request. There is no need to manually add it for each request.
     // Even if there is a token locally, it is possible that the token is expired, so the return status should be judged in the response interceptor
-    const token = store.state.token
-    token && (config.headers.Authorization = token)
     return config
   },
   error => {
@@ -47,6 +45,8 @@ axios.interceptors.response.use(
   },
   // When the server status code is not 200
   error => {
+    console.error(`axios onReject ${error}`)
+
     if (error.response.status) {
       switch (error.response.status) {
         // 401: Not logged in
@@ -112,9 +112,11 @@ export function get (url, params) {
       params: params
     })
       .then(res => {
+        console.log(`axios get ${res}`)
         resolve(res.data)
       })
       .catch(err => {
+        console.error(`axios get ${err}`)
         reject(err.data)
       })
   })

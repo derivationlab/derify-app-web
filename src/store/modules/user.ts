@@ -161,7 +161,7 @@ export async function getWallet() : Promise<UserState>{
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = "1223";//await getBrokerIdByTrader(wethereum.selectedAddress)
+  const brokerId = await getBrokerIdByTrader(wethereum.selectedAddress)
 
   return {
     selectedAddress: wethereum.selectedAddress,
@@ -184,17 +184,8 @@ export const reducers = createReducer(state, {
       showWallet: {$set: showWallet}
     })
   },
-  updateProcessStatus (state, {status = UserProcessStatus.finished, msg = ''}) {
-    state.processStatus = status
-    state.processStatusMsg = msg
-
-    return update(state, {
-      processStatus: {$set: status},
-      processStatusMsg: {$set: msg}
-    })
-  },
-  updateState (state, updates) {
-    return update(state, {...updates})
+  updateState (state, {payload}) {
+    return update(state, {$set: payload})
   }
 });
 
@@ -211,6 +202,23 @@ const actions = {
       return balanceOf;
     };
   },
+  loadWallet() {
+    return async(commit: Dispatch) => {
+      const initRes = await asyncInitWallet()
+
+      const walletInfo = await getWallet()
+
+      commit({type: "updateState", payload: {...walletInfo}})
+      return walletInfo
+    }
+  },
+
+  loginWallet () {
+    return async (commit: Dispatch) => {
+      return await web3Utils.enable();
+    }
+  }
+
 }
 
 export default {
