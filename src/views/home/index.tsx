@@ -11,15 +11,21 @@ import "./index.less";
 interface HomeProps extends RouteProps {}
 
 const Home: React.FC<HomeProps> = props => {
-  const isBind: boolean = useSelector(
-    (state: RootStore) => state.app.isBindPartners
+  const isBind: boolean | undefined = useSelector(
+    (state: RootStore) => state.user.hasBroker
   );
+
   const { routes, history, location } = props;
 
   useEffect(() => {
+    if(isBind === undefined){
+      return
+    }
     //check bind
     if (!isBind) {
       history.push("/home/partners/bind");
+    }else{
+      history.push("/home/trade");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

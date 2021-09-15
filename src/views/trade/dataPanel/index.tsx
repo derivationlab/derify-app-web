@@ -4,7 +4,7 @@ import { Row, Col, Radio, Space, Modal, Statistic, Popover } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 
 import Chart from "./chart";
-import { FormattedMessage } from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import classNames from "classnames";
 
 const timeOptions: Array<{ label: string; value: string }> = [
@@ -19,6 +19,13 @@ const timeOptions: Array<{ label: string; value: string }> = [
 ];
 function DataPanel() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const {formatMessage} = useIntl()
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl
 
   return (
     <Row className="main-block data-panel-container">
@@ -51,16 +58,16 @@ function DataPanel() {
                     content={
                       <Row>
                         <Col className="title" flex="100%">
-                          动仓费率：
+                          {intl("Trade.OpenPosition.Hint.PCFRate")}
                         </Col>
                         <Col>
-                          系统对扩大裸头寸的仓位变动（开仓/平仓）行为进行惩罚，对减少裸头寸的仓位变动行为进行奖励。该值为正，则代表开多/平空需要支付动仓费，开空/平多可以获得动仓费；该值为负，则代表开空/平多需要支付动仓费，开多/平空可以获得动仓费。
+                          {intl("Trade.OpenPosition.Hint.PCFRateDetail")}
                         </Col>
                       </Row>
                     }
                     trigger="hover"
                   >
-                    <FormattedMessage id="trade.pcf.rate" />
+                    <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />
                     <span>: -0.1234%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
@@ -68,20 +75,20 @@ function DataPanel() {
               </Col>
               <Col flex="100%">
                 <Space size={4}>
-                  持仓挖矿奖励
+                  {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-red">多</span> 0.01%/
-                    <span className="main-green">空</span> 0.01%
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> 0.01%/
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> 0.01%
                   </span>
                   <Popover
                     placement="bottom"
                     content={
                       <Row>
                         <Col className="title" flex="100%">
-                          持仓挖矿收益率：
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPY') }
                         </Col>
                         <Col>
-                          仓位杠杆越高，持仓挖矿的收益率越高。挖矿规则。
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail') }
                         </Col>
                       </Row>
                     }
@@ -108,7 +115,7 @@ function DataPanel() {
         <Chart />
       </Col>
       <Modal
-        title={"市场"}
+        title={$t('Trade.OpenPosition.Market.Market')}
         footer={null}
         getContainer={false}
         focusTriggerAfterClose={false}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Row, Col, Select, Button, Slider, Input } from "antd";
-import { FormattedMessage } from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 
 import Transfers from "@/views/CommonViews/Transfer";
 import ComModal from "./comModal";
@@ -21,6 +21,15 @@ function Operation() {
   const [modalVisible, setModalVisible] = useState(false);
   const [openType, setOpenType] = useState<OpenType>("trade.modal.buy");
   const [rate, setRate] = useState<RateType>("10");
+
+  const {formatMessage} = useIntl()
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl
+
   return (
     <Row className="main-block operation-container">
       <Col flex="100%">
@@ -32,10 +41,10 @@ function Operation() {
               style={{ width: "100%" }}
             >
               <Option value="market">
-                <FormattedMessage id="trade.market" />
+                <FormattedMessage id="Trade.OpenPosition.OpenPage.Market" />
               </Option>
               <Option value="fixed1">
-                <FormattedMessage id="trade.limit" />
+                <FormattedMessage id="Trade.OpenPosition.OpenPage.Limit" />
               </Option>
             </Select>
           </Col>
@@ -58,7 +67,7 @@ function Operation() {
       <Col flex="100%">
         <Row gutter={[0, 10]}>
           <Col flex="100%">
-            <FormattedMessage id="trade.price" />
+            <FormattedMessage id="Trade.OpenPosition.OpenPage.Price" />
           </Col>
           <Col flex="100%">
             <Button
@@ -67,7 +76,7 @@ function Operation() {
               style={{ width: "100%" }}
               size={"large"}
             >
-              <FormattedMessage id="trade.market.price" />
+              <FormattedMessage id="Trade.OpenPosition.OpenPage.MarketPrice" />
             </Button>
           </Col>
         </Row>
@@ -77,17 +86,17 @@ function Operation() {
           <Col flex="100%">
             <Row justify={"space-between"} align={"middle"}>
               <Col>
-                <FormattedMessage id="trade.amount" />
+                <FormattedMessage id="Trade.OpenPosition.OpenPage.Amount" />
               </Col>
               <Col>
                 <Row gutter={2} align={"middle"}>
                   <Col>
-                    <FormattedMessage id="trade.max" />
+                    <FormattedMessage id="Trade.OpenPosition.OpenPage.Max" />
                     ：2.00000000 ETH
                   </Col>
                   <Col>
                     <Button type="link" onClick={() => setModalVisible(true)}>
-                      <FormattedMessage id="trade.transfer" />
+                      <FormattedMessage id="Trade.OpenPosition.OpenPage.Transfer" />
                     </Button>
                   </Col>
                 </Row>
@@ -113,7 +122,7 @@ function Operation() {
             setOpenType("trade.modal.buy");
           }}
         >
-          <FormattedMessage id="trade.buy" />
+          <FormattedMessage id="Trade.OpenPosition.OpenPage.BuyLong" />
         </Button>
       </Col>
       <Col flex="100%">
@@ -128,7 +137,7 @@ function Operation() {
             setOpenType("trade.modal.sell");
           }}
         >
-          <FormattedMessage id="trade.sell" />
+          <FormattedMessage id="Trade.OpenPosition.OpenPage.SellShort" />
         </Button>
       </Col>
       <Col flex="100%">
@@ -142,7 +151,7 @@ function Operation() {
             setOpenType("trade.two.way");
           }}
         >
-          <FormattedMessage id="trade.two.way" />
+          <FormattedMessage id="Trade.OpenPosition.OpenPage.TwoWay" />
         </Button>
       </Col>
       <ComModal
