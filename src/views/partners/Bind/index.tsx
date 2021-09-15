@@ -1,25 +1,62 @@
 import React, { useState } from "react";
 import { Row, Col, Button, Space, Input, Tabs, message } from "antd";
-import { useDispatch } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { bindPartners } from "@/store/modules/app/actions";
 import PartnersList, { Partners } from "./PartnersList";
 import { RouteProps } from "@/router/types";
+import {useIntl} from "react-intl";
+import {RootStore} from "@/store";
+import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
+import {Dispatch} from "redux";
 
 interface BindProps extends RouteProps {}
 const { TabPane } = Tabs;
 
 const Bind: React.FC<BindProps> = props => {
   const { history } = props;
+  const walletInfo = useSelector((state:RootStore) => state.user);
   const dispatch = useDispatch();
   const [tabsIndex, setTabsIndex] = useState("1");
   const [partners, setPartners] = useState<Partial<Partners>>();
-  const submit = () => {
-    if (!partners) {
-      message.error("绑定失败");
+  const [brokerId, setBrokerId] = useState<Partial<string>>();
+
+  const {formatMessage} = useIntl()
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const doBindBroker = async(dispatch:Dispatch) => {
+    if(!walletInfo.selectedAddress) {
+      message.error('no login');
       return false
     }
-    dispatch(bindPartners(true))
-    history.push("home/partners/main");
+
+    if (!partners) {
+      message.error('error partners');
+      return false
+    }
+
+    if(!brokerId) {
+      message.error(intl('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'));
+      return false
+    }
+
+    const brokerInfoRes =  await getBrokerByBrokerId(brokerId)
+    if(brokerInfoRes == null || brokerInfoRes.broker == null){
+      message.error(intl('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'));
+      return false
+    }
+
+    const trader = walletInfo.selectedAddress;
+
+    const data = await bindBroker({trader, brokerId})
+
+    if(data.success) {
+      history.push("/home/trade")
+    }else{
+      message.error(data.msg);
+    }
   };
   const tabsChange = () => {
     setTabsIndex(val => {
@@ -31,15 +68,18 @@ const Bind: React.FC<BindProps> = props => {
   };
   return (
     <Row className="bind-partners-container main-block">
-      <Col className="title margin-b-l">新增经纪商</Col>
+      <Col className="title margin-b-l">{intl('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')}</Col>
       <Col flex="100%" className="main-wrapper">
         <Tabs activeKey={tabsIndex} className="margin-b-l">
           <TabPane tab="" key="1">
             <Row align="middle">
               <Space size={24}>
-                <Col className="main-white">邀请码</Col>
+                <Col className="main-white">{intl('Trade.BrokerBind.BrokerCodes.BrokerCode')}</Col>
                 <Col>
-                  <Input placeholder="请输入邀请码" size="large" />
+                  <Input placeholder="" onChange={(e) => {
+                    const {value} = e.target
+                    setBrokerId(value)
+                  }} size="large" />
                 </Col>
               </Space>
             </Row>
@@ -53,13 +93,13 @@ const Bind: React.FC<BindProps> = props => {
             <Row>
               <Space size={24}>
                 <Col>
-                  <Button type="primary" onClick={submit}>
-                    提交
+                  <Button type="primary" onClick={() => dispatch(doBindBroker)}>
+                    {intl("Trade.BrokerBind.BrokerCodes.Submit")}
                   </Button>
                 </Col>
                 <Col>
                   <Button type="link" onClick={tabsChange}>
-                    {tabsIndex === "2" ? "我有邀请码..." : "还没有邀请码..."}
+                    {tabsIndex === "2" ? "I have a code ..." : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
                   </Button>
                 </Col>
               </Space>
