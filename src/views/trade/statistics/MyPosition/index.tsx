@@ -77,9 +77,15 @@ const MyPosition: React.FC = () => {
   const okCb = () => {};
   const cancelCb = () => {};
 
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl
+
   const columns: ColumnsType<MyPositionType> = [
     {
-      title: "仓位",
+      title: intl("Trade.MyPosition.List.PositionHeld"),
       dataIndex: "type",
       width: 110,
       key: "type",
@@ -99,17 +105,16 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                浮动盈亏：
+                {$t("Trade.MyPosition.Hint.UnrealizedPnL")}
               </Col>
-              <Col>您当前仓位的未实现盈亏金额。</Col>
-              <Col>多仓浮动盈亏 = (当前价格 - 开仓均价) * 持仓量。</Col>
-              <Col>空仓浮动盈亏 = (开仓均价 - 当前价格) * 持仓量。</Col>
+              <Col>{$t("Trade.MyPosition.Hint.UnrealizedPnLDetail1")}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.UnrealizedPnLDetail2")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            浮动盈亏
+            {$t("Trade.MyPosition.List.UnrealizedPnL")}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -137,15 +142,15 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.position.held" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.PositionHeld" })}：
               </Col>
-              <Col>持有此合约的数量</Col>
+              <Col>{$t("Trade.MyPosition.Hint.PositionHeldDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.position.held" })}
+            {formatMessage({ id: "Trade.MyPosition.List.PositionHeld" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -166,15 +171,15 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.average.price" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.AveragePrice" })}：
               </Col>
-              <Col>此仓位的开仓平均价格。</Col>
+              <Col>{$t("Trade.MyPosition.Hint.AveragePriceDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.average.price" })}
+            {formatMessage({ id: "Trade.MyPosition.List.AveragePrice" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -195,15 +200,15 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.margin" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.PositionMargin" })}：
               </Col>
-              <Col>此仓位的持仓占用保证金金额。</Col>
+              <Col>{$t("Trade.MyPosition.Hint.PositionMarginDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.margin" })}
+            {formatMessage({ id: "Trade.MyPosition.List.Margin" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -224,16 +229,15 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.risk" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}：
               </Col>
-              <Col>保证金比例越小，仓位的风险越小。</Col>
-              <Col>当保证金率为99%时仓位将被强平。</Col>
+              <Col>{$t("Trade.MyPosition.Hint.RiskDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.risk" })}
+            {formatMessage({ id: "Trade.MyPosition.List.Risk" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -249,21 +253,21 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.liq.price" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}：
               </Col>
-              <Col>触发强平时的价格。</Col>
+              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.liq.price" })}
+            {formatMessage({ id: "Trade.MyPosition.List.LiqPrice" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
       ),
-      dataIndex: "margin",
-      key: "margin",
+      dataIndex: "liq_price",
+      key: "liq_price",
       render: (_, record) => (
         <div>
           <div>{record.liq_price}</div>
@@ -277,30 +281,30 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "trade.take.profit" })}：</Col>
+              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}：</Col>
               <Col>
-                当价格达到止损设置的价格时，将自动平仓，此时仓位属于亏损状态，平仓防止继续亏损。
+                {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
               </Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.take.profit" })}
+            {formatMessage({ id: "Trade.MyPosition.List.TP" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
       ),
-      dataIndex: "margin",
-      key: "margin",
+      dataIndex: "tp",
+      key: "tp",
       render: (_, record) => (
         <Row onClick={()=>setModalVisible(true)}>
           <Col className="derify-pointer">
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div> 止盈{record.tp}</div>
-            <div>止损{record.sl}</div>
+            <div> {$t("Trade.MyPosition.List.TP")}{record.tp}</div>
+            <div> {$t("Trade.MyPosition.List.StopLoss")}{record.sl}</div>
           </Col>
         </Row>
       ),
@@ -310,7 +314,7 @@ const MyPosition: React.FC = () => {
       key: "operate",
       render: () => (
         <Button type="link" onClick={() => setIsModalVisible(true)}>
-          <FormattedMessage id="trade.close" />
+          <FormattedMessage id="Trade.MyPosition.List.Close" />
         </Button>
       ),
     },
@@ -321,7 +325,7 @@ const MyPosition: React.FC = () => {
         <Row justify="end">
           <Col>
             <Button type="link" onClick={closePosition}>
-              <FormattedMessage id="trade.one.click.close" />
+              <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
             </Button>
           </Col>
         </Row>
