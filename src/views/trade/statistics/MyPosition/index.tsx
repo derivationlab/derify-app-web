@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, { useCallback, useState } from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
 
@@ -8,125 +8,74 @@ import { MyPositionType } from "../type";
 import classNames from "classnames";
 import LongOrShort from "@/views/trade/LongOrShort";
 import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
-
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
-import contractModel, {ContractState, PositioData} from "@/store/modules/contract"
-import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
-import {Dispatch} from "redux";
-import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
-import {amountFormt, fck} from "@/utils/utils";
-import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
-
+const dataSource: MyPositionType[] = [
+  {
+    key: "1",
+    type: "USTD/ETH",
+    pnl_usdt: "+34.56",
+    pnl_usdt_type: "USTD",
+    pnl_usdt_percent: "12.3%",
+    power: 5,
+    ph: "1.23456789",
+    ph_type: "ETH",
+    aprice: "1234.56",
+    aprice_type: "USTD",
+    margin: "1234.56",
+    margin_type: "1234.56",
+    risk: "123%",
+    liq_price: "123.45",
+    liq_price_type: "USTD",
+    tp: "2323245445.67",
+    sl: "123.45",
+  },
+  {
+    key: "2",
+    type: "ETH/USDT",
+    pnl_usdt: "-34.56",
+    pnl_usdt_type: "USTD",
+    pnl_usdt_percent: "12.3%",
+    power: 8,
+    ph: "1.23456789",
+    ph_type: "ETH",
+    aprice: "1234.56",
+    aprice_type: "USTD",
+    margin: "1234.56",
+    margin_type: "1234.56",
+    risk: "123%",
+    liq_price: "123.45",
+    liq_price_type: "USTD",
+    tp: "2323245445.67",
+    sl: "123.45",
+  },
+];
 
 const MyPosition: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [dataSource, setDataSource] = useState<PositionView[]>([]);
-
-  const walletInfo = useSelector((state:RootStore) => state.user);
-
-  const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
-
-  const [showLoading, setShowLoading] = useState<boolean>(true);
-
-  const [clickedPostion, setClickedPostion] = useState<PositionView>();
-  const [clickedTPSLPostion, setClickedTPSLPostion] = useState<PositionView>();
-  const [showClosePosition, setShowClosePosition] = useState<boolean>(true);
-
-  const dispatch = useDispatch();
-
-  const getPairByAddress = (token:string) => {
-    const pair = tokenPairs.find((pair) => pair.address === token)
-    if(!pair){
-      return {name: 'unknown', key: 'unknown'}
-    }
-
-    return pair
-  }
-
-  const loadMyPositionData = useCallback(() => {
-
-    const trader = walletInfo.selectedAddress
-    if(!trader) {
-      return
-    }
-
-    setShowLoading(true);
-    const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
-
-    loadPositionDataAction(dispatch).then((rows) => {
-
-      if(!rows || rows.length < 1) {
-        return
-      }
-
-      const positions:PositionView[] = [];
-      rows.forEach(position => {
-
-        position.positionData?.positions.forEach((positionView:PositionView) => {
-          positionView.tx = "tx"+positions.length
-          positions.push(positionView)
-        })
-      })
-
-      setDataSource(positions)
-
-    }).catch(e => {
-      console.error(`loadPositionDataAction exception: ${e}`)
-    }).finally(() => setShowLoading(false))
-
-  }, [walletInfo])
-
-  useEffect(() => {
-    loadMyPositionData()
-  }, [loadMyPositionData])
-
-
-  const cancelCb = () => {};
-
-
-  const closeAllPosition = () => {
+  const { formatMessage } = useIntl();
+  const closePosition = useCallback(() => {
     Modal.confirm({
-      title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
+      title: formatMessage({ id: "trade.one.click.close" }),
       icon: null,
-      visible:showClosePosition,
       content: (
         <div>
           <p>
-            {$t("Trade.MyPosition.ClosePositionPopup.ClosePositionPopupInfo")}
-            {/*点击确定，我们将按 <span className="main-color">市价</span> 立即平仓{" "}*/}
-            {/*<span className="main-color">全部仓位</span>*/}
+            点击确定，我们将按 <span className="main-color">市价</span> 立即平仓{" "}
+            <span className="main-color">全部仓位</span>
           </p>
         </div>
       ),
-      okText: $t("Trade.MyPosition.ClosePositionPopup.Confirm"),
-      cancelText: $t("Trade.MyPosition.ClosePositionPopup.Cancel"),
-      onOk: () => {
-        const trader = walletInfo.selectedAddress;
-        const brokerId = walletInfo.brokerId;
-
-        if(!trader || !brokerId){
-          return
-        }
-
-        const closePositionAction = contractModel.actions.closeAllPositions(trader, brokerId);
-
-        DerifyTradeModal.pendding();
-        setShowClosePosition(false);
-        closePositionAction(dispatch).then(() =>{
-          DerifyTradeModal.success();
-        }).catch((e) => {
-          DerifyTradeModal.failed();
-          console.log('closePositionAction',e);
-        })
-      },
+      okText: "确定",
+      cancelText: "取消",
+      onOk: okCb,
       onCancel: cancelCb,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  };
+  }, []);
 
-  const { formatMessage } = useIntl();
+  const okCb = () => {};
+  const cancelCb = () => {};
 
   function intl(id:string) {
     return formatMessage({id})
@@ -134,7 +83,7 @@ const MyPosition: React.FC = () => {
 
   const $t = intl
 
-  const columns: ColumnsType<PositionView> = [
+  const columns: ColumnsType<MyPositionType> = [
     {
       title: intl("Trade.MyPosition.List.PositionHeld"),
       dataIndex: "type",
@@ -142,9 +91,9 @@ const MyPosition: React.FC = () => {
       key: "type",
       render: (_, record) => (
         <Row>
-          <Col className="main-white">{getPairByAddress(record.token).name}</Col>
+          <Col className="main-white">{record.type}</Col>
           <Col flex="100%">
-            <LongOrShort power={fromContractUnit(record.leverage)} value={record.side} />
+            <LongOrShort power={5} value={record.pnl_usdt} />
           </Col>
         </Row>
       ),
@@ -165,7 +114,7 @@ const MyPosition: React.FC = () => {
           trigger="hover"
         >
           <Space>
-            {$t("Trade.TradeHistory.List.RealizedPnL")}
+            {$t("Trade.MyPosition.List.UnrealizedPnL")}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -177,12 +126,12 @@ const MyPosition: React.FC = () => {
         <div>
           <div
             className={classNames(
-              record.unrealizedPnl < 0 ? "main-red" : "main-green"
+              record.pnl_usdt.indexOf("+") === -1 ? "main-red" : "main-green"
             )}
           >
-            {amountFormt(record.unrealizedPnl, 4,true,"--", -8)}(<span>{amountFormt(record.returnRate, 2,true, "--", -6)}%</span>)
+            {record.pnl_usdt}({record.pnl_usdt_percent})
           </div>
-          <div>USDT</div>
+          <div>{record.pnl_usdt_type}</div>
         </div>
       ),
     },
@@ -210,8 +159,8 @@ const MyPosition: React.FC = () => {
       key: "ph",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{fromContractUnit(record.size)}</div>
-          <div>{getPairByAddress(record.token).key}</div>
+          <div>{record.ph}</div>
+          <div>{record.ph_type}</div>
         </div>
       ),
     },
@@ -222,7 +171,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.AveragePrice" })}
+                {formatMessage({ id: "Trade.MyPosition.Hint.AveragePrice" })}：
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.AveragePriceDetail")}</Col>
             </Row>
@@ -239,8 +188,8 @@ const MyPosition: React.FC = () => {
       key: "aprice",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.averagePrice,4,false,"--", -8)}</div>
-          <div>USDT</div>
+          <div>{record.aprice}</div>
+          <div>{record.aprice_type}</div>
         </div>
       ),
     },
@@ -251,7 +200,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.PositionMargin" })}
+                {formatMessage({ id: "Trade.MyPosition.Hint.PositionMargin" })}：
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.PositionMarginDetail")}</Col>
             </Row>
@@ -268,8 +217,8 @@ const MyPosition: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.margin,4,false,"--",-8)}</div>
-          <div>USDT</div>
+          <div>{record.margin}</div>
+          <div>{record.margin_type}</div>
         </div>
       ),
     },
@@ -280,7 +229,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}
+                {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}：
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.RiskDetail")}</Col>
             </Row>
@@ -294,14 +243,8 @@ const MyPosition: React.FC = () => {
         </Popover>
       ),
 
-      dataIndex: "marginRate",
-      key: "marginRate",
-      render: (_, record) => (
-        <div>
-          <div className={"main-white"}>{amountFormt(record.marginRate,4,false,"--",-6)}</div>
-          <div>USDT</div>
-        </div>
-      ),
+      dataIndex: "risk",
+      key: "risk",
     },
     {
       title: (
@@ -310,7 +253,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}
+                {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}：
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail")}</Col>
             </Row>
@@ -327,8 +270,8 @@ const MyPosition: React.FC = () => {
       key: "liq_price",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.liquidatePrice, 4, true,"--",-8)}</div>
-          <div>USDT</div>
+          <div>{record.liq_price}</div>
+          <div>{record.liq_price_type}</div>
         </div>
       ),
     },
@@ -338,7 +281,7 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
+              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}：</Col>
               <Col>
                 {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
               </Col>
@@ -355,16 +298,13 @@ const MyPosition: React.FC = () => {
       dataIndex: "tp",
       key: "tp",
       render: (_, record) => (
-        <Row onClick={()=> {
-          setModalVisible(true)
-          setClickedTPSLPostion(record)
-        }}>
+        <Row onClick={()=>setModalVisible(true)}>
           <Col className="derify-pointer">
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}{fck(record.stopProfitPrice)}</div>
-            <div> {$t("Trade.MyPosition.List.StopLoss")}{fck(record.stopProfitPrice)}</div>
+            <div> {$t("Trade.MyPosition.List.TP")}{record.tp}</div>
+            <div> {$t("Trade.MyPosition.List.StopLoss")}{record.sl}</div>
           </Col>
         </Row>
       ),
@@ -372,39 +312,32 @@ const MyPosition: React.FC = () => {
     {
       dataIndex: "operate",
       key: "operate",
-      render: (_,record) => (
-        <Button type="link" onClick={() => {
-          setIsModalVisible(true)
-          setClickedPostion(record)
-        }}>
-          <FormattedMessage id="Trade.MyPosition.List.Close" />&gt;
+      render: () => (
+        <Button type="link" onClick={() => setIsModalVisible(true)}>
+          <FormattedMessage id="Trade.MyPosition.List.Close" />
         </Button>
       ),
     },
   ];
   return (
     <Row>
-      {
-        dataSource.length > 0 ? (<Col flex="100%" className="derify-trade-all-btn">
-          <Row justify="end">
-            <Col>
-              <Button  type="primary" size="small" onClick={closeAllPosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
-                <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
-              </Button>
-            </Col>
-          </Row>
-        </Col>):("")
-      }
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false} rowKey="tx" loading={showLoading}/>
+        <Row justify="end">
+          <Col>
+            <Button type="link" onClick={closePosition}>
+              <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
+            </Button>
+          </Col>
+        </Row>
+      </Col>
+      <Col flex="100%">
+        <Table dataSource={dataSource} columns={columns} pagination={false} />
       </Col>
       <CloseModal
-        position={clickedPostion}
         visible={isModalVisible}
-        closeModal={() => setIsModalVisible(false)}
         onCancel={() => setIsModalVisible(false)}
       />
-      <TPAndSLModal position={clickedTPSLPostion} closeModal={() => setModalVisible(false)}  visible={modalVisible} onCancel={() => setModalVisible(false)}/>
+      <TPAndSLModal  visible={modalVisible} onCancel={() => setModalVisible(false)}/>
     </Row>
   );
 };

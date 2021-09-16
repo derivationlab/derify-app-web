@@ -6,7 +6,6 @@ import { Row, Col, Tabs } from "antd";
 
 import MyPosition from "./MyPosition";
 import CurrentOrder from "./CurrentOrder";
-import TradeHistory from "@/views/trade/statistics/TradeHistory";
 const { TabPane } = Tabs;
 
 function Statistics() {
@@ -25,7 +24,7 @@ function Statistics() {
   return (
     <Row className="main-block statistics-container">
       <Col flex="100%">
-        <Tabs defaultActiveKey="1" onChange={callback} className="derify-trade-tab">
+        <Tabs defaultActiveKey="1" onChange={callback}>
           <TabPane tab={<FormattedMessage id="Trade.MyPosition.List.MyPosition" />} key="1">
             <MyPosition />
           </TabPane>
@@ -33,7 +32,7 @@ function Statistics() {
             <CurrentOrder/>
           </TabPane>
           <TabPane tab={<FormattedMessage id="Trade.TradeHistory.List.TradeHistory" />} key="3">
-            <TradeHistory/>
+            {/* <Table dataSource={dataSource} columns={columns} pagination={false}/> */}
           </TabPane>
         </Tabs>
       </Col>
