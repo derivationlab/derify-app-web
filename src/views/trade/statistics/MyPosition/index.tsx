@@ -53,21 +53,21 @@ const dataSource: MyPositionType[] = [
 const MyPosition: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const { formatMessage } = useIntl();
   const closePosition = useCallback(() => {
     Modal.confirm({
-      title: formatMessage({ id: "trade.one.click.close" }),
+      title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
       icon: null,
       content: (
         <div>
           <p>
-            点击确定，我们将按 <span className="main-color">市价</span> 立即平仓{" "}
-            <span className="main-color">全部仓位</span>
+            {$t("Trade.MyPosition.ClosePositionPopup.ClosePositionPopupInfo")}
+            {/*点击确定，我们将按 <span className="main-color">市价</span> 立即平仓{" "}*/}
+            {/*<span className="main-color">全部仓位</span>*/}
           </p>
         </div>
       ),
-      okText: "确定",
-      cancelText: "取消",
+      okText: $t("Trade.MyPosition.ClosePositionPopup.Confirm"),
+      cancelText: $t("Trade.MyPosition.ClosePositionPopup.Cancel"),
       onOk: okCb,
       onCancel: cancelCb,
     });
@@ -76,6 +76,7 @@ const MyPosition: React.FC = () => {
 
   const okCb = () => {};
   const cancelCb = () => {};
+  const { formatMessage } = useIntl();
 
   function intl(id:string) {
     return formatMessage({id})
@@ -171,7 +172,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.AveragePrice" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.AveragePrice" })}
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.AveragePriceDetail")}</Col>
             </Row>
@@ -200,7 +201,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.PositionMargin" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.PositionMargin" })}
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.PositionMarginDetail")}</Col>
             </Row>
@@ -229,7 +230,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.RiskDetail")}</Col>
             </Row>
@@ -253,7 +254,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail")}</Col>
             </Row>
@@ -281,7 +282,7 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}：</Col>
+              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
               <Col>
                 {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
               </Col>
