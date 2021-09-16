@@ -18,14 +18,20 @@ const dataSource = [
 function CurrentOrder() {
   const { formatMessage } = useIntl();
 
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl
+
   const columns: ColumnsType<any> = [
     {
-      title: "仓位",
+      title: $t("Trade.CurrentOrder.List.Volume"),
       dataIndex: "type",
       key: "type",
     },
     {
-      title: formatMessage({ id: "trade.current.order.type" }),
+      title: $t("Trade.CurrentOrder.List.Type"),
       dataIndex: "age",
       key: "age",
       width: 120,
@@ -37,18 +43,18 @@ function CurrentOrder() {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.current.order.price" })}：
+                {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderPrice" })}
               </Col>
               <Col>
                 {" "}
-                {formatMessage({ id: "trade.current.order.price.ep" })}
+                {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderPriceDetail" })}
               </Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.current.order.price" })}
+            {formatMessage({ id: "Trade.CurrentOrder.List.Price" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -63,23 +69,23 @@ function CurrentOrder() {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.current.order.volume" })}：
+                {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderVolume" })}
               </Col>
               <Col>
-                {formatMessage({ id: "trade.current.order.volume.ep" })}
+                {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderVolumeDetail" })}
               </Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.current.order.volume" })}
+            {formatMessage({ id: "Trade.CurrentOrder.List.Volume" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
       ),
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "size",
+      key: "size",
     },
     {
       title: (
@@ -88,15 +94,15 @@ function CurrentOrder() {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "trade.current.order.time" })}：
+                {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderTime" })}：
               </Col>
-              <Col> {formatMessage({ id: "trade.current.order.time.ep" })}</Col>
+              <Col> {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderTimeDetail" })}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "trade.current.order.time" })}
+            {formatMessage({ id: "Trade.CurrentOrder.List.Time" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -108,7 +114,7 @@ function CurrentOrder() {
       dataIndex: "operate",
       key: "operate",
       width: 100,
-      render: () => <Button type="link">取消委托</Button>,
+      render: () => <Button type="link">{$t("Trade.CurrentOrder.List.Cancel")}</Button>,
     },
   ];
 
