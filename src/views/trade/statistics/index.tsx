@@ -6,6 +6,7 @@ import { Row, Col, Tabs } from "antd";
 
 import MyPosition from "./MyPosition";
 import CurrentOrder from "./CurrentOrder";
+import TradeHistory from "@/views/trade/statistics/TradeHistory";
 const { TabPane } = Tabs;
 
 function Statistics() {
@@ -32,7 +33,7 @@ function Statistics() {
             <CurrentOrder/>
           </TabPane>
           <TabPane tab={<FormattedMessage id="Trade.TradeHistory.List.TradeHistory" />} key="3">
-            {/* <Table dataSource={dataSource} columns={columns} pagination={false}/> */}
+            <TradeHistory/>
           </TabPane>
         </Tabs>
       </Col>

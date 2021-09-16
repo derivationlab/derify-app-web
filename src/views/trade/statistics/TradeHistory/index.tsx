@@ -50,7 +50,7 @@ const dataSource: MyPositionType[] = [
   },
 ];
 
-const MyPosition: React.FC = () => {
+const TradeHistory: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const closePosition = useCallback(() => {
@@ -343,4 +343,4 @@ const MyPosition: React.FC = () => {
   );
 };
 
-export default MyPosition;
+export default TradeHistory;
