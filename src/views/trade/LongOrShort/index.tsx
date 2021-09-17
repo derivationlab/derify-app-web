@@ -1,27 +1,32 @@
 import React, { useEffect, useState ,memo} from "react";
 import classNames from "classnames";
 import "./index.less";
+import {SideEnum} from "@/utils/contractUtil";
+import {useIntl} from "react-intl";
 
 interface LongOrShortProps {
   power: number;
-  value: string;
+  value: SideEnum;
 }
 
-const initState = (val: string) => {
-  return val.indexOf("+")!==-1 ? "long" : "short";
-};
-
 const LongOrShort: React.FC<LongOrShortProps> = ({ value, power }) => {
-  const [val, setValue] = useState(initState(value));
+  const [val, setValue] = useState(value);
+
+  const { formatMessage } = useIntl();
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl
 
   useEffect(() => {
-    setValue(initState(value));
-
+    setValue(value);
   }, [value]);
-  
+
   return (
     <div className={classNames(["long-or-short", val])}>
-      <span>{(val === "long" && "多") || "空"}</span>
+      <span>{(val === SideEnum.LONG) ? $t("Trade.MyPosition.List.Long") : $t("Trade.MyPosition.List.Short")}</span>
       <span>{power + "x"}</span>
     </div>
   );

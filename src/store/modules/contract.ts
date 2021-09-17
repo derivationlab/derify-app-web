@@ -73,7 +73,15 @@ const state : ContractState = {
     {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
     {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
   ],
-  curPair: {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC},
+  get curPair () {
+    const pair = this.pairs.find(pair => pair.key == this.curPairKey)
+
+    if(pair === undefined) {
+      return this.pairs[0]
+    }
+
+    return pair
+  },
   curPairKey: 'BTC',
   contractData: {
     positionChangeFeeRatio: '-',
@@ -113,16 +121,16 @@ const reducers = createReducer(state, {
       state.pairs[oldItem.index] = Object.assign(oldItem.item, item)
     })
 
-    return update(state,{$set: state})
+    return update(state,{$merge: state})
   },
   SET_ACCOUNT (state : ContractState, {payload}) {
-    return update(state,{$set: payload.accountData})
+    return update(state,{$merge: payload.accountData})
   },
   SET_CURPAIRKEY (state : ContractState, {payload}) {
-    return update(state,{$set: payload.key})
+    return update(state,{$merge: payload.key})
   },
   SET_CURSPOTPRICE (state : ContractState, {payload}) {
-    return update(state,{$set: payload.curSpotPrice})
+    return update(state,{$merge: payload.curSpotPrice})
   },
   SET_CONTRACT_DATA (state : ContractState, payload) {
     return update(state,{
@@ -133,6 +141,7 @@ const reducers = createReducer(state, {
     return update(state,{$merge: payload})
   },
   RESET_POSITION_DATA (state : ContractState,{payload}) {
+    console.log(`RESET_POSITION_DATA ${state}`)
     state.positionData.positions.splice(0)
     state.positionData.orderPositions.splice(0)
 
@@ -143,7 +152,7 @@ const reducers = createReducer(state, {
   },
   ADD_POSITION_DATA (state : ContractState, {payload}) {
     if(!payload.positionData) {
-      return update(state,{})
+      return update(state,{$merge:{}})
     }
 
     if(payload.positionData.positions) {
@@ -189,7 +198,7 @@ const reducers = createReducer(state, {
       }
     }
 
-    return update(state,{$set: state})
+    return update(state,{$merge: state})
   }
 })
 
@@ -462,29 +471,33 @@ const actions = {
       return accountData
     }
   },
-  loadPositionData (trader:string) {
-    return async (commit:Dispatch) => {
-      if(!trader){
-        return {}
+  loadPositionData(trader:string):(commit:Dispatch) => Promise<{positionData:PositionDataView|null,pair: TokenPair|null}[]> {
+    return async (commit:Dispatch) : Promise<{positionData:PositionDataView|null,pair: TokenPair|null}[]> => {
+      if(!trader) {
+        return Promise.resolve([])
       }
+
 
       const contract = web3Utils.contract(trader)
 
-      const positionDatas = []
+      const positionDatas:{positionData:PositionDataView|null,pair: TokenPair|null}[] = []
       for(let idx = 0; idx < state.pairs.length; idx++) {
         const pairItem = state.pairs[idx]
         if(!pairItem.enable){
           continue
         }
 
-        positionDatas.push({positionData: await contract.getTraderAllPosition(trader, pairItem.address), pair: pairItem})
+        const positionDataView:PositionDataView = await contract.getTraderAllPosition(trader, pairItem.address);
+        const positionData:{positionData:PositionDataView|null,pair: TokenPair|null} = {positionData: positionDataView, pair: pairItem}
+        positionDatas.push(positionData)
       }
 
-      commit({type:'RESET_POSITION_DATA'})
+      //commit({type:'RESET_POSITION_DATA'})
       positionDatas.forEach((positionData) => {
-        commit({type:'ADD_POSITION_DATA', payload:{...positionData}})
+        //commit({type:'ADD_POSITION_DATA', payload:{...positionData}})
       })
 
+      return Promise.resolve(positionDatas)
     }
   },
   getTraderOpenUpperBound ({trader,openType, price, leverage}:{trader:string,openType:OpenType, price:string|number, leverage:number|string}) {

@@ -35,7 +35,9 @@ function DataPanel() {
 
   const $t = intl
 
-  const curPrice = fromContractUnit(contractState.curPair.num)
+  const curPrice = contractState.curPair.num||0
+
+
   const curPercent = contractState.curPair.percent || 0
   const pcRate = contractState.contractData.positionChangeFeeRatio || 0
 
@@ -50,7 +52,9 @@ function DataPanel() {
     }
 
     const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: Token.BTC,openType: OpenType.MarketOrder})
+
     dispatch(action)
+
   }, [walletInfo])
 
   useEffect(() => {
