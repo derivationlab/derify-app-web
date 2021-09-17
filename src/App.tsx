@@ -26,6 +26,11 @@ Date.prototype.Format = function (fmt) {
   return fmt
 }
 
+// asyncInitWallet().then(async () => {
+//   const walletInfo = await getWallet()
+//   store.dispatch({type: 'user/updateWalletInfo', walletInfo})
+// })
+
 export const App: React.FC = props => {
 
 

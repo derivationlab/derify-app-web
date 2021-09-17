@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
 
@@ -9,50 +9,108 @@ import classNames from "classnames";
 import LongOrShort from "@/views/trade/LongOrShort";
 import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
-const dataSource: MyPositionType[] = [
-  {
-    key: "1",
-    type: "USTD/ETH",
-    pnl_usdt: "+34.56",
-    pnl_usdt_type: "USTD",
-    pnl_usdt_percent: "12.3%",
-    power: 5,
-    ph: "1.23456789",
-    ph_type: "ETH",
-    aprice: "1234.56",
-    aprice_type: "USTD",
-    margin: "1234.56",
-    margin_type: "1234.56",
-    risk: "123%",
-    liq_price: "123.45",
-    liq_price_type: "USTD",
-    tp: "2323245445.67",
-    sl: "123.45",
-  },
-  {
-    key: "2",
-    type: "ETH/USDT",
-    pnl_usdt: "-34.56",
-    pnl_usdt_type: "USTD",
-    pnl_usdt_percent: "12.3%",
-    power: 8,
-    ph: "1.23456789",
-    ph_type: "ETH",
-    aprice: "1234.56",
-    aprice_type: "USTD",
-    margin: "1234.56",
-    margin_type: "1234.56",
-    risk: "123%",
-    liq_price: "123.45",
-    liq_price_type: "USTD",
-    tp: "2323245445.67",
-    sl: "123.45",
-  },
-];
+
+// const dataSource: MyPositionType[] = [
+//   {
+//     key: "1",
+//     type: "USTD/ETH",
+//     pnl_usdt: "+34.56",
+//     pnl_usdt_type: "USTD",
+//     pnl_usdt_percent: "12.3%",
+//     power: 5,
+//     ph: "1.23456789",
+//     ph_type: "ETH",
+//     aprice: "1234.56",
+//     aprice_type: "USTD",
+//     margin: "1234.56",
+//     margin_type: "1234.56",
+//     risk: "123%",
+//     liq_price: "123.45",
+//     liq_price_type: "USTD",
+//     tp: "2323245445.67",
+//     sl: "123.45",
+//   },
+//   {
+//     key: "2",
+//     type: "ETH/USDT",
+//     pnl_usdt: "-34.56",
+//     pnl_usdt_type: "USTD",
+//     pnl_usdt_percent: "12.3%",
+//     power: 8,
+//     ph: "1.23456789",
+//     ph_type: "ETH",
+//     aprice: "1234.56",
+//     aprice_type: "USTD",
+//     margin: "1234.56",
+//     margin_type: "1234.56",
+//     risk: "123%",
+//     liq_price: "123.45",
+//     liq_price_type: "USTD",
+//     tp: "2323245445.67",
+//     sl: "123.45",
+//   },
+// ];
+
+import contractModel, {ContractState, PositioData} from "@/store/modules/contract"
+import {useDispatch, useSelector} from "react-redux";
+import {RootStore} from "@/store";
+import {Dispatch} from "redux";
+import {fromContractUnit, PositionView} from "@/utils/contractUtil";
+import {amountFormt, fck} from "@/utils/utils";
+
 
 const MyPosition: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [dataSource, setDataSource] = useState<PositionView[]>([]);
+
+  const walletInfo = useSelector((state:RootStore) => state.user);
+
+  const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
+
+  const dispatch = useDispatch();
+
+  const getPairByAddress = (token:string) => {
+    const pair = tokenPairs.find((pair) => pair.address === token)
+    if(!pair){
+      return {name: 'unknown', key: 'unknown'}
+    }
+
+    return pair
+  }
+
+  const loadMyPositionData = useCallback(() => {
+
+    const trader = walletInfo.selectedAddress
+    if(!trader) {
+      return
+    }
+
+    const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
+
+    loadPositionDataAction(dispatch).then((rows) => {
+
+      console.log(`loadPositionDataAction ${rows.length}`)
+      if(!rows || rows.length < 1) {
+        return
+      }
+
+      rows.forEach(position => {
+        dataSource.push(position.positionData?.positions)
+      })
+
+      setDataSource(dataSource)
+
+    }).catch(e => {
+      console.error(`loadPositionDataAction exception: ${e}`)
+    })
+
+  }, [walletInfo])
+
+  useEffect(() => {
+    loadMyPositionData()
+  }, [loadMyPositionData])
+
   const closePosition = useCallback(() => {
     Modal.confirm({
       title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
@@ -84,7 +142,7 @@ const MyPosition: React.FC = () => {
 
   const $t = intl
 
-  const columns: ColumnsType<MyPositionType> = [
+  const columns: ColumnsType<PositionView> = [
     {
       title: intl("Trade.MyPosition.List.PositionHeld"),
       dataIndex: "type",
@@ -92,9 +150,9 @@ const MyPosition: React.FC = () => {
       key: "type",
       render: (_, record) => (
         <Row>
-          <Col className="main-white">{record.type}</Col>
+          <Col className="main-white">{getPairByAddress(record.token).name}</Col>
           <Col flex="100%">
-            <LongOrShort power={5} value={record.pnl_usdt} />
+            <LongOrShort power={record.leverage} value={record.side} />
           </Col>
         </Row>
       ),
@@ -127,12 +185,12 @@ const MyPosition: React.FC = () => {
         <div>
           <div
             className={classNames(
-              record.pnl_usdt.indexOf("+") === -1 ? "main-red" : "main-green"
+              record.unrealizedPnl < 0 ? "main-red" : "main-green"
             )}
           >
-            {record.pnl_usdt}({record.pnl_usdt_percent})
+            {amountFormt(record.unrealizedPnl, 4,true,"--", -8)}(<span>{amountFormt(record.returnRate, 2,true, "--", -6)}%</span>)
           </div>
-          <div>{record.pnl_usdt_type}</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -160,8 +218,8 @@ const MyPosition: React.FC = () => {
       key: "ph",
       render: (_, record) => (
         <div>
-          <div>{record.ph}</div>
-          <div>{record.ph_type}</div>
+          <div>{fromContractUnit(record.size)}</div>
+          <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),
     },
@@ -189,8 +247,8 @@ const MyPosition: React.FC = () => {
       key: "aprice",
       render: (_, record) => (
         <div>
-          <div>{record.aprice}</div>
-          <div>{record.aprice_type}</div>
+          <div>{amountFormt(record.averagePrice,4,true,"--", -8)}</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -219,7 +277,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div>{record.margin}</div>
-          <div>{record.margin_type}</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -271,8 +329,8 @@ const MyPosition: React.FC = () => {
       key: "liq_price",
       render: (_, record) => (
         <div>
-          <div>{record.liq_price}</div>
-          <div>{record.liq_price_type}</div>
+          <div>{amountFormt(record.liquidatePrice, 4, true,"--",-8)}</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -304,8 +362,8 @@ const MyPosition: React.FC = () => {
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div> {$t("Trade.MyPosition.List.TP")}{record.tp}</div>
-            <div> {$t("Trade.MyPosition.List.StopLoss")}{record.sl}</div>
+            <div> {$t("Trade.MyPosition.List.TP")}{fck(record.stopProfitPrice)}</div>
+            <div> {$t("Trade.MyPosition.List.StopLoss")}{fck(record.stopProfitPrice)}</div>
           </Col>
         </Row>
       ),
@@ -332,7 +390,7 @@ const MyPosition: React.FC = () => {
         </Row>
       </Col>
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false} />
+        <Table dataSource={dataSource} columns={columns} pagination={false}/>
       </Col>
       <CloseModal
         visible={isModalVisible}
