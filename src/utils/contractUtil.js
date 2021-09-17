@@ -506,7 +506,7 @@ export default class Contract {
   /**
    * Get the current price of the token
    * @param token
-   * @return {*}
+   * @return {Promise<number>}
    */
   getSpotPrice (token) {
     return this.__getDerifyDerivativeContract(token).methods.getSpotPrice().call()
