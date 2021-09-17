@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { Row, Col, Radio, Space, Modal, Statistic, Popover } from "antd";
 import { RightOutlined } from "@ant-design/icons";
@@ -6,26 +6,56 @@ import { RightOutlined } from "@ant-design/icons";
 import Chart from "./chart";
 import {FormattedMessage, useIntl} from "react-intl";
 import classNames from "classnames";
+import {useDispatch, useSelector} from "react-redux";
+import contractModel, {ContractState} from "@/store/modules/contract"
+import {RootStore} from "@/store";
+import {amountFormt, fck} from "@/utils/utils";
+import {fromContractUnit, OpenType, SideEnum, Token} from "@/utils/contractUtil";
 
 const timeOptions: Array<{ label: string; value: string }> = [
   { label: "1m", value: "1m" },
   { label: "5m", value: "5m" },
   { label: "15m", value: "15m" },
-  { label: "1h", value: "1h" },
-  { label: "4h", value: "4h" },
+  { label: "1h", value: "1H" },
+  { label: "4h", value: "4H" },
   { label: "1D", value: "1D" },
   { label: "1W", value: "1W" },
   { label: "1M", value: "1M" },
 ];
 function DataPanel() {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const dispatch = useDispatch()
   const {formatMessage} = useIntl()
 
   function intl(id:string) {
     return formatMessage({id})
   }
 
+  const contractState = useSelector<RootStore,ContractState>(state => state.contract)
+
   const $t = intl
+
+  const curPrice = fromContractUnit(contractState.curPair.num)
+  const curPercent = contractState.curPair.percent || 0
+  const pcRate = contractState.contractData.positionChangeFeeRatio || 0
+
+  const [timeGap, setTimeGap] = useState<Partial<string>>()
+  const walletInfo = useSelector((state:RootStore) => state.user);
+
+  const loadHomeData = useCallback(() => {
+
+    const trader = walletInfo.selectedAddress
+    if(!trader){
+      return
+    }
+
+    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: Token.BTC,openType: OpenType.MarketOrder})
+    dispatch(action)
+  }, [walletInfo])
+
+  useEffect(() => {
+    loadHomeData()
+  },[loadHomeData])
 
   return (
     <Row className="main-block data-panel-container">
@@ -36,16 +66,16 @@ function DataPanel() {
           setIsModalVisible(true);
         }}
       >
-        <span>ETH/USDT</span>
+        <span>{contractState.curPair.name}</span>
         <RightOutlined />
       </Col>
       <Col flex="100%">
         <Row justify={"space-between"} align="bottom">
           <Col>
             <Row className="trade-data">
-              <Col>1234.56</Col>
+              <Col className={curPercent < 0 ? 'main-red' : 'main-green'}>{curPrice}</Col>
               <Col>
-                <span>+9999.8%</span>
+                <span>{amountFormt(contractState.curPair.percent, 2,true, "--",2)}%</span>
               </Col>
             </Row>
           </Col>
@@ -68,7 +98,7 @@ function DataPanel() {
                     trigger="hover"
                   >
                     <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />
-                    <span>: -0.1234%</span>
+                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",2)}%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
                 </Space>
@@ -77,8 +107,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> 0.01%/
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> 0.01%
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(contractState.contractData.longPmrRate,2,true,"--", 2)}%/
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(contractState.contractData.shortPmrRate,2,true,"--", 2)}%
                   </span>
                   <Popover
                     placement="bottom"
@@ -108,11 +138,15 @@ function DataPanel() {
             defaultValue={"15m"}
             options={timeOptions}
             optionType="button"
+            onChange={(e) => {
+              const {value} = e.target
+              setTimeGap(value)
+            }}
           />
         </Row>
       </Col>
       <Col flex="100%">
-        <Chart />
+        <Chart token={contractState.curPair.address} curPrice={curPrice} bar={timeGap || timeOptions[0].value}/>
       </Col>
       <Modal
         title={$t('Trade.OpenPosition.Market.Market')}
