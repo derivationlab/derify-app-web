@@ -8,10 +8,12 @@ import {
 import thunkMiddleware from "redux-thunk";
 import appReducer, { AppState } from "./modules/app/reducers";
 
-import userModel,{reducers as userReducers, UserState} from "./modules/user";
+import UserModel,{UserState} from "./modules/user";
+import ContractModel,{ContractState} from "@/store/modules/contract";
 export interface RootStore {
   app: AppState
   user: UserState
+  contract: ContractState
 }
 
 const composeEnhancers =
@@ -30,7 +32,8 @@ if (process.env.NODE_ENV === "development") {
 
 const rootStote  = {
   app: appReducer,
-  user: userReducers
+  user: UserModel.reducers,
+  contract: ContractModel.reducers
 };
 
 const store = createStore(
