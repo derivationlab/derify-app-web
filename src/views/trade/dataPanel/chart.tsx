@@ -1,10 +1,12 @@
-import React, {forwardRef, useEffect, useRef, useState} from 'react';
+import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react';
 
 import CommonCharts from '@/components/charts';
 
 import getEchartsOptions, {buildEchartsOptions} from "@/utils/kline";
 import {ModalProps} from "antd/es/modal";
 import {OpenType, RateType} from "@/views/trade/operation";
+import {useDebounce} from "react-use";
+import {useLocation} from "react-router-dom";
 
 function splitData(rawData: any) {
   var categoryData = [];
@@ -77,15 +79,27 @@ interface ChartModalProps extends ModalProps {
   closeModal?:()=>void
 }
 
+const mapParamCache:{[key:string]:string} = {}
+let keyLineChartTime = 0;
 const Chart: React.FC<ChartModalProps> = props => {
-
+  const location = useLocation()
   const chartRef = useRef<any>()
 
   const options1 = buildEchartsOptions({categoryData:[(new Date()).Format('hh:mm')]
     , values:[[0,0,0,0]], curPrice:0
     , bar:'15m'})
-  useEffect(() => {
+
+  const updateChartKlineData = useCallback(() => {
     const {token,bar,after,before,limit,curPrice} = props
+    const chartOptionKey = [token,bar,after,before,limit,curPrice,keyLineChartTime].join("_")
+
+
+
+    if(mapParamCache.keyLineChart == chartOptionKey) {
+      return
+    }
+
+    mapParamCache.keyLineChart = chartOptionKey
 
     getEchartsOptions({token,bar,after,before,limit,curPrice})
       .then(chartRefoptions => {
@@ -98,7 +112,20 @@ const Chart: React.FC<ChartModalProps> = props => {
       }).catch((e) => {
         console.log(e)
     })
-  } ,[props,chartRef])
+  }, [props])
+
+  useEffect(() => {
+    keyLineChartTime = 0;
+    setInterval(() => {
+
+      if(location.pathname !== '/home/trade'){
+        return;
+      }
+
+      updateChartKlineData()
+      keyLineChartTime++
+    }, 5000)
+  },[])
 
   return <div className="charts-container">
     <CommonCharts  options={options1} height={380} ref={chartRef}/>
