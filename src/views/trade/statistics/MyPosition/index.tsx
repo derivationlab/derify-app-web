@@ -383,17 +383,17 @@ const MyPosition: React.FC = () => {
       key: "operate",
       render: () => (
         <Button type="link" onClick={() => setIsModalVisible(true)}>
-          <FormattedMessage id="Trade.MyPosition.List.Close" />
+          <FormattedMessage id="Trade.MyPosition.List.Close" />&gt;
         </Button>
       ),
     },
   ];
   return (
     <Row>
-      <Col flex="100%">
+      <Col flex="100%" className="derify-trade-all-btn">
         <Row justify="end">
           <Col>
-            <Button type="link" onClick={closePosition}>
+            <Button  type="primary" size="small" onClick={closePosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
               <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
             </Button>
           </Col>

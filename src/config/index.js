@@ -12,14 +12,14 @@ const config = {
   currentEnv: currentEnv,
   debug: true,
   server: {
-    development: "https://app-test.haoping.video",
-    debug: "https://app-test.haoping.video",
-    production: "https://app-test.haoping.video"
+    development: "https://test-m.derify.exchange",
+    debug: "https://test-m.derify.exchange",
+    production: "https://test-m.derify.exchange"
   },
   kdata:{
-    development: 'https://app-test.haoping.video',
-    debug: 'https://app-test.haoping.video',
-    production: 'https://app-test.haoping.video',
+    development: 'https://test-m.derify.exchange',
+    debug: 'https://test-m.derify.exchange',
+    production: 'https://test-m.derify.exchange',
   },
   webroot: {
     development: 'https://test-m.derify.exchange',
