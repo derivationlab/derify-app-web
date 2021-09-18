@@ -1169,6 +1169,8 @@ export default class Contract {
 const SOLIDITY_RATIO = 1e8
 
 export class PositionView {
+  tx;
+
   isUsed;
   /**
    * token
@@ -1210,7 +1212,7 @@ export class PositionView {
 }
 
 export class LimitPoistion {
-
+  tx;
   size;
 
 
@@ -1223,6 +1225,7 @@ export class LimitPoistion {
 }
 
 export class OrderLimitPositionView {
+  tx;
   isUsed;
 
   /**
@@ -1260,6 +1263,7 @@ export class OrderLimitPositionView {
 
 
 export class PositionDataView {
+  tx;
   /**
    * @return {PositionView[]}
    */
@@ -1277,6 +1281,7 @@ export class PositionDataView {
 }
 
 export class OrderStopPoistionView {
+  tx;
 
   /**
    * @return {boolean}
@@ -1306,6 +1311,7 @@ export class OrderStopPoistionView {
 
 
 export class BondInfo {
+  tx;
   /**
    * The precision is 8 bits
    */
@@ -1328,6 +1334,7 @@ export class BondInfo {
 }
 
 export class DerivativePositions {
+  tx;
   /**
    * boolean
    */

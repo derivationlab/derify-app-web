@@ -40,6 +40,7 @@ export declare type ContractData = {
 }
 
 export declare type OrderPositionData = {
+  tx:string;
   side: SideEnum,
   token:string,
   orderType: OrderTypeEnum,
@@ -121,7 +122,7 @@ const reducers = createReducer(state, {
       state.pairs[oldItem.index] = Object.assign(oldItem.item, item)
     })
 
-    return update(state,{$merge: state})
+    return update(state,{$merge: {...state}})
   },
   SET_ACCOUNT (state : ContractState, {payload}) {
     return update(state,{$merge: payload.accountData})
@@ -132,13 +133,13 @@ const reducers = createReducer(state, {
   SET_CURSPOTPRICE (state : ContractState, {payload}) {
     return update(state,{$merge: payload.curSpotPrice})
   },
-  SET_CONTRACT_DATA (state : ContractState, payload) {
+  SET_CONTRACT_DATA (state : ContractState, {payload}) {
     return update(state,{
-      contractData:{$merge: payload}
+      contractData:{$merge: {...payload}}
     })
   },
   SET_ACCOUNT_DATA (state : ContractState, {payload}) {
-    return update(state,{$merge: payload})
+    return update(state,{$merge: {...payload}})
   },
   RESET_POSITION_DATA (state : ContractState,{payload}) {
     console.log(`RESET_POSITION_DATA ${state}`)
@@ -198,7 +199,7 @@ const reducers = createReducer(state, {
       }
     }
 
-    return update(state,{$merge: state})
+    return update(state,{$merge: {...state}})
   }
 })
 
@@ -233,7 +234,7 @@ const actions = {
         closeUpperBound = await web3Utils.contract(trader).getCloseUpperBound({token, trader, side})
       }
 
-      dispatch( {type: 'SET_CONTRACT_DATA', payload: closeUpperBound})
+      dispatch( {type: 'SET_CONTRACT_DATA', payload: {closeUpperBound}})
       return closeUpperBound
     }
   },
@@ -337,7 +338,7 @@ const actions = {
 
       // 2.get positionChangeFeeRatio
       data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(token)
-      commit({type: 'SET_CONTRACT_DATA', payload: data})
+      commit({type: 'SET_CONTRACT_DATA', payload: {...data}})
 
       // 3.get traderOpenUpperBound
       const price = data.curSpotPrice
@@ -346,7 +347,7 @@ const actions = {
       data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({token, trader
         , openType, price:  toHexString(price), leverage: toContractUnit(leverage)})
 
-      commit({type: 'SET_CONTRACT_DATA', payload: data})
+      commit({type: 'SET_CONTRACT_DATA', payload: {...data}})
 
       //4.update all token price
       const updateAllPairPriceAction = self.updateAllPairPrice(trader)
@@ -355,7 +356,7 @@ const actions = {
       // 4.get sysOpenUpperBound
       data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: side})
 
-      commit({type: 'SET_CONTRACT_DATA', payload: data})
+      commit({type: 'SET_CONTRACT_DATA', payload: {...data}})
 
       return data
     }
