@@ -116,14 +116,15 @@ const Chart: React.FC<ChartModalProps> = props => {
 
   useEffect(() => {
     keyLineChartTime = 0;
+    updateChartKlineData()
     setInterval(() => {
 
       if(location.pathname !== '/home/trade'){
         return;
       }
-
-      updateChartKlineData()
       keyLineChartTime++
+      updateChartKlineData()
+
     }, 15000)
   },[])
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
 
@@ -9,50 +9,60 @@ import classNames from "classnames";
 import LongOrShort from "@/views/trade/LongOrShort";
 import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
-const dataSource: MyPositionType[] = [
-  {
-    key: "1",
-    type: "USTD/ETH",
-    pnl_usdt: "+34.56",
-    pnl_usdt_type: "USTD",
-    pnl_usdt_percent: "12.3%",
-    power: 5,
-    ph: "1.23456789",
-    ph_type: "ETH",
-    aprice: "1234.56",
-    aprice_type: "USTD",
-    margin: "1234.56",
-    margin_type: "1234.56",
-    risk: "123%",
-    liq_price: "123.45",
-    liq_price_type: "USTD",
-    tp: "2323245445.67",
-    sl: "123.45",
-  },
-  {
-    key: "2",
-    type: "ETH/USDT",
-    pnl_usdt: "-34.56",
-    pnl_usdt_type: "USTD",
-    pnl_usdt_percent: "12.3%",
-    power: 8,
-    ph: "1.23456789",
-    ph_type: "ETH",
-    aprice: "1234.56",
-    aprice_type: "USTD",
-    margin: "1234.56",
-    margin_type: "1234.56",
-    risk: "123%",
-    liq_price: "123.45",
-    liq_price_type: "USTD",
-    tp: "2323245445.67",
-    sl: "123.45",
-  },
-];
+import {getTradeBalanceDetail, getTradeList, TradeBalanceDetail, TradeRecord} from "@/api/trade";
+import {useSelector} from "react-redux";
+import {RootStore} from "@/store";
+import {fromContractUnit} from "@/utils/contractUtil";
+import {amountFormt, dateFormat} from "@/utils/utils";
+
+class OpTypeEnum {
+  opType:number;
+  opTypeDesc:string;
+  constructor(opType:number, opTypeDesc:string) {
+    this.opType = opType
+    this.opTypeDesc = opTypeDesc
+  }
+  static get OpenPosition() {
+    return new OpTypeEnum(1, "Open")
+  }
+
+  static get ClosePosition() {
+    return new OpTypeEnum(2, "Close")
+  }
+}
+
+const tradeTypeMap:{[key:number]:any} = {
+  0: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-MarketPriceOpen
+  1: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-HedgeMarketPriceOpen
+  2: {tradeType: 'Trade.TradeHistory.List.OpenLimit', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-LimitPriceOpen
+  3: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-StopProfitClose
+  4: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-StopLossClose
+  5: {tradeType: 'Trade.TradeHistory.List.CloseDeleverage', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-AutoDeleveragingClose
+  6: {tradeType: 'Trade.TradeHistory.List.CloseLiquidate', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-MandatoryLiquidationClose
+  7: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-SingleClose
+  8: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-AllCloseHedgePart
+  9: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'}//-AllCloseLeftPart
+}
+
+function getTradeType (tradeType:number):any{
+  const viewType = tradeTypeMap[tradeType]
+
+  if(viewType) {
+    return viewType
+  }
+
+  return {}
+}
 
 const TradeHistory: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [records, setRecords] = useState<TradeRecord[]>([]);
+  const [pageNum, setPageNum] = useState<number>(0);
+  const [showLoading, setShowLoading] = useState<boolean>(true);
+
+
   const okCb = () => {};
   const cancelCb = () => {};
   const { formatMessage } = useIntl();
@@ -63,17 +73,49 @@ const TradeHistory: React.FC = () => {
 
   const $t = intl
 
-  const columns: ColumnsType<MyPositionType> = [
+  const walletInfo = useSelector((state:RootStore) => state.user);
+  const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
+
+  const pageSize = 10
+
+  useEffect(() => {
+    const trader = walletInfo.selectedAddress;
+    if(!trader){
+      return
+    }
+
+    setShowLoading(true)
+    getTradeList(trader, pageNum, pageSize).then(rows => {
+      if(rows && rows.length > 0) {
+        setRecords(records.concat(rows))
+      }
+
+
+    }).catch(e => {
+      console.log('getTradeBalanceDetail',e)
+    }).finally(() => showLoading)
+  }, [pageNum,walletInfo])
+
+  const getPairByAddress = (token:string) => {
+    const pair = tokenPairs.find((pair) => pair.address === token)
+    if(!pair){
+      return {name: 'unknown', key: 'unknown'}
+    }
+
+    return pair
+  }
+
+  const columns: ColumnsType<TradeRecord> = [
     {
-      title: intl("Trade.MyPosition.List.PositionHeld"),
+      title: $t("Trade.MyPosition.List.PositionHeld"),
       dataIndex: "type",
       width: 110,
       key: "type",
       render: (_, record) => (
         <Row>
-          <Col className="main-white">{record.type}</Col>
+          <Col className="main-white">{getPairByAddress(record.token).name}</Col>
           <Col flex="100%">
-            <LongOrShort power={5} value={record.pnl_usdt} />
+            <LongOrShort power={0} value={record.side} />
           </Col>
         </Row>
       ),
@@ -85,62 +127,43 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {$t("Trade.MyPosition.Hint.UnrealizedPnL")}
+                {$t("Trade.TradeHistory.Hint.PnL")}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.UnrealizedPnLDetail1")}</Col>
-              <Col>{$t("Trade.MyPosition.Hint.UnrealizedPnLDetail2")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.PnLDetail1")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.PnLDetail2")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {$t("Trade.MyPosition.List.UnrealizedPnL")}
+            {$t("Trade.TradeHistory.List.RealizedPnL")}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
       ),
       dataIndex: "pnl_usdt",
       key: "pnl_usdt",
-      width: 140,
       render: (_, record) => (
         <div>
           <div
             className={classNames(
-              record.pnl_usdt.indexOf("+") === -1 ? "main-red" : "main-green"
+              !record.pnl_usdt || record.pnl_usdt.indexOf("+") === -1 ? "main-red" : "main-green"
             )}
           >
-            {record.pnl_usdt}({record.pnl_usdt_percent})
+            {amountFormt(record.pnl_usdt,2,false,"--")}
           </div>
-          <div>{record.pnl_usdt_type}</div>
+          <div>USDT</div>
         </div>
       ),
     },
     {
-      title: (
-        <Popover
-          placement="bottom"
-          content={
-            <Row>
-              <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.PositionHeld" })}：
-              </Col>
-              <Col>{$t("Trade.MyPosition.Hint.PositionHeldDetail")}</Col>
-            </Row>
-          }
-          trigger="hover"
-        >
-          <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.PositionHeld" })}
-            <IconFont type="icon-wenhao" />
-          </Space>
-        </Popover>
-      ),
+      title: $t("Trade.TradeHistory.List.Type"),
       dataIndex: "ph",
       key: "ph",
       render: (_, record) => (
         <div>
-          <div>{record.ph}</div>
-          <div>{record.ph_type}</div>
+          <div className={getTradeType(record.type).showType}>{$t(getTradeType(record.type).tradeType+"1")}</div>
+          <div>{$t(getTradeType(record.type).tradeType+"2")}</div>
         </div>
       ),
     },
@@ -151,15 +174,15 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.AveragePrice" })}
+                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderPrice" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.AveragePriceDetail")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.OrderPriceDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.AveragePrice" })}
+            {formatMessage({ id: "Trade.TradeHistory.List.Price" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -168,8 +191,8 @@ const TradeHistory: React.FC = () => {
       key: "aprice",
       render: (_, record) => (
         <div>
-          <div>{record.aprice}</div>
-          <div>{record.aprice_type}</div>
+          <div className="main-white">{record.price}</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -180,15 +203,15 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.PositionMargin" })}
+                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderVolume" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.PositionMarginDetail")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.OrderVolumeDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.Margin" })}
+            {formatMessage({ id: "Trade.TradeHistory.List.Volume" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -197,8 +220,8 @@ const TradeHistory: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div>{record.margin}</div>
-          <div>{record.margin_type}</div>
+          <div className="main-white">{record.size}</div>
+          <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),
     },
@@ -209,22 +232,28 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}
+                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderPrice" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.RiskDetail")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.OrderPriceDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.Risk" })}
+            {formatMessage({ id: "Trade.TradeHistory.List.Amount" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
       ),
 
-      dataIndex: "risk",
-      key: "risk",
+      dataIndex: "Amount",
+      key: "Amount",
+      render: (_, record) => (
+        <div>
+          <div  className="main-white">{amountFormt(record.amount,2, false, '--')}</div>
+          <div>USDT</div>
+        </div>
+      ),
     },
     {
       title: (
@@ -233,15 +262,15 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}
+                {formatMessage({ id: "Trade.TradeHistory.Hint.TradingFee" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.TradingFeeDetail")}</Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.LiqPrice" })}
+            {formatMessage({ id: "Trade.TradeHistory.List.TradFee" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -250,8 +279,8 @@ const TradeHistory: React.FC = () => {
       key: "liq_price",
       render: (_, record) => (
         <div>
-          <div>{record.liq_price}</div>
-          <div>{record.liq_price_type}</div>
+          <div className="main-white">{amountFormt(-record.trading_fee, 2, false, '--')}</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -261,16 +290,16 @@ const TradeHistory: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
+              <Col> {formatMessage({ id: "Trade.TradeHistory.Hint.PCF" })}</Col>
               <Col>
-                {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
+                {$t("Trade.TradeHistory.Hint.PCFDetail")}
               </Col>
             </Row>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.TP" })}
+            {formatMessage({ id: "Trade.TradeHistory.List.PCF" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -278,27 +307,55 @@ const TradeHistory: React.FC = () => {
       dataIndex: "tp",
       key: "tp",
       render: (_, record) => (
-        <Row onClick={()=>setModalVisible(true)}>
-          <Col className="derify-pointer">
-            <IconFont type="icon-shangxiaqiehuan" />
-          </Col>
-          <Col>
-            <div> {$t("Trade.MyPosition.List.TP")}{record.tp}</div>
-            <div> {$t("Trade.MyPosition.List.StopLoss")}{record.sl}</div>
-          </Col>
-        </Row>
+        <div>
+          <div className="main-white">{amountFormt(-record.position_change_fee,2,false,"--")}</div>
+          <div>USDT</div>
+        </div>
       ),
     },
     {
+      title:(
+        <Popover
+          placement="bottom"
+          content={
+            <Row>
+              <Col> {formatMessage({ id: "Trade.TradeHistory.Hint.Compensation" })}</Col>
+              <Col>
+                {$t("Trade.TradeHistory.Hint.CompensationDetail")}
+              </Col>
+            </Row>
+          }
+          trigger="hover"
+        >
+          <Space>
+            {formatMessage({ id: "Trade.TradeHistory.List.Compensation" })}
+            <IconFont type="icon-wenhao" />
+          </Space>
+        </Popover>
+      ),
       dataIndex: "operate",
       key: "operate",
-      render: () => (
-        <Button type="link" onClick={() => setIsModalVisible(true)}>
-          <FormattedMessage id="Trade.MyPosition.List.Close" />
-        </Button>
+      render: (_, record) => (
+        <div>
+          <div>{amountFormt(record.pnl_bond,2,false,"--")}</div>
+          <div>bDRF</div>
+        </div>
+      ),
+    },
+
+    {
+      dataIndex: "event_time",
+      key: "event_time",
+      render: (_,record) => (
+        <div>
+          <div className="main-white">{dateFormat(new Date(record.event_time*1000), "yyyy-MM-dd")}</div>
+          <div>{dateFormat(new Date(record.event_time*1000), "hh:mm:ss")}</div>
+        </div>
       ),
     },
   ];
+
+
   return (
     <Row>
       <Col flex="100%" className="derify-trade-all-btn">
@@ -312,7 +369,7 @@ const TradeHistory: React.FC = () => {
         </Row>
       </Col>
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false} />
+        <Table dataSource={records} columns={columns} pagination={false} rowKey={"id"} loading={showLoading}/>
       </Col>
       <CloseModal
         visible={isModalVisible}
