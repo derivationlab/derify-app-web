@@ -191,7 +191,7 @@ function DataPanel() {
       >
         <Row className="currency-list-wrapper">
           {
-            tokenPairs.map(token => {
+            tokenPairs.map((token, index) => {
 
               const classCurNames = []
 
@@ -204,7 +204,7 @@ function DataPanel() {
               }
 
               return (
-                <Col flex="100%" className={classCurNames.join(" ")}
+                <Col flex="100%" className={classCurNames.join(" ")} key={index}
                 onClick={() => {
                   if(token.enable){
                     dispatch(contractModel.actions.updateCurTokenPair(token))

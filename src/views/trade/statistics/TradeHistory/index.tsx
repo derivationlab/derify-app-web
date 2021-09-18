@@ -53,27 +53,6 @@ const dataSource: MyPositionType[] = [
 const TradeHistory: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const closePosition = useCallback(() => {
-    Modal.confirm({
-      title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
-      icon: null,
-      content: (
-        <div>
-          <p>
-            {$t("Trade.MyPosition.ClosePositionPopup.ClosePositionPopupInfo")}
-            {/*点击确定，我们将按 <span className="main-color">市价</span> 立即平仓{" "}*/}
-            {/*<span className="main-color">全部仓位</span>*/}
-          </p>
-        </div>
-      ),
-      okText: $t("Trade.MyPosition.ClosePositionPopup.Confirm"),
-      cancelText: $t("Trade.MyPosition.ClosePositionPopup.Cancel"),
-      onOk: okCb,
-      onCancel: cancelCb,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const okCb = () => {};
   const cancelCb = () => {};
   const { formatMessage } = useIntl();
@@ -322,10 +301,11 @@ const TradeHistory: React.FC = () => {
   ];
   return (
     <Row>
-      <Col flex="100%">
+      <Col flex="100%" className="derify-trade-all-btn">
         <Row justify="end">
           <Col>
-            <Button type="link" onClick={closePosition}>
+            <Button type="primary" size="small" className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block"
+            >
               <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
             </Button>
           </Col>

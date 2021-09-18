@@ -124,7 +124,7 @@ const Chart: React.FC<ChartModalProps> = props => {
 
       updateChartKlineData()
       keyLineChartTime++
-    }, 5000)
+    }, 15000)
   },[])
 
   return <div className="charts-container">
