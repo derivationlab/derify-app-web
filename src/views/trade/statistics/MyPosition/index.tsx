@@ -90,16 +90,20 @@ const MyPosition: React.FC = () => {
 
     loadPositionDataAction(dispatch).then((rows) => {
 
-      console.log(`loadPositionDataAction ${rows.length}`)
       if(!rows || rows.length < 1) {
         return
       }
 
+      const positions:PositionView[] = [];
       rows.forEach(position => {
-        dataSource.push(position.positionData?.positions)
+
+        position.positionData?.positions.forEach((positionView:PositionView) => {
+          positionView.tx = "tx"+positions.length
+          positions.push(positionView)
+        })
       })
 
-      setDataSource(dataSource)
+      setDataSource(positions)
 
     }).catch(e => {
       console.error(`loadPositionDataAction exception: ${e}`)
@@ -152,7 +156,7 @@ const MyPosition: React.FC = () => {
         <Row>
           <Col className="main-white">{getPairByAddress(record.token).name}</Col>
           <Col flex="100%">
-            <LongOrShort power={record.leverage} value={record.side} />
+            <LongOrShort power={fromContractUnit(record.leverage)} value={record.side} />
           </Col>
         </Row>
       ),
@@ -390,7 +394,7 @@ const MyPosition: React.FC = () => {
         </Row>
       </Col>
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false}/>
+        <Table dataSource={dataSource} columns={columns} pagination={false} rowKey="tx"/>
       </Col>
       <CloseModal
         visible={isModalVisible}
