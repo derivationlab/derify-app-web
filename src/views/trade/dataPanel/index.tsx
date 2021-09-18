@@ -7,7 +7,7 @@ import Chart from "./chart";
 import {FormattedMessage, useIntl} from "react-intl";
 import classNames from "classnames";
 import {useDispatch, useSelector} from "react-redux";
-import contractModel, {ContractState} from "@/store/modules/contract"
+import contractModel, {ContractState, TokenPair} from "@/store/modules/contract"
 import {RootStore} from "@/store";
 import {amountFormt, fck} from "@/utils/utils";
 import {fromContractUnit, OpenType, SideEnum, Token} from "@/utils/contractUtil";
@@ -36,11 +36,15 @@ function DataPanel() {
   const dispatch = useDispatch()
   const {formatMessage} = useIntl()
 
+
   function intl(id:string) {
     return formatMessage({id})
   }
 
   const contractState = useSelector<RootStore,ContractState>(state => state.contract)
+
+  const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
+  const curTokenPair = useSelector<RootStore,TokenPair>(state => state.contract.curPair)
 
   const $t = intl
 
@@ -186,72 +190,47 @@ function DataPanel() {
         }}
       >
         <Row className="currency-list-wrapper">
-          <Col flex="100%" className="active">
-            <Row justify="space-between" align="middle">
-              <Col className="currency">BTC / USDT</Col>
-              <Col>
-                <div>2345.67</div>
-                <div>
-                  <Statistic
-                    className={classNames(
-                      -123.41 > 0 ? "main-green" : "main-red "
-                    )}
-                    value={Math.abs(-123.41)}
-                    prefix={-123.41 > 0 ? "+" : "-"}
-                    suffix="%"
-                  />
-                </div>
-              </Col>
-            </Row>
-          </Col>
-          <Col flex="100%">
-            <Row justify="space-between" align="middle">
-              <Col>ETH / USDT</Col>
-              <Col>
-                <div>2345.67</div>
-                <Statistic
-                  className={classNames(
-                    +123.41 > 0 ? "main-green" : "main-red "
-                  )}
-                  value={+123.41}
-                  prefix={+123.41 > 0 ? "+" : "-"}
-                  suffix="%"
-                />
-              </Col>
-            </Row>
-          </Col>
-          <Col flex="100%" className="diable">
-            <Row justify="space-between" align="middle">
-              <Col>BNB / USDT</Col>
-              <Col>
-                <div>2345.67</div>
-                <Statistic
-                  className={classNames(
-                    +123.41 > 0 ? "main-green" : "main-red "
-                  )}
-                  value={+123.41}
-                  prefix={+123.41 > 0 ? "+" : "-"}
-                  suffix="%"
-                />
-              </Col>
-            </Row>
-          </Col>
-          <Col flex="100%" className="diable">
-            <Row justify="space-between" align="middle">
-              <Col>UNI / USDT</Col>
-              <Col>
-                <div>2345.67</div>
-                <Statistic
-                  className={classNames(
-                    +123.41 > 0 ? "main-green" : "main-red "
-                  )}
-                  value={+123.41}
-                  prefix={+123.41 > 0 ? "+" : "-"}
-                  suffix="%"
-                />
-              </Col>
-            </Row>
-          </Col>
+          {
+            tokenPairs.map(token => {
+
+              const classCurNames = []
+
+              if(curTokenPair.key === token.key){
+                classCurNames.push("active")
+              }
+
+              if(!token.enable){
+                classCurNames.push("diable")
+              }
+
+              return (
+                <Col flex="100%" className={classCurNames.join(" ")}
+                onClick={() => {
+                  if(token.enable){
+                    dispatch(contractModel.actions.updateCurTokenPair(token))
+                  }
+
+                  setIsModalVisible(false)
+                }}
+                >
+                <Row justify="space-between" align="middle">
+                  <Col className="currency">{token.name}</Col>
+                  <Col>
+                    <div>{token.num}</div>
+                    <div>
+                      <Statistic
+                        className={classNames(
+                          (token.percent||0) > 0 ? "main-green" : "main-red "
+                        )}
+                        value={amountFormt(token.percent,2,true,"--",2)}
+                        suffix="%"
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </Col>)
+            })
+          }
         </Row>
       </Modal>
     </Row>
