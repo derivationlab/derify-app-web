@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
 
 import { Row, Col, Table, Button,  Popover, Space } from "antd";
 import { useIntl } from "react-intl";
+import contractModel, {OrderPositionData} from "@/store/modules/contract";
+import {PositionView} from "@/utils/contractUtil";
+import {useDispatch, useSelector} from "react-redux";
+import {RootStore} from "@/store";
 
 const dataSource = [
   {
@@ -16,6 +20,7 @@ const dataSource = [
   },
 ];
 function CurrentOrder() {
+  const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
   function intl(id:string) {
@@ -23,6 +28,58 @@ function CurrentOrder() {
   }
 
   const $t = intl
+
+  const [dataSource, setDataSource] = useState<OrderPositionData[]>([]);
+
+  const walletInfo = useSelector((state:RootStore) => state.user);
+
+  const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
+
+
+  const getPairByAddress = (token:string) => {
+    const pair = tokenPairs.find((pair) => pair.address === token)
+    if(!pair){
+      return {name: 'unknown', key: 'unknown'}
+    }
+
+    return pair
+  }
+
+  const loadMyPositionData = useCallback(() => {
+
+    const trader = walletInfo.selectedAddress
+    if(!trader) {
+      return
+    }
+
+    const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
+
+    loadPositionDataAction(dispatch).then((rows) => {
+
+      if(!rows || rows.length < 1) {
+        return
+      }
+
+      const positions:OrderPositionData[] = [];
+      rows.forEach(position => {
+
+        position.positionData?.orderPositions.forEach((positionView:OrderPositionData) => {
+          positionView.tx = "tx" + positions.length
+          positions.push(positionView)
+        })
+      })
+
+      setDataSource(positions)
+
+    }).catch(e => {
+      console.error(`loadPositionDataAction exception: ${e}`)
+    })
+
+  }, [walletInfo])
+
+  useEffect(() => {
+    loadMyPositionData()
+  }, [loadMyPositionData])
 
   const columns: ColumnsType<any> = [
     {
@@ -121,7 +178,7 @@ function CurrentOrder() {
   return (
     <Row>
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false} />
+        <Table dataSource={dataSource} columns={columns} pagination={false}  rowKey="tx" />
       </Col>
     </Row>
   );

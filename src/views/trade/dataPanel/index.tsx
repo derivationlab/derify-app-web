@@ -11,6 +11,7 @@ import contractModel, {ContractState} from "@/store/modules/contract"
 import {RootStore} from "@/store";
 import {amountFormt, fck} from "@/utils/utils";
 import {fromContractUnit, OpenType, SideEnum, Token} from "@/utils/contractUtil";
+import {createTokenMiningFeeEvenet} from "@/api/trade";
 
 const timeOptions: Array<{ label: string; value: string }> = [
   { label: "1m", value: "1m" },
@@ -22,6 +23,14 @@ const timeOptions: Array<{ label: string; value: string }> = [
   { label: "1W", value: "1W" },
   { label: "1M", value: "1M" },
 ];
+
+declare type Context = {
+  tokenMiningRateEvent:EventSource|null
+}
+const context:Context = {
+  tokenMiningRateEvent: null
+}
+
 function DataPanel() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch()
@@ -43,6 +52,8 @@ function DataPanel() {
 
   const [timeGap, setTimeGap] = useState<Partial<string>>()
   const walletInfo = useSelector((state:RootStore) => state.user);
+  const curPair = useSelector((state:RootStore) => state.contract.curPair);
+  const [pmrRate, setPmrRate] = useState<{longPmrRate:number,shortPmrRate:number}>({longPmrRate: 0,shortPmrRate: 0})
 
   const loadHomeData = useCallback(() => {
 
@@ -51,7 +62,7 @@ function DataPanel() {
       return
     }
 
-    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: Token.BTC,openType: OpenType.MarketOrder})
+    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: curPair.address,openType: OpenType.MarketOrder})
 
     dispatch(action)
 
@@ -60,6 +71,18 @@ function DataPanel() {
   useEffect(() => {
     loadHomeData()
   },[loadHomeData])
+
+  useEffect(() => {
+
+    if(context.tokenMiningRateEvent != null){
+      context.tokenMiningRateEvent.close()
+      setPmrRate({longPmrRate:0,shortPmrRate:0})
+    }
+
+    context.tokenMiningRateEvent = createTokenMiningFeeEvenet(curPair.address, (tokenAddr:string, positionMiniRate:{longPmrRate:number,shortPmrRate:number}) => {
+      setPmrRate(positionMiniRate)
+    })
+  },[curPair])
 
   return (
     <Row className="main-block data-panel-container">
@@ -102,7 +125,7 @@ function DataPanel() {
                     trigger="hover"
                   >
                     <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />
-                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",2)}%</span>
+                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",-8)}%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
                 </Space>
@@ -111,8 +134,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(contractState.contractData.longPmrRate,2,true,"--", 2)}%/
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(contractState.contractData.shortPmrRate,2,true,"--", 2)}%
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(pmrRate.longPmrRate,2,true,"--", 2)}%/
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(pmrRate.shortPmrRate,2,true,"--", 2)}%
                   </span>
                   <Popover
                     placement="bottom"
@@ -150,7 +173,7 @@ function DataPanel() {
         </Row>
       </Col>
       <Col flex="100%">
-        <Chart token={contractState.curPair.address} curPrice={curPrice} bar={timeGap || timeOptions[0].value}/>
+        <Chart token={curPair.key} curPrice={curPrice} bar={timeGap || timeOptions[0].value}/>
       </Col>
       <Modal
         title={$t('Trade.OpenPosition.Market.Market')}
