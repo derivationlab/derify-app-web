@@ -177,7 +177,7 @@ const MyPosition: React.FC = () => {
           trigger="hover"
         >
           <Space>
-            {$t("Trade.MyPosition.List.UnrealizedPnL")}
+            {$t("Trade.TradeHistory.List.RealizedPnL")}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -251,7 +251,7 @@ const MyPosition: React.FC = () => {
       key: "aprice",
       render: (_, record) => (
         <div>
-          <div>{amountFormt(record.averagePrice,4,true,"--", -8)}</div>
+          <div>{amountFormt(record.averagePrice,4,false,"--", -8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -280,7 +280,7 @@ const MyPosition: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div>{record.margin}</div>
+          <div>{amountFormt(record.margin,4,false,"--",-8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -306,8 +306,14 @@ const MyPosition: React.FC = () => {
         </Popover>
       ),
 
-      dataIndex: "risk",
-      key: "risk",
+      dataIndex: "marginRate",
+      key: "marginRate",
+      render: (_, record) => (
+        <div>
+          <div>{amountFormt(record.marginRate,4,false,"--",-6)}</div>
+          <div>USDT</div>
+        </div>
+      ),
     },
     {
       title: (

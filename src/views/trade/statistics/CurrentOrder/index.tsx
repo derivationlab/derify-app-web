@@ -4,10 +4,12 @@ import { ColumnsType } from "antd/es/table";
 
 import { Row, Col, Table, Button,  Popover, Space } from "antd";
 import { useIntl } from "react-intl";
-import contractModel, {OrderPositionData} from "@/store/modules/contract";
-import {PositionView} from "@/utils/contractUtil";
+import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";
+import {fromContractUnit, OrderTypeEnum, PositionView} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
+import {amountFormt} from "@/utils/utils";
+import LongOrShort from "@/views/trade/LongOrShort";
 
 const dataSource = [
   {
@@ -43,6 +45,22 @@ function CurrentOrder() {
     }
 
     return pair
+  }
+
+  const getRecordType:(data:OrderPositionData) => string|React.ElementType = (data:OrderPositionData) => {
+    if(data.orderType == OrderTypeEnum.LimitOrder) {
+      return $t("Trade.CurrentOrder.List.OpenLimit")
+    }
+
+    if(data.orderType === OrderTypeEnum.StopProfitOrder) {
+      return $t("Trade.CurrentOrder.List.CloseTP")
+    }
+
+    if(data.orderType === OrderTypeEnum.StopLossOrder) {
+      return $t("Trade.CurrentOrder.List.CloseSL")
+    }
+
+    return ""
   }
 
   const loadMyPositionData = useCallback(() => {
@@ -81,17 +99,29 @@ function CurrentOrder() {
     loadMyPositionData()
   }, [loadMyPositionData])
 
-  const columns: ColumnsType<any> = [
+  const columns: ColumnsType<OrderPositionData> = [
     {
-      title: $t("Trade.CurrentOrder.List.Volume"),
+      title: $t("Data.TradeHitory.List.Size"),
       dataIndex: "type",
       key: "type",
+      render: (_, record) => (
+        <Row>
+          <Col className="main-white">{getPairByAddress(record.token).name}</Col>
+          <Col flex="100%">
+            <LongOrShort power={fromContractUnit(record.leverage)} value={record.side} />
+          </Col>
+        </Row>
+      ),
     },
     {
       title: $t("Trade.CurrentOrder.List.Type"),
-      dataIndex: "age",
-      key: "age",
-      width: 120,
+      dataIndex: "orderType",
+      key: "orderType",
+      render: (_, record) => (
+        <Row>
+          <Col className="main-white">{getRecordType(record)}</Col>
+        </Row>
+      ),
     },
     {
       title: (
@@ -103,7 +133,6 @@ function CurrentOrder() {
                 {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderPrice" })}
               </Col>
               <Col>
-                {" "}
                 {formatMessage({ id: "Trade.CurrentOrder.Hint.OrderPriceDetail" })}
               </Col>
             </Row>
@@ -118,6 +147,14 @@ function CurrentOrder() {
       ),
       dataIndex: "price",
       key: "price",
+      render: (_, record) => (
+        <Row>
+          <Col className="main-white">{amountFormt(record.stopPrice,2,false,"--",-8)}</Col>
+          <Col>
+            USDT
+          </Col>
+        </Row>
+      ),
     },
     {
       title: (
