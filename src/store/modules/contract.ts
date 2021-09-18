@@ -59,7 +59,7 @@ export declare type PositioData = {
 export declare type ContractState = {
   pairs: TokenPair[],
   curPairKey: string,
-  curPair: TokenPair,
+  readonly curPair: TokenPair,
   contractData: ContractData,
   accountData: TraderAccount,
   positionData: PositioData,
@@ -122,16 +122,21 @@ const reducers = createReducer(state, {
       state.pairs[oldItem.index] = Object.assign(oldItem.item, item)
     })
 
-    return update(state,{$merge: {...state}})
+    return update(state,{pairs: {$merge:state.pairs}})
   },
   SET_ACCOUNT (state : ContractState, {payload}) {
-    return update(state,{$merge: payload.accountData})
+    return update(state,{accountData:{$merge: payload.accountData}})
   },
   SET_CURPAIRKEY (state : ContractState, {payload}) {
-    return update(state,{$merge: payload.key})
+
+    const curPair = state.pairs.find(pair => pair.key === payload.key)
+    return update(state,{
+      curPairKey: {$set: payload.key},
+      curPair: {$set: curPair}
+    })
   },
   SET_CURSPOTPRICE (state : ContractState, {payload}) {
-    return update(state,{$merge: payload.curSpotPrice})
+    return update(state,{curSpotPrice:{$set: payload.curSpotPrice}})
   },
   SET_CONTRACT_DATA (state : ContractState, {payload}) {
     return update(state,{
@@ -412,7 +417,6 @@ const actions = {
       }
       const contract = web3Utils.contract(trader)
 
-      console.log(`updateAllPairPrice ${state}`);
       state.pairs.forEach((pair) => {
 
         if(!pair.enable){
@@ -579,6 +583,19 @@ const actions = {
         const loadAccountAction = self.loadAccountData(trader);
         loadAccountAction(commit)
       })
+    }
+  },
+
+  updateCurTokenPair(tokenPair:TokenPair) {
+    const self = this;
+    return async (commit:Dispatch) => {
+      if(!tokenPair){
+        return false
+      }
+
+      commit({type: "SET_CURPAIRKEY", payload: tokenPair})
+
+      return true
     }
   }
 }

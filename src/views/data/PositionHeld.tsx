@@ -2,6 +2,8 @@ import React from "react";
 import { useIntl } from "react-intl";
 import { Row, Col, Select, Badge } from "antd";
 import CommonCharts from "@/components/charts";
+import {useSelector} from "react-redux";
+import {RootStore} from "@/store";
 const { Option } = Select;
 
 const options1 = {
@@ -88,6 +90,9 @@ const options1 = {
 
 function PositionHeld() {
   const { formatMessage } = useIntl();
+
+  const tokenPairs = useSelector<RootStore>(state => state.contract.pairs)
+
   return (
     <Row className="main-block amount-container">
       <Col flex="100%">
