@@ -2,13 +2,13 @@ import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
 
-import { Row, Col, Table, Button,  Popover, Space } from "antd";
-import { useIntl } from "react-intl";
+import {Row, Col, Table, Button, Popover, Space, Modal} from "antd";
+import {FormattedMessage, useIntl} from "react-intl";
 import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";
 import {fromContractUnit, OrderTypeEnum, PositionView} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
-import {amountFormt} from "@/utils/utils";
+import {amountFormt, dateFormat} from "@/utils/utils";
 import LongOrShort from "@/views/trade/LongOrShort";
 
 const dataSource = [
@@ -95,6 +95,53 @@ function CurrentOrder() {
 
   }, [walletInfo])
 
+  const cancelCb = useCallback(() => {
+
+  },[]);
+
+  const okCb = useCallback(() => {
+
+  },[]);
+
+  const cancelAll = useCallback(() => {
+    Modal.confirm({
+      title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
+      icon: null,
+      content: (
+        <div>
+          <p>
+            {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
+          </p>
+        </div>
+      ),
+      okText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
+      cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
+      onOk: okCb,
+      onCancel: cancelCb,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+  const cancelOne = useCallback(() => {
+    Modal.confirm({
+      title: formatMessage({ id: "Trade.CurrentOrder.CancelOrderPopup" }),
+      icon: null,
+      content: (
+        <div>
+          <p>
+            {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
+          </p>
+        </div>
+      ),
+      okText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
+      cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
+      onOk: okCb,
+      onCancel: cancelCb,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     loadMyPositionData()
   }, [loadMyPositionData])
@@ -148,12 +195,12 @@ function CurrentOrder() {
       dataIndex: "price",
       key: "price",
       render: (_, record) => (
-        <Row>
-          <Col className="main-white">{amountFormt(record.stopPrice,2,false,"--",-8)}</Col>
-          <Col>
+        <div>
+          <div className="main-white">{amountFormt(record.stopPrice,2,false,"--",-8)}</div>
+          <div>
             USDT
-          </Col>
-        </Row>
+          </div>
+        </div>
       ),
     },
     {
@@ -180,6 +227,12 @@ function CurrentOrder() {
       ),
       dataIndex: "size",
       key: "size",
+      render: (_, record) => (
+        <div>
+          <div className="main-white">{fromContractUnit(record.size)}</div>
+          <div>{getPairByAddress(record.token).key}</div>
+        </div>
+      ),
     },
     {
       title: (
@@ -203,17 +256,35 @@ function CurrentOrder() {
       ),
       dataIndex: "time",
       key: "time",
+      render: (_, record) => (
+        <div>
+          <div className="main-white">{dateFormat(new Date(record.timestamp*1000), "yyyy-MM-dd")}</div>
+          <div>{dateFormat(new Date(record.timestamp*1000), "hh:mm:ss")}</div>
+        </div>
+      ),
     },
     {
       dataIndex: "operate",
       key: "operate",
       width: 100,
-      render: () => <Button type="link">{$t("Trade.CurrentOrder.List.Cancel")}</Button>,
+      render: (_, record) => <Button type="link" onClick={cancelOne}>{$t("Trade.CurrentOrder.List.Cancel")}</Button>,
     },
   ];
 
   return (
     <Row>
+      <Col flex="100%" className="derify-trade-all-btn">
+        <Row justify="end">
+          <Col>
+            <Button type="primary" size="small"
+                    className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block"
+                    onClick={cancelAll}
+            >
+              <FormattedMessage id="Trade.CurrentOrder.List.CancelAll" />&gt;
+            </Button>
+          </Col>
+        </Row>
+      </Col>
       <Col flex="100%">
         <Table dataSource={dataSource} columns={columns} pagination={false}  rowKey="tx" />
       </Col>

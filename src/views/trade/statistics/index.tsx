@@ -25,7 +25,7 @@ function Statistics() {
   return (
     <Row className="main-block statistics-container">
       <Col flex="100%">
-        <Tabs defaultActiveKey="1" onChange={callback}>
+        <Tabs defaultActiveKey="1" onChange={callback} className="derify-trade-tab">
           <TabPane tab={<FormattedMessage id="Trade.MyPosition.List.MyPosition" />} key="1">
             <MyPosition />
           </TabPane>
