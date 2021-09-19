@@ -55,7 +55,7 @@ import contractModel, {ContractState, PositioData} from "@/store/modules/contrac
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {Dispatch} from "redux";
-import {fromContractUnit, PositionView} from "@/utils/contractUtil";
+import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
 import {amountFormt, fck} from "@/utils/utils";
 
 
@@ -67,6 +67,11 @@ const MyPosition: React.FC = () => {
   const walletInfo = useSelector((state:RootStore) => state.user);
 
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
+
+  const [showLoading, setShowLoading] = useState<boolean>(true);
+
+  const [clickedPostion, setClickedPostion] = useState<PositionView>();
+  const [clickedTPSLPostion, setClickedTPSLPostion] = useState<PositionView>();
 
   const dispatch = useDispatch();
 
@@ -86,6 +91,7 @@ const MyPosition: React.FC = () => {
       return
     }
 
+    setShowLoading(true);
     const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
 
     loadPositionDataAction(dispatch).then((rows) => {
@@ -107,7 +113,7 @@ const MyPosition: React.FC = () => {
 
     }).catch(e => {
       console.error(`loadPositionDataAction exception: ${e}`)
-    })
+    }).finally(() => setShowLoading(false))
 
   }, [walletInfo])
 
@@ -115,7 +121,10 @@ const MyPosition: React.FC = () => {
     loadMyPositionData()
   }, [loadMyPositionData])
 
-  const closePosition = useCallback(() => {
+
+  const cancelCb = () => {};
+
+  const closeAllPosition = () => {
     Modal.confirm({
       title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
       icon: null,
@@ -130,14 +139,28 @@ const MyPosition: React.FC = () => {
       ),
       okText: $t("Trade.MyPosition.ClosePositionPopup.Confirm"),
       cancelText: $t("Trade.MyPosition.ClosePositionPopup.Cancel"),
-      onOk: okCb,
+      onOk: () => {
+        const trader = walletInfo.selectedAddress;
+        const brokerId = walletInfo.brokerId;
+
+        if(!trader || !brokerId){
+          return
+        }
+
+        const closePositionAction = contractModel.actions.closeAllPositions(trader, brokerId);
+
+        //TODO pendding
+        closePositionAction(dispatch).then(() =>{
+
+        }).catch(() => {
+
+        })
+      },
       onCancel: cancelCb,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
-  const okCb = () => {};
-  const cancelCb = () => {};
   const { formatMessage } = useIntl();
 
   function intl(id:string) {
@@ -222,7 +245,7 @@ const MyPosition: React.FC = () => {
       key: "ph",
       render: (_, record) => (
         <div>
-          <div>{fromContractUnit(record.size)}</div>
+          <div className={"main-white"}>{fromContractUnit(record.size)}</div>
           <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),
@@ -251,7 +274,7 @@ const MyPosition: React.FC = () => {
       key: "aprice",
       render: (_, record) => (
         <div>
-          <div>{amountFormt(record.averagePrice,4,false,"--", -8)}</div>
+          <div className={"main-white"}>{amountFormt(record.averagePrice,4,false,"--", -8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -280,7 +303,7 @@ const MyPosition: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div>{amountFormt(record.margin,4,false,"--",-8)}</div>
+          <div className={"main-white"}>{amountFormt(record.margin,4,false,"--",-8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -310,7 +333,7 @@ const MyPosition: React.FC = () => {
       key: "marginRate",
       render: (_, record) => (
         <div>
-          <div>{amountFormt(record.marginRate,4,false,"--",-6)}</div>
+          <div className={"main-white"}>{amountFormt(record.marginRate,4,false,"--",-6)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -339,7 +362,7 @@ const MyPosition: React.FC = () => {
       key: "liq_price",
       render: (_, record) => (
         <div>
-          <div>{amountFormt(record.liquidatePrice, 4, true,"--",-8)}</div>
+          <div className={"main-white"}>{amountFormt(record.liquidatePrice, 4, true,"--",-8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -367,12 +390,15 @@ const MyPosition: React.FC = () => {
       dataIndex: "tp",
       key: "tp",
       render: (_, record) => (
-        <Row onClick={()=>setModalVisible(true)}>
+        <Row onClick={()=> {
+          setModalVisible(true)
+          setClickedTPSLPostion(record)
+        }}>
           <Col className="derify-pointer">
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div> {$t("Trade.MyPosition.List.TP")}{fck(record.stopProfitPrice)}</div>
+            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}{fck(record.stopProfitPrice)}</div>
             <div> {$t("Trade.MyPosition.List.StopLoss")}{fck(record.stopProfitPrice)}</div>
           </Col>
         </Row>
@@ -381,8 +407,11 @@ const MyPosition: React.FC = () => {
     {
       dataIndex: "operate",
       key: "operate",
-      render: () => (
-        <Button type="link" onClick={() => setIsModalVisible(true)}>
+      render: (_,record) => (
+        <Button type="link" onClick={() => {
+          setIsModalVisible(true)
+          setClickedPostion(record)
+        }}>
           <FormattedMessage id="Trade.MyPosition.List.Close" />&gt;
         </Button>
       ),
@@ -393,20 +422,22 @@ const MyPosition: React.FC = () => {
       <Col flex="100%" className="derify-trade-all-btn">
         <Row justify="end">
           <Col>
-            <Button  type="primary" size="small" onClick={closePosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
+            <Button  type="primary" size="small" onClick={closeAllPosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
               <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
             </Button>
           </Col>
         </Row>
       </Col>
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false} rowKey="tx"/>
+        <Table dataSource={dataSource} columns={columns} pagination={false} rowKey="tx" loading={showLoading}/>
       </Col>
       <CloseModal
+        position={clickedPostion}
         visible={isModalVisible}
+        closeModal={() => setIsModalVisible(false)}
         onCancel={() => setIsModalVisible(false)}
       />
-      <TPAndSLModal  visible={modalVisible} onCancel={() => setModalVisible(false)}/>
+      <TPAndSLModal position={clickedTPSLPostion} closeModal={() => setModalVisible(false)}  visible={modalVisible} onCancel={() => setModalVisible(false)}/>
     </Row>
   );
 };

@@ -5,7 +5,7 @@ import { ColumnsType } from "antd/es/table";
 import {Row, Col, Table, Button, Popover, Space, Modal} from "antd";
 import {FormattedMessage, useIntl} from "react-intl";
 import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";
-import {fromContractUnit, OrderTypeEnum, PositionView} from "@/utils/contractUtil";
+import {CancelOrderedPositionTypeEnum, fromContractUnit, OrderTypeEnum, PositionView} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {amountFormt, dateFormat} from "@/utils/utils";
@@ -36,6 +36,7 @@ function CurrentOrder() {
   const walletInfo = useSelector((state:RootStore) => state.user);
 
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
+  const [showLoading, setShowLoading] = useState<boolean>(true);
 
 
   const getPairByAddress = (token:string) => {
@@ -70,6 +71,7 @@ function CurrentOrder() {
       return
     }
 
+    setShowLoading(true);
     const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
 
     loadPositionDataAction(dispatch).then((rows) => {
@@ -91,7 +93,7 @@ function CurrentOrder() {
 
     }).catch(e => {
       console.error(`loadPositionDataAction exception: ${e}`)
-    })
+    }).finally(() => setShowLoading(false))
 
   }, [walletInfo])
 
@@ -103,44 +105,96 @@ function CurrentOrder() {
 
   },[]);
 
-  const cancelAll = useCallback(() => {
+  const cancelAll = () => {
     Modal.confirm({
-      title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
+      title: formatMessage({ id: "Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder" }),
       icon: null,
       content: (
         <div>
           <p>
-            {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
+            {$t("Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder")}
           </p>
         </div>
       ),
       okText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
       cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
-      onOk: okCb,
+      onOk: () => {
+        const trader = walletInfo.selectedAddress;
+        if(!trader) {
+          return
+        }
+
+
+        const cancelAllOrderAction = contractModel.actions.cancleAllOrderedPositions(trader)
+        //TODO pendding
+        cancelAllOrderAction(dispatch).then(() => {
+
+        }).finally(() => {
+
+        })
+
+      },
       onCancel: cancelCb,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
 
-  const cancelOne = useCallback(() => {
+  const cancelOne = (order:OrderPositionData) => {
     Modal.confirm({
-      title: formatMessage({ id: "Trade.CurrentOrder.CancelOrderPopup" }),
+      title: formatMessage({ id: "Trade.CurrentOrder.CancelOrderPopup.CancelOneOrder" }),
       icon: null,
       content: (
         <div>
           <p>
-            {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
+            {$t("Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo")}
           </p>
         </div>
       ),
       okText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
       cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
-      onOk: okCb,
+      onOk: () => {
+        const trader = walletInfo.selectedAddress;
+        if(!trader) {
+          return
+        }
+
+        let closeType = 0;
+
+
+        if(order.orderType === OrderTypeEnum.LimitOrder){
+          closeType = CancelOrderedPositionTypeEnum.LimitedOrder
+        }
+
+        if(order.orderType === OrderTypeEnum.StopLossOrder){
+          closeType = CancelOrderedPositionTypeEnum.StopLossOrder
+        }
+
+        if(order.orderType === OrderTypeEnum.StopProfitOrder){
+          closeType = CancelOrderedPositionTypeEnum.StopProfitOrder
+        }
+
+
+
+        const params = {
+          trader,
+          token:order.token,
+          closeType: closeType,
+          side:order.side,
+          timestamp:order.timestamp
+        }
+
+
+        const cancelAllOrderAction = contractModel.actions.cancleOrderedPosition(params)
+        //TODO pendding
+        cancelAllOrderAction(dispatch).then(() => {
+
+        }).finally(() => {
+
+        })
+      },
       onCancel: cancelCb,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  };
 
   useEffect(() => {
     loadMyPositionData()
@@ -267,7 +321,7 @@ function CurrentOrder() {
       dataIndex: "operate",
       key: "operate",
       width: 100,
-      render: (_, record) => <Button type="link" onClick={cancelOne}>{$t("Trade.CurrentOrder.List.Cancel")}</Button>,
+      render: (_, record) => <Button type="link" onClick={() => cancelOne(record)}>{$t("Trade.CurrentOrder.List.Cancel")}&gt;</Button>,
     },
   ];
 
@@ -280,13 +334,13 @@ function CurrentOrder() {
                     className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block"
                     onClick={cancelAll}
             >
-              <FormattedMessage id="Trade.CurrentOrder.List.CancelAll" />&gt;
+              <FormattedMessage id="Trade.CurrentOrder.List.CancelAll" />
             </Button>
           </Col>
         </Row>
       </Col>
       <Col flex="100%">
-        <Table dataSource={dataSource} columns={columns} pagination={false}  rowKey="tx" />
+        <Table dataSource={dataSource} columns={columns} pagination={false}  loading={showLoading} rowKey="tx" />
       </Col>
     </Row>
   );

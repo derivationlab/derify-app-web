@@ -93,7 +93,7 @@ const TradeHistory: React.FC = () => {
 
     }).catch(e => {
       console.log('getTradeBalanceDetail',e)
-    }).finally(() => showLoading)
+    }).finally(() => setShowLoading(false))
   }, [pageNum,walletInfo])
 
   const getPairByAddress = (token:string) => {
@@ -308,7 +308,7 @@ const TradeHistory: React.FC = () => {
       key: "tp",
       render: (_, record) => (
         <div>
-          <div className="main-white">{amountFormt(-record.position_change_fee,2,false,"--")}</div>
+          <div className={classNames("main-white", )}>{amountFormt(-record.position_change_fee,2,false,"--")}</div>
           <div>USDT</div>
         </div>
       ),
@@ -348,8 +348,8 @@ const TradeHistory: React.FC = () => {
       key: "event_time",
       render: (_,record) => (
         <div>
-          <div className="main-white">{dateFormat(new Date(record.event_time*1000), "yyyy-MM-dd")}</div>
-          <div>{dateFormat(new Date(record.event_time*1000), "hh:mm:ss")}</div>
+          <div className="main-white">{dateFormat(new Date(record.event_time), "yyyy-MM-dd")}</div>
+          <div>{dateFormat(new Date(record.event_time), "hh:mm:ss")}</div>
         </div>
       ),
     },
@@ -358,24 +358,9 @@ const TradeHistory: React.FC = () => {
 
   return (
     <Row>
-      <Col flex="100%" className="derify-trade-all-btn">
-        <Row justify="end">
-          <Col>
-            <Button type="primary" size="small" className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block"
-            >
-              <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
-            </Button>
-          </Col>
-        </Row>
-      </Col>
       <Col flex="100%">
         <Table dataSource={records} columns={columns} pagination={false} rowKey={"id"} loading={showLoading}/>
       </Col>
-      <CloseModal
-        visible={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-      />
-      <TPAndSLModal  visible={modalVisible} onCancel={() => setModalVisible(false)}/>
     </Row>
   );
 };
