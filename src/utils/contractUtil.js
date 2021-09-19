@@ -593,11 +593,9 @@ export default class Contract {
   }
   /**
    * Cancel all orders
-   * @param token
-   * @param trader
    * @return {*}
    */
-  cancleAllOrderedPositions (token, trader) {
+  cancleAllOrderedPositions () {
     return this.DerifyExchange.methods.cancleAllOrderedPositions().send()
   }
 

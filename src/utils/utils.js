@@ -53,3 +53,29 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
 
   return num
 }
+
+/**
+ * number validate
+ * @param value {string}
+ * @param maxNum {number}
+ * @returns {{success: boolean, value: string|null}}
+ */
+export function checkNumber(value, maxNum= Infinity){
+  if(/^(\d+(.\d*)?)?$/.test(value)){
+    let size = parseFloat(value)
+
+    if(size > maxNum){
+      value = maxNum.toString()
+    }
+
+    const retValue = value.replace(/[^0-9.]/g,'')
+
+    if(size <= 0) {
+      return {success: false, value: retValue}
+    }else{
+      return {success: true, value: retValue}
+    }
+  }
+
+  return {success: true, value: null}
+}

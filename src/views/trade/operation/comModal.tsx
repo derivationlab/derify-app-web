@@ -1,24 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Modal } from "antd";
 import { ModalProps } from "antd/es/modal";
-import { FormattedMessage } from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import { useToggle } from "react-use";
 import { OpenType, RateType } from "./index";
 import classNames from "classnames";
 import ModalTips from "@/views/CommonViews/ModalTips";
+import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";
 
 enum typeColor {
   "trade.modal.buy" = "main-green",
   "trade.modal.sell" = "main-red",
   "trade.two.way" = "main-color",
 }
-interface ComModalProps extends ModalProps {
+export interface ComModalProps extends ModalProps {
   type: OpenType;
   rate: RateType;
   closeModal:()=>void
 }
 
 const ComModal: React.FC<ComModalProps> = props => {
+  const {formatMessage} = useIntl();
+
+  function intl<T = PrimitiveType | FormatXMLElementFn<string, string>>(id:string,values:T[] = []) {
+
+    const intlValues:{[key:number]:T} = {}
+
+    values.forEach((item, index) => {
+      intlValues[index] = item
+    })
+
+
+    return formatMessage({id}, intlValues)
+  }
+
+  const $t = intl;
+
+
   const [isModalShow, setModalShow] = useState(false);
   const { type, rate,closeModal, ...others } = props;
   const [error, toggle] = useToggle(false);
@@ -68,7 +86,7 @@ const ComModal: React.FC<ComModalProps> = props => {
     <>
       <Modal
         width={300}
-        title={"开仓确认"}
+        title={$t("Trade.OpenPosition.OpenPopup.OpenConfirm")}
         getContainer={false}
         focusTriggerAfterClose={false}
         {...others}
