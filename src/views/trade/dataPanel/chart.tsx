@@ -4,8 +4,6 @@ import CommonCharts from '@/components/charts';
 
 import getEchartsOptions, {buildEchartsOptions} from "@/utils/kline";
 import {ModalProps} from "antd/es/modal";
-import {OpenType, RateType} from "@/views/trade/operation";
-import {useDebounce} from "react-use";
 import {useLocation} from "react-router-dom";
 
 function splitData(rawData: any) {

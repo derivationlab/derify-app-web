@@ -388,7 +388,7 @@ export default class Contract {
    * @param openType enum OpenType { MarketOrder, LimitOrder }
    * @param price
    * @param leverage
-   * @return {*}
+   * @return {{amount:0,size:0}}
    */
   getTraderOpenUpperBound ({token, trader, openType, price, leverage}) {
     return this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
@@ -629,13 +629,11 @@ export default class Contract {
    * @param size
    * @param price
    */
-  async getPositionChangeFee (token, side, actionType, size, price) {
+  async getPositionChangeFee ({token, side, actionType, size, price}) {
     const ratioSum = await this.__getPredictPositionChangeFeeRatioSum(token, side,
       size,
       price,
       actionType)
-
-    console.log('__getPredictPositionChangeFeeRatioSum:' + ratioSum)
     return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price, ratioSum).call()
   }
 

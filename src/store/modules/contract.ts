@@ -28,6 +28,11 @@ export declare type TokenPair = {
   address: string
 }
 
+export declare type OpenUpperBound = {
+  amount: number|string;
+  size: number|string;
+}
+
 export declare type ContractData = {
   positionChangeFeeRatio: string,
   traderOpenUpperBound: {size: number, amount: number},
@@ -263,8 +268,8 @@ const actions = {
       return closeUpperBound
     }
   },
-  openPosition (trader:string, token:string,side:SideEnum, size:number|string
-                , openType:OpenType, price:string|number, leverage:string|number, brokerId:string) {
+  openPosition ({trader, token, side, openType, size, price, leverage,brokerId}:{trader:string, token:string,side:SideEnum, size:number|string
+  , openType:OpenType, price:string|number, leverage:string|number, brokerId:string}) {
     return async (dispatch:Dispatch) => {
       if(!trader){
         return
@@ -344,7 +349,7 @@ const actions = {
     // load home page data
     const self = this
     return async (commit:Dispatch) => {
-      const data = {curSpotPrice: 0, positionChangeFeeRatio: 0, traderOpenUpperBound: 0, sysOpenUpperBound: 0}
+      const data = {curSpotPrice: 0, positionChangeFeeRatio: 0, traderOpenUpperBound: {amount:0,size:0}, sysOpenUpperBound: 0}
       if(!trader){
         return {}
       }
@@ -386,22 +391,16 @@ const actions = {
       return data
     }
   },
-  getSysOpenUpperBound (trader:string, side:SideEnum) {
+  getSysOpenUpperBound (trader:string, side:SideEnum, token:string) {
     return async (commit:Dispatch) => {
       if(!trader){
-        return 0
-      }
-
-      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
-
-      if(!curPair){
-        return 0
+        return {amount: 0, size: 0}
       }
 
       const contract = web3Utils.contract(trader)
-      let sysOpenUpperBound = {size: Infinity}
+      let sysOpenUpperBound = {size: Infinity, amount: Infinity}
       if(side !== SideEnum.HEDGE) {
-        sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side})
+        sysOpenUpperBound = await contract.getSysOpenUpperBound({token: token, side})
       }
 
       commit({type:'SET_CONTRACT_DATA', payload:{sysOpenUpperBound}})
@@ -496,6 +495,13 @@ const actions = {
       return accountData
     }
   },
+  getOpenUpperBoundMaxSize(traderOpenUpperBound:OpenUpperBound, token:number):number {
+    if (token ===  UnitTypeEnum.USDT) {
+      return fromContractUnit(traderOpenUpperBound.amount,2)
+    }else{
+      return fromContractUnit(traderOpenUpperBound.size,4)
+    }
+  },
   loadPositionData(trader:string):(commit:Dispatch) => Promise<{positionData:PositionDataView|null,pair: TokenPair|null}[]> {
     return async (commit:Dispatch) : Promise<{positionData:PositionDataView|null,pair: TokenPair|null}[]> => {
       if(!trader) {
@@ -525,24 +531,16 @@ const actions = {
       return Promise.resolve(positionDatas)
     }
   },
-  getTraderOpenUpperBound ({trader,openType, price, leverage}:{trader:string,openType:OpenType, price:string|number, leverage:number|string}) {
+  getTraderOpenUpperBound ({trader, token,openType, price, leverage}:{trader:string,token:string,openType:OpenType, price:string|number, leverage:number|string}):(commit:Dispatch)=>Promise<OpenUpperBound> {
     return async (commit:Dispatch) => {
 
       if(!trader){
-        return {}
+        return {amount: 0, size: 0}
       }
-
-      let coin = state.pairs.find(pair => pair.key === state.curPairKey)
-
-      if(!coin){
-        return {}
-      }
-
-      const token = coin.address;
 
       const contract = web3Utils.contract(trader)
 
-      const data = await contract.getTraderOpenUpperBound({token: token
+      const data = await contract.getTraderOpenUpperBound({token
         , trader, openType, price, leverage})
 
       const update = Object.assign({}, state.contractData, {traderOpenUpperBound: data})
@@ -556,28 +554,16 @@ const actions = {
   getTraderTradeBalanceDetail ({trader, page = 0, size = 10}:{trader:string,page:number,size:number}) {
     return getTradeBalanceDetail(trader, page, size)
   },
-  getPositionChangeFee ({trader,side, actionType, size, price}:{trader:string,side:SideEnum, actionType:number, size:number|string, price:number|string}) {
+  getPositionChangeFee ({trader, token, side, actionType, size, price}:{trader:string,token:string,side:SideEnum, actionType:number, size:number|string, price:number|string}) {
     return async (commit:Dispatch) => {
       if(!trader){
         return {}
       }
-
-      let token = state.pairs.find(pair => pair.key === state.curPairKey)
-
-      if (!token) {
-        return
-      }
-
-      return await web3Utils.contract(trader).getPositionChangeFee(token.address, side, actionType, size, price)
+      return await web3Utils.contract(trader).getPositionChangeFee({token, side, actionType, size, price})
     }
   },
-  getTradingFee (trader:string, size:string|number, price:string|number) {
-    let coin = state.pairs.find(pair => pair.key === state.curPairKey)
-
-    if (coin === undefined) {
-      return {}
-    }
-    return web3Utils.contract(trader).getTradingFee(coin.address, size, price)
+  getTradingFee (token:string, trader:string, size:string|number, price:string|number):Promise<number> {
+    return web3Utils.contract(trader).getTradingFee(token, size, price)
   },
   onDeposit (trader:string) {
     return async (commit:Dispatch) => {
