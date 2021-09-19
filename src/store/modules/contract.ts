@@ -21,10 +21,10 @@ import {CHANGE_LANG} from "@/store/modules/app/types";
 const tokenPriceRateEnventMap:{[key:string]:EventSource} = {};
 export declare type TokenPair = {
   key: string,
-  name?: string,
-  num?: number,
-  percent?: number,
-  enable?: boolean,
+  name: string,
+  num: number,
+  percent: number,
+  enable: boolean,
   address: string
 }
 
@@ -227,19 +227,39 @@ const actions = {
       dispatch({type: 'SET_CURSPOTPRICE', payload: spotPrice})
     }
   },
+  updateTokenSpotPrice (trader:string,token:string) {
+    return async (commit:Dispatch) => {
+      const matchPair = this.getPairByAddress(token)
+
+      if(matchPair.key === 'unknown'){
+        return
+      }
+
+      web3Utils.contract(trader).getSpotPrice(token).then((spotPrice) => {
+        commit({type:'UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: matchPair.key}]})
+      })
+    }
+  },
+  getPairByAddress (token:string) {
+    const pair = state.pairs.find((pair) => pair.address === token)
+    if(!pair){
+      return {name: 'unknown', key: 'unknown', num: 0}
+    }
+
+    return pair
+  },
   getCloseUpperBound (trader:string, token:string, side:SideEnum) {
 
     return async (dispatch:Dispatch) => {
 
       if(!trader || token === undefined || side === undefined){
-        return
+        return 0
       }
-      let closeUpperBound = { size: Infinity}
+      let closeUpperBound = Infinity
       if(side !== SideEnum.HEDGE) {
         closeUpperBound = await web3Utils.contract(trader).getCloseUpperBound({token, trader, side})
       }
 
-      dispatch( {type: 'SET_CONTRACT_DATA', payload: {closeUpperBound}})
       return closeUpperBound
     }
   },
@@ -300,7 +320,7 @@ const actions = {
    * @param timestamp
    * @returns {Promise<void>}
    */
-  cancleOrderedPosition (params:{trader:string, token:string, closeType:CancelOrderedPositionTypeEnum, side:string, timestamp:string}) {
+  cancleOrderedPosition (params:{trader:string, token:string, closeType:CancelOrderedPositionTypeEnum, side: SideEnum, timestamp: number}) {
     return async (dispatch:Dispatch) => {
       if(!params.trader){
         return false
@@ -310,14 +330,14 @@ const actions = {
         .cancleOrderedPosition(params)
     }
   },
-  cancleAllOrderedPositions ({trader,token}:{token:string,trader:string}) {
+  cancleAllOrderedPositions (trader:string) {
     return async(dispatch:Dispatch) => {
       if(!trader){
         return false
       }
 
       return await web3Utils.contract(trader)
-        .cancleAllOrderedPositions(token, trader)
+        .cancleAllOrderedPositions()
     }
   },
   loadHomeData ({trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {
