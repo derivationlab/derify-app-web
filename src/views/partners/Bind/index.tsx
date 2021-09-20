@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useCallback, useState} from "react";
 import { Row, Col, Button, Space, Input, Tabs, message } from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { bindPartners } from "@/store/modules/app/actions";
@@ -26,14 +26,9 @@ const Bind: React.FC<BindProps> = props => {
     return formatMessage({id})
   }
 
-  const doBindBroker = async(dispatch:Dispatch) => {
+  const doBindBroker = useCallback(async (brokerId) => {
     if(!walletInfo.selectedAddress) {
       message.error('no login');
-      return false
-    }
-
-    if (!partners) {
-      message.error('error partners');
       return false
     }
 
@@ -50,14 +45,15 @@ const Bind: React.FC<BindProps> = props => {
 
     const trader = walletInfo.selectedAddress;
 
-    const data = await bindBroker({trader, brokerId})
+    const data = await bindBroker({trader, brokerId});
 
     if(data.success) {
       history.push("/home/trade")
     }else{
       message.error(data.msg);
     }
-  };
+  },[walletInfo]);
+
   const tabsChange = () => {
     setTabsIndex(val => {
       return val === "1" ? "2" : "1";
@@ -85,7 +81,9 @@ const Bind: React.FC<BindProps> = props => {
             </Row>
           </TabPane>
           <TabPane tab="" key="2">
-            <PartnersList selectParners={setPartnersCb} />
+            <PartnersList onSelectBroker={(item) => {
+              setBrokerId(item.id);
+            }} />
           </TabPane>
         </Tabs>
         <Row>
@@ -93,7 +91,7 @@ const Bind: React.FC<BindProps> = props => {
             <Row>
               <Space size={24}>
                 <Col>
-                  <Button type="primary" onClick={() => dispatch(doBindBroker)}>
+                  <Button type="primary" onClick={() => doBindBroker(brokerId)}>
                     {intl("Trade.BrokerBind.BrokerCodes.Submit")}
                   </Button>
                 </Col>
