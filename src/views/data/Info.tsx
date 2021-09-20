@@ -1,40 +1,63 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Row, Col, Space } from "antd";
 import { useIntl } from "react-intl";
-
-const listArr: Array<{
-  pre?: string;
-  aft?: string;
-  key: string;
-  val: number;
-  type: string;
-}> = [
-  { pre: "DRF", key: "data.price", val: 123.12, type: "USDT" },
-  {
-    pre: "DRF",
-    key: "data.total.destroyed.volume",
-    val: 1234567890.12,
-    type: "DRF",
-  },
-  {
-    pre: "DRF",
-    aft: "(USDT)",
-    key: "待回购销毁",
-    val: 1234567890.12,
-    type: "USDT",
-  },
-  { pre: "eDRF", key: "data.price", val: 9.12, type: "USDT" },
-  { pre: "bDRF", key: "data.price", val: 1.01, type: "USDT" },
-  { key: "data.bond.pool.balance", val: 1234567890.12, type: "USDT" },
-];
+import {useDispatch} from "react-redux";
+import {DataModel} from "@/store";
+import {fck} from "@/utils/utils";
 
 function Info() {
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
+
+  const [tokenData, setTokenData] = useState<{edrfPrice: number, drfPrice: number, drfBuyBack: number, bdrfPrice: number, drfBurnt: number}>({
+    drfPrice: 0,
+    drfBurnt: 0,
+    drfBuyBack: 0,
+    bdrfPrice:0,
+    edrfPrice: 0
+  });
+
+  const listArr: Array<{
+    pre?: string;
+    aft?: string;
+    key: string;
+    val: number;
+    type: string;
+  }> = [
+    { pre: "DRF", key: "Data.Data.Token.Price", val: fck(tokenData.drfPrice,0,2), type: "USDT" },
+    {
+      pre: "DRF",
+      key: "Data.Data.Token.TotalDestroyedVolume",
+      val: fck(tokenData.drfBurnt,0,2),
+      type: "DRF",
+    },
+    {
+      pre: "DRF",
+      aft: "(USDT)",
+      key: "Data.Data.Token.BuyBackFundBalance",
+      val: fck(tokenData.drfBuyBack,0,2),
+      type: "USDT",
+    },
+    { pre: "eDRF", key: "Data.Data.Token.Price", val: tokenData.edrfPrice, type: "USDT" },
+    { pre: "bDRF", key: "Data.Data.Token.Price", val: tokenData.bdrfPrice, type: "USDT" },
+    // { key: "data.bond.pool.balance", val: tokenData., type: "USDT" },
+  ];
+
+  useEffect(() => {
+    const loadTokenInfoDataAction = DataModel.actions.loadTokenInfoData();
+    loadTokenInfoDataAction(dispatch).then((data) => {
+      setTokenData(data.current);
+    }).catch(e => {
+      console.log("loadTokenInfoDataAction", e)
+    })
+  }, [])
+
+
   return (
     <Row className="main-block info-container" gutter={[0, 33]}>
       <Col flex="100%">
         <Row justify="space-between" align="middle">
-          <Col className="title">{formatMessage({ id: "data.info" })}</Col>
+          <Col className="title">{formatMessage({ id: "Data.Data.Token.TokenInfo" })}</Col>
         </Row>
       </Col>
       {listArr.map((item,i) => (

@@ -5,7 +5,7 @@ import * as configUtil from '../config'
  * get history trading data
  * @param token
  * @param days
- * @return {Promise<[{trading_fee: number, day_time: string, trading_amount: number}]>}
+ * @return {Promise<{trading_fee: number, day_time: string, trading_amount: number}[]>}
  */
 export async function getHistoryTradingData(token, days=30) {
   const content =  await io.get(`/api/history_trading_amount/${token}/${days}`)
@@ -78,7 +78,7 @@ export async function getCurrentInsurancePoolData() {
 /**
  *
  * @param days
- * @return {Promise<{insurance_pool: number, day_time: string}|*>}
+ * @return {Promise<{insurance_pool: number, day_time: string}[]>}
  */
 export async function getHistoryInsurancePoolData(days = 30) {
   const content =  await io.get(`/api/history_insurance_pool/${days}`)
@@ -100,7 +100,7 @@ export async function getHistoryInsurancePoolData(days = 30) {
 
 /**
  *
- * @return {Promise<{edrfPrice: number, drfPrice: number, drfBuyBack: number, bdrfPrice: number, drfBurnt: number}|*>}
+ * @return {Promise<{edrfPrice: number, drfPrice: number, drfBuyBack: number, bdrfPrice: number, drfBurnt: number}>}
  */
 export async function getCurrentIndexData() {
   const content =  await io.get(`/api/current_index_data`)
@@ -109,11 +109,11 @@ export async function getCurrentIndexData() {
   }
 
   return {
-    "drfPrice": 0,
-    "drfBurnt": 0,
-    "drfBuyBack": 0,
-    "edrfPrice": 0,
-    "bdrfPrice": 0
+    drfPrice: 0,
+    drfBurnt: 0,
+    drfBuyBack: 0,
+    bdrfPrice:0,
+    edrfPrice: 0
   };
 }
 

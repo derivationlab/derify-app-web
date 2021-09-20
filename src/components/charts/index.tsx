@@ -33,7 +33,7 @@ echarts.use([
 interface CommonChartsProps extends React.PropsWithChildren<any> {
   height?: number;
   width?: number;
-  options: any;
+  options?: any;
 }
 
 const CommonCharts: React.FC<CommonChartsProps> = forwardRef((props,ref) => {
@@ -52,28 +52,35 @@ const CommonCharts: React.FC<CommonChartsProps> = forwardRef((props,ref) => {
   );
 
   const setCharOptions = (options:any) => {
-    chartInstance.setOption(options)
+    initChart(options);
   }
 
   useImperativeHandle(ref,() =>({
     setCharOptions: setCharOptions
   }))
 
-  const initChart = () => {
+  const initChart = (options:any) => {
     const myChart = echarts.getInstanceByDom(
       chartDom.current as unknown as HTMLDivElement
     );
-    if (myChart) chartInstance = myChart;
-    else
+    if (myChart) {
+      chartInstance = myChart
+    }
+    else{
       chartInstance = echarts.init(
         chartDom.current as unknown as HTMLDivElement
       );
-    chartInstance.setOption(props.options);
+    }
+
+    if(options){
+      chartInstance.setOption(options);
+    }
+
 
   };
 
   useEffect(() => {
-    initChart();
+    initChart(props.options);
   });
   return <div style={{ height: `${props.height || 300}px` }} ref={chartDom} />;
 });
