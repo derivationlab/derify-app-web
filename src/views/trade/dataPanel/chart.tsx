@@ -16,7 +16,7 @@ interface ChartModalProps extends ModalProps {
   curPrice: string|number
   closeModal?:()=>void
 }
-let keyLineChartTime = 0;
+let keyLineChartTime:NodeJS.Timeout|null = null;
 const Chart: React.FC<ChartModalProps> = props => {
   const location = useLocation()
   const chartRef = useRef<any>()
@@ -34,15 +34,21 @@ const Chart: React.FC<ChartModalProps> = props => {
   }, [chartRef])
 
   useEffect(() => {
-    setInterval(() => {
+
+    if(keyLineChartTime !== null){
+      clearInterval(keyLineChartTime)
+    }
+
+    keyLineChartTime = setInterval(() => {
 
       if(location.pathname !== '/trade'){
         return;
       }
+      console.log(token,bar,after,before,limit,curPrice)
       updateChartKlineData(token,bar,after,before,limit,curPrice)
 
     }, 15000)
-  },[]);
+  },[token,bar,after,before,limit,curPrice]);
 
   useEffect(() => {
     updateChartKlineData(token,bar,after,before,limit,curPrice);
