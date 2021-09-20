@@ -68,7 +68,7 @@ export async function getBrokerByBrokerId(brokerId) {
 /**
  * get broker info by trader address
  * @param trader
- * @return {Promise<{}|BrokerInfo>}
+ * @return {Promise<BrokerInfo|null>}
  */
 export async function getBrokerByTrader(trader) {
   const content = await io.get(`/api/broker_info_by_addr/${trader}`)
@@ -76,13 +76,13 @@ export async function getBrokerByTrader(trader) {
     return content.data[0]
   }
 
-  return {}
+  return null
 }
 
 /**
  * update broker info
  * @param param
- * @return {Promise<{msg, success: boolean}|{msg: string, success: boolean}>}
+ * @return {Promise<{msg, success: boolean,data:BrokerInfo}>}
  */
 export async function updateBroker(param) {
   var data = new FormData();
@@ -97,12 +97,12 @@ export async function updateBroker(param) {
   const content =  await io.post(`/api/broker_info_updates`, data, config)
 
   if(content && content.msg) {
-    return {success: true, msg: content.msg}
+    return {success: true, msg: content.msg, data: content.data}
   }else if(content && content.error){
-    return {success: false, msg: content.error}
+    return {success: false, msg: content.error,data: undefined}
   }
 
-  return {success: false, msg: 'unknown'};
+  return {success: false, msg: 'unknown',data: undefined};
 }
 
 /**
@@ -127,7 +127,7 @@ export async function getBrokerTodayReward(trader, start=(new Date()).Format('yy
  * @param broker
  * @param page
  * @param size
- * @return {Promise<[]|BrokerHistoryRecord>}
+ * @return {Promise<BrokerHistoryRecord[]>}
  */
 export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
   const content = await io.get(`/api/broker_reward_balance/${broker}/${page}/${size}`)
@@ -144,7 +144,7 @@ export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
  * @param broker
  * @param page
  * @param size
- * @return {Promise<*[]|{trader: String, update_time: Date}>}
+ * @return {Promise<{trader: String, update_time: Date}[]>}
  */
 export async function getbrokerBindTraders(broker, page = 0, size = 10) {
   const content = await io.get(`/api/traders_of_broker/${broker}/${page}/${size}`)

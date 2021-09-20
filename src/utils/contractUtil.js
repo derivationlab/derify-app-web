@@ -792,16 +792,18 @@ export default class Contract {
    * @param amount apply data
    * @return {Promise<*>}
    */
-  applyBroker(accountType,amount = toContractNum(60000)) {
+  applyBroker(accountType,amount = toContractUnit(60000)) {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
 
-      if(accountType === BondAccountType.DerifyAccount) {
-        resolve(true)
-        return
+      let approveRet = false;
+      if(accountType === BondAccountType.WalletAccount) {
+        approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      }else{
+        approveRet = true;
       }
 
-      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+
       if(approveRet){
         try{
           await this.DerifyRewards.methods.applyBroker(accountType).send()
@@ -824,12 +826,13 @@ export default class Contract {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
 
-      if(accountType === BondAccountType.DerifyAccount) {
-        resolve(true)
-        return
+      let approveRet = false;
+      if(accountType === BondAccountType.WalletAccount) {
+        approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
+      }else{
+        approveRet = true;
       }
 
-      const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
       if(approveRet){
         try{
           await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send()

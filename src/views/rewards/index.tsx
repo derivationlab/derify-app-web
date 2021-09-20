@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import IconFont from "@/components/IconFont";
-import { FormattedMessage } from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import { Row, Col, Button, Space, Statistic } from "antd";
 import { Link } from "react-router-dom";
 import TransactionHistory from "./TransactionHistory";
@@ -15,6 +15,15 @@ function Rewards() {
   const [rewardsType, setRewardsType] = useState<RewardsType>("bDRF");
   const [operateType, setOperateType] =
     useState<OperateType>("rewards.withdraw");
+
+  const { formatMessage } = useIntl();
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl;
+
   return (
     <Row className="rewards-page" gutter={[0, 20]}>
       <Col flex="100%" className="main-block">
@@ -25,7 +34,7 @@ function Rewards() {
                 <Statistic value={"23456.89"} />
               </Col>
               <Col flex="100%" className="main-white key-wrapper">
-                <FormattedMessage id="rewards.position.mining" />
+                <FormattedMessage id="Rewards.Mining.Card.PositionMining" />
                 （USDT）
               </Col>
               <Col flex="100%">
@@ -37,7 +46,7 @@ function Rewards() {
                     setOperateType("rewards.withdraw");
                   }}
                 >
-                  <FormattedMessage id="rewards.withdraw" />
+                  <FormattedMessage id="Rewards.Mining.Card.Withdraw" />
                 </Button>
               </Col>
             </Row>
@@ -48,11 +57,11 @@ function Rewards() {
                 <Statistic value={"23456.89"} />
               </Col>
               <Col flex="100%" className="key-wrapper">
-                <FormattedMessage id="rewards.position.held" /> (USDT)
+                <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> (USDT)
               </Col>
               <Col flex="100%">
-                <Link to={'/home/trade'}>
-                  <Button type="primary">双向开仓</Button>
+                <Link to={'/trade'}>
+                  <Button type="primary">{$t('Rewards.Mining.Card.OpenPosition')}</Button>
                 </Link>
               </Col>
             </Row>
@@ -63,7 +72,7 @@ function Rewards() {
                 <Statistic value={"23456.89"} />
               </Col>
               <Col flex="100%" className="key-wrapper">
-                <FormattedMessage id="rewards.accumulated.reward" /> (USDT)
+                <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> (USDT)
               </Col>
               <Col flex="100%">
                 <Button
@@ -73,7 +82,7 @@ function Rewards() {
                     setRewardsType("USDT");
                   }}
                 >
-                  <FormattedMessage id="rewards.transaction.history" />
+                  <FormattedMessage id="Rewards.Mining.Card.TransactionHistory" />
                   <IconFont type="icon-right-arr" />
                 </Button>
               </Col>
@@ -89,7 +98,7 @@ function Rewards() {
                 <Statistic value={"0"} />
               </Col>
               <Col flex="100%" className="main-white key-wrapper">
-                <FormattedMessage id="rewards.stak.equity" /> eDRF (eDRF)
+                <FormattedMessage id="Rewards.Staking.Card.eDRFAccount" /> eDRF (eDRF)
               </Col>
               <Col flex="100%">
                 <Button
@@ -100,7 +109,7 @@ function Rewards() {
                     setOperateType("rewards.withdraw");
                   }}
                 >
-                  <FormattedMessage id="rewards.withdraw" />
+                  <FormattedMessage id="Rewards.Staking.Card.Withdraw" />
                 </Button>
               </Col>
             </Row>
@@ -111,7 +120,7 @@ function Rewards() {
                 <Statistic value={"12345.67"} />
               </Col>
               <Col flex="100%" className="key-wrapper">
-                DRF <FormattedMessage id="rewards.stak.amount" /> （DRF）
+                <FormattedMessage id="Rewards.Staking.Card.StakAmount(DRF)" />
               </Col>
               <Col flex="100%">
                 <Space>
@@ -123,7 +132,7 @@ function Rewards() {
                       setOperateType("rewards.staking");
                     }}
                   >
-                    <FormattedMessage id="rewards.staking" />
+                    <FormattedMessage id="Rewards.Staking.Card.Staking" />
                   </Button>
                   <Button
                     type="ghost"
@@ -133,7 +142,7 @@ function Rewards() {
                       setOperateType("rewards.redeem");
                     }}
                   >
-                    <FormattedMessage id="rewards.redeem" />
+                    <FormattedMessage id="Rewards.Staking.Card.Redeem" />
                   </Button>
                 </Space>
               </Col>
@@ -145,8 +154,7 @@ function Rewards() {
                 <Statistic value={"112.34"} />{" "}
               </Col>
               <Col flex="100%" className="key-wrapper">
-                <FormattedMessage id="rewards.daily.yield" />
-                (eDRF)
+                <FormattedMessage id="Rewards.Staking.Card.DailyYield(eDRF)" />
               </Col>
               <Col flex="100%">
                 <Button
@@ -156,7 +164,7 @@ function Rewards() {
                     setRewardsType("eDRF");
                   }}
                 >
-                  <FormattedMessage id="rewards.transaction.history" />
+                  <FormattedMessage id="Rewards.Staking.Card.TransactionHistory" />
                   <IconFont type="icon-right-arr" />
                 </Button>
               </Col>
@@ -172,7 +180,7 @@ function Rewards() {
                 <Statistic value={"0"} />
               </Col>
               <Col flex="100%" className="main-white key-wrapper">
-                <FormattedMessage id="rewards.redeemable" /> bDRF (bDRF)
+                <FormattedMessage id="Rewards.Bond.Card.bDRFAccount" />
               </Col>
               <Col flex="100%">
                 <Space>
@@ -184,7 +192,7 @@ function Rewards() {
                       setOperateType("rewards.withdraw");
                     }}
                   >
-                    <FormattedMessage id="rewards.withdraw" />
+                    <FormattedMessage id="Rewards.Bond.Card.Withdraw" />
                   </Button>
                   <Button
                     type="primary"
@@ -194,7 +202,7 @@ function Rewards() {
                       setOperateType("rewards.redeem.a");
                     }}
                   >
-                    <FormattedMessage id="rewards.redeem.a" />
+                    <FormattedMessage id="Rewards.Bond.Card.Exchange" />
                   </Button>
                 </Space>
               </Col>
@@ -206,7 +214,7 @@ function Rewards() {
                 <Statistic value={"12345.67"} />
               </Col>
               <Col flex="100%" className="key-wrapper">
-                <FormattedMessage id="rewards.depo.amount" /> ( bDRF )
+                <FormattedMessage id="Rewards.Bond.Card.StakingAmount(bDRF)" />
               </Col>
               <Col flex="100%">
                 <Space>
@@ -218,7 +226,7 @@ function Rewards() {
                       setOperateType("rewards.deposit");
                     }}
                   >
-                    <FormattedMessage id="rewards.deposit" />
+                    <FormattedMessage id="Rewards.Bond.Card.Staking" />
                   </Button>
                   <Button
                     type="ghost"
@@ -228,7 +236,7 @@ function Rewards() {
                       setOperateType("rewards.redeem");
                     }}
                   >
-                    <FormattedMessage id="rewards.redeem" />
+                    <FormattedMessage id="Rewards.Bond.Card.Redeem" />
                   </Button>
                 </Space>
               </Col>
@@ -240,7 +248,7 @@ function Rewards() {
                 <Statistic value={"112.34"} />
               </Col>
               <Col flex="100%" className="key-wrapper">
-                年化收益
+                APY
               </Col>
               <Col flex="100%">
                 <Button
@@ -250,7 +258,7 @@ function Rewards() {
                     setRewardsType("bDRF");
                   }}
                 >
-                  <FormattedMessage id="rewards.transaction.history" />
+                  <FormattedMessage id="Rewards.Bond.Card.TransactionHistory" />
                   <IconFont type="icon-right-arr" />
                 </Button>
               </Col>

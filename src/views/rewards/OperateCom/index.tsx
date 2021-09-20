@@ -24,21 +24,30 @@ interface RenderModuleProps {
 }
 
 const RenderModule: React.FC<RenderModuleProps> = ({ type, rewardsType }) => {
+
+  const { formatMessage } = useIntl();
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl;
+
   switch (type) {
     case "rewards.withdraw":
       return (
         <Row>
           <Col flex="100%" className="margin-b-m">
-            <Row>提现数量</Row>
+            <Row>{$t("Rewards.Mining.WithdrawPopup.Amount")}</Row>
           </Col>
           <Col flex="100%" className="margin-b-m">
             <Input size="large" addonAfter={rewardsType} defaultValue="0.8" />
           </Col>
           <Col flex="100%">
             <Row justify="space-between" align="middle">
-              <Col>可提现：1234567.00000000 {rewardsType}</Col>
+              <Col>{$t("Rewards.Mining.WithdrawPopup.Max")}：1234567.00000000 {rewardsType}</Col>
               <Col>
-                <Button type="link">全部提现</Button>
+                <Button type="link">{$t("Rewards.Mining.WithdrawPopup.All")}</Button>
               </Col>
             </Row>
           </Col>
@@ -90,6 +99,12 @@ const RenderModule: React.FC<RenderModuleProps> = ({ type, rewardsType }) => {
 const OperateCom: React.FC<OperateComProps> = props => {
   const { formatMessage } = useIntl();
   const { type, rewardsType, ...modalProps } = props;
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl;
 
   const getTitleSuffix = useCallback(() => {
     if (
