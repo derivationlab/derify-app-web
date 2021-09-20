@@ -4,7 +4,7 @@ import { ModalProps } from "antd/es/modal";
 import {FormattedMessage, useIntl} from "react-intl";
 import { useToggle } from "react-use";
 import classNames from "classnames";
-import ModalTips from "@/views/CommonViews/ModalTips";
+import ModalTips, {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";
 import {
   convertAmount2TokenSize,
@@ -56,8 +56,8 @@ const ComModal: React.FC<ComModalProps> = props => {
   const [tradeFee,setTradeFee] = useState<number>(0);
   const [dataRows,setDataRows] = useState<OpenDataRow[]>([]);
   const [sysOpenUpperBound,setSysOpenUpperBound] = useState<OpenUpperBound>({amount:0,size:0});
-
-  const {formatMessage} = useIntl();
+  const Intl = useIntl();
+  const {formatMessage} = Intl;
 
   function intl<T>(id:string,values:T[] = []) {
 
@@ -240,18 +240,18 @@ const ComModal: React.FC<ComModalProps> = props => {
 
     const openPositionAction = contractModel.actions.openPosition(params);
 
-    //TODO pendding
+    DerifyTradeModal.pendding();
+    props.closeModal();
     openPositionAction(dispatch).then(() => {
-
+      DerifyTradeModal.success();
     }).catch((e) => {
-
+      DerifyTradeModal.failed();
     });
 
   }, [openConfirmData, walletInfo,sysOpenUpperBound])
 
 
   return (
-    <>
       <Modal
         width={300}
         title={$t("Trade.OpenPosition.OpenPopup.OpenConfirm")}
@@ -281,16 +281,6 @@ const ComModal: React.FC<ComModalProps> = props => {
           ))}
         </Row>
       </Modal>
-      <ModalTips
-        visible={isModalShow}
-        operaType="success"
-        msg="您已成功开通经纪商身份"
-        onCancel={() => {
-          setModalShow(false);
-          props.closeModal()
-        }}
-      />
-    </>
   );
 };
 

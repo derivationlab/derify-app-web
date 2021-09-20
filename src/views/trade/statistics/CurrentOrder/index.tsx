@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {amountFormt, dateFormat} from "@/utils/utils";
 import LongOrShort from "@/views/trade/LongOrShort";
+import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 const dataSource = [
   {
@@ -101,10 +102,6 @@ function CurrentOrder() {
 
   },[]);
 
-  const okCb = useCallback(() => {
-
-  },[]);
-
   const cancelAll = () => {
     Modal.confirm({
       title: formatMessage({ id: "Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder" }),
@@ -126,9 +123,11 @@ function CurrentOrder() {
 
 
         const cancelAllOrderAction = contractModel.actions.cancleAllOrderedPositions(trader)
-        //TODO pendding
+        DerifyTradeModal.pendding();
         cancelAllOrderAction(dispatch).then(() => {
-
+          DerifyTradeModal.success();
+        }).catch(e=>{
+          DerifyTradeModal.failed();
         }).finally(() => {
 
         })
@@ -185,9 +184,11 @@ function CurrentOrder() {
 
 
         const cancelAllOrderAction = contractModel.actions.cancleOrderedPosition(params)
-        //TODO pendding
+        DerifyTradeModal.pendding();
         cancelAllOrderAction(dispatch).then(() => {
-
+          DerifyTradeModal.success();
+        }).catch(e=>{
+          DerifyTradeModal.failed();
         }).finally(() => {
 
         })

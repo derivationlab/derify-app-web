@@ -104,10 +104,12 @@ function Account() {
       </Col>
       <Deposit visible={modalVisible}
                onSumitSuccess={() => setModalVisible(false)}
+               closeModal={() => setOperateVisible(false)}
                onCancel={() => setModalVisible(false)} />
       <Withdraw
         visible={operateVisible}
         onSumitSuccess={() => setOperateVisible(false)}
+        closeModal={() => setOperateVisible(false)}
         onCancel={() => setOperateVisible(false)}
       />
     </Row>
