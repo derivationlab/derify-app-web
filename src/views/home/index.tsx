@@ -7,8 +7,10 @@ import Nav from "./nav";
 import IntlPro from "@/locales/index";
 
 import "./index.less";
+import {bindBroker} from "@/api/broker";
 
 interface HomeProps extends RouteProps {}
+const brokerBindPath = "/partners/bind";
 
 const Home: React.FC<HomeProps> = props => {
   const isBind: boolean | undefined = useSelector(
@@ -17,15 +19,33 @@ const Home: React.FC<HomeProps> = props => {
 
   const { routes, history, location } = props;
 
+  const userState = useSelector((state:RootStore) => state.user);
+
   useEffect(() => {
-    if(isBind === undefined){
+    if(isBind === undefined || userState.selectedAddress){
       return
     }
-    //check bind
+
     if (!isBind) {
-      history.push("/home/partners/bind");
+      const rootPath = location.pathname.split("/")[1];
+
+      const menu = routes.find((men) => men.path.toLocaleLowerCase()===rootPath.toLocaleLowerCase());
+      if(!menu){
+        bindBroker({trader: userState.selectedAddress,brokerId: rootPath}).then(() => {
+          history.push("/trade");
+        }).catch((e) => {
+          console.error("bind broker error", e);
+        });
+      }else{
+        history.push(brokerBindPath);
+      }
+      return;
+    }
+
+    if(location.pathname === brokerBindPath){
+      history.push("/trade");
     }else{
-      history.push("/home/trade");
+      history.push(location.pathname);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,7 +67,7 @@ const Home: React.FC<HomeProps> = props => {
                 )}
               />
             ))}
-            <Redirect from="/home" to="/home/trade" />
+            <Redirect from="/" to="/trade" />
           </Switch>
         </div>
       </IntlPro>

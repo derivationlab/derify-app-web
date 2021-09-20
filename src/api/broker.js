@@ -1,6 +1,5 @@
 import * as io from '@/utils/request'
 import * as configUtil from '../config'
-import {Pagenation} from "@/api/types";
 
 const serverEndPoint = configUtil.getCurrentServerEndPoint()
 
@@ -22,24 +21,15 @@ export async function getBrokerIdByTrader(trader) {
  *
  * @param page
  * @param size
- * @returns {Promise<Pagenation<BrokerInfo>>}
+ * @returns {Promise<[BrokerInfo]>}
  */
-export async function getBrokerList(page = 1, size = 10) {
-  const content =  await io.get(`/api/brokers_list/${page - 1}/${size}`)
-  let pagenation = new Pagenation();
-
-  pagenation.current = page;
-  pagenation.pageSize = size;
-  pagenation.records = [];
-  pagenation.totalPage = 0;
+export async function getBrokerList(page = 0, size = 10) {
+  const content =  await io.get(`/api/brokers_list/${page}/${size}`)
   if(content && content.data) {
-    pagenation.records = content.data.records;
-    pagenation.totalItems = content.data.totalItems;
-    pagenation.totalPage = content.data.totalPages;
-    return pagenation;
+    return content.data.records;
   }
 
-  return pagenation;
+  return [];
 }
 
 /**
@@ -137,25 +127,16 @@ export async function getBrokerTodayReward(trader, start=(new Date()).Format('yy
  * @param broker
  * @param page
  * @param size
- * @return {Promise<Pagenation<BrokerHistoryRecord>>}
+ * @return {Promise<BrokerHistoryRecord[]>}
  */
-export async function getBrokerRewardHistory(broker, page = 1, size = 10) {
-  const content = await io.get(`/api/broker_reward_balance/${broker}/${page - 1}/${size}`)
+export async function getBrokerRewardHistory(broker, page = 0, size = 10) {
+  const content = await io.get(`/api/broker_reward_balance/${broker}/${page}/${size}`)
 
-  let pagenation = new Pagenation();
-
-  pagenation.current = page;
-  pagenation.pageSize = size;
-  pagenation.records = [];
-  pagenation.totalPage = 0;
-  if(content && content.data) {
-    pagenation.records = content.data.records;
-    pagenation.totalItems = content.data.totalItems;
-    pagenation.totalPage = content.data.totalPages;
-    return pagenation;
+  if(content && content.data && content.records) {
+    return content.data.records
   }
 
-  return pagenation;
+  return []
 }
 
 /**
@@ -163,25 +144,17 @@ export async function getBrokerRewardHistory(broker, page = 1, size = 10) {
  * @param broker
  * @param page
  * @param size
- * @return {Promise<Pagenation<{trader: String, update_time: Date}>>}
+ * @return {Promise<{trader: String, update_time: Date}[]>}
  */
-export async function getbrokerBindTraders(broker, page = 1, size = 10) {
-  const content = await io.get(`/api/traders_of_broker/${broker-1}/${page}/${size}`)
+export async function getbrokerBindTraders(broker, page = 0, size = 10) {
+  const content = await io.get(`/api/traders_of_broker/${broker}/${page}/${size}`)
 
-  let pagenation = new Pagenation();
-
-  pagenation.current = page;
-  pagenation.pageSize = size;
-  pagenation.records = [];
-  pagenation.totalPage = 0;
-  if(content && content.data) {
-    pagenation.records = content.data.records;
-    pagenation.totalItems = content.data.totalItems;
-    pagenation.totalPage = content.data.totalPages;
-    return pagenation;
+  console.log(content)
+  if(content && content.data && content.data.records) {
+    return content.data.records
   }
 
-  return pagenation;
+  return []
 }
 
 /**

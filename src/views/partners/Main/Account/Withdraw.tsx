@@ -8,13 +8,11 @@ import {checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {BrokerAccountInfo} from "@/store/modules/broker";
 import {toContractUnit} from "@/utils/contractUtil";
-import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 const { Option } = Select;
 
 interface WithdrawProps extends ModalProps {
   onSumitSuccess?: () => void
-  closeModal?: () => void
 }
 
 
@@ -70,17 +68,11 @@ const Withdraw: React.FC<WithdrawProps> = props => {
     }
 
     const brokerWithdrawAction = BrokerModel.actions.withdrawBrokerReward({trader:selectedAddress, amount: toContractUnit(amout)});
-    DerifyTradeModal.pendding();
-
-    if(props.closeModal){
-      props.closeModal();
-    }
-
+    //TODO pendding
     brokerWithdrawAction(dispatch).then(() => {
       dispatch(BrokerModel.actions.updateBrokerAccountInfo(selectedAddress));
-      DerifyTradeModal.success();
     }).catch(e => {
-      DerifyTradeModal.failed();
+
     });
 
   },[])

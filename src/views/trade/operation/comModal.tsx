@@ -49,7 +49,6 @@ declare type OpenDataRow = {
 const ComModal: React.FC<ComModalProps> = props => {
 
   const dispatch = useDispatch();
-  const {formatMessage} = useIntl();
   const curPair = useSelector<RootStore, TokenPair>(state => state.contract.curPair)
   const walletInfo = useSelector((state:RootStore) => state.user);
 
@@ -58,6 +57,7 @@ const ComModal: React.FC<ComModalProps> = props => {
   const [dataRows,setDataRows] = useState<OpenDataRow[]>([]);
   const [sysOpenUpperBound,setSysOpenUpperBound] = useState<OpenUpperBound>({amount:0,size:0});
 
+  const {formatMessage} = useIntl();
 
   function intl<T>(id:string,values:T[] = []) {
 

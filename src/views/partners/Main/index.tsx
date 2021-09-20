@@ -11,11 +11,10 @@ import {BrokerModel, RootStore} from "@/store";
 function Main() {
   const dispatch = useDispatch();
 
-  const {selectedAddress,isLogin} = useSelector((state:RootStore) => state.user)
+  const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
   const isBroker: boolean | undefined = useSelector(
     (state: RootStore) => state.broker.isBroker
   );
-  const trader = selectedAddress;
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -32,7 +31,7 @@ function Main() {
     }).catch(e=>{
       console.error("getTraderBrokerInfo err", e)
     });
-  },[trader,isLogin])
+  },[trader])
 
   return (
     <Spin spinning={loading}>

@@ -5,15 +5,13 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
 import {BrokerModel, RootStore} from "@/store";
 import {useIntl} from "react-intl";
-import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
+import {BondAccountType, toContractUnit} from "@/utils/contractUtil";
 import {BrokerAccountInfo} from "@/store/modules/broker";
 import {checkNumber, fck} from "@/utils/utils";
-import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 const { Option } = Select;
 
 interface DepositProps extends ModalProps {
   onSumitSuccess?: () => void
-  closeModal?: () => void
 }
 const Deposit: React.FC<DepositProps> = props => {
   const [errorVis,setVis] = useState(true)
@@ -53,9 +51,9 @@ const Deposit: React.FC<DepositProps> = props => {
 
   const getMaxSize = useCallback((wallet, accountType) => {
     if(accountType === BondAccountType.DerifyAccount) {
-      return fromContractUnit(wallet.derifyEdrfBalance)
+      return wallet.derifyEdrfBalance
     }else{
-      return fromContractUnit(wallet.walletEdrfBalance)
+      return wallet.walletEdrfBalance
     }
   },[]);
 
@@ -115,22 +113,15 @@ const Deposit: React.FC<DepositProps> = props => {
     }
 
     const burnEdrfExtendValidPeriodAction = BrokerModel.actions.burnEdrfExtendValidPeriod({trader:selectedAddress,accountType:accountType, amount: toContractUnit(amount)});
-    DerifyTradeModal.pendding();
-
-    if(props.closeModal){
-      props.closeModal();
-    }
-
+    //TODO pendding
     burnEdrfExtendValidPeriodAction(dispatch).then(() => {
       dispatch(BrokerModel.actions.updateBrokerAccountInfo(selectedAddress));
-      DerifyTradeModal.success();
       if(props.onSumitSuccess){
         props.onSumitSuccess();
       }
 
     }).catch(e => {
-      console.error('burnEdrfExtendValidPeriod,e',e);
-      DerifyTradeModal.failed();
+      console.error('burnEdrfExtendValidPeriod,e',e)
     });
 
   },[amount,selectedAddress,accountType,wallet])
@@ -147,7 +138,7 @@ const Deposit: React.FC<DepositProps> = props => {
         <Col flex="100%" className="margin-b-s">
           <Row justify="space-between">
             <Col>{$t("Broker.Broker.DepositPopup.Balance")}</Col>
-            <Col>{fck(getMaxSize(wallet,accountType),0,4)} eDRF</Col>
+            <Col>{getMaxSize(wallet,accountType)} eDRF</Col>
           </Row>
         </Col>
         <Col flex="100%" className="margin-b-max">

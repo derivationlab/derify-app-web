@@ -52,16 +52,16 @@ const state:BrokerState = {
 }
 
 export const reducers = createReducer(state, {
-  'broker/updateBrokerState' (state, {payload}) {
+  updateBrokerState (state, {payload}) {
     return update(state,{$merge: payload})
   },
-  'broker/updateBroker'(state, {payload}) {
+  updateBroker(state, {payload}) {
 
     return update(state,{broker:{
         $merge: payload
       }});
   },
-  'broker/updateWallet'(state, {payload}) {
+  updateWallet(state, {payload}) {
     return update(state, {
       wallet:{
         $merge: payload
@@ -111,7 +111,7 @@ const actions = {
         console.warn('error: getBrokerByTrader=' + trader, e)
       }
 
-      commit({type:'broker/updateBrokerState', payload: data});
+      commit({type:'updateBrokerState', payload: data});
 
       return data
     }
@@ -121,7 +121,7 @@ const actions = {
       const contract = web3Utils.contract(trader);
       const accountInfo = await contract.getBrokerInfo(trader);
 
-      commit({type: 'broker/updateBroker', payload: accountInfo})
+      commit({type: 'updateBroker', payload: accountInfo})
       return accountInfo;
     }
   },
@@ -149,10 +149,10 @@ const actions = {
       if(accountType === BondAccountType.WalletAccount) {
         const amount = await contract.balanceOf(trader, Token.eDRF)
 
-        commit({type:'broker/updateWallet', payload:{walletEdrfBalance: amount}})
+        commit({type:'updateWallet', payload:{walletEdrfBalance: amount}})
       }else{
         const accountInfo = await contract.getStakingInfo(trader)
-        commit({type:'broker/updateWallet', payload:{derifyEdrfBalance: accountInfo.edrfBalance}})
+        commit({type:'updateWallet', payload:{derifyEdrfBalance: accountInfo.edrfBalance}})
       }
 
     })
