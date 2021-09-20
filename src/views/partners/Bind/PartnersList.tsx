@@ -9,38 +9,7 @@ export type Partners = {
   key: string;
   address: string;
 };
-const list: Partners[] = [
-  {
-    name: "Coinbaby's Playground",
-    key: "@coinbaby",
-    address: "0x8503ea9bB20b74a0c8287ed225cE82...",
-  },
-  {
-    name: "Coinbaby's Playground",
-    key: "@coinbaby",
-    address: "0x8503ea9bB20b74a0c8287ed225cE82...",
-  },
-  {
-    name: "Coinbaby's Playground",
-    key: "@coinbaby",
-    address: "0x8503ea9bB20b74a0c8287ed225cE82...",
-  },
-  {
-    name: "Coinbaby's Playground",
-    key: "@coinbaby",
-    address: "0x8503ea9bB20b74a0c8287ed225cE82...",
-  },
-  {
-    name: "Coinbaby's Playground",
-    key: "@coinbaby",
-    address: "0x8503ea9bB20b74a0c8287ed225cE82...",
-  },
-  {
-    name: "Coinbaby's Playground",
-    key: "@coinbaby",
-    address: "0x8503ea9bB20b74a0c8287ed225cE82...",
-  },
-];
+
 interface PartnersListProps {
   onSelectBroker: (val: BrokerInfo) => void;
 }

@@ -8,10 +8,12 @@ import {useIntl} from "react-intl";
 import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {BrokerAccountInfo} from "@/store/modules/broker";
 import {checkNumber, fck} from "@/utils/utils";
+import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 const { Option } = Select;
 
 interface DepositProps extends ModalProps {
   onSumitSuccess?: () => void
+  closeModal?: () => void
 }
 const Deposit: React.FC<DepositProps> = props => {
   const [errorVis,setVis] = useState(true)
@@ -113,15 +115,22 @@ const Deposit: React.FC<DepositProps> = props => {
     }
 
     const burnEdrfExtendValidPeriodAction = BrokerModel.actions.burnEdrfExtendValidPeriod({trader:selectedAddress,accountType:accountType, amount: toContractUnit(amount)});
-    //TODO pendding
+    DerifyTradeModal.pendding();
+
+    if(props.closeModal){
+      props.closeModal();
+    }
+
     burnEdrfExtendValidPeriodAction(dispatch).then(() => {
       dispatch(BrokerModel.actions.updateBrokerAccountInfo(selectedAddress));
+      DerifyTradeModal.success();
       if(props.onSumitSuccess){
         props.onSumitSuccess();
       }
 
     }).catch(e => {
-      console.error('burnEdrfExtendValidPeriod,e',e)
+      console.error('burnEdrfExtendValidPeriod,e',e);
+      DerifyTradeModal.failed();
     });
 
   },[amount,selectedAddress,accountType,wallet])
