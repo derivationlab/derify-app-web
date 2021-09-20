@@ -9,6 +9,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import contractModel from "@/store/modules/contract"
+import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 
 interface TPAndSLModalProps extends ModalProps {
@@ -161,11 +162,12 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
         token: position?.token, side:position?.side, takeProfitPrice: toContractUnit(stopLossPriceNum),
       stopLossPrice: stopLossPriceNum})
 
-    //TODO pedding
+    DerifyTradeModal.pendding();
+    props.closeModal();
     orerStopPositionAction(dispatch).then(() => {
-
+      DerifyTradeModal.success();
     }).catch(() => {
-
+      DerifyTradeModal.failed();
     })
   }, [walletInfo.selectedAddress,takeProfitPrice,stopLossPrice]);
 

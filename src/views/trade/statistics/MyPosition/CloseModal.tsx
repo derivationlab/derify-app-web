@@ -13,6 +13,7 @@ import {useDebounce} from "react-use";
 import {RadioChangeEvent} from "antd/es";
 import ErrorMessage from "@/components/ErrorMessage";
 import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";
+import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 interface CloseModalProps extends ModalProps {
   position: PositionView|undefined;
@@ -87,11 +88,12 @@ const CloseModal: React.FC<CloseModalProps> = props => {
 
     const closePositionAction = contractModel.actions.closePosition(trader, position.token, position.side, toContractUnit(size), brokerId);
 
-    //TODO pendding
+    DerifyTradeModal.pendding();
+    closeModel();
     closePositionAction(dispatch).then(() =>{
-      closeModel()
+      DerifyTradeModal.success();
     }).catch(() => {
-
+      DerifyTradeModal.failed();
     })
   }
 
