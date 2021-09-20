@@ -1,6 +1,6 @@
 import React from "react";
 import { RouteProps } from "@/router/types";
-import { Switch, Route, Redirect } from "react-router-dom";
+import {Switch, Route, Redirect, useLocation} from "react-router-dom";
 
 import "./index.less";
 
@@ -10,6 +10,7 @@ interface PartnersProps extends RouteProps {}
 
 const Partners: React.FC<PartnersProps> = props => {
   const { routes } = props;
+  const location = useLocation();
 
   return (
     <div className="partners-page">
@@ -24,7 +25,7 @@ const Partners: React.FC<PartnersProps> = props => {
             )}
           />
         ))}
-        <Redirect from="/home/partners" to="/home/partners/main" />
+        <Redirect from="/broker" to="/broker/main" />
       </Switch>
     </div>
   );

@@ -58,9 +58,11 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
  * number validate
  * @param value {string}
  * @param maxNum {number}
+ * @param minNum {number}
+ * @param allowMin {boolean}
  * @returns {{success: boolean, value: string|null}}
  */
-export function checkNumber(value, maxNum= Infinity){
+export function checkNumber(value, maxNum= Infinity, minNum = 0, allowMin = false){
   if(/^(\d+(.\d*)?)?$/.test(value)){
     let size = parseFloat(value)
 
@@ -68,10 +70,15 @@ export function checkNumber(value, maxNum= Infinity){
       value = maxNum.toString()
     }
 
+    // if(allowMin && size < minNum){
+    //   value = minNum.toString();
+    // }
+
     const retValue = value.replace(/[^0-9.]/g,'')
 
-    if(size <= 0) {
-      return {success: false, value: retValue}
+
+    if(size <= minNum) {
+      return {success: size === minNum && allowMin, value: retValue}
     }else{
       return {success: true, value: retValue}
     }

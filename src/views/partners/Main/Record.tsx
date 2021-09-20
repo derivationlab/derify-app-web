@@ -1,6 +1,12 @@
-import React from "react";
-import { Row, Col, Tabs, Table } from "antd";
+import React, {useCallback, useEffect, useState} from "react";
+import {Row, Col, Tabs, Table, Spin} from "antd";
 import { ColumnsType } from "antd/es/table";
+import {useIntl} from "react-intl";
+import {BrokerHistoryRecord, getbrokerBindTraders, getBrokerRewardHistory} from "@/api/broker";
+import {amountFormt, dateFormat} from "@/utils/utils";
+import classNames from "classnames";
+import {useSelector} from "react-redux";
+import {RootStore} from "@/store";
 const { TabPane } = Tabs;
 
 interface AcType {
@@ -15,111 +21,182 @@ interface Trader {
   address: string;
   time: string;
 }
-const AcColumns: ColumnsType<AcType> = [
-  {
-    title: "类型",
-    dataIndex: "type",
-    key: "type",
-  },
-  {
-    title: "金额",
-    dataIndex: "amount",
-    key: "amount",
-    render: (_, record) => {
-      return (
-        <>
-          <div>{record.amount}</div>
-          <div>{record.amountType}</div>
-        </>
-      );
-    },
-  },
-  {
-    title: "余额",
-    dataIndex: "balance",
-    key: "balance",
-    render: (_, record) => {
-      return (
-        <>
-          <div>{record.balance}</div>
-          <div>{record.balanceType}</div>
-        </>
-      );
-    },
-  },
-  {
-    title: "时间",
-    dataIndex: "time",
-    key: "time",
-  },
-];
-const TraderColumns: ColumnsType<Trader> = [
-  {
-    title: "交易者地址",
-    dataIndex: "address",
-    key: "address",
-  },
-  {
-    title: "时间",
-    dataIndex: "time",
-    key: "time",
-  },
-];
-const TraderData: Trader[] = [
-  {
-    address: "0x40d276e6a7C80562BB1848e3ACB7B7629234C5a6",
-    time: "2021-12-3123:59:51",
-  },
-  {
-    address: "0x40d276e6a7C80562BB1848e3ACB7B7629234C5a6",
-    time: "2021-12-3123:59:52",
-  },
-  {
-    address: "0x40d276e6a7C80562BB1848e3ACB7B7629234C5a6",
-    time: "2021-12-3123:59:53",
-  },
-];
-const ACdata: AcType[] = [
-  {
-    type: "提现",
-    balance: "+ 12345.67",
-    amount: "7890.12",
-    time: "2021-12-3123:59:59",
-    balanceType: "USTD",
-    amountType: "USTD",
-  },
-  {
-    type: "提现",
-    balance: "+ 12345.67",
-    amount: "7890.12",
-    time: "2021-12-3123:59:60",
-    balanceType: "USTD",
-    amountType: "USTD",
-  },
-];
+
+function getUpdateType(type:string|number) {
+  return 'Rewards.Bond.History.Type' + type;
+}
 
 function Record() {
+  const {formatMessage} = useIntl();
+  const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
+
+  const [brokerTradeRecords, setBrokerTradeRecords] = useState<BrokerHistoryRecord[]>([]);
+  const [rewardPageNum, setRewardPageNum] = useState<number>(0);
+
+  const [brokerTraders, setBrokerTraders] = useState<{trader:string,update_time:Date}[]>([]);
+  const [tradersPageNum, setTradersPageNum] = useState<number>(0);
+
+  const [sping, setSping] = useState<boolean>(true);
+
+  function intl<T>(id:string,values:T[] = []) {
+
+    const intlValues:{[key:number]:T} = {}
+
+    values.forEach((item, index) => {
+      intlValues[index] = item
+    })
+
+
+    return formatMessage({id}, intlValues)
+  }
+
+  const $t = intl;
+
+  const fetchBrokerRewardHistory = useCallback((rewardPageNum) => {
+
+    getBrokerRewardHistory(trader,rewardPageNum,10).then((rows)=>{
+      if(rewardPageNum === 0){
+        brokerTradeRecords.splice(0);
+      }
+
+      rows.forEach(row => {
+        brokerTradeRecords.push(row);
+      });
+
+      setBrokerTradeRecords(brokerTradeRecords);
+    }).finally(() => setSping(false));
+
+  },[trader,rewardPageNum]);
+
+  const fetchBrokerTraders = useCallback((tradersPageNum) => {
+
+    getbrokerBindTraders(trader,tradersPageNum,10).then((rows)=>{
+      if(tradersPageNum === 0){
+        brokerTraders.splice(0);
+      }
+
+      rows.forEach(row => {
+        brokerTraders.push(row);
+      })
+      setBrokerTraders(brokerTraders);
+    }).finally(() => setSping(false));
+
+  },[trader,tradersPageNum]);
+
+  useEffect(() => {
+    fetchBrokerRewardHistory(0)
+  }, [trader,tradersPageNum])
+
+
+  const AcColumns: ColumnsType<BrokerHistoryRecord> = [
+    {
+      title: $t("Broker.Broker.History.Type"),
+      dataIndex: "update_type",
+      key: "update_type",
+      render:(_,data) => {
+        return (
+          <div>{$t(getUpdateType(data.update_type))}</div>
+        );
+      }
+    },
+    {
+      title: $t("Broker.Broker.History.Amount"),
+      dataIndex: "amount",
+      key: "amount",
+      render: (_, data) => {
+        return (
+          <div>
+            <div className={classNames(data.amount > 0? "main-green":"main-red")}>{amountFormt(data.amount,2, true, '--')}</div>
+            <div>USDT</div>
+          </div>
+        );
+      },
+    },
+    {
+      title: $t("Broker.Broker.History.Balance"),
+      dataIndex: "balance",
+      key: "balance",
+      render: (_, data) => {
+        return (
+          <div>
+            <div>{amountFormt(data.balance,2, false, '--')}</div>
+            <div>USDT</div>
+          </div>
+        );
+      },
+    },
+    {
+      title: $t("Broker.Broker.History.Time"),
+      dataIndex: "time",
+      key: "time",
+      render: (_,data) => {
+        return (
+          <div>
+            <div>{dateFormat(new Date(data.event_time), "yyyy-MM-dd")}</div>
+            <div>{dateFormat(new Date(data.event_time), "hh:mm:ss")}</div>
+          </div>
+        )
+      }
+    },
+  ];
+  const TraderColumns: ColumnsType<{ trader:string, update_time:Date}> = [
+    {
+      title: $t("Broker.Broker.TraderInfo.TraderAddress"),
+      dataIndex: "address",
+      key: "address",
+      render: (_,data) =>{
+        return (<div>{data.trader}</div>)
+      }
+    },
+    {
+      title: $t("Broker.Broker.TraderInfo.RegistrationDate"),
+      dataIndex: "time",
+      key: "time",
+      render: (_,data) =>{
+        return (
+          <div>
+            <div>{dateFormat(new Date(data.update_time), "yyyy-MM-dd")}</div>
+            <div>{dateFormat(new Date(data.update_time), "hh:mm:ss")}</div>
+          </div>
+        )
+      }
+    },
+  ];
+
+
   return (
     <Row className="main-block record-container">
       <Col flex="100%">
-        <Tabs defaultActiveKey="1">
-          <TabPane tab={"账户流水"} key="1">
-            <Table<AcType>
-              columns={AcColumns}
-              dataSource={ACdata}
-              rowKey={'time'}
-              pagination={{
-                position: ["bottomCenter"],
-                defaultCurrent: 1,
-                total: 200,
-                showSizeChanger: false,
-              }}
-             
-            />
-          </TabPane>
-          <TabPane tab={"交易者信息"} key="2">
-            <Table columns={TraderColumns}  rowKey={'time'} dataSource={TraderData} pagination={false} />
-          </TabPane>
+        <Tabs defaultActiveKey="reward" onChange={(key) => {
+          console.log(key)
+          if(key === "reward"){
+            fetchBrokerRewardHistory(0);
+          }else{
+            fetchBrokerTraders(0);
+          }
+        }}>
+            <TabPane tab={$t("Broker.Broker.History.AccountHistory")} key="reward">
+              <Spin spinning={sping}>
+                <Table
+                  columns={AcColumns}
+                  dataSource={brokerTradeRecords}
+                  rowKey={'tx'}
+                  // pagination={{
+                  //   position: ["bottomCenter"],
+                  //   defaultCurrent: 1,
+                  //   total: 200,
+                  //   showSizeChanger: false,
+                  // }}
+
+                />
+              </Spin>
+            </TabPane>
+            <TabPane tab={$t("Broker.Broker.TraderInfo.TraderInfo")} key="trader">
+              <Spin spinning={sping}>
+                <Table columns={TraderColumns}  rowKey={'trader'} dataSource={brokerTraders} pagination={false} />
+              </Spin>
+            </TabPane>
+
         </Tabs>
       </Col>
     </Row>

@@ -1,18 +1,41 @@
-import React, { useState } from "react";
-import { Row, Col } from "antd";
+import React, {useEffect, useState} from "react";
+import { Row, Col,Spin } from "antd";
 
 import Info from './Info'
 import Record from "./Record";
 import Account from "./Account";
 import NotOpened from "./NotOpened";
+import {useDispatch, useSelector} from "react-redux";
+import {BrokerModel, RootStore} from "@/store";
+
 function Main() {
-  const [opened, setOpened] = useState<Boolean>(false);
-  const set = ()=>{
-    setOpened(true)
-  }
+  const dispatch = useDispatch();
+
+  const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
+  const isBroker: boolean | undefined = useSelector(
+    (state: RootStore) => state.broker.isBroker
+  );
+
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() =>{
+
+    if(!trader){
+      return
+    }
+
+    const getBrokerAction = BrokerModel.actions.getTraderBrokerInfo(trader);
+
+    getBrokerAction(dispatch).then((data) => {
+      setLoading(false);
+    }).catch(e=>{
+      console.error("getTraderBrokerInfo err", e)
+    });
+  },[trader])
+
   return (
-    <>
-      {opened ? (
+    <Spin spinning={loading}>
+      {loading ? "" : (isBroker ? (
         <Row className="opended-container" gutter={[0, 20]}>
           <Col flex="100%">
             <Info />
@@ -25,9 +48,11 @@ function Main() {
           </Col>
         </Row>
       ) : (
-        <NotOpened onOK={set}/>
-      )}
-    </>
+        <NotOpened onOK={() =>{
+
+        }}/>
+      ))}
+    </Spin>
   );
 }
 

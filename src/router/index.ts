@@ -15,37 +15,37 @@ const routes: Array<any> = [
     component: Layout,
     routes: [
       {
-        path: "/home",
+        path: "/",
         exact: false,
         component: Home,
         routes: [
           {
-            path: "/home/trade",
+            path: "/trade",
             exact:false,
             component: Trade,
           },
           {
-            path: "/home/data",
+            path: "/data",
             exact: false,
             component: Data,
           },
           {
-            path: "/home/rewards",
+            path: "/reward",
             exact: false,
             component: Rewards,
           },
           {
-            path: "/home/partners",
+            path: "/broker",
             exact: false,
             component: Partners,
             routes: [
               {
-                path: "/home/partners/main",
+                path: "/broker/main",
                 exact: true,
                 component: MainPartners,
               },
               {
-                path: "/home/partners/bind",
+                path: "/broker/bind",
                 exact: true,
                 component: BindPartners,
               },
