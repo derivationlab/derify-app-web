@@ -10,13 +10,15 @@ import appReducer, { AppState } from "./modules/app/reducers";
 
 import UserModel,{UserState} from "./modules/user";
 import BrokerModel,{BrokerState} from "./modules/broker";
+import DataModel,{DataState} from "./modules/data";
 
 import ContractModel,{ContractState} from "@/store/modules/contract";
 export interface RootStore {
   app: AppState
   user: UserState
   contract: ContractState
-  broker: BrokerState
+  broker: BrokerState,
+  data: DataState
 }
 
 const composeEnhancers =
@@ -46,7 +48,7 @@ const store = createStore(
 );
 
 export {
-  ContractModel,UserModel,BrokerModel
+  ContractModel,UserModel,BrokerModel,DataModel
 }
 
 export default store;

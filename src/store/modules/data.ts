@@ -5,20 +5,21 @@ import {
   getHistoryInsurancePoolData,
   getHistoryPositionData, getHistoryTradingData
 } from '@/api/data'
+import {createReducer} from "redux-create-reducer";
+import {Dispatch} from "redux";
 
-const state = {
+export declare type DataState = {
 
 }
-const mutations = {
-  updateState (state, updates) {
-    state = Object.assign(state, {...updates})
-  }
+const state:DataState = {
 }
+
+const reducers = createReducer(state, {});
 
 const actions = {
-  loadTradeData ({state, commit, dispatch}, token) {
-    return (async() => {
-      let current = {}
+  loadTradeData (token:string) {
+    return (async(commit:Dispatch) => {
+      let current = {trading_fee: 0, day_time: "", trading_amount: 0}
       const history = await getHistoryTradingData(token)
 
       if(history && history.length > 0) {
@@ -26,35 +27,35 @@ const actions = {
       }
 
       return {current,history}
-    })()
+    })
   },
-  loadHeldData ({state, commit, dispatch}, token) {
-    return (async() => {
+  loadHeldData (token:string) {
+    return (async(commit:Dispatch) => {
       const current = await getCurrentPositionData(token)
       const history = await getHistoryPositionData(token)
       return {current,history}
-    })()
+    })
   },
-  loadInsuranceData ({state, commit, dispatch}) {
-    return (async() => {
+  loadInsuranceData () {
+    return async(commit:Dispatch) => {
       const current = await getCurrentInsurancePoolData()
       const history = await getHistoryInsurancePoolData()
 
       return {current,history}
-    })()
+    }
   },
-  loadTokenInfoData ({state, commit, dispatch}) {
-    return (async() => {
+  loadTokenInfoData () {
+    return async(commit:Dispatch) => {
       const current = await getCurrentIndexData()
 
       return {current}
-    })()
+    }
   },
 }
 
 export default {
   namespaced: true,
   state,
-  mutations,
+  reducers,
   actions
 }

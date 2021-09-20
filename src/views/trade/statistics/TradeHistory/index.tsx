@@ -147,10 +147,10 @@ const TradeHistory: React.FC = () => {
         <div>
           <div
             className={classNames(
-              !record.pnl_usdt || record.pnl_usdt.indexOf("+") === -1 ? "main-red" : "main-green"
+              record.pnl_usdt < 0 ? "main-red" : "main-green"
             )}
           >
-            {amountFormt(record.pnl_usdt,2,false,"--")}
+            {amountFormt(record.pnl_usdt,2,true,"--")}
           </div>
           <div>USDT</div>
         </div>

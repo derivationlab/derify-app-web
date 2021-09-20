@@ -1,144 +1,136 @@
-import React from "react";
-import { Row, Col, Select, Badge } from "antd";
+import React, {useEffect, useRef, useState} from "react";
+import {Row, Col, Select, Badge, Spin} from "antd";
 import CommonCharts from "@/components/charts";
 import { useIntl } from "react-intl";
+import {Token} from "@/utils/contractUtil";
+import {getHistoryTradingData} from "@/api/data";
+import generateDataEchartsOptions from "@/utils/data-chart";
+import {DataModel} from "@/store";
+import {useDispatch} from "react-redux";
+import {fck} from "@/utils/utils";
 const { Option } = Select;
 
-const options1 = {
-  tooltip: {
-    trigger: "axis",
-    axisPointer: {
-      type: "cross",
-      label: {
-        backgroundColor: "#6a7985",
-      },
-    },
-  },
-
-  
-  xAxis: [
-    {
-      type: "category",
-      boundaryGap: false,
-      data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-    },
-  ],
-  yAxis: [
-    {
-      type: "value",
-      position: "right",
-      offset: -10,
-      splitLine: {
-        lineStyle: {
-          color: ["rgba(255,255,255,0.10)"],
-          width: 1,
-          type: "solid",
-        },
-      },
-    },
-  ],
-
-  series: [
-    {
-      name: "视频广告",
-      type: "line",
-      stack: "总量",
-      symbol: "none",
-      itemStyle: {
-        normal: {
-          lineStyle: {
-            width: 1,
-            color: "#475FFA",
-          },
-        },
-      },
-      areaStyle: {
-        opacity: 0.2,
-        color: "#475FFA",
-      },
-      emphasis: {
-        focus: "series",
-      },
-      data: [150, 232, 201, 154, 190, 330, 410],
-    },
-
-    {
-      name: "搜索引擎",
-      type: "line",
-      stack: "总量",
-      symbol: "none",
-      areaStyle: {
-        opacity: 0.2,
-        color: "#FAE247",
-      },
-      itemStyle: {
-        normal: {
-          lineStyle: {
-            width: 1,
-            color: "#FAE247",
-          },
-        },
-      },
-
-      emphasis: {
-        focus: "series",
-      },
-      data: [820, 932, 901, 934, 1290, 1330, 1320],
-    },
-  ],
-};
+const color = ['#fae247', '#475FFA']
 
 const TradingVolume: React.FC = () => {
+  const dispatch = useDispatch();
+
+  const chartRef = useRef<any>(null);
+
+  const [loading, setLoading] = useState<boolean>(false);
+
   const { formatMessage } = useIntl();
+
+  function intl<T>(id:string,values:T[] = []) {
+
+    const intlValues:{[key:number]:T} = {}
+
+    values.forEach((item, index) => {
+      intlValues[index] = item
+    })
+
+
+    return formatMessage({id}, intlValues)
+  }
+
+  const $t = intl;
+
+  const [currentData, setCurrentData] = useState<{trading_fee: number, day_time: string, trading_amount: number}>();
+
+
+  const tokenOptions = [
+    {label: $t('Data.Data.Trade.All'), value: 'all'},
+    {label: 'ETH/USDT', value: Token.ETH},
+    {label: 'BTC/USDT', value: Token.BTC}
+  ];
+
+  const onOptionChange = (value:string) => {
+    setLoading(true);
+    const loadTradeDataAction = DataModel.actions.loadTradeData(value);
+    loadTradeDataAction(dispatch).then((data) => {
+
+      //updare echarts
+
+      setCurrentData(data.current);
+
+      //trading_fee: number, day_time: string, trading_amount: number
+      //trading_amount trading_fee
+      const xaxis = []
+
+      const tradAmSeries:{stack:string,data:number[]} = {stack: 'trading amount', data: []}
+      const tradFeeSeries:{stack:string,data:number[]} = {stack: 'trading fee', data: []}
+      const seriers = [tradAmSeries, tradFeeSeries]
+
+      //{long_position_amount: number, short_position_amount: number, day_time: string}
+      for(let i = 0; i < data.history.length; i++) {
+        const item = data.history[i];
+        xaxis.push(item.day_time)
+        tradAmSeries.data.push(item.trading_amount)
+        tradFeeSeries.data.push(item.trading_fee)
+      }
+
+      const options = generateDataEchartsOptions(color, xaxis, seriers)
+
+      chartRef.current.setCharOptions(options);
+    }).catch((e) => {
+      console.error("getHistoryTradingData error", e);
+    }).finally(() => {
+      setLoading(false);
+    })
+  };
+
+  useEffect(() => {
+    onOptionChange(tokenOptions[0].value)
+  }, [])
+
   return (
-    <Row className="main-block trading-volume-container">
-      <Col flex="100%">
-        <Row justify="space-between" align="middle">
-          <Col className="title">
-            {formatMessage({ id: "data.trading.volume" })}
-          </Col>
-          <Col>
-            <Select
-              defaultValue="market"
-              size={"large"}
-              style={{ width: 140 }}
-              bordered={false}
-            >
-              <Option value="market">{formatMessage({id:'data.all'})}</Option>
-              <Option value="fixed1">ETH / USDT</Option>
-              <Option value="fixed2">BTC / USDT</Option>
-              <Option value="fixed3">ETH / BTC</Option>
-              <Option value="fixed4">DRF / USDT</Option>
-            </Select>
-          </Col>
-        </Row>
-      </Col>
-      <Col flex="100%">
-        <Row>
-          <Col flex="50%">
-            <div>
-              <Badge color="#FAE247" />
-              {formatMessage({ id: "data.trading.volume" })}（24h）
-            </div>
-            <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-              <span className="white-color">123456780.12</span> USDT
-            </div>
-          </Col>
-          <Col flex="50%">
-            <div>
-              <Badge color="#475FFA" />
-              {formatMessage({ id: "data.trad.fee.earning" })}（24h）
-            </div>
-            <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-              <span className="white-color">123456780.12</span> USDT
-            </div>
-          </Col>
-        </Row>
-      </Col>
-      <Col flex="100%">
-        <CommonCharts options={options1} height={330} />
-      </Col>
-    </Row>
+    <Spin spinning={loading}>
+      <Row className="main-block trading-volume-container">
+        <Col flex="100%">
+          <Row justify="space-between" align="middle">
+            <Col className="title">
+              {formatMessage({ id: "Data.Data.Trade.TradingVolume" })}
+            </Col>
+            <Col>
+              <Select
+                defaultValue={tokenOptions[0].value}
+                size={"large"}
+                style={{ width: 140 }}
+                bordered={false}
+                options={tokenOptions}
+                onChange={onOptionChange}
+              >
+              </Select>
+            </Col>
+          </Row>
+        </Col>
+        <Col flex="100%">
+          <Row>
+            <Col flex="50%">
+              <div>
+                <Badge color="#FAE247" />
+                {formatMessage({ id: "Data.Data.Trade.TradingVolume" })}（24h）
+              </div>
+              <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
+                <span className="white-color">{fck(currentData?.trading_amount,0,2)}</span> USDT
+              </div>
+            </Col>
+            <Col flex="50%">
+              <div>
+                <Badge color="#475FFA" />
+                {formatMessage({ id: "Data.Data.Trade.TradFeeEarning" })}（24h）
+              </div>
+              <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
+                <span className="white-color">{fck(currentData?.trading_fee,0,2)}</span> USDT
+              </div>
+            </Col>
+          </Row>
+        </Col>
+        <Col flex="100%">
+          <CommonCharts ref={chartRef} options={generateDataEchartsOptions(color, [], [])} height={330} />
+        </Col>
+      </Row>
+    </Spin>
   );
 };
 export default TradingVolume;
