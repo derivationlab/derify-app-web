@@ -9,9 +9,6 @@ import Statistics from './statistics';
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 function Trade() {
 
-  useEffect(() =>{
-    DerifyTradeModal.pendding();
-  },[])
   return (
     <div className="trade-page">
       <Row gutter={24}  wrap={false}>
