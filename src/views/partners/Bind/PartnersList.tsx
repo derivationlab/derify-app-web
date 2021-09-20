@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { Row, Col, Avatar, Space, Pagination } from "antd";
 import classNames from "classnames";
+import {BrokerInfo, getBrokerList} from "@/api/broker";
 
 export type Partners = {
   name: string;
@@ -41,23 +42,40 @@ const list: Partners[] = [
   },
 ];
 interface PartnersListProps {
-  selectParners: (val: Partners) => void;
+  onSelectBroker: (val: BrokerInfo) => void;
 }
-const PartnersList: React.FC<PartnersListProps> = ({ selectParners }) => {
+const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
   const [index, setIndex] = useState<Partial<number>>();
+
+  const [brokers,setBrokers] = useState<BrokerInfo[]>([]);
+  const [pageNum,setPageNum] = useState<number>(0);
+
+  const pageSize = 10;
+  useEffect(() => {
+    getBrokerList(pageNum,pageSize).then((rows) => {
+      if(pageNum === 0){
+        brokers.splice(0);
+        setIndex(undefined);
+      }
+
+      setBrokers(brokers.concat(rows));
+    }).catch(e => console.error("getBrokerList error", e));
+  },[pageNum])
+
+  console.log('init', brokers)
   return (
     <Row
       className="partners-list-wrapper"
       gutter={[0, 20]}
       justify="space-between"
     >
-      {list.map((item, i) => (
+      {brokers.map((item, i) => (
         <Col
           flex="30%"
           key={i}
           onClick={() => {
             setIndex(i);
-            selectParners(item);
+            onSelectBroker(item);
           }}
         >
           <Row
@@ -69,13 +87,13 @@ const PartnersList: React.FC<PartnersListProps> = ({ selectParners }) => {
             </div>
             <Space>
               <Col>
-                <Avatar size={80} />
+                <Avatar size={80} src={item.logo}/>
               </Col>
               <Col>
                 <Row>
                   <Col flex="100%">{item.name}</Col>
-                  <Col flex="100%">{item.key}</Col>
-                  <Col flex="100%">{item.address}</Col>
+                  <Col flex="100%">{item.id}</Col>
+                  <Col flex="100%">{item.broker}</Col>
                 </Row>
               </Col>
             </Space>
