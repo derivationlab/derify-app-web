@@ -54,7 +54,7 @@ function DataPanel() {
   const curPercent = contractState.curPair.percent || 0
   const pcRate = contractState.contractData.positionChangeFeeRatio || 0
 
-  const [timeGap, setTimeGap] = useState<Partial<string>>()
+  const [timeGap, setTimeGap] = useState<Partial<string>>("15m")
   const walletInfo = useSelector((state:RootStore) => state.user);
   const curPair = useSelector((state:RootStore) => state.contract.curPair);
   const [pmrRate, setPmrRate] = useState<{longPmrRate:number,shortPmrRate:number}>({longPmrRate: 0,shortPmrRate: 0})
@@ -104,9 +104,10 @@ function DataPanel() {
         <Row justify={"space-between"} align="bottom">
           <Col>
             <Row className="trade-data">
-              <Col className={curPercent < 0 ? 'main-red' : 'main-green'}>{curPrice}</Col>
+              <Col className={curPercent
+              < 0 ? 'main-red' : 'main-green'}>{curPrice}</Col>
               <Col>
-                <span>{amountFormt(contractState.curPair.percent, 2,true, "--",2)}%</span>
+                <span>{amountFormt(contractState.curPair.percent, 0,true, "--",2)}%</span>
               </Col>
             </Row>
           </Col>
@@ -138,7 +139,7 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(pmrRate.longPmrRate,2,true,"--", 2)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {(pmrRate.longPmrRate,2,true,"--", 2)}%/
                     <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(pmrRate.shortPmrRate,2,true,"--", 2)}%
                   </span>
                   <Popover
@@ -166,7 +167,7 @@ function DataPanel() {
       <Col flex="100%">
         <Row justify="end" className="time-radio">
           <Radio.Group
-            defaultValue={"15m"}
+            defaultValue={timeGap}
             options={timeOptions}
             optionType="button"
             onChange={(e) => {
@@ -177,7 +178,7 @@ function DataPanel() {
         </Row>
       </Col>
       <Col flex="100%">
-        <Chart token={curPair.key} curPrice={curPrice} bar={timeGap || timeOptions[0].value}/>
+        <Chart token={curPair.key} curPrice={curPrice} bar={timeGap}/>
       </Col>
       <Modal
         title={$t('Trade.OpenPosition.Market.Market')}
@@ -222,7 +223,7 @@ function DataPanel() {
                         className={classNames(
                           (token.percent||0) > 0 ? "main-green" : "main-red "
                         )}
-                        value={amountFormt(token.percent,2,true,"--",2)}
+                        value={amountFormt(token.percent,0,true,"--",2)}
                         suffix="%"
                       />
                     </div>
