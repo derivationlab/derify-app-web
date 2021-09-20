@@ -5,7 +5,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
 import {BrokerModel, RootStore} from "@/store";
 import {useIntl} from "react-intl";
-import {BondAccountType, toContractUnit} from "@/utils/contractUtil";
+import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {BrokerAccountInfo} from "@/store/modules/broker";
 import {checkNumber, fck} from "@/utils/utils";
 const { Option } = Select;
@@ -51,9 +51,9 @@ const Deposit: React.FC<DepositProps> = props => {
 
   const getMaxSize = useCallback((wallet, accountType) => {
     if(accountType === BondAccountType.DerifyAccount) {
-      return wallet.derifyEdrfBalance
+      return fromContractUnit(wallet.derifyEdrfBalance)
     }else{
-      return wallet.walletEdrfBalance
+      return fromContractUnit(wallet.walletEdrfBalance)
     }
   },[]);
 
@@ -138,7 +138,7 @@ const Deposit: React.FC<DepositProps> = props => {
         <Col flex="100%" className="margin-b-s">
           <Row justify="space-between">
             <Col>{$t("Broker.Broker.DepositPopup.Balance")}</Col>
-            <Col>{getMaxSize(wallet,accountType)} eDRF</Col>
+            <Col>{fck(getMaxSize(wallet,accountType),0,4)} eDRF</Col>
           </Row>
         </Col>
         <Col flex="100%" className="margin-b-max">
