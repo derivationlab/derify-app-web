@@ -17,6 +17,7 @@ import {RootStore} from "@/store";
 import ErrorMessage from "@/components/ErrorMessage";
 import contractModel from "@/store/modules/contract"
 import {showTransfer} from "@/store/modules/app/actions";
+import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 
 
@@ -187,19 +188,24 @@ const Transfer: React.FC<TransferProps> = props => {
     const trader = walletInfo.selectedAddress
 
     if(transferData.operateType == TransferOperateType.withdraw) {
-      //TODO pending
+      DerifyTradeModal.pendding();
       const action = contractModel.actions.withdrawAccount(trader, toContractUnit(amount));
       action(dispatch).then((data) => {
+        DerifyTradeModal.success();
         dispatch(showTransfer(false,operateType))
       }).catch((e) => {
+        DerifyTradeModal.failed();
         console.error(`${transferData.operateType} failed, ${e}`)
       })
     }else{
-      //TODO pending
-      (contractModel.actions.depositAccount(trader, toContractUnit(amount)))(dispatch).then((data) => {
-        dispatch(showTransfer(false,operateType))
+      DerifyTradeModal.pendding();
+      const action = contractModel.actions.depositAccount(trader, toContractUnit(amount));
+      action(dispatch).then((data) => {
+        dispatch(showTransfer(false,operateType));
+        DerifyTradeModal.success();
       }).catch((e) => {
-        console.error(`${transferData.operateType} success, ${e}`)
+        console.error(`${transferData.operateType} success, ${e}`);
+        DerifyTradeModal.failed();
       })
     }
 

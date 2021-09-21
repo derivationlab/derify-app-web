@@ -57,6 +57,7 @@ import {RootStore} from "@/store";
 import {Dispatch} from "redux";
 import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
 import {amountFormt, fck} from "@/utils/utils";
+import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 
 const MyPosition: React.FC = () => {
@@ -72,6 +73,7 @@ const MyPosition: React.FC = () => {
 
   const [clickedPostion, setClickedPostion] = useState<PositionView>();
   const [clickedTPSLPostion, setClickedTPSLPostion] = useState<PositionView>();
+  const [showClosePosition, setShowClosePosition] = useState<boolean>(true);
 
   const dispatch = useDispatch();
 
@@ -124,10 +126,12 @@ const MyPosition: React.FC = () => {
 
   const cancelCb = () => {};
 
+
   const closeAllPosition = () => {
     Modal.confirm({
       title: formatMessage({ id: "Trade.MyPosition.ClosePositionPopup.OneClickClose" }),
       icon: null,
+      visible:showClosePosition,
       content: (
         <div>
           <p>
@@ -149,11 +153,13 @@ const MyPosition: React.FC = () => {
 
         const closePositionAction = contractModel.actions.closeAllPositions(trader, brokerId);
 
-        //TODO pendding
+        DerifyTradeModal.pendding();
+        setShowClosePosition(false);
         closePositionAction(dispatch).then(() =>{
-
-        }).catch(() => {
-
+          DerifyTradeModal.success();
+        }).catch((e) => {
+          DerifyTradeModal.failed();
+          console.log('closePositionAction',e);
         })
       },
       onCancel: cancelCb,
