@@ -77,7 +77,7 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
 
   useEffect(() => {
 
-    if(!walletInfo.selectedAddress) {
+    if(!walletInfo.selectedAddress && !props.visible) {
       return
     }
 
@@ -90,7 +90,7 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
       setLoading(false);
     });
 
-  },[walletInfo.selectedAddress,pagenation.current, pagenation.pageSize]);
+  },[walletInfo.selectedAddress,props.visible,pagenation.current, pagenation.pageSize]);
 
 
   const onPageChange = useCallback((pageNum, pageSize) => {

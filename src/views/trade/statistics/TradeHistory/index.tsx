@@ -86,7 +86,7 @@ const TradeHistory: React.FC = () => {
     getTradeList(trader, pagenation.current, pagenation.pageSize).then(pagenation => {
       setPagenation(pagenation);
     }).catch(e => {
-      console.log('getTradeBalanceDetail',e)
+      console.log('getTradeList',e)
     }).finally(() => setShowLoading(false))
   }, [pagenation.current,pagenation.pageSize,walletInfo])
 
