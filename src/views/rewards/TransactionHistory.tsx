@@ -1,5 +1,5 @@
 import React, {ReactNode, useCallback, useEffect, useState} from "react";
-import { Modal, Row, Col } from "antd";
+import {Modal, Row, Col, Pagination, Spin} from "antd";
 import { ModalProps } from "antd/es/modal";
 import { useIntl } from "react-intl";
 
@@ -9,6 +9,7 @@ import {RewardModel, RootStore} from "@/store";
 import {useDispatch, useSelector} from "react-redux";
 import {set} from "lodash";
 import classNames from "classnames";
+import {Pagenation} from "@/api/types";
 interface TransactionHistoryProps extends ModalProps {
   type: RewardsType;
 }
@@ -44,9 +45,10 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
 
   const $t = intl;
   const trader = useSelector((state:RootStore) => state.user.selectedAddress);
-  const [records, setRecords] = useState<RewardsHistoryRecord[]>([]);
+  const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
+  const [loading,setLoading] = useState(true);
 
-  const getHistoryRecord = useCallback((trader, type:RewardsType,page = 0,pageNum = 10) => {
+  const getHistoryRecord = useCallback((trader, type:RewardsType,page = 1,pageNum = 10) => {
 
     if(!trader) {
       return;
@@ -67,32 +69,35 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
     }
 
     if(getHistoryAction === null){
-      return setRecords([]);
+      pagenation.records = [];
+      setPagenation(pagenation);
+      return;
     }
 
-    let results:RewardsHistoryRecord[] = [];
-    if(page > 0){
-      results = results.concat(records);
-    }
-
-
-    getHistoryAction(dispatch).then((rows) => {
-      results = results.concat(rows);
-
-      setRecords(results);
+    setLoading(true);
+    getHistoryAction(dispatch).then((pagenation:Pagenation) => {
+      setPagenation(pagenation);
     }).catch(e => {
       console.error("getHistoryAction error", e)
-    });
+    }).finally(() => setLoading(false));
 
   }, []);
+
+  const onPageChange = useCallback((pageNum, pageSize) => {
+    pagenation.current = pageNum;
+    if(pageSize){
+      pagenation.pageSize = pageSize;
+    }
+    setPagenation(pagenation);
+  },[]);
 
   useEffect(() => {
     if(!props.visible){
       return
     }
 
-    getHistoryRecord(trader, props.type);
-  }, [props.type,props.visible])
+    getHistoryRecord(trader, props.type, pagenation.current, pagenation.pageSize);
+  }, [trader, props.type,props.visible, pagenation.current]);
 
   const modalTitleMap = {
     "USDT": <p>{$t("Rewards.Mining.History.PositionMining")}{$t("Rewards.Mining.History.PositionMining")}</p>,
@@ -105,36 +110,45 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
       title={modalTitleMap[props.type]}
       width={400}
     >
-      <Row>
-        <Col flex="100%">
-          <Row justify="space-between" style={{ marginBottom: 24 }}>
-            {listTitleMap[props.type].map(item => (
-              <Col key={item} flex="25%">
-                {formatMessage({ id: item })}
-              </Col>
-            ))}
-          </Row>
-        </Col>
-        {records.map((item, i) => (
-          <Col flex="100%" key={i}>
-            <Row justify="space-between" style={{ marginBottom: 10 }}>
-              <Col flex="25%">{$t(item.type)}</Col>
-              <Col flex="25%">
-                <div className={classNames(item.amount > 0 ? "main-green" : "main-red")}>{amountFormt(item.amount,2, true,"--")}</div>
-                <div>{item.amoutToken}</div>
-              </Col>
-              <Col flex="25%">
-                <div className="main-white">{amountFormt(item.balance,2,false, "--")}</div>
-                <div>{item.balanceToken}</div>
-              </Col>
-              <Col flex="25%">
-                <div className="main-white">{dateFormat(new Date(item.time),"yyyy-MM-dd")}</div>
-                <div>{dateFormat(new Date(item.time),"hh:mm:ss")}</div>
-              </Col>
+      <Spin spinning={loading}>
+        <Row>
+          <Col flex="100%">
+            <Row justify="space-between" style={{ marginBottom: 24 }}>
+              {listTitleMap[props.type].map(item => (
+                <Col key={item} flex="25%">
+                  {formatMessage({ id: item })}
+                </Col>
+              ))}
             </Row>
           </Col>
-        ))}
-      </Row>
+          {pagenation.records.map((item, i) => (
+            <Col flex="100%" key={i}>
+              <Row justify="space-between" style={{ marginBottom: 10 }}>
+                <Col flex="25%">{$t(item.type)}</Col>
+                <Col flex="25%">
+                  <div className={classNames(item.amount > 0 ? "main-green" : "main-red")}>{amountFormt(item.amount,2, true,"--")}</div>
+                  <div>{item.amoutToken}</div>
+                </Col>
+                <Col flex="25%">
+                  <div className="main-white">{amountFormt(item.balance,2,false, "--")}</div>
+                  <div>{item.balanceToken}</div>
+                </Col>
+                <Col flex="25%">
+                  <div className="main-white">{dateFormat(new Date(item.time),"yyyy-MM-dd")}</div>
+                  <div>{dateFormat(new Date(item.time),"hh:mm:ss")}</div>
+                </Col>
+              </Row>
+            </Col>
+          ))}
+          {
+            pagenation.totalPage > 1 ? (<Col flex="100%">
+              <Row justify="center">
+                <Pagination onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+              </Row>
+            </Col>) : <></>
+          }
+        </Row>
+      </Spin>
     </Modal>
   );
 };

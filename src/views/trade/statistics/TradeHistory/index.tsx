@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
 
-import { Row, Col, Table, Button, Modal, Popover, Space } from "antd";
+import {Row, Col, Table, Button, Modal, Popover, Space, Pagination} from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import { MyPositionType } from "../type";
 import classNames from "classnames";
@@ -14,6 +14,7 @@ import {useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {fromContractUnit} from "@/utils/contractUtil";
 import {amountFormt, dateFormat} from "@/utils/utils";
+import {Pagenation} from "@/api/types";
 
 class OpTypeEnum {
   opType:number;
@@ -58,8 +59,6 @@ const TradeHistory: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [records, setRecords] = useState<TradeRecord[]>([]);
-  const [pageNum, setPageNum] = useState<number>(0);
   const [showLoading, setShowLoading] = useState<boolean>(true);
 
 
@@ -75,8 +74,7 @@ const TradeHistory: React.FC = () => {
 
   const walletInfo = useSelector((state:RootStore) => state.user);
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
-
-  const pageSize = 10
+  const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
 
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
@@ -85,16 +83,12 @@ const TradeHistory: React.FC = () => {
     }
 
     setShowLoading(true)
-    getTradeList(trader, pageNum, pageSize).then(rows => {
-      if(rows && rows.length > 0) {
-        setRecords(records.concat(rows))
-      }
-
-
+    getTradeList(trader, pagenation.current, pagenation.pageSize).then(pagenation => {
+      setPagenation(pagenation);
     }).catch(e => {
       console.log('getTradeBalanceDetail',e)
     }).finally(() => setShowLoading(false))
-  }, [pageNum,walletInfo])
+  }, [pagenation.current,pagenation.pageSize,walletInfo])
 
   const getPairByAddress = (token:string) => {
     const pair = tokenPairs.find((pair) => pair.address === token)
@@ -355,12 +349,26 @@ const TradeHistory: React.FC = () => {
     },
   ];
 
+  const onPageChange = useCallback((pageNum, pageSize) => {
+    pagenation.current = pageNum;
+    if(pageSize){
+      pagenation.pageSize = pageSize;
+    }
+    setPagenation(pagenation);
+  },[]);
 
   return (
     <Row>
       <Col flex="100%">
-        <Table dataSource={records} columns={columns} pagination={false} rowKey={"id"} loading={showLoading}/>
+        <Table dataSource={pagenation.records} columns={columns} pagination={false} rowKey={"id"} loading={showLoading}/>
       </Col>
+      {
+        pagenation.totalPage > 1 ? (<Col flex="100%">
+          <Row justify="center">
+            <Pagination onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+          </Row>
+        </Col>) : <></>
+      }
     </Row>
   );
 };
