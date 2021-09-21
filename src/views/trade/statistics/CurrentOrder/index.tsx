@@ -11,6 +11,7 @@ import {RootStore} from "@/store";
 import {amountFormt, dateFormat} from "@/utils/utils";
 import LongOrShort from "@/views/trade/LongOrShort";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 
 const dataSource = [
   {
@@ -328,18 +329,25 @@ function CurrentOrder() {
 
   return (
     <Row>
-      <Col flex="100%" className="derify-trade-all-btn">
-        <Row justify="end">
-          <Col>
-            <Button type="primary" size="small"
-                    className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block"
-                    onClick={cancelAll}
-            >
-              <FormattedMessage id="Trade.CurrentOrder.List.CancelAll" />
-            </Button>
+      {
+        dataSource.length > 0 ? (
+          <Col flex="100%" className="derify-trade-all-btn">
+            <Row justify="end">
+              <Col>
+                <WalletConnectButtonWrapper type="primary" size="small"
+                                            className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
+                  <Button type="primary" size="small"
+                          className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block"
+                          onClick={cancelAll}
+                  >
+                    <FormattedMessage id="Trade.CurrentOrder.List.CancelAll" />
+                  </Button>
+                </WalletConnectButtonWrapper>
+              </Col>
+            </Row>
           </Col>
-        </Row>
-      </Col>
+        ):("")
+      }
       <Col flex="100%">
         <Table dataSource={dataSource} columns={columns} pagination={false}  loading={showLoading} rowKey="tx" />
       </Col>

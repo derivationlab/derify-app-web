@@ -179,13 +179,13 @@ export async function getWallet() : Promise<UserState>{
 }
 
 export const reducers = createReducer(state, {
-  'user/setShowWallet': (state, showWallet) => {
+  'user/setShowWallet': (state, {payload}) => {
     return update(state, {
-      showWallet: {$set: showWallet}
+      showWallet: {$set: payload}
     })
   },
   'user/updateState': (state, {payload})=>{
-    return update(state, {$set: payload})
+    return update(state, {$merge: payload})
   }
 });
 
@@ -210,6 +210,13 @@ const actions = {
 
       commit({type: "user/updateState", payload: walletInfo})
       return walletInfo
+    }
+  },
+
+  showWallet(show:boolean = true) {
+    return async(commit: Dispatch) => {
+      commit({type: "user/setShowWallet", payload: show})
+      return true;
     }
   },
 

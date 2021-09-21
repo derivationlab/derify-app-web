@@ -22,7 +22,8 @@ import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 
 interface TransferProps extends ModalProps {
-  operateType?: TransferOperateType
+  operateType?: TransferOperateType;
+  closeModal: () => void;
 }
 
 export class TransferData {
@@ -185,10 +186,10 @@ const Transfer: React.FC<TransferProps> = props => {
     }
 
 
-    const trader = walletInfo.selectedAddress
-
+    const trader = walletInfo.selectedAddress;
     if(transferData.operateType == TransferOperateType.withdraw) {
       DerifyTradeModal.pendding();
+      props.closeModal();
       const action = contractModel.actions.withdrawAccount(trader, toContractUnit(amount));
       action(dispatch).then((data) => {
         DerifyTradeModal.success();
@@ -198,6 +199,7 @@ const Transfer: React.FC<TransferProps> = props => {
         console.error(`${transferData.operateType} failed, ${e}`)
       })
     }else{
+      props.closeModal();
       DerifyTradeModal.pendding();
       const action = contractModel.actions.depositAccount(trader, toContractUnit(amount));
       action(dispatch).then((data) => {
