@@ -149,13 +149,13 @@ function Operation() {
   const doOpenPositionConfirm = useCallback((side:number) => {
 
     let checkNumRet = checkNumber(size, getMaxSize(traderOpenUpperBound, token))
-    if(!checkNumRet.success){
+    if(!checkNumRet.success || !checkNumRet.value){
       DerifyErrorNotice.error($t("global.NumberError"));
       return;
     }
 
     checkNumRet = checkNumber(limitPrice)
-    if(!checkNumRet.success){
+    if(!checkNumRet.value || !checkNumRet.success){
       DerifyErrorNotice.error($t("global.NumberError"));
       return;
     }
