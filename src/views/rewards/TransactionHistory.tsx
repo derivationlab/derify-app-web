@@ -100,7 +100,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
   }, [trader, props.type,props.visible, pagenation.current]);
 
   const modalTitleMap = {
-    "USDT": <p>{$t("Rewards.Mining.History.PositionMining")}{$t("Rewards.Mining.History.PositionMining")}</p>,
+    "USDT": <p>{$t("Rewards.Mining.History.PositionMining")}{$t("Rewards.Mining.Card.TransactionHistory")}</p>,
     "eDRF": <p>eDRF&nbsp;{$t("Rewards.Staking.Card.TransactionHistory")}</p>,
     "bDRF": <p>eDRF&nbsp;{$t("Rewards.Mining.History.PositionMining")}</p>,
   };
@@ -141,9 +141,9 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
             </Col>
           ))}
           {
-            pagenation.totalPage > 1 ? (<Col flex="100%">
+            pagenation.totalItems > 1 ? (<Col flex="100%">
               <Row justify="center">
-                <Pagination onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+                <Pagination pageSize={pagenation.pageSize} onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalItems} showSizeChanger={false} />
               </Row>
             </Col>) : <></>
           }
