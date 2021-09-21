@@ -112,7 +112,7 @@ const state : ContractState = {
 }
 
 const reducers = createReducer(state, {
-  UPDATE_PAIRS (state : ContractState, {payload}) {
+  'contract/UPDATE_PAIRS' (state : ContractState, {payload}) {
     const pairMap:{[key:string]:{item:TokenPair, index: number}} = {};
     state.pairs.forEach((item, index) => {
       pairMap[item.key] = {item, index};
@@ -129,10 +129,10 @@ const reducers = createReducer(state, {
 
     return update(state,{pairs: {$merge:state.pairs}})
   },
-  SET_ACCOUNT (state : ContractState, {payload}) {
+  'contract/SET_ACCOUNT' (state : ContractState, {payload}) {
     return update(state,{accountData:{$merge: payload.accountData}})
   },
-  SET_CURPAIRKEY (state : ContractState, {payload}) {
+  'contract/SET_CURPAIRKEY' (state : ContractState, {payload}) {
 
     const curPair = state.pairs.find(pair => pair.key === payload.key)
     return update(state,{
@@ -140,18 +140,18 @@ const reducers = createReducer(state, {
       curPair: {$set: curPair}
     })
   },
-  SET_CURSPOTPRICE (state : ContractState, {payload}) {
+  'contract/SET_CURSPOTPRICE' (state : ContractState, {payload}) {
     return update(state,{curSpotPrice:{$set: payload.curSpotPrice}})
   },
-  SET_CONTRACT_DATA (state : ContractState, {payload}) {
+  'contract/SET_CONTRACT_DATA' (state : ContractState, {payload}) {
     return update(state,{
       contractData:{$merge: {...payload}}
     })
   },
-  SET_ACCOUNT_DATA (state : ContractState, {payload}) {
+  'contract/SET_ACCOUNT_DATA' (state : ContractState, {payload}) {
     return update(state,{$merge: {...payload}})
   },
-  RESET_POSITION_DATA (state : ContractState,{payload}) {
+  'contract/RESET_POSITION_DATA' (state : ContractState,{payload}) {
     console.log(`RESET_POSITION_DATA ${state}`)
     state.positionData.positions.splice(0)
     state.positionData.orderPositions.splice(0)
@@ -161,7 +161,7 @@ const reducers = createReducer(state, {
         orderPositions:{$splice: []}
     })
   },
-  ADD_POSITION_DATA (state : ContractState, {payload}) {
+  'contract/ADD_POSITION_DATA' (state : ContractState, {payload}) {
     if(!payload.positionData) {
       return update(state,{$merge:{}})
     }
@@ -229,7 +229,7 @@ const actions = {
     return async (dispatch:Dispatch) => {
       const spotPrice = web3Utils.contract(trader).getSpotPrice(token)
 
-      dispatch({type: 'SET_CURSPOTPRICE', payload: spotPrice})
+      dispatch({type: 'contract/SET_CURSPOTPRICE', payload: spotPrice})
     }
   },
   updateTokenSpotPrice (trader:string,token:string) {
@@ -241,7 +241,7 @@ const actions = {
       }
 
       web3Utils.contract(trader).getSpotPrice(token).then((spotPrice) => {
-        commit({type:'UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: matchPair.key}]})
+        commit({type:'contract/UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: matchPair.key}]})
       })
     }
   },
@@ -318,12 +318,8 @@ const actions = {
   },
   /**
    *
-   * @param state
-   * @param token
-   * @param closeType {CancelOrderedPositionTypeEnum}
-   * @param side {SideEnum}
-   * @param timestamp
    * @returns {Promise<void>}
+   * @param params
    */
   cancleOrderedPosition (params:{trader:string, token:string, closeType:CancelOrderedPositionTypeEnum, side: SideEnum, timestamp: number}) {
     return async (dispatch:Dispatch) => {
@@ -368,7 +364,7 @@ const actions = {
 
       // 2.get positionChangeFeeRatio
       data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(token)
-      commit({type: 'SET_CONTRACT_DATA', payload: {...data}})
+      commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
 
       // 3.get traderOpenUpperBound
       const price = data.curSpotPrice
@@ -377,7 +373,7 @@ const actions = {
       data.traderOpenUpperBound = await contract.getTraderOpenUpperBound({token, trader
         , openType, price:  toHexString(price), leverage: toContractUnit(leverage)})
 
-      commit({type: 'SET_CONTRACT_DATA', payload: {...data}})
+      commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
 
       //4.update all token price
       const updateAllPairPriceAction = self.updateAllPairPrice(trader)
@@ -386,7 +382,7 @@ const actions = {
       // 4.get sysOpenUpperBound
       data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: side})
 
-      commit({type: 'SET_CONTRACT_DATA', payload: {...data}})
+      commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
 
       return data
     }
@@ -403,7 +399,7 @@ const actions = {
         sysOpenUpperBound = await contract.getSysOpenUpperBound({token: token, side})
       }
 
-      commit({type:'SET_CONTRACT_DATA', payload:{sysOpenUpperBound}})
+      commit({type:'contract/SET_CONTRACT_DATA', payload:{sysOpenUpperBound}})
       return sysOpenUpperBound
     }
   },
@@ -424,7 +420,7 @@ const actions = {
         sysCloseUpperBound = await contract.getSysCloseUpperBound({token: curPair.address, side})
       }
 
-      commit({type:'SET_CONTRACT_DATA', payload:{sysCloseUpperBound}})
+      commit({type:'contract/SET_CONTRACT_DATA', payload:{sysCloseUpperBound}})
       return sysCloseUpperBound
   })
   },
@@ -451,10 +447,10 @@ const actions = {
             //Update token price change
 
             if(pair.key === state.curPairKey) {
-              commit({type:'SET_CONTRACT_DATA', payload:{tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)}})
+              commit({type:'contract/SET_CONTRACT_DATA', payload:{tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)}})
             }
 
-            commit({type:'UPDATE_PAIRS', payload:[{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pairKey}]})
+            commit({type:'contract/UPDATE_PAIRS', payload:[{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pairKey}]})
 
             const matchPair = state.pairs.find((item) => item.key === pairKey)
 
@@ -463,7 +459,7 @@ const actions = {
             }
 
             contract.getSpotPrice(matchPair.address).then((spotPrice) => {
-              commit({type:'UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: matchPair.key}]})
+              commit({type:'contract/UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: matchPair.key}]})
             })
           })
         }

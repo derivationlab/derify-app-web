@@ -55,7 +55,7 @@ export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10)
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<*[]|TraderBondBalance>}
+ * @returns {Promise<TraderBondBalance[]>}
  */
 export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) {
   const content =  await io.get(`/api/trader_bond_balance/${trader}/${pageNum}/${pageSize}`)
@@ -71,7 +71,7 @@ export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) 
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<*[]|TradePMRBalance>}
+ * @returns {Promise<TradePMRBalance[]>}
  */
 export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
   const content =  await io.get(`/api/trader_pmr_balance/${trader}/${pageNum}/${pageSize}`)
@@ -87,7 +87,7 @@ export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<*[]|TraderEDRFBalance>}
+ * @returns {Promise<TraderEDRFBalance[]>}
  */
 export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) {
   const content =  await io.get(`/api/trader_edrf_balance/${trader}/${pageNum}/${pageSize}`)
