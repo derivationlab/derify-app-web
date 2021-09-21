@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import {FormattedMessage, useIntl} from "react-intl";
-import { Row, Col, Button, Space, Statistic } from "antd";
-import { Link } from "react-router-dom";
+import {Button, Col, Row, Space, Statistic} from "antd";
+import {Link} from "react-router-dom";
 import TransactionHistory from "./TransactionHistory";
-import OperateCom, { OperateType } from "./OperateCom";
+import OperateCom, {OperateType} from "./OperateCom";
 
 import "./index.less";
-export type RewardsType = "USDT" | "bDRF" | "eDRF";
+import {RewardModel, RootStore} from "@/store";
+import {useDispatch, useSelector} from "react-redux";
+import {fck} from "@/utils/utils";
+import {RewardsType} from "@/store/modules/reward";
+
 
 function Rewards() {
+  const disoatch = useDispatch();
+
   const [thVisible, setThVisible] = useState(false);
   const [operateVisible, setOperateVisible] = useState(false);
-  const [rewardsType, setRewardsType] = useState<RewardsType>("bDRF");
+  const [rewardsType, setRewardsType] = useState<RewardsType>(RewardsType.USDT);
+  const trader = useSelector((state:RootStore) => state.user.selectedAddress);
+  const {bondInfo,wallet,pmrBalance,pmrAccumulatedBalance,edrfInfo,accountData} = useSelector((state:RootStore) => state.reward);
+
+
   const [operateType, setOperateType] =
-    useState<OperateType>("rewards.withdraw");
+    useState<OperateType>(OperateType.minWithdraw);
 
   const { formatMessage } = useIntl();
 
@@ -24,26 +34,42 @@ function Rewards() {
 
   const $t = intl;
 
+  useEffect(() => {
+
+    if(!trader) {
+      return
+    }
+
+    const loadEarningDataAction = RewardModel.actions.loadEarningData(trader);
+    loadEarningDataAction(disoatch).then(data => {
+
+    }).catch((e) => {
+
+    }).finally(() => {
+
+    });
+  }, [])
+
   return (
     <Row className="rewards-page" gutter={[0, 20]}>
+      {/*position mining start*/}
       <Col flex="100%" className="main-block">
         <Row justify="space-between">
           <Col flex="33%">
             <Row>
               <Col flex="100%" className="main-color">
-                <Statistic value={"23456.89"} />
+                <Statistic value={fck(pmrBalance, -8, 2)} />
               </Col>
               <Col flex="100%" className="main-white key-wrapper">
-                <FormattedMessage id="Rewards.Mining.Card.PositionMining" />
-                （USDT）
+                <FormattedMessage id="Rewards.Mining.Card.PositionMining" />（USDT）
               </Col>
               <Col flex="100%">
                 <Button
                   type="ghost"
                   onClick={() => {
                     setOperateVisible(true);
-                    setRewardsType("USDT");
-                    setOperateType("rewards.withdraw");
+                    setRewardsType(RewardsType.USDT);
+                    setOperateType(OperateType.minWithdraw);
                   }}
                 >
                   <FormattedMessage id="Rewards.Mining.Card.Withdraw" />
@@ -54,7 +80,7 @@ function Rewards() {
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"23456.89"} />
+                <Statistic value={fck(accountData.totalPositionAmount, -8, 2)} />
               </Col>
               <Col flex="100%" className="key-wrapper">
                 <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> (USDT)
@@ -69,7 +95,7 @@ function Rewards() {
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"23456.89"} />
+                <Statistic value={fck(pmrAccumulatedBalance, -8,2)} />
               </Col>
               <Col flex="100%" className="key-wrapper">
                 <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> (USDT)
@@ -79,7 +105,7 @@ function Rewards() {
                   type="link"
                   onClick={() => {
                     setThVisible(true);
-                    setRewardsType("USDT");
+                    setRewardsType(RewardsType.USDT);
                   }}
                 >
                   <FormattedMessage id="Rewards.Mining.Card.TransactionHistory" />
@@ -90,23 +116,25 @@ function Rewards() {
           </Col>
         </Row>
       </Col>
+
+      {/*edrf*/}
       <Col flex="100%" className="main-block">
         <Row justify="space-between">
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"0"} />
+                <Statistic value={fck(edrfInfo.edrfBalance, -8,2)} />
               </Col>
               <Col flex="100%" className="main-white key-wrapper">
-                <FormattedMessage id="Rewards.Staking.Card.eDRFAccount" /> eDRF (eDRF)
+                <FormattedMessage id="Rewards.Staking.Card.eDRFAccount" /> (eDRF)
               </Col>
               <Col flex="100%">
                 <Button
                   type="ghost"
                   onClick={() => {
                     setOperateVisible(true);
-                    setRewardsType("eDRF");
-                    setOperateType("rewards.withdraw");
+                    setRewardsType(RewardsType.eDRF);
+                    setOperateType(OperateType.eDRFWithdraw);
                   }}
                 >
                   <FormattedMessage id="Rewards.Staking.Card.Withdraw" />
@@ -117,7 +145,7 @@ function Rewards() {
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"12345.67"} />
+                <Statistic value={fck(edrfInfo.drfBalance, -8,2)} />
               </Col>
               <Col flex="100%" className="key-wrapper">
                 <FormattedMessage id="Rewards.Staking.Card.StakAmount(DRF)" />
@@ -128,8 +156,8 @@ function Rewards() {
                     type="primary"
                     onClick={() => {
                       setOperateVisible(true);
-                      setRewardsType("eDRF");
-                      setOperateType("rewards.staking");
+                      setRewardsType(RewardsType.eDRF);
+                      setOperateType(OperateType.eDRFPledge);
                     }}
                   >
                     <FormattedMessage id="Rewards.Staking.Card.Staking" />
@@ -138,8 +166,8 @@ function Rewards() {
                     type="ghost"
                     onClick={() => {
                       setOperateVisible(true);
-                      setRewardsType("eDRF");
-                      setOperateType("rewards.redeem");
+                      setRewardsType(RewardsType.eDRF);
+                      setOperateType(OperateType.eDRFRedeem);
                     }}
                   >
                     <FormattedMessage id="Rewards.Staking.Card.Redeem" />
@@ -148,10 +176,12 @@ function Rewards() {
               </Col>
             </Row>
           </Col>
+
+
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"112.34"} />{" "}
+                <Statistic value={fck(edrfInfo.edrfBalance, -8,2)} />{" "}
               </Col>
               <Col flex="100%" className="key-wrapper">
                 <FormattedMessage id="Rewards.Staking.Card.DailyYield(eDRF)" />
@@ -161,7 +191,7 @@ function Rewards() {
                   type="link"
                   onClick={() => {
                     setThVisible(true);
-                    setRewardsType("eDRF");
+                    setRewardsType(RewardsType.eDRF);
                   }}
                 >
                   <FormattedMessage id="Rewards.Staking.Card.TransactionHistory" />
@@ -172,12 +202,13 @@ function Rewards() {
           </Col>
         </Row>
       </Col>
+      {/*bdrf*/}
       <Col flex="100%" className="main-block">
         <Row justify="space-between">
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"0"} />
+                <Statistic value={fck(bondInfo.bondBalance,-8,2)} />
               </Col>
               <Col flex="100%" className="main-white key-wrapper">
                 <FormattedMessage id="Rewards.Bond.Card.bDRFAccount" />
@@ -188,8 +219,8 @@ function Rewards() {
                     type="ghost"
                     onClick={() => {
                       setOperateVisible(true);
-                      setRewardsType("bDRF");
-                      setOperateType("rewards.withdraw");
+                      setRewardsType(RewardsType.bDRF);
+                      setOperateType(OperateType.bDRFWithdraw);
                     }}
                   >
                     <FormattedMessage id="Rewards.Bond.Card.Withdraw" />
@@ -198,8 +229,8 @@ function Rewards() {
                     type="primary"
                     onClick={() => {
                       setOperateVisible(true);
-                      setRewardsType("bDRF");
-                      setOperateType("rewards.redeem.a");
+                      setRewardsType(RewardsType.bDRF);
+                      setOperateType(OperateType.bDRFExchange);
                     }}
                   >
                     <FormattedMessage id="Rewards.Bond.Card.Exchange" />
@@ -211,7 +242,7 @@ function Rewards() {
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"12345.67"} />
+                <Statistic value={fck(bondInfo.bondReturnBalance,-8,2)} />
               </Col>
               <Col flex="100%" className="key-wrapper">
                 <FormattedMessage id="Rewards.Bond.Card.StakingAmount(bDRF)" />
@@ -222,8 +253,8 @@ function Rewards() {
                     type="primary"
                     onClick={() => {
                       setOperateVisible(true);
-                      setRewardsType("bDRF");
-                      setOperateType("rewards.deposit");
+                      setRewardsType(RewardsType.bDRF);
+                      setOperateType(OperateType.eDRFPledge);
                     }}
                   >
                     <FormattedMessage id="Rewards.Bond.Card.Staking" />
@@ -232,8 +263,8 @@ function Rewards() {
                     type="ghost"
                     onClick={() => {
                       setOperateVisible(true);
-                      setRewardsType("bDRF");
-                      setOperateType("rewards.redeem");
+                      setRewardsType(RewardsType.bDRF);
+                      setOperateType(OperateType.bDRFRedeem);
                     }}
                   >
                     <FormattedMessage id="Rewards.Bond.Card.Redeem" />
@@ -245,7 +276,7 @@ function Rewards() {
           <Col flex="33%">
             <Row>
               <Col flex="100%">
-                <Statistic value={"112.34"} />
+                <Statistic value={fck(bondInfo.bondAnnualInterestRatio,-6,2)} />
               </Col>
               <Col flex="100%" className="key-wrapper">
                 APY
@@ -255,7 +286,7 @@ function Rewards() {
                   type="link"
                   onClick={() => {
                     setThVisible(true);
-                    setRewardsType("bDRF");
+                    setRewardsType(RewardsType.bDRF);
                   }}
                 >
                   <FormattedMessage id="Rewards.Bond.Card.TransactionHistory" />
@@ -273,6 +304,7 @@ function Rewards() {
         footer={null}
       />
       <OperateCom
+        closeModal={() => setOperateVisible(false)}
         visible={operateVisible}
         type={operateType}
         rewardsType={rewardsType}

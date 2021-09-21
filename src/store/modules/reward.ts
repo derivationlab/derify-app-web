@@ -11,7 +11,6 @@ import {
   TraderBondBalance, TraderEDRFBalance
 } from "@/api/trade";
 import {ReactNode} from "react";
-import {Pagenation} from "@/api/types";
 
 export enum RewardsType{
   USDT = "USDT",
@@ -267,15 +266,15 @@ const actions = {
       return edrfInfo;
     }
   },
-  getTraderPMRBalance (trader:string, page = 1, size = 10) {
+  getTraderPMRBalance (trader:string, page = 0, size = 10) {
     return async(commit:Dispatch) => {
       if(!trader) {
-        return new Pagenation();
+        return [];
       }
 
-      const pagenation = await getTraderPMRBalance(trader, page, size);
+      const records:TradePMRBalance[] = await getTraderPMRBalance(trader, page, size);
       const results:RewardsHistoryRecord[] = [];
-      pagenation.records.forEach((item:TradePMRBalance) => {
+      records.forEach((item) => {
 
         results.push({
           id: item.id,
@@ -288,25 +287,19 @@ const actions = {
         });
       })
 
-      const resultPagenation = new Pagenation();
-      resultPagenation.pageSize = pagenation.pageSize;
-      resultPagenation.current = pagenation.current;
-      resultPagenation.totalPage = pagenation.totalPage;
-      resultPagenation.totalItems = pagenation.totalItems;
-      resultPagenation.records = results;
-      return resultPagenation;
+      return results;
     }
   },
-  getTraderBondBalance (trader:string, page = 1, size = 10) {
+  getTraderBondBalance (trader:string, page = 0, size = 10) {
     return async (commit:Dispatch) => {
       if(!trader) {
-        return new Pagenation();
+        return [];
       }
 
-      const pagenation =  await  getTraderBondBalance(trader, page, size);
+      const records:TraderBondBalance[] =  await  getTraderBondBalance(trader, page, size);
 
       const results:RewardsHistoryRecord[] = [];
-      pagenation.records.forEach((item:TraderBondBalance) => {
+      records.forEach((item) => {
         results.push({
           id: item.id,
           amount: item.amount,
@@ -318,20 +311,14 @@ const actions = {
         });
       })
 
-      const resultPagenation = new Pagenation();
-      resultPagenation.pageSize = pagenation.pageSize;
-      resultPagenation.current = pagenation.current;
-      resultPagenation.totalPage = pagenation.totalPage;
-      resultPagenation.totalItems = pagenation.totalItems;
-      resultPagenation.records = results;
-      return resultPagenation;
+      return results;
     }
   },
-  getTraderEdrfHistory (trader:string, page = 1, size = 10) {
+  getTraderEdrfHistory (trader:string, page = 0, size = 10) {
     return async (commit:Dispatch) => {
 
       if(!trader) {
-        return new Pagenation();
+        return [];
       }
 
       const typeMap:{[key:number]:string} = {
@@ -339,10 +326,10 @@ const actions = {
         1: "Rewards.Staking.History.Withdraw",
         6: "Rewards.Staking.History.Burn",
       };
-      const pagenation =  await getTraderEDRFBalance(trader, page, size);
+      const records:TraderEDRFBalance[] =  await getTraderEDRFBalance(trader, page, size);
 
       const results:RewardsHistoryRecord[] = [];
-      pagenation.records.forEach((item:TraderEDRFBalance) => {
+      records.forEach((item) => {
         results.push({
           id: item.id,
           amount: item.amount,
@@ -354,13 +341,7 @@ const actions = {
         });
       })
 
-      const resultPagenation = new Pagenation();
-      resultPagenation.pageSize = pagenation.pageSize;
-      resultPagenation.current = pagenation.current;
-      resultPagenation.totalPage = pagenation.totalPage;
-      resultPagenation.totalItems = pagenation.totalItems;
-      resultPagenation.records = results;
-      return resultPagenation;
+      return results;
     }
 
   },
