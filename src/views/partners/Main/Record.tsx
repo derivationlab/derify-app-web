@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Row, Col, Tabs, Table, Spin} from "antd";
+import {Row, Col, Tabs, Table, Spin, Pagination} from "antd";
 import { ColumnsType } from "antd/es/table";
 import {useIntl} from "react-intl";
 import {BrokerHistoryRecord, getbrokerBindTraders, getBrokerRewardHistory} from "@/api/broker";
@@ -7,6 +7,7 @@ import {amountFormt, dateFormat} from "@/utils/utils";
 import classNames from "classnames";
 import {useSelector} from "react-redux";
 import {RootStore} from "@/store";
+import {Pagenation} from "@/api/types";
 const { TabPane } = Tabs;
 
 interface AcType {
@@ -31,12 +32,14 @@ function Record() {
   const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
 
   const [brokerTradeRecords, setBrokerTradeRecords] = useState<BrokerHistoryRecord[]>([]);
-  const [rewardPageNum, setRewardPageNum] = useState<number>(0);
 
   const [brokerTraders, setBrokerTraders] = useState<{trader:string,update_time:Date}[]>([]);
   const [tradersPageNum, setTradersPageNum] = useState<number>(0);
 
   const [sping, setSping] = useState<boolean>(true);
+  const [traderPagenation,setTraderPagenation] = useState<Pagenation>(new Pagenation());
+  const [rewardPagenation,setRewardPagenation] = useState<Pagenation>(new Pagenation());
+
 
   function intl<T>(id:string,values:T[] = []) {
 
@@ -52,41 +55,46 @@ function Record() {
 
   const $t = intl;
 
-  const fetchBrokerRewardHistory = useCallback((rewardPageNum) => {
-
-    getBrokerRewardHistory(trader,rewardPageNum,10).then((rows)=>{
-      if(rewardPageNum === 0){
-        brokerTradeRecords.splice(0);
-      }
-
-      rows.forEach(row => {
-        brokerTradeRecords.push(row);
-      });
-
-      setBrokerTradeRecords(brokerTradeRecords);
+  const fetchBrokerRewardHistory = useCallback(() => {
+    setSping(true);
+    getBrokerRewardHistory(trader,rewardPagenation.current,10).then((pagenation)=>{
+      setRewardPagenation(pagenation);
     }).finally(() => setSping(false));
 
-  },[trader,rewardPageNum]);
+  },[trader,rewardPagenation.current,rewardPagenation.pageSize]);
 
-  const fetchBrokerTraders = useCallback((tradersPageNum) => {
-
-    getbrokerBindTraders(trader,tradersPageNum,10).then((rows)=>{
-      if(tradersPageNum === 0){
-        brokerTraders.splice(0);
-      }
-
-      rows.forEach(row => {
-        brokerTraders.push(row);
-      })
-      setBrokerTraders(brokerTraders);
+  const fetchBrokerTraders = useCallback(() => {
+    setSping(true);
+    getbrokerBindTraders(trader,traderPagenation.current,traderPagenation.pageSize).then((pagenation)=>{
+      setTraderPagenation(pagenation);
     }).finally(() => setSping(false));
 
-  },[trader,tradersPageNum]);
+  },[trader,traderPagenation.current,traderPagenation.pageSize]);
+
+  const onTraderPageChange = useCallback((pageNum, pageSize) => {
+    traderPagenation.current = pageNum;
+    if(pageSize){
+      traderPagenation.pageSize = pageSize;
+    }
+    setTraderPagenation(traderPagenation);
+  },[]);
+
+  const onRewardPageChange = useCallback((pageNum, pageSize) => {
+    rewardPagenation.current = pageNum;
+    if(pageSize){
+      rewardPagenation.pageSize = pageSize;
+    }
+    setRewardPagenation(rewardPagenation);
+  },[]);
+
 
   useEffect(() => {
-    fetchBrokerRewardHistory(0)
-  }, [trader,tradersPageNum])
+    fetchBrokerRewardHistory()
+  }, [rewardPagenation.current,rewardPagenation.pageSize])
 
+  useEffect(() => {
+    fetchBrokerTraders()
+  }, [traderPagenation.current,traderPagenation.pageSize])
 
   const AcColumns: ColumnsType<BrokerHistoryRecord> = [
     {
@@ -168,11 +176,10 @@ function Record() {
     <Row className="main-block record-container">
       <Col flex="100%">
         <Tabs defaultActiveKey="reward" onChange={(key) => {
-          console.log(key)
           if(key === "reward"){
-            fetchBrokerRewardHistory(0);
+            setRewardPagenation(rewardPagenation);
           }else{
-            fetchBrokerTraders(0);
+            setTraderPagenation(traderPagenation);
           }
         }}>
             <TabPane tab={$t("Broker.Broker.History.AccountHistory")} key="reward">
@@ -181,19 +188,26 @@ function Record() {
                   columns={AcColumns}
                   dataSource={brokerTradeRecords}
                   rowKey={'tx'}
-                  // pagination={{
-                  //   position: ["bottomCenter"],
-                  //   defaultCurrent: 1,
-                  //   total: 200,
-                  //   showSizeChanger: false,
-                  // }}
-
                 />
+                <Col flex="100%">
+                  <Row justify="center">
+                    {
+                      rewardPagenation.totalPage > 1 ? (<Pagination onChange={onRewardPageChange} defaultCurrent={rewardPagenation.current} total={rewardPagenation.totalPage} showSizeChanger={false} />) : <></>
+                    }
+                  </Row>
+                </Col>
               </Spin>
             </TabPane>
             <TabPane tab={$t("Broker.Broker.TraderInfo.TraderInfo")} key="trader">
               <Spin spinning={sping}>
                 <Table columns={TraderColumns}  rowKey={'trader'} dataSource={brokerTraders} pagination={false} />
+                {
+                  traderPagenation.totalPage > 1 ? (<Col flex="100%">
+                    <Row justify="center">
+                      <Pagination onChange={onTraderPageChange} defaultCurrent={traderPagenation.current} total={traderPagenation.totalPage} showSizeChanger={false} />
+                    </Row>
+                  </Col>) : <></>
+                }
               </Spin>
             </TabPane>
 

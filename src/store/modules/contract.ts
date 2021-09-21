@@ -129,9 +129,6 @@ const reducers = createReducer(state, {
 
     return update(state,{pairs: {$merge:state.pairs}})
   },
-  'contract/SET_ACCOUNT' (state : ContractState, {payload}) {
-    return update(state,{accountData:{$merge: payload.accountData}})
-  },
   'contract/SET_CURPAIRKEY' (state : ContractState, {payload}) {
 
     const curPair = state.pairs.find(pair => pair.key === payload.key)
@@ -149,7 +146,7 @@ const reducers = createReducer(state, {
     })
   },
   'contract/SET_ACCOUNT_DATA' (state : ContractState, {payload}) {
-    return update(state,{$merge: {...payload}})
+    return update(state,{accountData:{$merge: payload}})
   },
   'contract/RESET_POSITION_DATA' (state : ContractState,{payload}) {
     console.log(`RESET_POSITION_DATA ${state}`)
@@ -439,7 +436,7 @@ const actions = {
         }
 
         contract.getSpotPrice(pair.address).then((spotPrice) => {
-          commit({type:'UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: pair.key}]})
+          commit({type:'contract/UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: pair.key}]})
         })
 
         if(!tokenPriceRateEnventMap[pair.key]){
@@ -486,7 +483,7 @@ const actions = {
         , totalPositionAmount: tradeVariables.totalPositionAmount
         , marginRate: tradeVariables.marginRate})
 
-      commit({type:'SET_ACCOUNT_DATA', payload:accountData})
+      commit({type:'contract/SET_ACCOUNT_DATA', payload:accountData})
 
       return accountData
     }
@@ -540,7 +537,7 @@ const actions = {
         , trader, openType, price, leverage})
 
       const update = Object.assign({}, state.contractData, {traderOpenUpperBound: data})
-      commit({type:"SET_CONTRACT_DATA", payload: update})
+      commit({type:"contract/SET_CONTRACT_DATA", payload: update})
       return data;
     }
   },
@@ -595,7 +592,7 @@ const actions = {
         return false
       }
 
-      commit({type: "SET_CURPAIRKEY", payload: tokenPair})
+      commit({type: "contract/SET_CURPAIRKEY", payload: tokenPair})
 
       return true
     }

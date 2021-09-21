@@ -1,5 +1,6 @@
 import * as io from "@/utils/request";
 import * as configUtil from '../config'
+import {Pagenation} from "@/api/types";
 
 const serverEndPoint = configUtil.getCurrentServerEndPoint()
 
@@ -21,16 +22,25 @@ const isNotCallEvent = false;
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<Array<TradeRecord>>}
+ * @returns {Promise<Pagenation<TradeRecord>>}
  */
-export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
-  const content = await io.get(`/api/trade_records/${trader}/${pageNum}/${pageSize}`)
+export async function getTradeList (trader, pageNum = 1, pageSize = 10) {
+  const content = await io.get(`/api/trade_records/${trader}/${pageNum - 1}/${pageSize}`)
 
-  if(content) {
-    return content.data.records;
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**
@@ -38,16 +48,25 @@ export async function getTradeList (trader, pageNum = 0, pageSize = 10) {
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<Array<TradeBalanceDetail>>}
+ * @returns {Promise<Pagenation<TradeBalanceDetail>>}
  */
-export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_balance/${trader}/${pageNum}/${pageSize}`)
+export async function getTradeBalanceDetail (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_balance/${trader}/${pageNum - 1}/${pageSize}`)
 
-  if(content) {
-    return content.data.records;
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**
@@ -55,15 +74,25 @@ export async function getTradeBalanceDetail (trader, pageNum = 0, pageSize = 10)
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<TraderBondBalance[]>}
+ * @returns {Promise<Pagenation<TraderBondBalance>>}
  */
-export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_bond_balance/${trader}/${pageNum}/${pageSize}`)
-  if(content) {
-    return content.data.records;
+export async function getTraderBondBalance (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_bond_balance/${trader}/${pageNum - 1}/${pageSize}`)
+
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**
@@ -71,15 +100,25 @@ export async function getTraderBondBalance (trader, pageNum = 0, pageSize = 10) 
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<TradePMRBalance[]>}
+ * @returns {Promise<Pagenation<TradePMRBalance>>}
  */
-export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_pmr_balance/${trader}/${pageNum}/${pageSize}`)
-  if(content) {
-    return content.data.records;
+export async function getTraderPMRBalance (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_pmr_balance/${trader}/${pageNum - 1}/${pageSize}`)
+
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**
@@ -87,15 +126,25 @@ export async function getTraderPMRBalance (trader, pageNum = 0, pageSize = 10) {
  * @param trader
  * @param pageNum
  * @param pageSize
- * @returns {Promise<TraderEDRFBalance[]>}
+ * @returns {Promise<Pagenation<TraderEDRFBalance>>}
  */
-export async function getTraderEDRFBalance (trader, pageNum = 0, pageSize = 10) {
-  const content =  await io.get(`/api/trader_edrf_balance/${trader}/${pageNum}/${pageSize}`)
-  if(content) {
-    return content.data.records;
+export async function getTraderEDRFBalance (trader, pageNum = 1, pageSize = 10) {
+  const content =  await io.get(`/api/trader_edrf_balance/${trader}/${pageNum-1}/${pageSize}`)
+
+  let pagenation = new Pagenation();
+
+  pagenation.current = pageNum;
+  pagenation.pageSize = pageSize;
+  pagenation.records = [];
+  pagenation.totalPage = 0;
+  if(content && content.data) {
+    pagenation.records = content.data.records;
+    pagenation.totalItems = content.data.totalItems;
+    pagenation.totalPage = content.data.totalPages;
+    return pagenation;
   }
 
-  return [];
+  return pagenation;
 }
 
 /**

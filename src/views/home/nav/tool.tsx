@@ -110,7 +110,10 @@ function Tool() {
   }, [selectedAddress, network, wallet]);
 
   useEffect(() => {
-    dispatch(userModel.actions.loadWallet());
+
+    if(isLogin){
+      return;
+    }
 
     window.onload = function () {
       window.ethereum.on('accountsChanged', function () {
@@ -126,7 +129,12 @@ function Tool() {
       });
     }
 
-  }, []);
+    setTimeout(() =>     {
+      if(!isLogin){
+        dispatch(userModel.actions.loadWallet())
+      }
+    }, 3000);
+  }, [isLogin]);
 
   return (
     <Row align={"middle"} className="tool">
