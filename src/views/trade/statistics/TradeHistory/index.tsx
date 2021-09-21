@@ -83,7 +83,7 @@ const TradeHistory: React.FC = () => {
     }
 
     setShowLoading(true)
-    getTradeList(trader, pagenation.current, pagenation.pageSize).then(pagenation => {
+    getTradeList(trader, pagenation.current, pagenation.pageSize).then((pagenation:Pagenation) => {
       setPagenation(pagenation);
     }).catch(e => {
       console.log('getTradeList',e)
@@ -363,9 +363,9 @@ const TradeHistory: React.FC = () => {
         <Table dataSource={pagenation.records} columns={columns} pagination={false} rowKey={"id"} loading={showLoading}/>
       </Col>
       {
-        pagenation.totalPage > 1 ? (<Col flex="100%">
+        pagenation.totalItems > 1 ? (<Col flex="100%">
           <Row justify="center">
-            <Pagination onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+            <Pagination pageSize={pagenation.pageSize} onChange={onPageChange} current={pagenation.current} total={pagenation.totalItems} showSizeChanger={false} />
           </Row>
         </Col>) : <></>
       }
