@@ -98,6 +98,11 @@ function Operation() {
     setSliderVal(value);
     setSize(fck(maxSize * value / 100,0,8));
     setToken(UnitTypeEnum.Percent);
+
+    if(maxSize > 0){
+      DerifyErrorNotice.error(null);
+    }
+
   }, [traderOpenUpperBound, token]);
 
   const onTokenChange = useCallback((token) => {
