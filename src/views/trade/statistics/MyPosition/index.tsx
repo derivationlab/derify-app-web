@@ -8,49 +8,8 @@ import { MyPositionType } from "../type";
 import classNames from "classnames";
 import LongOrShort from "@/views/trade/LongOrShort";
 import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
+
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
-
-// const dataSource: MyPositionType[] = [
-//   {
-//     key: "1",
-//     type: "USTD/ETH",
-//     pnl_usdt: "+34.56",
-//     pnl_usdt_type: "USTD",
-//     pnl_usdt_percent: "12.3%",
-//     power: 5,
-//     ph: "1.23456789",
-//     ph_type: "ETH",
-//     aprice: "1234.56",
-//     aprice_type: "USTD",
-//     margin: "1234.56",
-//     margin_type: "1234.56",
-//     risk: "123%",
-//     liq_price: "123.45",
-//     liq_price_type: "USTD",
-//     tp: "2323245445.67",
-//     sl: "123.45",
-//   },
-//   {
-//     key: "2",
-//     type: "ETH/USDT",
-//     pnl_usdt: "-34.56",
-//     pnl_usdt_type: "USTD",
-//     pnl_usdt_percent: "12.3%",
-//     power: 8,
-//     ph: "1.23456789",
-//     ph_type: "ETH",
-//     aprice: "1234.56",
-//     aprice_type: "USTD",
-//     margin: "1234.56",
-//     margin_type: "1234.56",
-//     risk: "123%",
-//     liq_price: "123.45",
-//     liq_price_type: "USTD",
-//     tp: "2323245445.67",
-//     sl: "123.45",
-//   },
-// ];
-
 import contractModel, {ContractState, PositioData} from "@/store/modules/contract"
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
@@ -425,15 +384,17 @@ const MyPosition: React.FC = () => {
   ];
   return (
     <Row>
-      <Col flex="100%" className="derify-trade-all-btn">
-        <Row justify="end">
-          <Col>
-            <Button  type="primary" size="small" onClick={closeAllPosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
-              <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
-            </Button>
-          </Col>
-        </Row>
-      </Col>
+      {
+        dataSource.length > 0 ? (<Col flex="100%" className="derify-trade-all-btn">
+          <Row justify="end">
+            <Col>
+              <Button  type="primary" size="small" onClick={closeAllPosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
+                <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
+              </Button>
+            </Col>
+          </Row>
+        </Col>):("")
+      }
       <Col flex="100%">
         <Table dataSource={dataSource} columns={columns} pagination={false} rowKey="tx" loading={showLoading}/>
       </Col>

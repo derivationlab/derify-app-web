@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 
 const { Option } = Select;
 interface NotOpenedProps extends ModalProps {
@@ -89,13 +90,16 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
     <Row className="not-opened-container" justify="center">
       <Col className="margin-b-m">{$t("Broker.Apply.NotBrokerMessage")}</Col>
       <Col>
-        <Button
-          type="primary"
-          size="large"
-          onClick={() => setIsModalVisible(true)}
-        >
-          {$t("Broker.Apply.ApplyBroker")}
-        </Button>
+        <WalletConnectButtonWrapper type="primary"
+                                    size="large">
+          <Button
+            type="primary"
+            size="large"
+            onClick={() => setIsModalVisible(true)}
+          >
+            {$t("Broker.Apply.ApplyBroker")}
+          </Button>
+        </WalletConnectButtonWrapper>
       </Col>
       <Modal
         title={$t("Broker.Apply.ApplyBroker")}

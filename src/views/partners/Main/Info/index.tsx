@@ -9,6 +9,7 @@ import {RootStore} from "@/store";
 import {BrokerInfo, getBrokerByTrader} from "@/api/broker";
 import broker, {BrokerAccountInfo, BrokerState} from "@/store/modules/broker";
 import {useIntl} from "react-intl";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 function Info() {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -44,13 +45,15 @@ function Info() {
         </Row>
       </Col>
       <Col>
-        <Button
-          type="primary"
-          icon={<IconFont type="icon-bianji" />}
-          onClick={() => setIsModalVisible(true)}
-        >
-          {$t("Broker.Broker.InfoEdit.Edit")}
-        </Button>
+        <WalletConnectButtonWrapper type="primary">
+          <Button
+            type="primary"
+            icon={<IconFont type="icon-bianji" />}
+            onClick={() => setIsModalVisible(true)}
+          >
+            {$t("Broker.Broker.InfoEdit.Edit")}
+          </Button>
+        </WalletConnectButtonWrapper>
       </Col>
       <Edit visible={isModalVisible} onSubmitSunccess={(broker) => {
         setIsModalVisible(false);
