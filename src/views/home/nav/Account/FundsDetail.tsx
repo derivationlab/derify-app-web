@@ -108,9 +108,9 @@ const FundDetails: React.FC<FundDetailsProps> = props => {
           <Table loading={loading} dataSource={pagenation.records} columns={columns} pagination={false} />
         </Col>
         {
-          pagenation.totalPage > 1 ? (<Col flex="100%">
+          pagenation.totalItems > 1 ? (<Col flex="100%">
             <Row justify="center">
-              <Pagination onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+              <Pagination pageSize={pagenation.pageSize} onChange={onPageChange} defaultCurrent={pagenation.current} total={pagenation.totalItems} showSizeChanger={false} />
             </Row>
           </Col>) : <></>
         }

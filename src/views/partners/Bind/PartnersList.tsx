@@ -64,7 +64,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
         </Col>
       ))}
       {
-        pagenation.totalPage > 1 ? (<Col flex="100%">
+        pagenation.totalItems > 1 ? (<Col flex="100%">
           <Row justify="center">
             <Pagination onChange={(pageNum, pageSize) => {
               pagenation.current = pageNum;
@@ -72,7 +72,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                 pagenation.pageSize = pageSize;
               }
               setPagenation(pagenation);
-            }} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+            }} defaultCurrent={pagenation.current} pageSize={pagenation.pageSize} total={pagenation.totalItems} showSizeChanger={false} />
           </Row>
         </Col>) : <></>
       }

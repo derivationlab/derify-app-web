@@ -192,7 +192,7 @@ function Record() {
                 <Col flex="100%">
                   <Row justify="center">
                     {
-                      rewardPagenation.totalPage > 1 ? (<Pagination onChange={onRewardPageChange} defaultCurrent={rewardPagenation.current} total={rewardPagenation.totalPage} showSizeChanger={false} />) : <></>
+                      rewardPagenation.totalItems > 1 ? (<Pagination pageSize={rewardPagenation.pageSize} onChange={onRewardPageChange} defaultCurrent={rewardPagenation.current} total={rewardPagenation.totalItems} showSizeChanger={false} />) : <></>
                     }
                   </Row>
                 </Col>
@@ -202,9 +202,9 @@ function Record() {
               <Spin spinning={sping}>
                 <Table columns={TraderColumns}  rowKey={'trader'} dataSource={brokerTraders} pagination={false} />
                 {
-                  traderPagenation.totalPage > 1 ? (<Col flex="100%">
+                  traderPagenation.totalItems > 1 ? (<Col flex="100%">
                     <Row justify="center">
-                      <Pagination onChange={onTraderPageChange} defaultCurrent={traderPagenation.current} total={traderPagenation.totalPage} showSizeChanger={false} />
+                      <Pagination onChange={onTraderPageChange} pageSize={traderPagenation.pageSize} defaultCurrent={traderPagenation.current} total={traderPagenation.totalItems} showSizeChanger={false} />
                     </Row>
                   </Col>) : <></>
                 }
