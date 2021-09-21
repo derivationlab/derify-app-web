@@ -1,9 +1,17 @@
-import React, {forwardRef, PropsWithChildren, useCallback, useImperativeHandle, useRef, useState} from "react";
+import React, {
+  forwardRef,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState
+} from "react";
 import { Modal, Row, Col, Input, Button, Select } from "antd";
 import { useIntl, FormattedMessage } from "react-intl";
 import { ModalProps } from "antd/es/modal";
 import {RewardsType} from "@/store/modules/reward";
-import {BondAccountType, fromContractUnit} from "@/utils/contractUtil";
+import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {RewardModel, RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
@@ -203,7 +211,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
     }
 
     return 0
-  }, []);
+  }, [rewardState, type, accountType]);
 
   const onAmountChange = useCallback((val) => {
 
@@ -218,7 +226,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
     }else{
       setErrorMsg('')
     }
-  }, [rewardState, accountType]);
+  }, [rewardState, type, accountType]);
 
   const updateMaxAmout = useCallback((trader:string,amount:string|number, bondAccountType) => {
     if(type === OperateType.bDRFExchange){
@@ -266,41 +274,57 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
 
   const doSubmit = useCallback(() => {
 
+    if(amount === ''){
+      return;
+    }
+
+    const checkRet = checkNumber(amount, fromContractUnit(getMaxAmount(rewardState, type, accountType)));
+
+    if(!checkRet.success){
+
+      setErrorMsg($t('global.NumberError'))
+      return;
+    }
+
     if(!trader){
       return;
     }
 
+    setErrorMsg('');
+
+    const contractAmount = toContractUnit(amount);
+
     let doSubmitAction = null;
     if(type === OperateType.minWithdraw){
-      doSubmitAction = RewardModel.actions.withdrawPMReward(trader, amount);
+      doSubmitAction = RewardModel.actions.withdrawPMReward(trader, contractAmount);
     }
 
     if(type === OperateType.bDRFWithdraw){
-      doSubmitAction = RewardModel.actions.withdrawBond(trader, amount);
+      doSubmitAction = RewardModel.actions.withdrawBond(trader, contractAmount);
     }
 
     if(type === OperateType.eDRFWithdraw){
-      doSubmitAction = RewardModel.actions.withdrawEdrf(trader, amount);
+      doSubmitAction = RewardModel.actions.withdrawEdrf(trader, contractAmount);
     }
 
     if(type === OperateType.eDRFPledge){
-      doSubmitAction = RewardModel.actions.stakingDrf(trader, amount);
+      doSubmitAction = RewardModel.actions.stakingDrf(trader, contractAmount);
     }
 
     if(type === OperateType.bDRFPledge){
-      doSubmitAction = RewardModel.actions.depositBondToBank(trader, amount,accountType);
+      doSubmitAction = RewardModel.actions.depositBondToBank(trader, contractAmount,accountType);
     }
 
     if(type === OperateType.eDRFRedeem){
-      doSubmitAction = RewardModel.actions.redeemDrf(trader, amount);
+      doSubmitAction = RewardModel.actions.redeemDrf(trader, contractAmount);
     }
 
     if(type === OperateType.bDRFRedeem){
-      doSubmitAction = RewardModel.actions.redeemBondFromBank(trader, amount, accountType);
+      doSubmitAction = RewardModel.actions.redeemBondFromBank(trader, contractAmount, accountType);
     }
 
     if(type === OperateType.bDRFExchange){
-      doSubmitAction = RewardModel.actions.exchangeBond(trader, amount, accountType);
+      doSubmitAction = RewardModel.actions.exchangeBond(trader, contractAmount, accountType);
     }
 
     if(!doSubmitAction){
@@ -323,6 +347,11 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
   useImperativeHandle(ref,() =>({
     submit: doSubmit
   }), [trader, type, amount, accountType]);
+
+  useEffect(() => {
+    setAmount('');
+  }, [type]);
+
 
   switch (type) {
     case OperateType.minWithdraw:

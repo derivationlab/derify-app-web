@@ -9,6 +9,7 @@ import {useDispatch, useSelector} from "react-redux";
 import contractModel, {TokenPair, OpenUpperBound} from "@/store/modules/contract";
 import {RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 const { Option } = Select;
 
 
@@ -55,7 +56,7 @@ function Operation() {
   const onLimitPriceChange = useCallback((value:string) => {
     const checkNumRet = checkNumber(value)
     if(!checkNumRet.success){
-
+      //TODO show ErrorMsg
     }
 
     if(checkNumRet.value !== null){
@@ -84,7 +85,7 @@ function Operation() {
   const onLeverageChange = useCallback((value:number) => {
     setLeverage(value);
     updateMaxAmount(openType,limitPrice,value)
-  }, []);
+  }, [limitPrice,openType]);
 
   const onSliderChange = useCallback((value:number) => {
     const maxSize = getMaxSize(traderOpenUpperBound, token);
@@ -250,40 +251,46 @@ function Operation() {
       <Col flex="100%">
         <Slider value={sliderVal} onChange={(val) => onSliderChange(val)}/>
       </Col>
-      <Col flex="100%">
-        <Button
-          className="special-btn"
-          shape="round"
-          block
-          size="large"
-          onClick={() => doOpenPositionConfirm(SideEnum.LONG)}
-        >
-          <FormattedMessage id="Trade.OpenPosition.OpenPage.BuyLong" />
-        </Button>
-      </Col>
-      <Col flex="100%">
-        <Button
-          type="primary"
-          danger
-          shape="round"
-          block
-          size="large"
-          onClick={() => doOpenPositionConfirm(SideEnum.SHORT)}
-        >
-          <FormattedMessage id="Trade.OpenPosition.OpenPage.SellShort" />
-        </Button>
-      </Col>
-      <Col flex="100%">
-        <Button
-          type="primary"
-          shape="round"
-          block
-          size="large"
-          onClick={() => doOpenPositionConfirm(SideEnum.HEDGE)}
-        >
-          <FormattedMessage id="Trade.OpenPosition.OpenPage.TwoWay" />
-        </Button>
-      </Col>
+      <WalletConnectButtonWrapper            type="primary"
+                                             shape="round"
+                                             block
+                                             size="large">
+        <Col flex="100%">
+          <Button
+            className="special-btn"
+            shape="round"
+            block
+            size="large"
+            onClick={() => doOpenPositionConfirm(SideEnum.LONG)}
+          >
+            <FormattedMessage id="Trade.OpenPosition.OpenPage.BuyLong" />
+          </Button>
+        </Col>
+        <Col flex="100%">
+          <Button
+            type="primary"
+            danger
+            shape="round"
+            block
+            size="large"
+            onClick={() => doOpenPositionConfirm(SideEnum.SHORT)}
+          >
+            <FormattedMessage id="Trade.OpenPosition.OpenPage.SellShort" />
+          </Button>
+        </Col>
+        <Col flex="100%">
+          <Button
+            type="primary"
+            shape="round"
+            block
+            size="large"
+            onClick={() => doOpenPositionConfirm(SideEnum.HEDGE)}
+          >
+            <FormattedMessage id="Trade.OpenPosition.OpenPage.TwoWay" />
+          </Button>
+        </Col>
+      </WalletConnectButtonWrapper>
+
       <ComModal
         visible={isModalVisible}
         openConfirmData={openConfirmData}
@@ -292,7 +299,7 @@ function Operation() {
           setIsModalVisible(false);
         }}
       />
-      <Transfers visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
+      <Transfers closeModal={() => setModalVisible(false)} visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
 
     </Row>
   );

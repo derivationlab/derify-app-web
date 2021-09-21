@@ -12,6 +12,7 @@ import {useIntl} from "react-intl";
 import {fck} from "@/utils/utils";
 import { Link } from "react-router-dom";
 import Withdraw from "@/views/partners/Main/Account/Withdraw";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 
 function Account() {
 
@@ -46,9 +47,11 @@ function Account() {
             <div className="main-color number">{fck(broker.rewardBalance, -8,2)}</div>
           </Col>
           <Col className="large margin-b-max">
-            <Button type="ghost" onClick={()=>setOperateVisible(true)}>
-              {$t("Broker.Broker.Account.Withdraw")}
-            </Button>
+            <WalletConnectButtonWrapper  type="primary">
+              <Button type="ghost" onClick={()=>setOperateVisible(true)}>
+                {$t("Broker.Broker.Account.Withdraw")}
+              </Button>
+            </WalletConnectButtonWrapper>
           </Col>
           <Col flex="100%">
             <Row className="income-wrapper">
@@ -76,9 +79,11 @@ function Account() {
           </Col>
           <Col className="margin-b-m"> {$t("Broker.Broker.Account.ExpireDate",[broker.expireDate.getFullYear(), broker.expireDate.getMonth()+1, broker.expireDate.getDate()])}</Col>
           <Col className="margin-b-m">
-            <Button type="primary" onClick={() => setModalVisible(true)}>
-              {$t("Broker.Broker.Account.Burn")}
-            </Button>
+            <WalletConnectButtonWrapper type="primary">
+              <Button type="primary" onClick={() => setModalVisible(true)}>
+                {$t("Broker.Broker.Account.Burn")}
+              </Button>
+            </WalletConnectButtonWrapper>
           </Col>
           <Col className="main-color">
             <Link to={`/${broker.id}`}>{$t("Broker.Broker.Account.Myreferralpage")} <IconFont type="icon-right-arr" />{" "}</Link>
