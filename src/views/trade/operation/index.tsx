@@ -10,6 +10,7 @@ import contractModel, {TokenPair, OpenUpperBound} from "@/store/modules/contract
 import {RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import {DerifyErrorNotice} from "@/components/ErrorMessage";
 const { Option } = Select;
 
 
@@ -56,7 +57,9 @@ function Operation() {
   const onLimitPriceChange = useCallback((value:string) => {
     const checkNumRet = checkNumber(value)
     if(!checkNumRet.success){
-      //TODO show ErrorMsg
+      DerifyErrorNotice.error($t("global.NumberError"));
+    }else{
+      DerifyErrorNotice.error(null);
     }
 
     if(checkNumRet.value !== null){
@@ -71,7 +74,9 @@ function Operation() {
     const maxSize = getMaxSize(traderOpenUpperBound, token);
     const checkNumRet = checkNumber(value, maxSize)
     if(!checkNumRet.success){
-
+      DerifyErrorNotice.error($t("global.NumberError"));
+    }else{
+      DerifyErrorNotice.error(null);
     }
 
     if(checkNumRet.value !== null){
@@ -138,9 +143,19 @@ function Operation() {
 
   const doOpenPositionConfirm = useCallback((side:number) => {
 
-    if(!size) {
-      return
+    let checkNumRet = checkNumber(size, getMaxSize(traderOpenUpperBound, token))
+    if(!checkNumRet.success){
+      DerifyErrorNotice.error($t("global.NumberError"));
+      return;
     }
+
+    checkNumRet = checkNumber(limitPrice)
+    if(!checkNumRet.success){
+      DerifyErrorNotice.error($t("global.NumberError"));
+      return;
+    }
+
+    DerifyErrorNotice.error(null);
 
     const params:OpenConfirmData = {unit: token, openType, limitPrice:parseFloat(limitPrice), token: curPair, side, size:parseFloat(size),leverage};
     setOpenConfirmData(params)
