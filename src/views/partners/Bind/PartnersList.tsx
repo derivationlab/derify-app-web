@@ -3,6 +3,7 @@ import IconFont from "@/components/IconFont";
 import { Row, Col, Avatar, Space, Pagination } from "antd";
 import classNames from "classnames";
 import {BrokerInfo, getBrokerList} from "@/api/broker";
+import {Pagenation} from "@/api/types";
 
 export type Partners = {
   name: string;
@@ -16,29 +17,22 @@ interface PartnersListProps {
 const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
   const [index, setIndex] = useState<Partial<number>>();
 
-  const [brokers,setBrokers] = useState<BrokerInfo[]>([]);
-  const [pageNum,setPageNum] = useState<number>(0);
+  const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
 
-  const pageSize = 10;
   useEffect(() => {
-    getBrokerList(pageNum,pageSize).then((rows) => {
-      if(pageNum === 0){
-        brokers.splice(0);
-        setIndex(undefined);
-      }
-
-      setBrokers(brokers.concat(rows));
+    getBrokerList(pagenation.current,pagenation.pageSize).then((pagenation) => {
+      setIndex(undefined);
+      setPagenation(pagenation);
     }).catch(e => console.error("getBrokerList error", e));
-  },[pageNum])
+  },[pagenation.current,pagenation.pageSize])
 
-  console.log('init', brokers)
   return (
     <Row
       className="partners-list-wrapper"
       gutter={[0, 20]}
       justify="space-between"
     >
-      {brokers.map((item, i) => (
+      {pagenation.records.map((item, i) => (
         <Col
           flex="30%"
           key={i}
@@ -69,11 +63,19 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
           </Row>
         </Col>
       ))}
-      <Col flex="100%">
-        <Row justify="center">
-          <Pagination defaultCurrent={6} total={500} showSizeChanger={false} />
-        </Row>
-      </Col>
+      {
+        pagenation.totalPage > 1 ? (<Col flex="100%">
+          <Row justify="center">
+            <Pagination onChange={(pageNum, pageSize) => {
+              pagenation.current = pageNum;
+              if(pageSize){
+                pagenation.pageSize = pageSize;
+              }
+              setPagenation(pagenation);
+            }} defaultCurrent={pagenation.current} total={pagenation.totalPage} showSizeChanger={false} />
+          </Row>
+        </Col>) : <></>
+      }
     </Row>
   );
 };

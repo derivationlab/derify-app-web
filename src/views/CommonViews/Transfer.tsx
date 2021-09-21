@@ -127,10 +127,6 @@ const Transfer: React.FC<TransferProps> = props => {
     loadTransferData()
   },[loadTransferData, walletInfo])
 
-  useEffect( () => {
-    const res =  dispatch(userModel.actions.loadWallet())
-  }, [])
-
   const checkAmount = useCallback(()=>{
 
     if(transferData.amount === null || transferData.amount === undefined){
