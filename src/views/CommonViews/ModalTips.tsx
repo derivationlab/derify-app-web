@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import React, {ReactNode, useEffect} from "react";
 import { ModalProps } from "antd/es/modal";
 import { Row, Col, Button,Modal } from "antd";
 
@@ -12,6 +12,7 @@ import IntlPro from "@/locales/index";
 import ReactDOM from "react-dom";
 import store from "@/store";
 import {Provider} from "react-redux";
+import {OperateType} from "@/views/rewards/OperateCom";
 
 export declare type TradeMoalProps = {
   msg?:ReactNode,
@@ -46,8 +47,19 @@ const ModalTips : React.FC<ModalTipsProps> = props => {
 
   const $t = intl;
 
-
   const { msg,onTradeOK,onCancel, operaType,confirmable, ...others } = props;
+
+  useEffect(() => {
+    if(others.visible && operaType === "success"){
+      setTimeout(() => {
+
+        if(props.onTradeOK){
+          props.onTradeOK();
+        }
+
+      }, 3000);
+    }
+  }, [others.visible, operaType])
 
   return (
     <Modal {...others} width={300} footer={null} closable={false}>

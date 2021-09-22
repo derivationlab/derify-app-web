@@ -1,4 +1,4 @@
-import React, {CSSProperties, ReactNode} from "react";
+import React, {CSSProperties, ReactNode, useEffect} from "react";
 import { Row, Col } from "antd";
 import IconFont from "@/components/IconFont";
 import classNames from "classnames";
@@ -18,6 +18,12 @@ interface ErrorMessageProps {
 }
 
 const ErrorMessage: React.FC<ErrorMessageProps> = ({ msg, visible,style ,onCancel}) => {
+  useEffect(() => {
+
+    if(visible){
+      setTimeout(() => onCancel(), 3000);
+    }
+  }, [visible])
   return (
     <Row  style={style} className={classNames(["error-container", visible && "active"])}>
       <Col>{msg}</Col>
