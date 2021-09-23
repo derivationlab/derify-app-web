@@ -43,8 +43,6 @@ const Home: React.FC<HomeProps> = props => {
 
     if(location.pathname === brokerBindPath){
       history.push("/trade");
-    }else{
-      history.push(location.pathname);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

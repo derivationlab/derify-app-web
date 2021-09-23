@@ -112,7 +112,7 @@ function Operation() {
   const onOpenTypeChange = useCallback((val) => {
     setOpenType(val)
     const price =  curPair.num.toFixed(2);
-    if(openType === OpenType.LimitOrder){
+    if(val === OpenType.LimitOrder){
       setLimitPrice(price)
     }
     updateMaxAmount(openType,price,leverage)
@@ -154,11 +154,14 @@ function Operation() {
       return;
     }
 
-    checkNumRet = checkNumber(limitPrice)
-    if(!checkNumRet.success){
-      DerifyErrorNotice.error($t("global.NumberError"));
-      return;
+    if(openType === OpenType.LimitOrder){
+      checkNumRet = checkNumber(limitPrice)
+      if(!checkNumRet.success){
+        DerifyErrorNotice.error($t("global.NumberError"));
+        return;
+      }
     }
+
 
     DerifyErrorNotice.error(null);
 

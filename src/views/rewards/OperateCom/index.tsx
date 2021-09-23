@@ -235,7 +235,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
     }
 
     if([OperateType.eDRFPledge, OperateType.bDRFPledge].indexOf(type) > -1){
-      if(accountType === BondAccountType.WalletAccount) {
+      if(bondAccountType === BondAccountType.WalletAccount) {
 
         const earningTokenMap:{[key:number]:string} = {}
         earningTokenMap[OperateType.eDRFPledge] = 'DRF'
@@ -246,7 +246,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
     }
 
     if([OperateType.eDRFPledge, OperateType.bDRFPledge].indexOf(type) > -1){
-      if(accountType === BondAccountType.WalletAccount) {
+      if(bondAccountType === BondAccountType.WalletAccount) {
 
         const earningTokenMap:{[key:number]:string} = {}
         earningTokenMap[OperateType.eDRFPledge] = 'DRF'
@@ -256,7 +256,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
       }
     }
 
-  }, [])
+  }, [accountType,type])
 
   const onAccountChange = useCallback((val) => {
     setAccountType(val);
@@ -265,7 +265,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
       return;
     }
 
-    updateMaxAmout(trader,amount, accountType);
+    updateMaxAmout(trader,amount, val);
   },[trader,amount, accountType]);
 
   const doAmountMax = useCallback((max:string) => {

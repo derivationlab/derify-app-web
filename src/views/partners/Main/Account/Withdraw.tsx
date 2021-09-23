@@ -62,6 +62,7 @@ const Withdraw: React.FC<WithdrawProps> = props => {
     }
 
     if(!amout){
+      setErrorMsg($t("global.NumberError"));
       return;
     }
 

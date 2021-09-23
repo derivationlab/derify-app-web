@@ -8,9 +8,9 @@ import * as web3Utils from "@/utils/web3Utils"
 
 import "./Transfer.less";
 import {TraderAccount, TransferOperateType} from "@/utils/types";
-import {fck} from "@/utils/utils";
+import {checkNumber, fck} from "@/utils/utils";
 import userModel,{UserState} from "@/store/modules/user";
-import {toContractUnit, Token} from "@/utils/contractUtil";
+import {fromContractUnit, toContractUnit, Token} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {useDispatchAction} from "@/hooks/useDispatchAction"
 import {RootStore} from "@/store";
@@ -58,11 +58,16 @@ const Transfer: React.FC<TransferProps> = props => {
 
   const [transferType, setTransferType] = useState(operateType);
   const [transferData, setTransferData]  = useState<Partial<TransferData>>(new TransferData())
-  const [amount, setAmount]  = useState<Partial<string>>()
-  const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
+  const [amount, setAmount]  = useState<Partial<string>>("")
+  const [errorMsg, setErrorMsg] = useState("");
 
   const walletInfo = useSelector((state:RootStore) => state.user);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl
 
   const loadTransferData = useCallback(async () => {
 
@@ -127,60 +132,38 @@ const Transfer: React.FC<TransferProps> = props => {
     loadTransferData()
   },[loadTransferData, walletInfo])
 
-  const checkAmount = useCallback(()=>{
+  const checkAmount = useCallback((amount,transferData)=>{
 
-    if(transferData.amount === null || transferData.amount === undefined){
-      return false
+    const checkRet = checkNumber(amount, fromContractUnit(transferData.maxAmount));
+    if(checkRet.value !== null) {
+      setAmount(checkRet.value)
     }
 
-    if(transferData.maxAmount === undefined) {
-      return false
-    }
-
-    const amount:string = transferData.amount
-
-    if(parseInt(transferData.amount) <= 0) {
-      setErrorMsg({id: "", value: ""})
-      return false
-    }
-
-    if(parseInt(transferData.amount) > transferData.maxAmount) {
-      setAmount(fck(transferData.maxAmount, -8,4))
+    if(!checkRet.success) {
+      setErrorMsg($t("global.NumberError"))
       return false
     }
 
     return true
-  }, [])
+  }, []);
 
   const onchange = useCallback((e) => {
 
     let {value} = e.target
-    value = value.replace(/-/g, '');
-
-    let reg = /^\d+(.\d+)?$/
-    if(!reg.test(value)){
-      return
-    }
-
-    transferData.amount = value
-    setAmount(value)
-
-    checkAmount()
-
+    checkAmount(value, transferData);
     setTransferData(transferData)
 
     // return value
-  }, [])
+  }, [transferData]);
 
   const doTransfer = useCallback(() => {
     if(!walletInfo.selectedAddress){
       return
     }
 
-    if(!checkAmount()) {
+    if(!checkAmount(amount,transferData)) {
       return
     }
-
 
     const trader = walletInfo.selectedAddress;
     if(transferData.operateType == TransferOperateType.withdraw) {
@@ -207,7 +190,7 @@ const Transfer: React.FC<TransferProps> = props => {
       })
     }
 
-  }, [walletInfo])
+  }, [walletInfo,amount,transferData])
 
   return (
     <Modal
@@ -220,16 +203,16 @@ const Transfer: React.FC<TransferProps> = props => {
     >
       <Row>
         <Col flex="100%">
-          {errorMsg?.id ? <ErrorMessage msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>:''}
+          <ErrorMessage msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg("")}/>
           <div className="transfers-wrapper" onClick={ChangeType}>
             <IconFont size={16} type="icon-transfers" />
           </div>
           <Form layout={"vertical"} form={form}>
             <Form.Item label={<FormattedMessage id="Trade.Account.Transfer.From"/>} name="from">
-              <Input />
+              <Input readOnly={true} />
             </Form.Item>
             <Form.Item label={<FormattedMessage id="Trade.Account.Transfer.To"/>} name="to">
-              <Input />
+              <Input  readOnly={true}/>
             </Form.Item>
             <Form.Item label={<FormattedMessage id="Trade.Account.Transfer.Size"/>}>
               <Input bordered={false} addonAfter="USDT" value={amount} onChange={onchange}/>
