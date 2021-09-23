@@ -97,7 +97,7 @@ function Operation() {
 
     setSliderVal(value);
     setSize(fck(maxSize * value / 100,0,8));
-    setToken(UnitTypeEnum.Percent);
+    setToken(UnitTypeEnum.CurPair);
 
     if(maxSize > 0){
       DerifyErrorNotice.error(null);
