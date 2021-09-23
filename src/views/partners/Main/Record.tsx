@@ -31,11 +31,6 @@ function Record() {
   const {formatMessage} = useIntl();
   const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
 
-  const [brokerTradeRecords, setBrokerTradeRecords] = useState<BrokerHistoryRecord[]>([]);
-
-  const [brokerTraders, setBrokerTraders] = useState<{trader:string,update_time:Date}[]>([]);
-  const [tradersPageNum, setTradersPageNum] = useState<number>(0);
-
   const [sping, setSping] = useState<boolean>(true);
   const [traderPagenation,setTraderPagenation] = useState<Pagenation>(new Pagenation());
   const [rewardPagenation,setRewardPagenation] = useState<Pagenation>(new Pagenation());
