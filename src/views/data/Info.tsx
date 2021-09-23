@@ -21,7 +21,7 @@ function Info() {
     pre?: string;
     aft?: string;
     key: string;
-    val: number;
+    val: number|string;
     type: string;
   }> = [
     { pre: "DRF", key: "Data.Data.Token.Price", val: fck(tokenData.drfPrice,0,2), type: "USDT" },
@@ -40,7 +40,7 @@ function Info() {
     },
     { pre: "eDRF", key: "Data.Data.Token.Price", val: tokenData.edrfPrice, type: "USDT" },
     { pre: "bDRF", key: "Data.Data.Token.Price", val: tokenData.bdrfPrice, type: "USDT" },
-    // { key: "data.bond.pool.balance", val: tokenData., type: "USDT" },
+    // { key: "", val: "", type: "" },
   ];
 
   useEffect(() => {
@@ -76,6 +76,12 @@ function Info() {
           </Row>
         </Col>
       ))}
+      <Col flex="100%">
+        <Row justify="space-between" align="middle">
+          <Col>&nbsp;</Col>
+          <Col>&nbsp;</Col>
+        </Row>
+      </Col>
     </Row>
   );
 }
