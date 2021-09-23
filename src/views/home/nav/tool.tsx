@@ -107,6 +107,8 @@ function Tool() {
 
   useEffect(() => {
     dispatch(userModel.actions.loadWallet());
+    setWallet(undefined);
+    setNetwork(undefined);
   }, [selectedAddress]);
 
   useEffect(() => {

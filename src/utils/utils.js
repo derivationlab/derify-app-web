@@ -86,3 +86,26 @@ export function checkNumber(value, maxNum= Infinity, minNum = 0, allowMin = fals
 
   return {success: true, value: null}
 }
+
+export function mergeNonNull(obj1, obj2){
+  const resultObj = Object.assign({}, obj1);
+  const source = Object.assign({}, obj2);
+
+  if(resultObj === undefined || resultObj === null){
+    return source;
+  }
+
+  for(let name in source){
+    if(source[name] !== null && source[name] !== undefined){
+      if(Object.keys(source[name]).length > 0 && typeof source[name] === "object"){
+        resultObj[name] = mergeNonNull(resultObj[name], source[name]);
+      }else{
+        resultObj[name] = source[name];
+      }
+
+      console.log(resultObj,source[name])
+    }
+  }
+
+  return resultObj;
+}

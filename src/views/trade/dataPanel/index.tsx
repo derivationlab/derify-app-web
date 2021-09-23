@@ -130,7 +130,7 @@ function DataPanel() {
                     trigger="hover"
                   >
                     <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />
-                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",-8)}%</span>
+                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",-6)}%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
                 </Space>
@@ -139,7 +139,7 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {(pmrRate.longPmrRate,2,true,"--", 2)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(pmrRate.longPmrRate,2,true,"--", 2)}%/
                     <span className="main-green">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(pmrRate.shortPmrRate,2,true,"--", 2)}%
                   </span>
                   <Popover

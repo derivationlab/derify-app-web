@@ -14,6 +14,7 @@ import Wallet from "@/assets/images/Metamask.png";
 import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import {Dispatch} from "redux";
+import {mergeNonNull} from "@/utils/utils";
 
 export class ChainEnum {
   static values : ChainEnum[] = []
@@ -218,9 +219,11 @@ const actions = {
     return async(commit: Dispatch) => {
       const initRes = await asyncInitWallet()
 
-      const walletInfo = await getWallet()
+      const walletInfo = await getWallet();
+      walletInfo.showWallet = undefined;
 
-      commit({type: "user/updateState", payload: walletInfo})
+
+      commit({type: "user/updateState", payload: mergeNonNull({},walletInfo)})
       return walletInfo
     }
   },
