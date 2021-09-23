@@ -79,6 +79,11 @@ const TradeHistory: React.FC = () => {
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
     if(!trader){
+      setShowLoading(false);
+      pagenation.records = [];
+      pagenation.totalItems = 0;
+      pagenation.current = 1;
+      setPagenation(pagenation);
       return
     }
 

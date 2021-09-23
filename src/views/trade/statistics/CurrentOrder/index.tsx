@@ -70,6 +70,8 @@ function CurrentOrder() {
 
     const trader = walletInfo.selectedAddress
     if(!trader) {
+      setShowLoading(false);
+      setDataSource([]);
       return
     }
 
@@ -323,7 +325,9 @@ function CurrentOrder() {
       dataIndex: "operate",
       key: "operate",
       width: 100,
-      render: (_, record) => <Button type="link" onClick={() => cancelOne(record)}>{$t("Trade.CurrentOrder.List.Cancel")}&gt;</Button>,
+      render: (_, record) => (<WalletConnectButtonWrapper type="primary">
+        <Button type="link" onClick={() => cancelOne(record)}>{$t("Trade.CurrentOrder.List.Cancel")}&gt;</Button>
+      </WalletConnectButtonWrapper>),
     },
   ];
 

@@ -71,7 +71,7 @@ const Transfer: React.FC<TransferProps> = props => {
 
   const loadTransferData = useCallback(async () => {
 
-    if(!walletInfo.isLogin){
+    if(!walletInfo.isLogin || !walletInfo.selectedAddress){
       return
     }
 

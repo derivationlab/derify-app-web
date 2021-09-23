@@ -3,7 +3,8 @@ import {Dispatch} from "redux";
 declare global {
   interface Window {
     web3: any,
-    ethereum: any
+    ethereum: any,
+    localStorage: Storage
   }
 
   interface Date {

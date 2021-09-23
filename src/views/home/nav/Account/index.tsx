@@ -14,7 +14,7 @@ import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
 import {useDispatch, useSelector} from "react-redux";
 import {showTransfer,showFundsDetail} from "@/store/modules/app/actions";
-import {ContractModel, RootStore} from "@/store";
+import {ContractModel, RootStore, UserModel} from "@/store";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,
   blance,
@@ -42,7 +42,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
             <Button type="link" onClick={() => dispatch(showFundsDetail(true))}>
               <FormattedMessage id="Trade.Account.MarginAccount.BalanceHistory"/>
             </Button>
-            <Button type="link">
+            <Button type="link" onClick={() => dispatch(UserModel.actions.logout())}>
               <FormattedMessage id="Trade.Wallet.Disconnect"/></Button>
           </Col>
         </Row>

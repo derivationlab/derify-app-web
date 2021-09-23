@@ -38,8 +38,8 @@ function Tool() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
-  const [network, setNetwork] = useState<Partial<ChainEnum|null>>();
-  const [wallet, setWallet] = useState<Partial<string|null>>();
+  const [network, setNetwork] = useState<ChainEnum|undefined>(undefined);
+  const [wallet, setWallet] = useState<Partial<string|undefined>>();
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
@@ -54,7 +54,7 @@ function Tool() {
     dispatch(changeLang(val));
   }, []);
 
-  const checkWallet = useCallback((newWallet = wallet) => {
+  const checkWallet = useCallback((newWallet ) => {
 
     if(!newWallet){
       return false
@@ -72,7 +72,7 @@ function Tool() {
     return true
   },[wallet])
 
-  const checkNetwork = useCallback((newNetWork = network) => {
+  const checkNetwork = useCallback((newNetWork) => {
 
     if(!isEthum){
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
@@ -93,21 +93,21 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[network]);
+  },[network,isEthum]);
 
 
-  const checkLogin = useCallback(() => {
-    if (checkNetwork() && checkWallet()) {
+  const checkLogin = useCallback((network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
+    if (checkNetwork(network) && checkWallet(wallet)) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
-        dispatch(userModel.actions.showWallet(false));
+        dispatch(userModel.actions.loginSuccess());
       }).catch(e => console.error('loginWalletAction failed', e));
     }
   }, [wallet, network, checkNetwork, checkWallet]);
 
   useEffect(() => {
-    checkLogin();
-  }, [selectedAddress, network, wallet]);
+    dispatch(userModel.actions.loadWallet());
+  }, [selectedAddress]);
 
   useEffect(() => {
 
@@ -135,6 +135,16 @@ function Tool() {
       }
     }, 3000);
   }, [isLogin]);
+
+  const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
+    setNetwork(item);
+    checkLogin(item, wallet);
+  }, [checkLogin, wallet]);
+
+  const onChangeWallet = useCallback((val) => {
+    setWallet(val);
+    checkLogin(network,val);
+  }, [checkLogin]);
 
   return (
     <Row align={"middle"} className="tool">
@@ -217,18 +227,7 @@ function Tool() {
               {networkList.map((item, i) => (
                 <Col
                   className={classNames({ active: item.chainEnum?.chainId === network?.chainId })}
-                  onClick={() => {
-
-                    let val = undefined;
-                    if(item.chainEnum?.chainId === network?.chainId) {
-                      val = undefined;
-                    }else{
-                      val = item.chainEnum;
-                    }
-
-                    setNetwork(val);
-                    checkLogin();
-                  }}
+                  onClick={() => onChangeNetwork(item.chainEnum?.chainId === network?.chainId ? undefined : item.chainEnum)}
                   key={i}
                 >
                   <IconFont size={18} type="icon-Group-" />
@@ -245,19 +244,7 @@ function Tool() {
             <Row className="wallet-list">
               <Col
                 className={classNames({ active: wallet === WalletEnum.MetaMask })}
-                onClick={() => {
-
-                  let val = undefined;
-                  if(wallet === WalletEnum.MetaMask) {
-                    val = undefined;
-                    setWallet(undefined);
-                  }else{
-                    val = WalletEnum.MetaMask;
-                  }
-
-                  setWallet(val);
-                  checkLogin();
-                }}
+                onClick={() => onChangeWallet(wallet === WalletEnum.MetaMask ? undefined : WalletEnum.MetaMask)}
               >
                 <IconFont size={18} type="icon-Group-" />
                 <img src={Wallet} alt="" />

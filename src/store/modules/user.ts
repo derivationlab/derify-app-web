@@ -100,6 +100,7 @@ export const mainChain = ChainEnum.Rinkeby
 export type UserState = {
   selectedAddress?: string|null,
   showWallet?: boolean,
+  trader: "",
   isLogin?: boolean,
   chainEnum?: ChainEnum,
   chainId?: string,
@@ -119,6 +120,7 @@ export type WalletInfo ={
 
 const state : UserState = {
   selectedAddress: "",
+  trader:"",
   showWallet: false,
   isLogin: false,
   chainEnum: mainChain,
@@ -151,7 +153,7 @@ export async function asyncInitWallet() : Promise<UserState> {
 export async function getWallet() : Promise<UserState>{
 
   if(!window.ethereum){
-    return {selectedAddress: null, chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
+    return {selectedAddress: null,trader:"", chainId: "1", networkVersion: null, isMetaMask: false, isLogin: false}
   }
 
 
@@ -161,11 +163,13 @@ export async function getWallet() : Promise<UserState>{
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = await getBrokerIdByTrader(wethereum.selectedAddress)
-
+  const brokerId = wethereum.selectedAddress ? await getBrokerIdByTrader(wethereum.selectedAddress) : "";
+  const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
+  const trader = isLogin ? wethereum.selectedAddress : "";
   return {
-    selectedAddress: wethereum.selectedAddress,
-    isLogin: wethereum.selectedAddress && isEthum,
+    selectedAddress: trader,
+    trader: trader,
+    isLogin: isLogin,
     hasBroker: !!brokerId,
     showWallet: false,
     chainEnum: chainEnum,
@@ -176,6 +180,14 @@ export async function getWallet() : Promise<UserState>{
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask
   }
+}
+
+function setLogout(isLogout:boolean){
+  window.localStorage.setItem("logout", isLogout ? "1":"0");
+}
+
+function isLogout(){
+  return window.localStorage.getItem("logout") === "1";
 }
 
 export const reducers = createReducer(state, {
@@ -219,6 +231,26 @@ const actions = {
       return true;
     }
   },
+
+  loginSuccess() {
+    return async(commit: Dispatch) => {
+      setLogout(false);
+
+      getWallet().then((data) => {
+        commit({type: "user/updateState", payload: {...data,showWallet: false}});
+      }).catch(e => console.error("loginSuccess handle exceptipn", e))
+      return true;
+    }
+  },
+
+  logout() {
+    return async(commit: Dispatch) => {
+      setLogout(true);
+      commit({type: "user/updateState", payload: {isLogin: false, selectedAddress: "", trader:""}})
+      return true;
+    }
+  },
+
 
   loginWallet () {
     return async (commit: Dispatch) => {

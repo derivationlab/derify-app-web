@@ -146,6 +146,10 @@ const actions = {
   },
   withdrawPMReward (trader:string, amount:string|number) {
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Util.contract(trader)
       return await contract.withdrawPMReward(amount)
     }
@@ -153,18 +157,30 @@ const actions = {
   },
   withdrawBond (trader:string, amount:string|number) {
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Util.contract(trader)
       return await contract.withdrawBond(amount)
     }
   },
   exchangeBond (trader:string,amount:string|number, bondAccountType:BondAccountType) {
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Util.contract(trader)
       return await contract.exchangeBond({amount, bondAccountType})
     }
   },
   depositBondToBank (trader:string,amount:string|number, bondAccountType:BondAccountType) {
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Util.contract(trader)
       return await contract.depositBondToBank({amount, bondAccountType})
     }

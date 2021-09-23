@@ -17,6 +17,7 @@ import {Dispatch} from "redux";
 import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
 import {amountFormt, fck} from "@/utils/utils";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 
 
 const MyPosition: React.FC = () => {
@@ -49,6 +50,8 @@ const MyPosition: React.FC = () => {
 
     const trader = walletInfo.selectedAddress
     if(!trader) {
+      setShowLoading(false);
+      setDataSource([]);
       return
     }
 
@@ -373,12 +376,14 @@ const MyPosition: React.FC = () => {
       dataIndex: "operate",
       key: "operate",
       render: (_,record) => (
-        <Button type="link" onClick={() => {
-          setIsModalVisible(true)
-          setClickedPostion(record)
-        }}>
-          <FormattedMessage id="Trade.MyPosition.List.Close" />&gt;
-        </Button>
+        <WalletConnectButtonWrapper type="primary">
+          <Button type="link" onClick={() => {
+            setIsModalVisible(true)
+            setClickedPostion(record)
+          }}>
+            <FormattedMessage id="Trade.MyPosition.List.Close" />&gt;
+          </Button>
+        </WalletConnectButtonWrapper>
       ),
     },
   ];
@@ -388,9 +393,11 @@ const MyPosition: React.FC = () => {
         dataSource.length > 0 ? (<Col flex="100%" className="derify-trade-all-btn">
           <Row justify="end">
             <Col>
-              <Button  type="primary" size="small" onClick={closeAllPosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
-                <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
-              </Button>
+              <WalletConnectButtonWrapper type="primary">
+                <Button  type="primary" size="small" onClick={closeAllPosition}  className="ant-btn ant-btn-primary ant-btn-round ant-btn-lg ant-btn-block">
+                  <FormattedMessage id="Trade.MyPosition.List.OneClickClose" />
+                </Button>
+              </WalletConnectButtonWrapper>
             </Col>
           </Row>
         </Col>):("")

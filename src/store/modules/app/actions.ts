@@ -12,6 +12,10 @@ export function changeLang(lang: string) {
 export function bindPartners(trader:string, brokerId:string) {
   return async (dispatch: Dispatch) => {
 
+    if (!trader) {
+      return
+    }
+
     const data =  await getBrokerByBrokerId(brokerId)
     if(data == null || data.broker == null){
       return {success: false, msg: 'Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'}

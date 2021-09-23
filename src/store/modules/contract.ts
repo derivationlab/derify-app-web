@@ -214,16 +214,28 @@ const actions = {
 
   depositAccount (trader:string, amount:string|number) {
     return async (dispatch:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       return await web3Utils.contract(trader).deposit(amount)
     }
   },
   withdrawAccount (trader:string, amount:string|number) {
     return async (dispatch:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       return await web3Utils.contract(trader).withdraw(amount);
     }
   },
   getSpotPrice (trader:string,token:string) {
     return async (dispatch:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const spotPrice = web3Utils.contract(trader).getSpotPrice(token)
 
       dispatch({type: 'contract/SET_CURSPOTPRICE', payload: spotPrice})
@@ -231,6 +243,10 @@ const actions = {
   },
   updateTokenSpotPrice (trader:string,token:string) {
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const matchPair = this.getPairByAddress(token)
 
       if(matchPair.key === 'unknown'){

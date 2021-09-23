@@ -74,6 +74,10 @@ const actions = {
   getTraderBrokerInfo(trader:string) {
 
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Utils.contract(trader);
 
       const data:any = {}
@@ -118,6 +122,10 @@ const actions = {
   },
   updateBrokerAccountInfo(trader:string) {
     return async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Utils.contract(trader);
       const accountInfo = await contract.getBrokerInfo(trader);
 
@@ -127,24 +135,40 @@ const actions = {
   },
   applyBroker ({trader, accountType, amount}:{trader:string, accountType:BondAccountType, amount:number|string}) {
     return (async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Utils.contract(trader);
       return await contract.applyBroker(accountType, amount+"")
     })
   },
   burnEdrfExtendValidPeriod({trader, accountType, amount}:{trader:string, accountType:BondAccountType, amount:number|string}) {
     return (async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Utils.contract(trader);
       return await contract.burnEdrfExtendValidPeriod(accountType, amount)
     })
   },
   withdrawBrokerReward({trader, amount}:{trader:string, amount:number|string}) {
     return (async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Utils.contract(trader);
       return await contract.withdrawBrokerReward(amount)
     })
   },
   getBrokerBalance({trader,accountType}:{trader:string, accountType:number|string}) {
     return (async (commit:Dispatch) => {
+      if (!trader) {
+        return
+      }
+
       const contract = web3Utils.contract(trader);
       if(accountType === BondAccountType.WalletAccount) {
         const amount = await contract.balanceOf(trader, Token.eDRF)
