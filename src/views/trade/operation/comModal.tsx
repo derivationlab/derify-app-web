@@ -74,7 +74,6 @@ const ComModal: React.FC<ComModalProps> = props => {
   const $t = intl;
 
 
-  const [isModalShow, setModalShow] = useState(false);
   const { openConfirmData,...others } = props;
   const [errorMsg, setErrorMsg] = useState("");
 

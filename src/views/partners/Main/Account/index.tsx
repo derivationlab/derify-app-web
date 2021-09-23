@@ -109,7 +109,7 @@ function Account() {
       </Col>
       <Deposit visible={modalVisible}
                onSumitSuccess={() => setModalVisible(false)}
-               closeModal={() => setOperateVisible(false)}
+               closeModal={() => setModalVisible(false)}
                onCancel={() => setModalVisible(false)} />
       <Withdraw
         visible={operateVisible}

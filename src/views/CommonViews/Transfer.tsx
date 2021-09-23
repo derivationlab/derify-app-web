@@ -40,14 +40,6 @@ export class TransferData {
     this.operateType = TransferOperateType.withdraw
     this.amount = ""
   }
-
-  get maxAmount() : number {
-    if(this.operateType === TransferOperateType.deposit) {
-      return this.balanceOfDerify
-    }else{
-      return this.balanceOfWallet
-    }
-  }
 }
 
 const Transfer: React.FC<TransferProps> = props => {
@@ -57,7 +49,7 @@ const Transfer: React.FC<TransferProps> = props => {
   const {formatMessage} = useIntl()
 
   const [transferType, setTransferType] = useState(operateType);
-  const [transferData, setTransferData]  = useState<Partial<TransferData>>(new TransferData())
+  const [transferData, setTransferData]  = useState<TransferData>(new TransferData())
   const [amount, setAmount]  = useState<Partial<string>>("")
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -68,6 +60,14 @@ const Transfer: React.FC<TransferProps> = props => {
   }
 
   const $t = intl
+
+  const getMaxAmount = (transferData:TransferData, operateType:TransferOperateType) => {
+    if(operateType === TransferOperateType.deposit) {
+      return transferData.balanceOfWallet
+    }else{
+      return transferData.balanceOfDerify
+    }
+  }
 
   const loadTransferData = useCallback(async () => {
 
@@ -89,52 +89,9 @@ const Transfer: React.FC<TransferProps> = props => {
 
   }, [walletInfo, transferType])
 
-  const ChangeType = useCallback(() => {
-    form.setFieldsValue({
-      from: form.getFieldValue("to"),
-      to: form.getFieldValue("from"),
-    });
+  const checkAmount = useCallback((amount,transferData,transferType)=>{
 
-    if(transferType === TransferOperateType.deposit) {
-      setTransferType(TransferOperateType.withdraw)
-    }else{
-      setTransferType(TransferOperateType.deposit)
-    }
-
-    transferData.operateType = transferType
-    setTransferData(transferData)
-
-    setTransferType(val => {
-      return val === TransferOperateType.deposit ? TransferOperateType.deposit : TransferOperateType.withdraw;
-    });
-
-    loadTransferData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadTransferData]);
-
-
-  useEffect(()=>{
-    setTransferType(operateType)
-    if(visible){
-
-      operateType===TransferOperateType.deposit ? form.setFieldsValue({
-        from: formatMessage({id: "Trade.Account.Transfer.MyWallet"}),
-        to: formatMessage({id: "Trade.Account.Transfer.MarginAccount"}),
-      }):form.setFieldsValue({
-        from: formatMessage({id: "Trade.Account.Transfer.MarginAccount"}),
-        to: formatMessage({id: "Trade.Account.Transfer.MyWallet"}),
-      })
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[operateType,visible])
-
-  useEffect(() => {
-    loadTransferData()
-  },[loadTransferData, walletInfo])
-
-  const checkAmount = useCallback((amount,transferData)=>{
-
-    const checkRet = checkNumber(amount, fromContractUnit(transferData.maxAmount));
+    const checkRet = checkNumber(amount, fromContractUnit(getMaxAmount(transferData,transferType)));
     if(checkRet.value !== null) {
       setAmount(checkRet.value)
     }
@@ -145,23 +102,74 @@ const Transfer: React.FC<TransferProps> = props => {
     }
 
     return true
-  }, []);
+  }, [transferData, amount]);
+
+  const ChangeType = useCallback(() => {
+    form.setFieldsValue({
+      from: form.getFieldValue("to"),
+      to: form.getFieldValue("from"),
+    });
+
+    let newTransferType: TransferOperateType.withdraw | TransferOperateType.deposit;
+
+    if(transferType === TransferOperateType.deposit) {
+      newTransferType = TransferOperateType.withdraw;
+    }else{
+      newTransferType = TransferOperateType.deposit;
+    }
+    setTransferType(newTransferType)
+
+    transferData.operateType = newTransferType
+    setTransferData(transferData);
+
+    checkAmount(amount, transferData,newTransferType);
+
+    setTransferType(val => {
+      return val === TransferOperateType.deposit ? TransferOperateType.deposit : TransferOperateType.withdraw;
+    });
+
+    loadTransferData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loadTransferData,checkAmount,transferType]);
+
+  useEffect(()=>{
+    if(visible){
+      checkAmount(amount,transferData,transferType);
+
+      operateType===TransferOperateType.deposit ? form.setFieldsValue({
+        from: formatMessage({id: "Trade.Account.Transfer.MyWallet"}),
+        to: formatMessage({id: "Trade.Account.Transfer.MarginAccount"}),
+      }):form.setFieldsValue({
+        from: formatMessage({id: "Trade.Account.Transfer.MarginAccount"}),
+        to: formatMessage({id: "Trade.Account.Transfer.MyWallet"}),
+      })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[operateType,visible,checkAmount])
+
+  useEffect(() => {
+    loadTransferData()
+  },[loadTransferData, walletInfo])
 
   const onchange = useCallback((e) => {
 
     let {value} = e.target
-    checkAmount(value, transferData);
+    checkAmount(value, transferData,transferType);
     setTransferData(transferData)
 
     // return value
-  }, [transferData]);
+  }, [transferData,transferType]);
+
+  const onTransferAll = useCallback((maxAmount) => {
+    setAmount(maxAmount);
+  }, []);
 
   const doTransfer = useCallback(() => {
     if(!walletInfo.selectedAddress){
       return
     }
 
-    if(!checkAmount(amount,transferData)) {
+    if(!checkAmount(amount,transferData,transferType)) {
       return
     }
 
@@ -221,7 +229,7 @@ const Transfer: React.FC<TransferProps> = props => {
               <Row align="middle" justify="space-between">
                 <Col>
                   <FormattedMessage id="Trade.Account.Transfer.Max" />
-                  ：{fck(transferData?.maxAmount, -8, 4)} USDT
+                  ：{fck(getMaxAmount(transferData,transferType), -8, 4)} USDT
                 </Col>
                 <Col>
                   <Button
@@ -229,14 +237,7 @@ const Transfer: React.FC<TransferProps> = props => {
                     shape="round"
                     block
                     type="link"
-                    onClick={() => {
-
-                      if(transferData.maxAmount) {
-                        transferData.amount = fck(transferData.maxAmount, -8, 4)
-                      }
-
-                      setTransferData(transferData)
-                    }}
+                    onClick={() => onTransferAll(fck(getMaxAmount(transferData,transferType), -8, 4))}
                   >
                     <FormattedMessage id="Trade.Account.Transfer.All" />
                   </Button>
