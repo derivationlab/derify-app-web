@@ -17,11 +17,17 @@ interface ErrorMessageProps {
   onCancel:()=>void
 }
 
+let timer:any = 0;
 const ErrorMessage: React.FC<ErrorMessageProps> = ({ msg, visible,style ,onCancel}) => {
   useEffect(() => {
 
     if(visible){
-      setTimeout(() => onCancel(), 3000);
+
+      if(timer != null){
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(() => onCancel(), 3000);
     }
   }, [visible])
   return (

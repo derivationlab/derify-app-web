@@ -30,6 +30,8 @@ const msgKeyMap = {
   "error": "global.TradeFailedMsg",
   "pending": "global.TradePendingMsg",
 };
+
+let timer:any = null;
 const ModalTips : React.FC<ModalTipsProps> = props => {
   const { formatMessage } = useIntl();
 
@@ -51,7 +53,10 @@ const ModalTips : React.FC<ModalTipsProps> = props => {
 
   useEffect(() => {
     if(others.visible && operaType === "success"){
-      setTimeout(() => {
+      if(timer != null) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
 
         if(props.onTradeOK){
           props.onTradeOK();
