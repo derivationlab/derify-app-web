@@ -166,7 +166,7 @@ export async function getBrokerRewardHistory(broker, page = 1, size = 10) {
  * @return {Promise<Pagenation<{trader: String, update_time: Date}>>}
  */
 export async function getbrokerBindTraders(broker, page = 1, size = 10) {
-  const content = await io.get(`/api/traders_of_broker/${broker-1}/${page}/${size}`)
+  const content = await io.get(`/api/traders_of_brokerAddr/${broker}/${page-1}/${size}`)
 
   let pagenation = new Pagenation();
 

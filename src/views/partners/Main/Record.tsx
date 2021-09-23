@@ -186,7 +186,7 @@ function Record() {
               <Spin spinning={sping}>
                 <Table
                   columns={AcColumns}
-                  dataSource={brokerTradeRecords}
+                  dataSource={rewardPagenation.records}
                   rowKey={'tx'}
                 />
                 <Col flex="100%">
