@@ -31,11 +31,6 @@ function Record() {
   const {formatMessage} = useIntl();
   const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
 
-  const [brokerTradeRecords, setBrokerTradeRecords] = useState<BrokerHistoryRecord[]>([]);
-
-  const [brokerTraders, setBrokerTraders] = useState<{trader:string,update_time:Date}[]>([]);
-  const [tradersPageNum, setTradersPageNum] = useState<number>(0);
-
   const [sping, setSping] = useState<boolean>(true);
   const [traderPagenation,setTraderPagenation] = useState<Pagenation>(new Pagenation());
   const [rewardPagenation,setRewardPagenation] = useState<Pagenation>(new Pagenation());
@@ -163,8 +158,7 @@ function Record() {
       render: (_,data) =>{
         return (
           <div>
-            <div>{dateFormat(new Date(data.update_time), "yyyy-MM-dd")}</div>
-            <div>{dateFormat(new Date(data.update_time), "hh:mm:ss")}</div>
+            <div>{dateFormat(new Date(data.update_time), "yyyy-MM-dd hh:mm:ss")}</div>
           </div>
         )
       }
@@ -186,7 +180,7 @@ function Record() {
               <Spin spinning={sping}>
                 <Table
                   columns={AcColumns}
-                  dataSource={brokerTradeRecords}
+                  dataSource={rewardPagenation.records}
                   rowKey={'tx'}
                 />
                 <Col flex="100%">
@@ -200,7 +194,7 @@ function Record() {
             </TabPane>
             <TabPane tab={$t("Broker.Broker.TraderInfo.TraderInfo")} key="trader">
               <Spin spinning={sping}>
-                <Table columns={TraderColumns}  rowKey={'trader'} dataSource={brokerTraders} pagination={false} />
+                <Table columns={TraderColumns}  rowKey={'trader'} dataSource={traderPagenation.records} pagination={false} />
                 {
                   traderPagenation.totalItems > 1 ? (<Col flex="100%">
                     <Row justify="center">
