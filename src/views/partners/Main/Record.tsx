@@ -200,7 +200,7 @@ function Record() {
             </TabPane>
             <TabPane tab={$t("Broker.Broker.TraderInfo.TraderInfo")} key="trader">
               <Spin spinning={sping}>
-                <Table columns={TraderColumns}  rowKey={'trader'} dataSource={brokerTraders} pagination={false} />
+                <Table columns={TraderColumns}  rowKey={'trader'} dataSource={traderPagenation.records} pagination={false} />
                 {
                   traderPagenation.totalItems > 1 ? (<Col flex="100%">
                     <Row justify="center">
