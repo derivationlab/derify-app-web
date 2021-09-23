@@ -163,8 +163,7 @@ function Record() {
       render: (_,data) =>{
         return (
           <div>
-            <div>{dateFormat(new Date(data.update_time), "yyyy-MM-dd")}</div>
-            <div>{dateFormat(new Date(data.update_time), "hh:mm:ss")}</div>
+            <div>{dateFormat(new Date(data.update_time), "yyyy-MM-dd hh:mm:ss")}</div>
           </div>
         )
       }
