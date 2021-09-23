@@ -75,7 +75,7 @@ function Account() {
         <Row>
           <Col className="margin-b-l">{$t("Broker.Broker.Account.PrivilegeValidDate")}（{$t("Broker.Broker.Account.Days")}）</Col>
           <Col className="large margin-b-m">
-            <div className="main-color number">{fck(broker.validPeriodInDay, -8,2)}</div>
+            <div className="main-color number">{fck(broker.validPeriodInDay, -8,0)}</div>
           </Col>
           <Col className="margin-b-m"> {$t("Broker.Broker.Account.ExpireDate",[broker.expireDate.getFullYear(), broker.expireDate.getMonth()+1, broker.expireDate.getDate()])}</Col>
           <Col className="margin-b-m">

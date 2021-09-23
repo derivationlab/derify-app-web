@@ -3,7 +3,7 @@ import { Modal, Row, Col, Input } from "antd";
 import { ModalProps } from "antd/es/modal";
 import {useIntl} from "react-intl";
 import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";
-import {fromContractUnit, PositionView, SideEnum, toContractUnit} from "@/utils/contractUtil";
+import {fromContractUnit, PositionView, SideEnum, toContractNum, toContractUnit} from "@/utils/contractUtil";
 import {amountFormt, checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
@@ -159,8 +159,8 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
     }
 
     const orerStopPositionAction = contractModel.actions.orderStopPosition({trader,
-        token: position?.token, side:position?.side, takeProfitPrice: toContractUnit(stopLossPriceNum),
-      stopLossPrice: stopLossPriceNum})
+        token: position?.token, side:position?.side, takeProfitPrice: toContractNum(takeProfitPriceNum),
+      stopLossPrice: toContractNum(stopLossPriceNum)})
 
     DerifyTradeModal.pendding();
     props.closeModal();

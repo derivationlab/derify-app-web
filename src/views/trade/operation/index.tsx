@@ -115,7 +115,9 @@ function Operation() {
     if(val === OpenType.LimitOrder){
       setLimitPrice(price)
     }
-    updateMaxAmount(openType,price,leverage)
+    updateMaxAmount(val,price,leverage);
+
+
   },[openType,curPair.num,leverage]);
 
   const updateMaxAmount = useCallback((openType,limitPrice,leverage) => {
@@ -179,7 +181,7 @@ function Operation() {
   );
 
   useEffect(() => {
-    updateMaxAmount(openType, curPair.num, leverage)
+    updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
   }, [walletInfo,openType, curPair, leverage, limitPrice]);
 
   return (

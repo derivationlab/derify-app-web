@@ -108,7 +108,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
     <Modal
       {...props}
       title={modalTitleMap[props.type]}
-      width={400}
+      width={600}
     >
       <Spin spinning={loading}>
         <Row>
