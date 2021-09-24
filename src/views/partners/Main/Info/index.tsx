@@ -10,7 +10,12 @@ import {BrokerInfo, getBrokerByTrader} from "@/api/broker";
 import broker, {BrokerAccountInfo, BrokerState} from "@/store/modules/broker";
 import {useIntl} from "react-intl";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
-function Info() {
+
+declare type InfoProps = {
+  showEditModal?:boolean;
+}
+
+const Info:React.FC<InfoProps> = (props) => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const walletInfo = useSelector((state:RootStore) => state.user);
@@ -28,6 +33,15 @@ function Info() {
 
     return formatMessage({id}, intlValues)
   }
+
+  useEffect(() => {
+    setIsModalVisible(!!props.showEditModal);
+
+    if(!broker.id || !broker.name || !broker.logo){
+      setIsModalVisible(true);
+    }
+
+  }, [props.showEditModal,broker]);
 
   const $t = intl;
   return (

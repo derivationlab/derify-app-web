@@ -20,7 +20,9 @@ const Edit: React.FC<EditProps> = props => {
 
   const walletInfo = useSelector<RootStore,UserState>(state => state.user);
 
-  const [broker, setBroker] = useState<BrokerInfo>(new BrokerInfo());
+  const defaultBroker = new BrokerInfo();
+
+  const [broker, setBroker] = useState<BrokerInfo>(defaultBroker);
   const [avatarUrl, setAvatarUrl] = useState<string|ArrayBuffer>(broker.logo);
   const [logoFile, setLogoFile] = useState<File>();
   const [errorMsg,setErrorMsg] = useState<any>("")
@@ -50,6 +52,8 @@ const Edit: React.FC<EditProps> = props => {
     if(!trader || !props.visible){
       return
     }
+
+    form.setFieldsValue({broker: trader});
     setSpining(true);
     getBrokerByTrader(trader).then((data) => {
 
@@ -62,7 +66,7 @@ const Edit: React.FC<EditProps> = props => {
       brokerData.broker = trader;
       setAvatarUrl(brokerData.logo);
       setBroker(brokerData);
-      form.resetFields();
+      form.setFieldsValue(brokerData);
       setSpining(false);
     });
 
@@ -181,7 +185,6 @@ const Edit: React.FC<EditProps> = props => {
     });
 
   },[logoFile])
-
   return (
 
     <Modal {...props} title={$t("Broker.Broker.InfoEdit.Title")} width={1000} onOk={() => onFormSubmit(form.getFieldsValue())}>
@@ -194,7 +197,7 @@ const Edit: React.FC<EditProps> = props => {
           initialValues={broker}
           autoComplete="off"
           onValuesChange={(changedValues, allValues) => {
-            console.log(changedValues, allValues)
+            setBroker(allValues);
           }}
         >
           <ErrorMessage style={{margin: "10px 0"}} msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg("")}/>
@@ -210,14 +213,12 @@ const Edit: React.FC<EditProps> = props => {
           <Form.Item
             label={$t("Broker.Broker.InfoEdit.Name")}
             name="name"
-            rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input value={broker.name}/>
           </Form.Item>
           <Form.Item
             label={$t("Broker.Broker.InfoEdit.Avatar")}
             name="logo"
-            rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Space size={24}>
               <Avatar shape="circle" size={80} src={avatarUrl}/>
@@ -239,12 +240,21 @@ const Edit: React.FC<EditProps> = props => {
           <Form.Item
             label={$t("Broker.Broker.InfoEdit.BrokerCode")}
             name="id"
-            rules={[{ required: true, message: "Please input your password!" }]}
           >
-            <Input value={broker.id} />
+            <Input value={broker.id} onChange={({target:{value}}) =>{
+              broker.id = value;
+              setBroker(broker);
+            }}/>
           </Form.Item>
-          <Form.Item label=" " colon={false}>
-            <span>{`${webroot}/${broker.id}`}</span>
+          <Form.Item label=" " colon={false} shouldUpdate>
+            {() => {
+              const brokerId = form.getFieldValue("id")
+
+              return (<>
+                <span>{`${webroot}/`}</span><span className="main-white">{brokerId}</span>
+              </>)
+            }}
+
           </Form.Item>
         </Form>
       </Spin>

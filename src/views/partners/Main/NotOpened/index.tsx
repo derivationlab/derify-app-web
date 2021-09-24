@@ -7,13 +7,13 @@ import {ModalProps} from "antd/es/modal";
 import {useDispatch, useSelector} from "react-redux";
 import {fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
-import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import ModalTips, {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import {Link} from "react-router-dom";
 
 const { Option } = Select;
 interface NotOpenedProps extends ModalProps {
   onOK:()=>void
-  onSumitSuccess?: () => void
 }
 const NotOpened:React.FC<NotOpenedProps> = (props)=>{
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -37,6 +37,7 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
   const applyBurnAmount = 60000;
 
   const [accountType, setAccountType] = useState<number>(BondAccountType.DerifyAccount);
+  const [showAddInfo, setShowAddInfo] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string|React.ReactNode>("");
 
 
@@ -63,14 +64,15 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
     }
 
     setErrorMsg("");
+    setIsModalVisible(false);
 
     const applyBrokerAction = BrokerModel.actions.applyBroker({trader:selectedAddress,accountType:accountType, amount: toContractUnit(applyBurnAmount)});
     DerifyTradeModal.pendding();
 
     applyBrokerAction(dispatch).then(() => {
       DerifyTradeModal.success();
+      setShowAddInfo(true);
       dispatch(BrokerModel.actions.getTraderBrokerInfo(selectedAddress));
-      setIsModalVisible(false);
     }).catch(e => {
       DerifyTradeModal.failed();
       console.error('applyBrokerAction,e',e)
@@ -136,6 +138,12 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
           </Col>
         </Row>
       </Modal>
+
+      <ModalTips visible={showAddInfo} msg={$t("global.TradeSuccessMsg")} operaType={"success"} confirmable={false} okButton={
+        <Button type="primary" onClick={() => props.onOK()}>{$t('Broker.Apply.AddInfo')}</Button>
+      }>
+
+      </ModalTips>
     </Row>
   );
 }

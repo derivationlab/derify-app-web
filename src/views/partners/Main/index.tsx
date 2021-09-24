@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { Row, Col,Spin } from "antd";
 
 import Info from './Info'
@@ -32,14 +32,20 @@ function Main() {
     }).catch(e=>{
       console.error("getTraderBrokerInfo err", e)
     });
-  },[trader,isLogin])
+  },[trader,isLogin]);
+
+  const [showEditModal,setShowEditModal] = useState<boolean>(false);
+
+  const onApplyBrokerSuccess = useCallback(() => {
+    setShowEditModal(true);
+  }, []);
 
   return (
     <Spin spinning={loading}>
       {loading ? "" : (isBroker ? (
         <Row className="opended-container" gutter={[0, 20]}>
           <Col flex="100%">
-            <Info />
+            <Info showEditModal={showEditModal}/>
           </Col>
           <Col flex="100%">
             <Account />
@@ -49,9 +55,7 @@ function Main() {
           </Col>
         </Row>
       ) : (
-        <NotOpened onOK={() =>{
-
-        }}/>
+        <NotOpened onOK={onApplyBrokerSuccess}/>
       ))}
     </Spin>
   );

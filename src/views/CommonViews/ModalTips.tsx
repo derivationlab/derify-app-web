@@ -23,6 +23,7 @@ export declare type TradeMoalProps = {
 
 interface ModalTipsProps extends ModalProps,TradeMoalProps {
   onTradeOK?: () => void
+  okButton?:ReactNode
 }
 
 const msgKeyMap = {
@@ -95,7 +96,7 @@ const ModalTips : React.FC<ModalTipsProps> = props => {
 
                 }}>{$t("global.Confirm")}</Button>
               </Col>
-          ):""}
+          ): (props.okButton ? "" : props.okButton)}
       </Row>
     </Modal>
   );
