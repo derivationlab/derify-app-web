@@ -49,8 +49,12 @@
 
         .trade-data {
           >.ant-col {
-            &:first-child {
+            .ant-statistic-content {
               font-size: 30px;
+              font-weight: 700;
+            }
+            .ant-statistic-content-value-decimal{
+              font-size: 20px;
               font-weight: 700;
             }
 
@@ -75,7 +79,13 @@
           >.ant-col {
             &.active {
               border-color: @primary-color;
+
+              .currency {
+                color: @primary-color;
+              }
             }
+
+
             &.diable{
               opacity: .2;
             }
@@ -86,18 +96,19 @@
             border-radius: 8px;
             margin-bottom: 16px;
             border: 1px solid @main-border-color;
+            color: @main-white;
 
             >.ant-row {
 
               height: 100%;
 
               .currency {
-                color: @primary-color;
                 font-size: 15px;
-                font-weight: 700;
+                font-weight: 500;
               }
             }
           }
+
         }
       }
 
@@ -185,8 +196,6 @@
           }
         }
       }
-
-
     }
   }
 

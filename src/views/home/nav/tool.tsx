@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Row, Col, Select, Modal, Popover, Space } from "antd";
+import {Button, Row, Col, Select, Modal, Popover, Space, Image} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "@/store";
 
@@ -44,7 +44,7 @@ function Tool() {
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
 
-  const {selectedAddress, isLogin, isEthum, showWallet} = useSelector((state : RootStore) => state.user)
+  const {selectedAddress, isLogin, isEthum, showWallet, chainEnum} = useSelector((state : RootStore) => state.user)
 
   const dispatch = useDispatch();
 
@@ -159,7 +159,7 @@ function Tool() {
             <Button
               className="account-wrapper"
               shape="round"
-              icon={<IconFont size={14} type="icon-link" />}
+              icon={<Image src={chainEnum?.logo}/>}
               type="primary"
             >
               {selectedAddress}
@@ -229,7 +229,7 @@ function Tool() {
               {networkList.map((item, i) => (
                 <Col
                   className={classNames({ active: item.chainEnum?.chainId === network?.chainId })}
-                  onClick={() => onChangeNetwork(item.chainEnum?.chainId === network?.chainId ? undefined : item.chainEnum)}
+                  onClick={() => onChangeNetwork((item.chainEnum?.disabled || item.chainEnum?.chainId === network?.chainId) ? undefined : item.chainEnum)}
                   key={i}
                 >
                   <IconFont size={18} type="icon-Group-" />

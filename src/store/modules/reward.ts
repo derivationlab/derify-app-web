@@ -326,9 +326,9 @@ const actions = {
         results.push({
           id: item.id,
           amount: item.amount,
-          amoutToken: "USDT",
+          amoutToken: "bDRF",
           balance: item.balance,
-          balanceToken: "USDT",
+          balanceToken: "bDRF",
           time: item.event_time,
           type: 'Rewards.Bond.History.Type' + item.bond_update_type
         });
@@ -362,9 +362,9 @@ const actions = {
         results.push({
           id: item.id,
           amount: item.amount,
-          amoutToken: "USDT",
+          amoutToken: "eDRF",
           balance: item.balance,
-          balanceToken: "USDT",
+          balanceToken: "eDRF",
           time: item.event_time,
           type: typeMap[item.update_type] || 'unknow'
         });

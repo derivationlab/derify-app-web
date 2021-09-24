@@ -134,6 +134,7 @@ const Transfer: React.FC<TransferProps> = props => {
 
   useEffect(()=>{
     if(visible){
+      setTransferType(operateType);
       checkAmount(amount,transferData,transferType);
 
       operateType===TransferOperateType.deposit ? form.setFieldsValue({

@@ -11,9 +11,11 @@ export interface AppState {
   fundsDetailShow: boolean;
   operateType: TransferOperateType;
 }
+
 const getInitialState: () => AppState = () => {
+
   return {
-    locale: "zh-CN",
+    locale: window.localStorage.getItem("lang") === "zh-CN" ? "zh-CN" : "en",
     isBindPartners: false,
     transferShow: false,
     fundsDetailShow: false,

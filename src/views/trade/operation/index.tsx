@@ -4,13 +4,14 @@ import {FormattedMessage, useIntl} from "react-intl";
 
 import Transfers from "@/views/CommonViews/Transfer";
 import ComModal from "./comModal";
-import {fromContractUnit, OpenType, SideEnum, toContractUnit, UnitTypeEnum} from "@/utils/contractUtil";
+import {fromContractUnit, numConvert, OpenType, SideEnum, toContractUnit, UnitTypeEnum} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import contractModel, {TokenPair, OpenUpperBound} from "@/store/modules/contract";
 import {RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
+import {TransferOperateType} from "@/utils/types";
 const { Option } = Select;
 
 
@@ -68,10 +69,28 @@ function Operation() {
 
     updateMaxAmount(openType,checkNumRet.value,leverage)
 
-  }, [limitPrice])
+  }, [limitPrice]);
+
+
+  const resetMax = useCallback((maxSize:number) =>{
+    const checkNumRet = checkNumber(size, maxSize)
+
+    if(checkNumRet.value !== null){
+      setSize(checkNumRet.value);
+      const sizeNum = parseFloat(checkNumRet.value);
+      if(maxSize > 0){
+        setSliderVal(Math.ceil(sizeNum / maxSize * 100));
+      }else{
+        setSliderVal(0);
+      }
+
+    }
+  }, [traderOpenUpperBound, token]);
+
 
   const onSizeChange = useCallback((value:string) => {
-    const maxSize = getMaxSize(traderOpenUpperBound, token);
+    const maxSize = token === UnitTypeEnum.Percent ? 100 : getMaxSize(traderOpenUpperBound, token);
+
     const checkNumRet = checkNumber(value, maxSize)
     if(!checkNumRet.success){
       DerifyErrorNotice.error($t("global.NumberError"));
@@ -82,22 +101,26 @@ function Operation() {
     if(checkNumRet.value !== null){
       setSize(checkNumRet.value);
       const sizeNum = parseFloat(checkNumRet.value);
-      setSliderVal(Math.ceil(sizeNum / maxSize * 100));
-    }
+      if(maxSize > 0){
+        setSliderVal(Math.ceil(sizeNum / maxSize * 100));
+      }else{
+        setSliderVal(0);
+      }
 
+    }
   },[traderOpenUpperBound,token])
 
   const onLeverageChange = useCallback((value:number) => {
     setLeverage(value);
-    updateMaxAmount(openType,limitPrice,value)
+    updateMaxAmount(openType,limitPrice,value);
   }, [limitPrice,openType]);
 
   const onSliderChange = useCallback((value:number) => {
     const maxSize = getMaxSize(traderOpenUpperBound, token);
 
     setSliderVal(value);
-    setSize(fck(maxSize * value / 100,0,8));
-    setToken(UnitTypeEnum.CurPair);
+    setSize(value.toString());
+    setToken(UnitTypeEnum.Percent);
 
     if(maxSize > 0){
       DerifyErrorNotice.error(null);
@@ -107,7 +130,8 @@ function Operation() {
 
   const onTokenChange = useCallback((token) => {
     setToken(token);
-  },[]);
+    resetMax(getMaxSize(traderOpenUpperBound, token));
+  },[traderOpenUpperBound]);
 
   const onOpenTypeChange = useCallback((val) => {
     setOpenType(val)
@@ -116,7 +140,6 @@ function Operation() {
       setLimitPrice(price)
     }
     updateMaxAmount(val,price,leverage);
-
 
   },[openType,curPair.num,leverage]);
 
@@ -143,10 +166,28 @@ function Operation() {
 
     getTraderOpenUpperBoundAction(dispatch).then((data)=>{
       setTraderOpenUpperBound(data);
+      resetMax(getMaxSize(data, token));
     }).catch((e)=>{
+      console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
 
   }, [walletInfo.selectedAddress,leverage,curPair, openType]);
+
+  const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
+
+    if(unit === UnitTypeEnum.Percent){
+      const maxSize = getMaxSize(traderOpenUpperBound, unit);
+      let newSize = 0;
+      if(maxSize > 0){
+        newSize =  numConvert(sliderValue / 100 * getMaxSize(traderOpenUpperBound,unit), 0, 2)
+      }
+
+      return newSize
+    }
+
+    return parseFloat(size);
+
+  }, []);
 
   const doOpenPositionConfirm = useCallback((side:number) => {
 
@@ -164,17 +205,18 @@ function Operation() {
       }
     }
 
-
     DerifyErrorNotice.error(null);
 
-    const params:OpenConfirmData = {unit: token, openType, limitPrice:parseFloat(limitPrice), token: curPair, side, size:parseFloat(size),leverage};
+    const tokenSize = calculatePositionSize(size, token, traderOpenUpperBound,sliderVal);
+
+    const params:OpenConfirmData = {unit: token, openType, limitPrice:parseFloat(limitPrice), token: curPair, side, size: tokenSize,leverage};
     setOpenConfirmData(params)
     setIsModalVisible(true)
-  },[openType,size, limitPrice,curPair,leverage])
+  },[openType,size, limitPrice,curPair,leverage,traderOpenUpperBound])
 
   const selectAfter = (
     <Select value={token} className="select-after" onChange={(value) => onTokenChange(value)}>
-      <Option value={UnitTypeEnum.USDT}>USTD</Option>
+      <Option value={UnitTypeEnum.USDT}>USDT</Option>
       <Option value={UnitTypeEnum.CurPair}>{curPair.key}</Option>
       <Option value={UnitTypeEnum.Percent}>%</Option>
     </Select>
@@ -324,7 +366,7 @@ function Operation() {
           setIsModalVisible(false);
         }}
       />
-      <Transfers closeModal={() => setModalVisible(false)} visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
+      <Transfers operateType={TransferOperateType.deposit} closeModal={() => setModalVisible(false)} visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
 
     </Row>
   );

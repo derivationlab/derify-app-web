@@ -32,7 +32,7 @@ export class ChainEnum {
   }
 
   static get ETH() {
-    return new ChainEnum(1, "mainnet", Eth)
+    return new ChainEnum(1, "mainnet", Eth, true)
   }
 
   static get Kovan() {
@@ -40,11 +40,11 @@ export class ChainEnum {
   }
 
   static get Goerli() {
-    return new ChainEnum(5, "Goerli")
+    return new ChainEnum(5, "Goerli", Binance)
   }
 
   static get Rinkeby() {
-    return new ChainEnum(4, "Rinkeby")
+    return new ChainEnum(4, "Rinkeby", Eth, false)
   }
 
   static get Ropsten() {

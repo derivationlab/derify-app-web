@@ -5,6 +5,7 @@ import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
 export function changeLang(lang: string) {
   return async (dispatch: Dispatch) => {
     dispatch({ type: CHANGE_LANG, payload: lang });
+    window.localStorage.setItem("lang", lang);
     return Promise.resolve();
   };
 }

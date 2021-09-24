@@ -104,10 +104,10 @@ function DataPanel() {
         <Row justify={"space-between"} align="bottom">
           <Col>
             <Row className="trade-data">
-              <Col className={curPercent
-              < 0 ? 'main-red' : 'main-green'}>{curPrice}</Col>
+              <Col><Statistic className={curPercent
+              < 0 ? 'main-red' : 'main-green'} value={fck(curPrice,0,2)}/></Col>
               <Col>
-                <span>{amountFormt(contractState.curPair.percent, 0,true, "--",2)}%</span>
+                <span>{amountFormt(contractState.curPair.percent, 2,true, "--",0)}%</span>
               </Col>
             </Row>
           </Col>
@@ -130,7 +130,7 @@ function DataPanel() {
                     trigger="hover"
                   >
                     <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />
-                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 2,true,"--",-6)}%</span>
+                    <span className={pcRate < 0 ? "main-red" :"main-green"}>: {amountFormt(pcRate, 4,true,"--",-6)}%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
                 </Space>
@@ -223,7 +223,7 @@ function DataPanel() {
                         className={classNames(
                           (token.percent||0) > 0 ? "main-green" : "main-red "
                         )}
-                        value={amountFormt(token.percent,0,true,"--",2)}
+                        value={amountFormt(token.percent,2,true,"--",0)}
                         suffix="%"
                       />
                     </div>

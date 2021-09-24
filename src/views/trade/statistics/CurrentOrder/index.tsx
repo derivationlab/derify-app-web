@@ -50,20 +50,24 @@ function CurrentOrder() {
     return pair
   }
 
-  const getRecordType:(data:OrderPositionData) => string|React.ElementType = (data:OrderPositionData) => {
+  const getRecordType:(data: OrderPositionData) => ([string, string] | [string, string]) = (data:OrderPositionData) => {
     if(data.orderType == OrderTypeEnum.LimitOrder) {
-      return $t("Trade.CurrentOrder.List.OpenLimit")
+      const [openType, opType]=$t("Trade.CurrentOrder.List.OpenLimit").split("/")
+
+      return [openType, opType];
     }
 
     if(data.orderType === OrderTypeEnum.StopProfitOrder) {
-      return $t("Trade.CurrentOrder.List.CloseTP")
+      const [openType, opType]=$t("Trade.CurrentOrder.List.CloseTP").split("/")
+      return [openType, opType]
     }
 
     if(data.orderType === OrderTypeEnum.StopLossOrder) {
-      return $t("Trade.CurrentOrder.List.CloseSL")
+      const [openType, opType]=$t("Trade.CurrentOrder.List.CloseSL").split("/");
+      return [openType, opType]
     }
 
-    return ""
+    return ["",""]
   }
 
   const loadMyPositionData = useCallback(() => {
@@ -224,7 +228,10 @@ function CurrentOrder() {
       key: "orderType",
       render: (_, record) => (
         <Row>
-          <Col className="main-white">{getRecordType(record)}</Col>
+          <Col className="main-white">
+            <div className={record.orderType == OrderTypeEnum.LimitOrder ? "main-green":"main-red"}>{getRecordType(record)[0]}</div>
+            <div className={"main-white"}>{getRecordType(record)[1]}</div>
+          </Col>
         </Row>
       ),
     },
@@ -287,7 +294,7 @@ function CurrentOrder() {
       key: "size",
       render: (_, record) => (
         <div>
-          <div className="main-white">{fromContractUnit(record.size)}</div>
+          <div className="main-white">{amountFormt(record.size, 4,false,"0",-8)}</div>
           <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),

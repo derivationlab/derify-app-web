@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from "react";
-import { Row, Col, Button } from "antd";
+import {Row, Col, Button, Statistic} from "antd";
 import FundsDetails from "./FundsDetail";
 import Transfer from "@/views/CommonViews/Transfer";
 
@@ -8,7 +8,7 @@ import {TransferOperateType} from "@/utils/types";
 import {FormattedMessage} from "react-intl";
 import * as web3Utils from "@/utils/web3Utils";
 import {amountFormt, fck} from "@/utils/utils";
-import {Token} from "@/utils/contractUtil";
+import {fromContractUnit, Token} from "@/utils/contractUtil";
 import {createTokenPriceChangeEvenet} from "@/api/trade";
 import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
@@ -54,21 +54,21 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
             className="main-color"
             style={{ fontSize: 30, fontWeight: 700, marginRight: "10px" }}
           >
-            {fck(accountData.balance, -8, 2)}
+            <Statistic value={fck(accountData.balance, -8, 2)} />
           </Col>
           <Col>USDT</Col>
-          <Col
-            className="main-green"
-            style={{
-              background: "rgba(0,196,154,1)",
-              color: "#000",
-              borderRadius: "12px",
-              padding: "0px 1px",
-              marginLeft: "10px",
-            }}
-          >
-            {amountFormt(0, 2, true, "--", -6)}%
-          </Col>
+          {/*<Col*/}
+          {/*  className="main-green"*/}
+          {/*  style={{*/}
+          {/*    background: "rgba(0,196,154,1)",*/}
+          {/*    color: "#000",*/}
+          {/*    borderRadius: "12px",*/}
+          {/*    padding: "0px 1px",*/}
+          {/*    marginLeft: "10px",*/}
+          {/*  }}*/}
+          {/*>*/}
+          {/*  <Statistic value={} {amountFormt(0, 2, true, "--", -6)}%*/}
+          {/*</Col>*/}
           {/* </Space> */}
         </Row>
       </Col>
@@ -77,13 +77,13 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.MarginBalance"/></div>
             <div>
-              <span>{fck(accountData?.marginBalance, -8, 4)}</span>USDT
+              <Statistic value={fck(accountData?.marginBalance, -8, 2)}/>USDT
             </div>
           </Col>
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.Margin"/></div>
             <div>
-              <span>{fck(accountData?.totalMargin, -8, 4)}</span>USDT({fck(accountData?.marginRate, -6,2)}%)
+              <Statistic value={fck(accountData?.totalMargin, -8,2)} precision={2}/>USDT
             </div>
           </Col>
         </Row>

@@ -343,6 +343,7 @@ const TradeHistory: React.FC = () => {
     },
 
     {
+      title: "",
       dataIndex: "event_time",
       key: "event_time",
       render: (_,record) => (

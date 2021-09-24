@@ -10,7 +10,7 @@ const NavBar: React.FC<any> = props => {
     <Row align={'middle'} justify="space-between" className="nav">
       <Col>
         <Row>
-          <img  className="logo" src={Icon} alt="" />
+          <img height={48}  className="logo" src={Icon} alt="" />
           <Menu />
         </Row>
       </Col>

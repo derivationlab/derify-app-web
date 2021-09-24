@@ -271,7 +271,7 @@ function Rewards() {
                         onClick={() => {
                           setOperateVisible(true);
                           setRewardsType(RewardsType.bDRF);
-                          setOperateType(OperateType.eDRFPledge);
+                          setOperateType(OperateType.bDRFPledge);
                         }}
                       >
                         <FormattedMessage id="Rewards.Bond.Card.Staking" />
@@ -295,7 +295,7 @@ function Rewards() {
             <Col flex="33%">
               <Row>
                 <Col flex="100%">
-                  <Statistic value={fck(bondInfo.bondAnnualInterestRatio,-6,2)} />
+                  <Statistic value={fck(bondInfo.bondAnnualInterestRatio,-6,2)} suffix={"%"} />
                 </Col>
                 <Col flex="100%" className="key-wrapper">
                   APY

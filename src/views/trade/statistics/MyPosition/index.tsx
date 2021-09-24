@@ -18,6 +18,7 @@ import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
 import {amountFormt, fck} from "@/utils/utils";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import "./index.less"
 
 
 const MyPosition: React.FC = () => {
@@ -183,7 +184,7 @@ const MyPosition: React.FC = () => {
               record.unrealizedPnl < 0 ? "main-red" : "main-green"
             )}
           >
-            {amountFormt(record.unrealizedPnl, 4,true,"--", -8)}(<span>{amountFormt(record.returnRate, 2,true, "--", -6)}%</span>)
+            {amountFormt(record.unrealizedPnl, 2,true,"--", -8)}(<span>{amountFormt(record.returnRate, 2,true, "--", -6)}%</span>)
           </div>
           <div>USDT</div>
         </div>
@@ -213,7 +214,7 @@ const MyPosition: React.FC = () => {
       key: "ph",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{fromContractUnit(record.size)}</div>
+          <div className={"main-white"}>{amountFormt(record.size, 4, false,"0",-8)}</div>
           <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),
@@ -242,7 +243,7 @@ const MyPosition: React.FC = () => {
       key: "aprice",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.averagePrice,4,false,"--", -8)}</div>
+          <div className={"main-white"}>{amountFormt(record.averagePrice,2,false,"--", -8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -271,7 +272,7 @@ const MyPosition: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.margin,4,false,"--",-8)}</div>
+          <div className={"main-white"}>{amountFormt(record.margin,2,false,"--",-8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -301,8 +302,7 @@ const MyPosition: React.FC = () => {
       key: "marginRate",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.marginRate,4,false,"--",-6)}</div>
-          <div>USDT</div>
+          <div className={"main-white"}>{amountFormt(record.marginRate,2,false,"--",-6)}%</div>
         </div>
       ),
     },
@@ -330,7 +330,7 @@ const MyPosition: React.FC = () => {
       key: "liq_price",
       render: (_, record) => (
         <div>
-          <div className={"main-white"}>{amountFormt(record.liquidatePrice, 4, true,"--",-8)}</div>
+          <div className={"main-white"}>{amountFormt(record.liquidatePrice, 2, false,"--",-8)}</div>
           <div>USDT</div>
         </div>
       ),
@@ -362,12 +362,12 @@ const MyPosition: React.FC = () => {
           setModalVisible(true)
           setClickedTPSLPostion(record)
         }}>
-          <Col className="derify-pointer">
+          <Col className="derify-pointer my-position-tp-sl-icon">
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}{fck(record.stopProfitPrice)}</div>
-            <div> {$t("Trade.MyPosition.List.StopLoss")}{fck(record.stopProfitPrice)}</div>
+            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
+            <div> {$t("Trade.MyPosition.List.StopLoss")}{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
           </Col>
         </Row>
       ),
