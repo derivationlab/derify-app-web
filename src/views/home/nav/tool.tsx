@@ -222,7 +222,7 @@ function Tool() {
             <Row className="network-list" justify="space-between">
               {networkList.map((item, i) => (
                 <Col
-                  className={classNames({ active: item.chainEnum?.chainId === network?.chainId })}
+                  className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
                   onClick={() => onChangeNetwork((item.chainEnum?.disabled || item.chainEnum?.chainId === network?.chainId) ? undefined : item.chainEnum)}
                   key={i}
                 >

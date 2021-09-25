@@ -26,8 +26,8 @@ const LongOrShort: React.FC<LongOrShortProps> = ({ value, power }) => {
 
   return (
     <div className={classNames(["long-or-short", val === SideEnum.LONG ? "long" : "short"])}>
-      <span>{(val === SideEnum.LONG) ? $t("Trade.MyPosition.List.Long") : $t("Trade.MyPosition.List.Short")}</span>
-      <span>{power + "x"}</span>
+      <span className="side">{(val === SideEnum.LONG) ? $t("Trade.MyPosition.List.Long") : $t("Trade.MyPosition.List.Short")}</span>
+      {power > 0 ? <span className="leverage">{power + "x"}</span> : <span></span>}
     </div>
   );
 };

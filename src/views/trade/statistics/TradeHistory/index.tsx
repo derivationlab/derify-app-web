@@ -106,7 +106,7 @@ const TradeHistory: React.FC = () => {
 
   const columns: ColumnsType<TradeRecord> = [
     {
-      title: $t("Trade.MyPosition.List.PositionHeld"),
+      title: $t("Trade.TradeHistory.List.Position"),
       dataIndex: "type",
       width: 110,
       key: "type",
@@ -343,7 +343,7 @@ const TradeHistory: React.FC = () => {
     },
 
     {
-      title: "",
+      title: $t("Trade.TradeHistory.List.Time"),
       dataIndex: "event_time",
       key: "event_time",
       render: (_,record) => (

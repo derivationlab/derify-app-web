@@ -223,6 +223,7 @@ export function toContractNum (number) {
 export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
   return numConvert(unit, -contractDecimals, bit, rounding)
 }
+
 export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
   const number = new BigNumber(unit)
   if(bit < 0) {
@@ -239,6 +240,7 @@ export function stringFromContractUnit (unit, bit = 2) {
 export function convertTokenNumToContractNum (amount, tokenDecimals) {
   return (new BigNumber(amount)).shiftedBy(tokenDecimals).toNumber()
 }
+
 
 /**
  *

@@ -86,10 +86,10 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
         type: 'candlestick',
         data: values,
         itemStyle: {
-          color: '#EA446B', //up color
-          color0: '#00C49A', //down color
-          borderColor: '#EA446B',
-          borderColor0: '#00C49A'
+          color0: '#EA446B', //up color
+          color: '#00C49A', //down color
+          borderColor0: '#EA446B',
+          borderColor: '#00C49A'
         },
         markLine: {
           symbol: ['none', 'none'],

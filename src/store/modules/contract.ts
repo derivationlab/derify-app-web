@@ -88,7 +88,7 @@ const state : ContractState = {
 
     return pair
   },
-  curPairKey: 'BTC',
+  curPairKey: window.localStorage.getItem("curPairKey") || 'BTC',
   contractData: {
     positionChangeFeeRatio: '-',
     traderOpenUpperBound: {size: 0, amount: 0},
@@ -132,6 +132,8 @@ const reducers = createReducer(state, {
   'contract/SET_CURPAIRKEY' (state : ContractState, {payload}) {
 
     const curPair = state.pairs.find(pair => pair.key === payload.key)
+
+    window.localStorage.setItem("curPairKey", payload.key);
     return update(state,{
       curPairKey: {$set: payload.key},
       curPair: {$set: curPair}
@@ -607,7 +609,6 @@ const actions = {
       if(!tokenPair){
         return false
       }
-
       commit({type: "contract/SET_CURPAIRKEY", payload: tokenPair})
 
       return true

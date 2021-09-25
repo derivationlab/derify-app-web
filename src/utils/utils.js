@@ -45,10 +45,10 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
     val *= Math.pow(10, shiftNum)
 
     if(showPositive && val > 0) {
-      return "+" +  Number(val).toFixed(bit)
+      return "+" +  bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
     }
 
-    return Number(val).toFixed(bit)
+    return bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
   }
 
   return num

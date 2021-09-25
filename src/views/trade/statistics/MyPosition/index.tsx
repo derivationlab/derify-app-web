@@ -140,7 +140,7 @@ const MyPosition: React.FC = () => {
 
   const columns: ColumnsType<PositionView> = [
     {
-      title: intl("Trade.MyPosition.List.PositionHeld"),
+      title: intl("Trade.MyPosition.List.Position"),
       dataIndex: "type",
       width: 110,
       key: "type",
@@ -366,8 +366,8 @@ const MyPosition: React.FC = () => {
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
-            <div> {$t("Trade.MyPosition.List.StopLoss")}{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
+            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}&nbsp;{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
+            <div> {$t("Trade.MyPosition.List.StopLoss")}&nbsp;{amountFormt(record.stopLossPrice,2,false,"--",-8)}</div>
           </Col>
         </Row>
       ),

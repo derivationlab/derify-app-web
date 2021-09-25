@@ -210,7 +210,7 @@ function CurrentOrder() {
 
   const columns: ColumnsType<OrderPositionData> = [
     {
-      title: $t("Data.TradeHitory.List.Size"),
+      title: $t("Trade.CurrentOrder.List.Position"),
       dataIndex: "type",
       key: "type",
       render: (_, record) => (

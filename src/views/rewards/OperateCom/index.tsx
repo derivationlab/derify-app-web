@@ -89,7 +89,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
     max: 'Rewards.Staking.RedeemPopup.Max',
     all: 'Rewards.Staking.RedeemPopup.All',
     accountOptions:[
-      {label:'Rewards.Staking.RedeemPopup.DRFAccount',value: BondAccountType.DerifyAccount},
+      // {label:'Rewards.Staking.RedeemPopup.DRFAccount',value: BondAccountType.DerifyAccount},
       {label:'Rewards.Staking.RedeemPopup.MyWallet',value: BondAccountType.WalletAccount},
     ],
     confirm: 'Rewards.Staking.RedeemPopup.Redeem',
@@ -102,7 +102,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
     max: 'Rewards.Staking.PledgePopup.Max',
     all: 'Rewards.Staking.PledgePopup.All',
     accountOptions:[
-      {label:'Rewards.Staking.PledgePopup.DRFAccount',value: BondAccountType.DerifyAccount},
+      // {label:'Rewards.Staking.PledgePopup.DRFAccount',value: BondAccountType.DerifyAccount},
       {label:'Rewards.Staking.PledgePopup.MyWallet',value: BondAccountType.WalletAccount},
     ],
     confirm: 'Rewards.Staking.PledgePopup.Staking',
@@ -158,7 +158,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
   const rewardState = useSelector((state:RootStore) => state.reward);
 
 
-  const [accountType, setAccountType] = useState<BondAccountType>(BondAccountType.DerifyAccount);
+  const [accountType, setAccountType] = useState<number>(BondAccountType.DerifyAccount);
   const [amount, setAmount] = useState<string>("");
   const [errorMsg,setErrorMsg] = useState<any>("")
 
@@ -350,6 +350,11 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
 
   useEffect(() => {
     setAmount('');
+
+    if(typeLangKey.accountOptions){
+      setAccountType(typeLangKey.accountOptions[0].value)
+    }
+
   }, [type]);
 
 
@@ -388,7 +393,8 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
           <ErrorMessage style={{margin: "10px 0"}} msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg("")}/>
           <Row>
             <Col flex="100%" className="margin-b-m">
-              <Select defaultValue={0}
+              <Select
+                defaultValue={accountType}
                       size="large"
                       getPopupContainer={(item) => item.parentNode}
                       onChange={(value) => onAccountChange(value)}
