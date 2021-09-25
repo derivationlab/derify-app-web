@@ -162,7 +162,7 @@ const TradeHistory: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={getTradeType(record.type).showType}>{$t(getTradeType(record.type).tradeType+"1")}</div>
-          <div>{$t(getTradeType(record.type).tradeType+"2")}</div>
+          <div>{$t(getTradeType(record.type).tradeType+"2").replace("/","")}</div>
         </div>
       ),
     },
