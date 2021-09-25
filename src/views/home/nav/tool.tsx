@@ -195,12 +195,6 @@ function Tool() {
           <Option value="zh-CN">
             <Space>
               <img src={ZhIcon} alt="" />
-              <span>繁体中文</span>
-            </Space>
-          </Option>
-          <Option value="zh-CN">
-            <Space>
-              <img src={ZhIcon} alt="" />
               <span>简体中文</span>
             </Space>
           </Option>
