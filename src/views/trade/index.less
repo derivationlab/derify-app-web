@@ -1,0 +1,207 @@
+.main>.trade {
+  &-page {
+
+    .data-panel {
+      font-size: 12px;
+      font-family: OPPOSans, OPPOSans-Bold;
+      font-weight: 700;
+
+      &-container {
+        .text-right {
+          text-align: end;
+        }
+
+        .time-radio {
+          background-color: rgba(39, 35, 84, 1);
+          width: 100%;
+          margin-top: 10px;
+
+          .ant-radio-button-wrapper {
+
+            padding: 0;
+            margin: 0 15px;
+            background-color: rgba(39, 35, 84, 1);
+            color: rgba(255, 255, 255, 0.45);
+            height: 32px;
+            border: none;
+            border-radius: 0;
+
+            &:not(:first-child)::before {
+              height: 0;
+              width: 0;
+            }
+
+            &:focus-within {
+              box-shadow: none;
+            }
+          }
+
+          .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.85);
+          }
+        }
+
+        .charts-container {
+          min-width: 300px;
+        }
+
+        .trade-data {
+          >.ant-col {
+            .ant-statistic-content {
+              font-size: 30px;
+              font-weight: 700;
+            }
+            .ant-statistic-content-value-decimal{
+              font-size: 20px;
+              font-weight: 700;
+            }
+
+            &:last-child {
+              color: #000;
+              margin-top: 20px;
+
+              >span {
+                border-radius: 8px;
+                padding: 0 2px;
+                margin-left: 6px;
+                &.green{
+                  background: @main-green;
+                }
+                &.red{
+                  background: @main-red;
+                }
+              }
+
+            }
+          }
+
+          color: @deep-green;
+        }
+
+        .currency-list-wrapper {
+          >.ant-col {
+            &.active {
+              border-color: @primary-color;
+
+              .currency {
+                color: @primary-color;
+              }
+            }
+
+
+            &.diable{
+              opacity: .2;
+            }
+
+            cursor: pointer;
+            height: 72px;
+            padding: 0 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid @main-border-color;
+            color: @main-white;
+
+            >.ant-row {
+
+              height: 100%;
+
+              .currency {
+                font-size: 15px;
+                font-weight: 500;
+              }
+            }
+          }
+
+        }
+      }
+
+    }
+
+    .operation {
+      &-container {
+        min-height: 520px;
+
+        .special-btn {
+          background: linear-gradient(180deg, #00c49a, #00a672 100%);
+          border: none;
+          color: rgba(255, 255, 255, 0.85);
+        }
+
+        .ant-btn[disabled],
+        .ant-btn[disabled]:hover,
+        .ant-btn[disabled]:focus,
+        .ant-btn[disabled]:active {
+          background: rgba(255, 255, 255, 0.15);
+          color: rgba(255, 255, 255, 0.30);
+          text-align: center;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .derify-input{
+          .ant-input {
+            border-radius: 23px;
+          }
+
+          .ant-input-group-addon .ant-select {
+            width: 80px;
+          }
+        }
+        .select-input {
+          .ant-input {
+            border-radius: 23px 0 0 23px;
+          }
+
+          .ant-input-group-addon .ant-select {
+            width: 80px;
+          }
+        }
+
+
+
+        .error-wrapper {
+          color: @main-red;
+          border: 1px solid @main-red;
+          border-radius: 8px;
+          text-align: center;
+          padding: 8px;
+          margin-bottom: 24px;
+          background: rgba(234, 68, 107, 0.10);
+        }
+
+      }
+    }
+
+    .statistics {
+      &-container {
+        margin-top: 20px;
+
+        .ant-tabs-tab {
+          font-size: 18px;
+          font-weight: 500;
+        }
+
+        .derify-trade-tab{
+          position: relative;
+        }
+
+        .derify-trade-all-btn{
+          position: absolute;
+          right: 10px;
+          top: 10px;
+        }
+
+        .close-modal {
+
+          .ant-radio-group {
+            display: flex;
+
+            justify-content: space-between;
+          }
+        }
+      }
+    }
+  }
+
+}
