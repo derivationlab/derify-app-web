@@ -221,10 +221,10 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
             </Col>
             <Col>
               <div>
-                <span className="main-white">{fck(position?.averagePrice, -8,2)}</span>USDT
+                <span className="main-white">{fck(position?.averagePrice, -8,2)}</span>&nbsp;USDT
               </div>
               <div>
-                <span className="main-green">{fck(position?.spotPrice, -8,2)}</span>USDT
+                <span className="main-green">{fck(position?.spotPrice, -8,2)}</span>&nbsp;USDT
               </div>
             </Col>
           </Row>
