@@ -159,7 +159,7 @@ function Tool() {
             <Button
               className="account-wrapper"
               shape="round"
-              icon={<Image src={chainEnum?.logo}/>}
+              icon={<Image preview={false} src={chainEnum?.logo}/>}
               type="primary"
             >
               {selectedAddress}

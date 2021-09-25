@@ -107,7 +107,8 @@ function DataPanel() {
               <Col><Statistic className={curPercent
               < 0 ? 'main-red' : 'main-green'} value={fck(curPrice,0,2)}/></Col>
               <Col>
-                <span>{amountFormt(contractState.curPair.percent, 2,true, "--",0)}%</span>
+                <span className={curPercent
+                < 0 ? 'red' : 'green'}>{amountFormt(contractState.curPair.percent, 2,true, "--",0)}%</span>
               </Col>
             </Row>
           </Col>
