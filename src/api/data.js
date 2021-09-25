@@ -1,5 +1,6 @@
 import * as io from '@/utils/request'
 import * as configUtil from '../config'
+import {dateFormat} from "@/utils/utils";
 
 /**
  * get history trading data
@@ -12,7 +13,7 @@ export async function getHistoryTradingData(token, days=30) {
   if(content && content.data) {
     content.data.reverse()
     content.data.forEach((item) => {
-      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+      item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
 
     return content.data;
@@ -47,7 +48,7 @@ export async function getHistoryPositionData(token, days = 30) {
   if(content && content.data) {
     content.data.reverse()
     content.data.forEach((item) => {
-      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+      item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
 
     return content.data;
@@ -86,7 +87,7 @@ export async function getHistoryInsurancePoolData(days = 30) {
     content.data.reverse()
 
     content.data.forEach((item) => {
-      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+      item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
 
     return content.data;

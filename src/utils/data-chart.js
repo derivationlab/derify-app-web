@@ -47,7 +47,7 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
       data: data.data
     })
   })
-
+console.log(xaxisDta)
   return {
     color: colors,
     grid: {
@@ -60,7 +60,9 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
       {
         type: 'category',
         boundaryGap: false,
-        data: xaxisDta
+        scale: true,
+        data: xaxisDta,
+        position: 'bottom'
       }
     ],
     yAxis: [
@@ -74,9 +76,10 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
           }
         },
         position: 'right',
-        axisLabel:{
-          inside: true
-        }
+        boundaryGap: false,
+        axisLabel: {
+          inside: false
+        },
       }
     ],
     series: seriers

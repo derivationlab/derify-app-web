@@ -69,6 +69,10 @@ const TradingVolume: React.FC = () => {
         tradFeeSeries.data.push(item.trading_fee)
       }
 
+      if(xaxis.length < 1) {
+        return;
+      }
+
       const options = generateDataEchartsOptions(color, xaxis, seriers)
 
       chartRef.current.setCharOptions(options);
@@ -127,7 +131,7 @@ const TradingVolume: React.FC = () => {
           </Row>
         </Col>
         <Col flex="100%">
-          <CommonCharts ref={chartRef} options={generateDataEchartsOptions(color, [], [])} height={330} />
+          <CommonCharts ref={chartRef} height={330} />
         </Col>
       </Row>
     </Spin>

@@ -47,7 +47,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
       type: 'category',
       data: categoryData,
       scale: true,
-      boundaryGap: false,
+      boundaryGap: true,
       axisLabel: {
         inside: false,
         margin: '10',
