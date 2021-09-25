@@ -1,5 +1,5 @@
 import { Dispatch } from "redux";
-import {CHANGE_LANG, BIND_PARTNERS, TRANSFER_SHOW, UPDATE_APP_STATE} from "./types";
+import {CHANGE_LANG, BIND_PARTNERS, TRANSFER_SHOW, UPDATE_APP_STATE, TRIGGER_EVENT} from "./types";
 import {TransferOperateType} from "@/utils/types";
 import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
 export function changeLang(lang: string) {
@@ -36,5 +36,12 @@ export const showTransfer = (transferShow:boolean, operateType: TransferOperateT
 export const showFundsDetail = (fundsDetailShow:boolean) => {
   return async (commit : Dispatch) => {
     return commit({type: UPDATE_APP_STATE, payload:{fundsDetailShow}})
+  }
+}
+
+
+export const triggerGlobalEvent = (name:string,...args:any[]) => {
+  return async (commit : Dispatch) => {
+    return commit({type: TRIGGER_EVENT, payload:{name,params: args}})
   }
 }

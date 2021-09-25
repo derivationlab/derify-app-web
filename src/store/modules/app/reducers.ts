@@ -1,15 +1,17 @@
 import update from "react-addons-update";
 import { createReducer } from "redux-create-reducer";
 
-import {CHANGE_LANG, BIND_PARTNERS, TRANSFER_SHOW, UPDATE_APP_STATE} from "./types";
+import {CHANGE_LANG, BIND_PARTNERS, TRANSFER_SHOW, UPDATE_APP_STATE, TRIGGER_EVENT} from "./types";
 import {TransferOperateType} from "@/utils/types";
 
+export declare type DerifyEvent = {name: string, args:any[]};
 export interface AppState {
   locale: "en" | "zh-CN";
   isBindPartners: boolean;
   transferShow: boolean;
   fundsDetailShow: boolean;
   operateType: TransferOperateType;
+  tiggerEvents: {[key:string]:DerifyEvent[]};
 }
 
 const getInitialState: () => AppState = () => {
@@ -19,7 +21,8 @@ const getInitialState: () => AppState = () => {
     isBindPartners: false,
     transferShow: false,
     fundsDetailShow: false,
-    operateType: TransferOperateType.withdraw
+    operateType: TransferOperateType.withdraw,
+    tiggerEvents:{}
   };
 };
 
@@ -45,5 +48,10 @@ export default createReducer(getInitialState(), {
   [UPDATE_APP_STATE](state, {payload}) {
 
     return update(state, {$merge:payload})
+  },
+
+  [TRIGGER_EVENT](state, {payload}) {
+
+    return update(state, {tiggerEvents:{[payload.name]:payload.args}})
   },
 });
