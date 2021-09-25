@@ -59,7 +59,7 @@ console.log(xaxisDta)
     xAxis: [
       {
         type: 'category',
-        boundaryGap: false,
+        boundaryGap: true,
         scale: true,
         data: xaxisDta,
         position: 'bottom'
