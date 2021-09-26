@@ -355,7 +355,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
       setAccountType(typeLangKey.accountOptions[0].value)
     }
 
-  }, [type]);
+  }, [typeLangKey]);
 
 
   switch (type) {
