@@ -157,8 +157,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
 
   const rewardState = useSelector((state:RootStore) => state.reward);
 
-
-  const [accountType, setAccountType] = useState<number>(BondAccountType.DerifyAccount);
+  const [accountType, setAccountType] = useState<number>(typeLangKey.accountOptions ? typeLangKey.accountOptions[0].value : BondAccountType.DerifyAccount);
   const [amount, setAmount] = useState<string>("");
   const [errorMsg,setErrorMsg] = useState<any>("")
 
