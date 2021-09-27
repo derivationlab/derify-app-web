@@ -85,7 +85,7 @@ function PositionHeld() {
             <Col className="title">{formatMessage({ id: "Data.Data.Held.PositionVolume" })}</Col>
             <Col>
               <Select
-                defaultActiveFirstOption
+                defaultValue={tokenOptions[0].value}
                 options={tokenOptions}
                 size={"large"}
                 style={{ width: 140 }}

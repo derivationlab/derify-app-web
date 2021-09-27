@@ -97,7 +97,7 @@ const TradingVolume: React.FC = () => {
             </Col>
             <Col>
               <Select
-                defaultActiveFirstOption
+                defaultValue={tokenOptions[0].value}
                 size={"large"}
                 style={{ width: 140 }}
                 bordered={false}
