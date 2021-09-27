@@ -41,12 +41,12 @@ function DataPanel() {
     return formatMessage({id})
   }
 
+  const $t = intl
   const contractState = useSelector<RootStore,ContractState>(state => state.contract)
 
   const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
   const curTokenPair = useSelector<RootStore,TokenPair>(state => state.contract.curPair)
 
-  const $t = intl
 
   const curPrice = contractState.curPair.num||0
 

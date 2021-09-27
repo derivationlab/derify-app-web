@@ -142,14 +142,14 @@ const successParam:TradeMoalProps = {operaType:"success",show:true,confirmable:t
 const errorParam:TradeMoalProps = {operaType:"error",show:true,confirmable:true};
 
 const DerifyTradeModal = {
-  pendding (param?:TradeMoalProps) {
+  pendding (param?:{ msg?:string, confirmable?:boolean, show?:boolean}) {
     upadte(Object.assign({},penddingParam,param))
   },
-  success(param?:TradeMoalProps){
+  success(param?:{ msg?:string, confirmable?:boolean, show?:boolean}){
     upadte(Object.assign({},successParam,param))
   },
-  failed(param?:TradeMoalProps){
-    upadte(Object.assign({},errorParam,param))
+  failed(param?: { msg?:string, confirmable?:boolean, show?:boolean}){
+    upadte(Object.assign({},errorParam, param))
   },
   upadte,
 }

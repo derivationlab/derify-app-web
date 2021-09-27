@@ -8,6 +8,7 @@ import Rewards from "@/views/rewards";
 import Partners from "@/views/partners";
 import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
+import Faucet from "@/views/faucet";
 
 const routes: Array<any> = [
   {
@@ -50,6 +51,11 @@ const routes: Array<any> = [
                 component: BindPartners,
               },
             ],
+          },
+          {
+            path: "/faucet",
+            exact: false,
+            component: Faucet,
           },
         ],
       },

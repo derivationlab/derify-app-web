@@ -98,6 +98,19 @@ export async function getTraderBondBalance (trader, pageNum = 1, pageSize = 10) 
 /**
  *
  * @param trader
+ * @param amount
+ * @return {Promise<{code:number, msg:string}>}
+ */
+export async function sendUSDT (trader, amount) {
+  const content =  await io.post(`/api/send_usdt`, {trader, amount});
+
+  return content;
+
+}
+
+/**
+ *
+ * @param trader
  * @param pageNum
  * @param pageSize
  * @returns {Promise<Pagenation<TradePMRBalance>>}

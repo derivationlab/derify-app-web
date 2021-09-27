@@ -11,6 +11,7 @@ const menu: Array<{ path:string,key:string }> = [
   {path: "reward", key: "Trade.navbar.Rewards"},
   {path: "broker", key: "Trade.navbar.Broker"},
   {path: "data", key: "Trade.navbar.Data"},
+  {path: "faucet", key: "Faucet.Faucet"},
 ];
 
 const Menu: React.FC<MenuProps> = props => {
