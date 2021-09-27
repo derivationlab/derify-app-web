@@ -149,7 +149,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
   }
 };
 
-const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKey,closeModal },ref) => {
+const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKey,closeModal,visible },ref) => {
 
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -354,7 +354,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
       setAccountType(typeLangKey.accountOptions[0].value)
     }
 
-  }, [typeLangKey]);
+  }, [typeLangKey,visible]);
 
 
   switch (type) {
@@ -393,7 +393,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
           <Row>
             <Col flex="100%" className="margin-b-m">
               <Select
-                defaultValue={accountType}
+                      value={accountType}
                       size="large"
                       getPopupContainer={(item) => item.parentNode}
                       onChange={(value) => onAccountChange(value)}
@@ -464,7 +464,7 @@ const OperateCom: React.FC<OperateComProps> = props => {
       onOk={() => onModalSumit()}
       cancelText={$t(typeLangKey.cancel)}
     >
-      <RenderModule closeModal={closeModal} typeLangKey={typeLangKey} type={type} ref={rewardModal}/>
+      <RenderModule visbile={props.visible} closeModal={closeModal} typeLangKey={typeLangKey} type={type} ref={rewardModal}/>
     </Modal>
   );
 };
