@@ -28,7 +28,7 @@ const Menu: React.FC<MenuProps> = props => {
   const initMenu = () => {
     const currentPath: string = location.pathname.split("/")[1];
     const index = _findIndex(menu, o => o.path === currentPath);
-    setIndex(index);
+    setIndex(Math.max(index, 0));
   };
 
   useEffect(() => {
