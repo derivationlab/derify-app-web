@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import { Row, Col, Button, Space, Input, Tabs, message } from "antd";
+import {Row, Col, Button, Space, Input, Tabs, message, Spin} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { bindPartners } from "@/store/modules/app/actions";
 import PartnersList, { Partners } from "./PartnersList";
@@ -19,6 +19,7 @@ const Bind: React.FC<BindProps> = props => {
   const [tabsIndex, setTabsIndex] = useState("1");
   const [partners, setPartners] = useState<Partial<Partners>>();
   const [brokerId, setBrokerId] = useState<Partial<string>>();
+  const[loading, setLoading] = useState(false);
 
   const {formatMessage} = useIntl()
 
@@ -27,31 +28,42 @@ const Bind: React.FC<BindProps> = props => {
   }
 
   const doBindBroker = useCallback(async (brokerId) => {
+    setLoading(true);
     if(!walletInfo.selectedAddress) {
       message.error('no login');
+      setLoading(false);
       return false
     }
 
     if(!brokerId) {
       message.error(intl('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'));
+      setLoading(false);
       return false
     }
 
-    const brokerInfoRes =  await getBrokerByBrokerId(brokerId)
-    if(brokerInfoRes == null || brokerInfoRes.broker == null){
-      message.error(intl('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'));
-      return false
+    try{
+      const brokerInfoRes =  await getBrokerByBrokerId(brokerId)
+      if(brokerInfoRes == null || brokerInfoRes.broker == null){
+        message.error(intl('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'));
+        setLoading(false);
+        return false
+      }
+    }catch (e){
+      setLoading(false);
+      console.error("getBrokerByBrokerId error: ", e);
     }
+
 
     const trader = walletInfo.selectedAddress;
 
     const data = await bindBroker({trader, brokerId});
 
     if(data.success) {
-      history.push("/home/trade")
+      history.push("/trade")
     }else{
       message.error(data.msg);
     }
+    setLoading(false);
   },[walletInfo]);
 
   const tabsChange = () => {
@@ -91,13 +103,15 @@ const Bind: React.FC<BindProps> = props => {
             <Row>
               <Space size={24}>
                 <Col>
-                  <Button type="primary" onClick={() => doBindBroker(brokerId)}>
-                    {intl("Trade.BrokerBind.BrokerCodes.Submit")}
-                  </Button>
+                  <Spin spinning={loading}>
+                    <Button type="primary" onClick={() => doBindBroker(brokerId)}>
+                      {intl("Trade.BrokerBind.BrokerCodes.Submit")}
+                    </Button>
+                  </Spin>
                 </Col>
                 <Col>
                   <Button type="link" onClick={tabsChange}>
-                    {tabsIndex === "2" ? "I have a code ..." : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
+                    {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
                   </Button>
                 </Col>
               </Space>

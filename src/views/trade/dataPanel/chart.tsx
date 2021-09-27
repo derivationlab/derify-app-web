@@ -31,7 +31,16 @@ const Chart: React.FC<ChartModalProps> = props => {
       }).catch((e) => {
         console.log(e)
     })
-  }, [chartRef])
+  }, [chartRef]);
+
+  const updateCandleLine = useCallback(() => {
+
+    if(location.pathname !== '/trade'){
+      return;
+    }
+    updateChartKlineData(token,bar,after,before,limit,curPrice)
+
+  },[token,bar,after,before,limit,curPrice,location.pathname]);
 
   useEffect(() => {
 
@@ -39,16 +48,10 @@ const Chart: React.FC<ChartModalProps> = props => {
       clearInterval(keyLineChartTime)
     }
 
-    keyLineChartTime = setInterval(() => {
+    keyLineChartTime = setInterval(updateCandleLine, 15000);
+  },[token,bar,after,before,limit,curPrice,updateCandleLine]);
 
-      if(location.pathname !== '/trade'){
-        return;
-      }
-      console.log(token,bar,after,before,limit,curPrice)
-      updateChartKlineData(token,bar,after,before,limit,curPrice)
 
-    }, 15000)
-  },[token,bar,after,before,limit,curPrice]);
 
   useEffect(() => {
     updateChartKlineData(token,bar,after,before,limit,curPrice);

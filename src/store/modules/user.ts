@@ -164,7 +164,15 @@ export async function getWallet() : Promise<UserState>{
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = wethereum.selectedAddress ? await getBrokerIdByTrader(wethereum.selectedAddress) : "";
+  let brokerId = "";
+
+  try{
+    brokerId = wethereum.selectedAddress ? await getBrokerIdByTrader(wethereum.selectedAddress) : "";
+  }catch (e){
+    console.error("getBrokerIdByTrader error", e)
+  }
+
+
   const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
   const trader = isLogin ? wethereum.selectedAddress : "";
   return {

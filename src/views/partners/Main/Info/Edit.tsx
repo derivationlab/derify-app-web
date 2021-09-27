@@ -68,6 +68,8 @@ const Edit: React.FC<EditProps> = props => {
       setBroker(brokerData);
       form.setFieldsValue(brokerData);
       setSpining(false);
+    }).finally(() => {
+      setSpining(false);
     });
 
   },[walletInfo, props]);

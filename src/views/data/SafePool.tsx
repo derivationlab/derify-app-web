@@ -1,14 +1,16 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Row, Col } from "antd";
 import { useIntl } from "react-intl";
 import CommonCharts from "@/components/charts";
 import {DataModel} from "@/store";
 import {useDispatch} from "react-redux";
 import generateDataEchartsOptions from "@/utils/data-chart";
+import {fck} from "@/utils/utils";
 function SafePool() {
   const {formatMessage} = useIntl();
   const chartRef = useRef<any>(null);
   const dispatch = useDispatch();
+  const [currentData, setCurrentData] = useState<{insurance_pool: number}>({insurance_pool:0});
 
   const color = ['#fae247']
   useEffect(() => {
@@ -17,6 +19,7 @@ function SafePool() {
 
       const xaxis:string[] = []
 
+      setCurrentData(data.current);
       const insuranceSeriers:{stack:string, data:number[]} = {stack: 'insurance pool', data: []}
       const seriers = [insuranceSeriers]
 
@@ -43,7 +46,7 @@ function SafePool() {
           <Col className="title">{formatMessage({id:'Data.Data.Insurance.InsurancePool'})}</Col>
           <Col>
               <span>{formatMessage({id:'Data.Data.Insurance.InsurancePoolBalance'})}：</span>
-            <span className="yellow-text">123131.211</span> USDT
+            <span className="yellow-text">{fck(currentData.insurance_pool,0,7)}</span> USDT
           </Col>
         </Row>
       </Col>

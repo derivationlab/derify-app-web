@@ -36,7 +36,7 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
 
   const $t = intl;
   const accountOptions = [
-    // {label:$t("Broker.Apply.eDRFAccount"), value: BondAccountType.DerifyAccount},
+    {label:$t("Broker.Apply.eDRFAccount"), value: BondAccountType.DerifyAccount},
     {label:$t("Broker.Apply.MyWallet"), value: BondAccountType.WalletAccount},
   ];
 

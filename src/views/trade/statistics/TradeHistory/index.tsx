@@ -219,7 +219,7 @@ const TradeHistory: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div className="main-white">{amountFormt(record.size,2,false,"--")}</div>
+          <div className="main-white">{amountFormt(record.size,4,false,"--")}</div>
           <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),

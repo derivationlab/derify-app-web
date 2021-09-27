@@ -193,6 +193,7 @@ function Record() {
                   columns={AcColumns}
                   dataSource={rewardPagenation.records}
                   rowKey={'tx'}
+                  pagination={false}
                 />
                 <Col flex="100%">
                   <Row justify="center">

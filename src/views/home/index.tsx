@@ -27,7 +27,7 @@ const Home: React.FC<HomeProps> = props => {
     if (!hasBroker) {
       const rootPath = location.pathname.split("/")[1];
 
-      const menu = routes.find((men) => men.path.toLowerCase()===location.pathname.toLowerCase());
+      const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());
 
       if(!menu){
         bindBroker({trader: selectedAddress,brokerId: rootPath}).then(() => {
