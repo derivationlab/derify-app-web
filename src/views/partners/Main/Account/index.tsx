@@ -86,7 +86,7 @@ function Account() {
             </WalletConnectButtonWrapper>
           </Col>
           <Col className="main-color">
-            <Link to={`/${broker.id}`}>{$t("Broker.Broker.Account.Myreferralpage")} <IconFont type="icon-right-arr" />{" "}</Link>
+            <Link target={"_blank"} to={`/${broker.id}`}>{$t("Broker.Broker.Account.Myreferralpage")} <IconFont type="icon-right-arr" />{" "}</Link>
           </Col>
           <Col className="explain">
             <div>{$t("Broker.Broker.Account.BrokerHint")}</div>
