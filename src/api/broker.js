@@ -10,9 +10,23 @@ const serverEndPoint = configUtil.getCurrentServerEndPoint()
  * @return {Promise<String>} brokerId
  */
 export async function getBrokerIdByTrader(trader) {
+  const content =  await getBindBrokerByTrader(trader)
+  if(content != null) {
+    return content.broker;
+  }
+
+  return null;
+}
+
+/**
+ * get trader's brokerId
+ * @param trader
+ * @return {Promise<BrokerInfo>}
+ */
+export async function getBindBrokerByTrader(trader) {
   const content =  await io.get("/api/broker_info_of_trader/" + trader)
   if(content && content.data && content.data.length > 0) {
-    return content.data[0].broker;
+    return content.data[0];
   }
 
   return null;

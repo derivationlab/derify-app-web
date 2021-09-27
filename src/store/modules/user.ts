@@ -3,7 +3,7 @@ import { createReducer } from "redux-create-reducer";
 
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
-import { getBrokerIdByTrader } from '@/api/broker'
+import {BrokerInfo, getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader} from '@/api/broker'
 // import {BIND_PARTNERS, CHANGE_LANG} from "@/store/modules/app/types";
 
 import Eth from "@/assets/images/Eth.png";
@@ -112,7 +112,9 @@ export type UserState = {
   processStatusMsg?: string,
   balanceOfDUSD?: number,
   brokerId?: string|null,
-  hasBroker?: boolean
+  hasBroker?: boolean,
+  brokerInfo?: BrokerInfo|null,
+  traderBroker?: BrokerInfo|null
 }
 
 export type WalletInfo ={
@@ -165,13 +167,16 @@ export async function getWallet() : Promise<UserState>{
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
   let brokerId = "";
+  let brokerInfo = null;
+  let traderBroker = null;
 
   try{
-    brokerId = wethereum.selectedAddress ? await getBrokerIdByTrader(wethereum.selectedAddress) : "";
+    brokerInfo = await getBrokerByTrader(wethereum.selectedAddress);
+    traderBroker = await getBindBrokerByTrader(wethereum.selectedAddress);
+    brokerId = traderBroker ? traderBroker.broker : "";
   }catch (e){
     console.error("getBrokerIdByTrader error", e)
   }
-
 
   const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
   const trader = isLogin ? wethereum.selectedAddress : "";
@@ -187,7 +192,9 @@ export async function getWallet() : Promise<UserState>{
     processStatus: 0,
     balanceOfDUSD: 0,
     networkVersion: wethereum.networkVersion,
-    isMetaMask: wethereum.isMetaMask
+    isMetaMask: wethereum.isMetaMask,
+    brokerInfo,
+    traderBroker
   }
 }
 
@@ -229,7 +236,6 @@ const actions = {
 
       const walletInfo = await getWallet();
       walletInfo.showWallet = undefined;
-
 
       commit({type: "user/updateState", payload: mergeNonNull({},walletInfo)})
       return walletInfo

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { RouteProps } from "@/router/types";
 import { Switch, Route, Redirect } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -8,15 +8,18 @@ import IntlPro from "@/locales/index";
 
 import "./index.less";
 import {bindBroker} from "@/api/broker";
+import Trade from "@/views/trade";
 
 interface HomeProps extends RouteProps {}
 const brokerBindPath = "/broker/bind";
+const tradePath = "/trade";
 
 const Home: React.FC<HomeProps> = props => {
   const dispatch = useDispatch();
   const { routes, history, location } = props;
+  const [redirectPath,setRedirectPath] = useState<string|null>(null);
 
-  const {selectedAddress,hasBroker} = useSelector((state:RootStore) => state.user);
+  const {selectedAddress,hasBroker,traderBroker,brokerInfo} = useSelector((state:RootStore) => state.user);
 
   useEffect(() => {
     if(!selectedAddress){
@@ -24,25 +27,32 @@ const Home: React.FC<HomeProps> = props => {
       return;
     }
 
-    if (!hasBroker) {
-      const rootPath = location.pathname.split("/")[1];
+    const rootPath = location.pathname.split("/")[1];
 
-      const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());
+    if(brokerInfo && rootPath === brokerInfo?.id){
+      return;
+    }
+    const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());
+
+    if (!hasBroker) {
+
 
       if(!menu){
         bindBroker({trader: selectedAddress,brokerId: rootPath}).then(() => {
-          history.push("/trade");
+          setRedirectPath(tradePath);
         }).catch((e) => {
           console.error("bind broker error", e);
         });
       }else if(location.pathname.toLowerCase() !== brokerBindPath){
-        history.push(brokerBindPath);
+        setRedirectPath(brokerBindPath);
       }
       return;
     }
 
     if(location.pathname === brokerBindPath){
-      history.push("/trade");
+      setRedirectPath(tradePath);
+    }else if(!menu){
+      setRedirectPath(tradePath);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,7 +74,7 @@ const Home: React.FC<HomeProps> = props => {
                 )}
               />
             ))}
-            <Redirect from="/" to="/trade" />
+            {redirectPath  ? <Redirect from="/" to={`${redirectPath}`} /> : <Trade/>}
           </Switch>
         </div>
       </IntlPro>
