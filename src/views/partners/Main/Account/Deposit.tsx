@@ -157,9 +157,9 @@ const Deposit: React.FC<DepositProps> = props => {
           </Row>
         </Col>
         <Col flex="100%" className="margin-b-l">
-          <Select defaultValue={accountType} size="large"
+          <Select defaultActiveFirstOption size="large"
                   style={{ width: "100%" }}
-                  onChange={(val) => setAccountType(val)}
+                  onChange={(val:number) => setAccountType(val)}
                   getPopupContainer={trigger => trigger.parentNode}>
             <Option value={BondAccountType.WalletAccount}>{$t("Broker.Broker.DepositPopup.MyWallet")}</Option>
             <Option value={BondAccountType.DerifyAccount}>{$t("Broker.Broker.DepositPopup.eDRFAccount")}</Option>

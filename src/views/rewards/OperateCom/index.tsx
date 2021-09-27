@@ -393,7 +393,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
           <Row>
             <Col flex="100%" className="margin-b-m">
               <Select
-                defaultValue={accountType}
+                      defaultActiveFirstOption
                       size="large"
                       getPopupContainer={(item) => item.parentNode}
                       onChange={(value) => onAccountChange(value)}

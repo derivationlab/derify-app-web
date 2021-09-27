@@ -125,10 +125,10 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
             </Row>
           </Col>
           <Col flex="100%" className="margin-b-m">
-            <Select defaultValue={accountType} size="large"
+            <Select defaultActiveFirstOption size="large"
                     style={{ width: "100%" }}
                     options={accountOptions}
-                    onChange={(val) => {
+                    onChange={(val:number) => {
                       setAccountType(val);
                       setErrorMsg("");
                     }}

@@ -232,7 +232,7 @@ function Operation() {
         <Row wrap={false} gutter={12}>
           <Col flex="230px">
             <Select
-              defaultValue={OpenType.MarketOrder}
+              defaultActiveFirstOption
               size={"large"}
               style={{ width: "100%" }}
               onChange={onOpenTypeChange}
