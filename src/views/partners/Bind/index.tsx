@@ -8,6 +8,7 @@ import {useIntl} from "react-intl";
 import {RootStore} from "@/store";
 import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
 import {Dispatch} from "redux";
+import {DerifyErrorNotice} from "@/components/ErrorMessage";
 
 interface BindProps extends RouteProps {}
 const { TabPane } = Tabs;
@@ -30,27 +31,29 @@ const Bind: React.FC<BindProps> = props => {
   const doBindBroker = useCallback(async (brokerId) => {
     setLoading(true);
     if(!walletInfo.selectedAddress) {
-      message.error('no login');
+      DerifyErrorNotice.error('no login');
       setLoading(false);
       return false
     }
 
     if(!brokerId) {
-      message.error(intl('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'));
+      DerifyErrorNotice.error(intl('Trade.BrokerBind.BrokerCodes.SelectOrInputBrokerId'));
       setLoading(false);
       return false
     }
 
+    let brokerInfoRes;
     try{
-      const brokerInfoRes =  await getBrokerByBrokerId(brokerId)
+      brokerInfoRes =  await getBrokerByBrokerId(brokerId)
       if(brokerInfoRes == null || brokerInfoRes.broker == null){
-        message.error(intl('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'));
+        DerifyErrorNotice.error(intl('Trade.BrokerBind.BrokerCodes.BrokerCodeNoExistError'));
         setLoading(false);
         return false
       }
     }catch (e){
       setLoading(false);
       console.error("getBrokerByBrokerId error: ", e);
+      return false;
     }
 
 
@@ -59,9 +62,10 @@ const Bind: React.FC<BindProps> = props => {
     const data = await bindBroker({trader, brokerId});
 
     if(data.success) {
+      dispatch({type: "user/updateState", palyload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
       history.push("/trade")
     }else{
-      message.error(data.msg);
+      DerifyErrorNotice.error(data.msg);
     }
     setLoading(false);
   },[walletInfo]);

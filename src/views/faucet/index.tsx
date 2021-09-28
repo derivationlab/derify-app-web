@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Row, Col, Button, Space, Input, Tabs, message, Spin} from "antd";
+import {Row, Col, Button, Space, Input, Tabs, message, Spin, Statistic} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { RouteProps } from "@/router/types";
 import {useIntl} from "react-intl";
@@ -17,6 +17,7 @@ const Faucet: React.FC<FaucetProps> = props => {
   const {trader} = useSelector((state:RootStore) => state.user);
   const [traderInputVal,setTraderInputValue] = useState("");
   const [loading,setLoading] = useState(false);
+  const defaultUSDTAmount = 100000;
 
   const dispatch = useDispatch();
 
@@ -50,7 +51,7 @@ const Faucet: React.FC<FaucetProps> = props => {
       return;
     }
 
-    sendUSDT(traderInputVal, 10000).then((data) => {
+    sendUSDT(traderInputVal, defaultUSDTAmount).then((data) => {
 
       if(data.code === 0){
         DerifyTradeModal.success();
@@ -83,7 +84,7 @@ const Faucet: React.FC<FaucetProps> = props => {
           <Col>
             <Spin spinning={loading}>
               <Button type="primary" onClick={onSendUSDT}>
-                {$t("Faucet.GetUSDT", [10000])}
+                {$t("Faucet.GetUSDT", [<Statistic>{defaultUSDTAmount}</Statistic>])}
               </Button>
             </Spin>
           </Col>
