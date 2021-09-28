@@ -62,7 +62,7 @@ const Bind: React.FC<BindProps> = props => {
     const data = await bindBroker({trader, brokerId});
 
     if(data.success) {
-      dispatch({type: "user/updateState", palyload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
+      dispatch({type: "user/updateState", payload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
       history.push("/trade")
     }else{
       DerifyErrorNotice.error(data.msg);
