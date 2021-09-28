@@ -23,6 +23,8 @@ function Rewards() {
   const trader = useSelector((state:RootStore) => state.user.selectedAddress);
   const {bondInfo,wallet,pmrBalance,pmrAccumulatedBalance,edrfInfo,accountData} = useSelector((state:RootStore) => state.reward);
 
+  const reloadRewardDataStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.reward);
+
   const [loadding, setLoading] = useState(true);
 
   const [operateType, setOperateType] =
@@ -52,7 +54,7 @@ function Rewards() {
     }).finally(() => {
       setLoading(false);
     });
-  }, [trader])
+  }, [trader,reloadRewardDataStatus])
 
   return (
       <Row className="rewards-page" gutter={[0, 20]}>

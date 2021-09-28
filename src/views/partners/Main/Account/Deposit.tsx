@@ -3,7 +3,7 @@ import { Modal, Row, Col, Select, Input } from "antd";
 import { ModalProps } from "antd/es/modal";
 import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
-import {BrokerModel, RootStore} from "@/store";
+import {AppModel, BrokerModel, RootStore} from "@/store";
 import {useIntl} from "react-intl";
 import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {BrokerAccountInfo} from "@/store/modules/broker";
@@ -125,6 +125,7 @@ const Deposit: React.FC<DepositProps> = props => {
     burnEdrfExtendValidPeriodAction(dispatch).then(() => {
       dispatch(BrokerModel.actions.updateBrokerAccountInfo(selectedAddress));
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateLoadStatus("broker"));
       if(props.onSumitSuccess){
         props.onSumitSuccess();
       }

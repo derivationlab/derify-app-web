@@ -20,6 +20,8 @@ function Account() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [operateVisible, setOperateVisible] = useState(false);
+
+
   const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"");
   const brokerState = useSelector<RootStore, BrokerState>(state => state.broker);
   const {broker} = brokerState;

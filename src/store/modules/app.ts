@@ -15,7 +15,9 @@ export interface AppState {
   operateType: TransferOperateType;
   reloadDataStatus:{
     trade: number,
-    account: number
+    account: number,
+    reward: number,
+    broker: number
   }
 }
 
@@ -29,7 +31,9 @@ const getInitialState: () => AppState = () => {
     operateType: TransferOperateType.withdraw,
     reloadDataStatus:{
       trade: 0,
-      account: 0
+      account: 0,
+      reward: 0,
+      broker: 0
     }
   };
 };
@@ -66,7 +70,13 @@ const reducers = createReducer(getInitialState(), {
     return update(state, {reloadDataStatus:{trade:{$set: state.reloadDataStatus.trade+1}}})
   },
   ['/updateLoadStatus'](state, {payload}) {
-    return update(state, {reloadDataStatus:{[payload]:{$set: state.reloadDataStatus.trade+1}}})
+    const reloadDataStatus:any = state.reloadDataStatus;
+    if(reloadDataStatus.hasOwnProperty(payload)){
+      return update(state, {reloadDataStatus:{[payload]:{$set: (reloadDataStatus[payload])+1}}})
+    }else{
+      return update(state,{$merge:{}});
+    }
+
   },
 });
 export function changeLang(lang: string) {

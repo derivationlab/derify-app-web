@@ -20,6 +20,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   blance,
 }) => {
   const {selectedAddress} = useSelector((state:RootStore) => state.user);
+  const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
 
   const {accountData,curPair,contractData} = useSelector((state:RootStore) => state.contract);
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
     }
 
     dispatch(ContractModel.actions.loadAccountData(selectedAddress));
-  },[selectedAddress])
+  },[selectedAddress,loadAccountStatus])
 
   return (
     <Row style={{ width: 500 }}>

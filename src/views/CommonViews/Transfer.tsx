@@ -54,7 +54,6 @@ const Transfer: React.FC<TransferProps> = props => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const walletInfo = useSelector((state:RootStore) => state.user);
-  const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
 
   const dispatch = useDispatch();
   function intl(id:string) {
@@ -162,7 +161,7 @@ const Transfer: React.FC<TransferProps> = props => {
 
   useEffect(() => {
     loadTransferData()
-  },[loadTransferData, walletInfo,loadAccountStatus])
+  },[loadTransferData, walletInfo])
 
   const onchange = useCallback((e) => {
 
