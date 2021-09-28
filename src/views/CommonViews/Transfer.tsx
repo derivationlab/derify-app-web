@@ -16,7 +16,7 @@ import {useDispatchAction} from "@/hooks/useDispatchAction"
 import {RootStore} from "@/store";
 import ErrorMessage from "@/components/ErrorMessage";
 import contractModel from "@/store/modules/contract"
-import {showTransfer} from "@/store/modules/app/actions";
+import {showTransfer} from "@/store/modules/app";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 

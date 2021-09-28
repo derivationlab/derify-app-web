@@ -13,7 +13,7 @@ import {createTokenPriceChangeEvenet} from "@/api/trade";
 import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
 import {useDispatch, useSelector} from "react-redux";
-import {showTransfer,showFundsDetail} from "@/store/modules/app/actions";
+import {showTransfer,showFundsDetail} from "@/store/modules/app";
 import {ContractModel, RootStore, UserModel} from "@/store";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,

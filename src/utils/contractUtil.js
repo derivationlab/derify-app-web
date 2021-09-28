@@ -254,7 +254,7 @@ export default class Contract {
   constructor ({from, broker}) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
-    //option.gasPrice = 1e9;
+    option.gasPrice = 1e9;
 
     this.web3 = web3
     this.from = from

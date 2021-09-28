@@ -4,7 +4,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 import { Modal, Row, Col, Input, Radio } from "antd";
 import { ModalProps } from "antd/es/modal";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import {fromContractUnit, PositionView, toContractUnit} from "@/utils/contractUtil";
 import contractModel from "@/store/modules/contract";
 import {fck} from "@/utils/utils";
@@ -92,6 +92,7 @@ const CloseModal: React.FC<CloseModalProps> = props => {
     closeModel();
     closePositionAction(dispatch).then(() =>{
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateTradeLoadStatus());
     }).catch(() => {
       DerifyTradeModal.failed();
     })
@@ -210,6 +211,7 @@ const CloseModal: React.FC<CloseModalProps> = props => {
         <Col flex="100%">
           <Radio.Group value={percent} options={plainOptions} optionType="button" onChange={(e) => {
             const {value} = e.target
+
             setPercent(value)
             const sizeAmount  = fck((value / 100.0 * maxSize),0,8);
             setSize(sizeAmount)

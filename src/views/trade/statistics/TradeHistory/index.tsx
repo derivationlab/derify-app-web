@@ -75,6 +75,8 @@ const TradeHistory: React.FC = () => {
   const walletInfo = useSelector((state:RootStore) => state.user);
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
   const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
+  const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
+
 
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
@@ -94,6 +96,18 @@ const TradeHistory: React.FC = () => {
       console.log('getTradeList',e)
     }).finally(() => setShowLoading(false))
   }, [pagenation.current,pagenation.pageSize,walletInfo])
+
+  useEffect(() => {
+    const trader = walletInfo.selectedAddress;
+    if(!trader || !reloadTrade){
+      return
+    }
+    getTradeList(trader, pagenation.current, pagenation.pageSize).then((pagenation:Pagenation) => {
+      setPagenation(pagenation);
+    }).catch(e => {
+      console.log('getTradeList',e)
+    }).finally(() => setShowLoading(false))
+  }, [reloadTrade]);
 
   const getPairByAddress = (token:string) => {
     const pair = tokenPairs.find((pair) => pair.address === token)

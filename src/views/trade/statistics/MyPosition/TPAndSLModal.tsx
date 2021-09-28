@@ -14,7 +14,7 @@ import {
 import {amountFormt, checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import contractModel from "@/store/modules/contract"
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
@@ -178,6 +178,7 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
     props.closeModal();
     orerStopPositionAction(dispatch).then(() => {
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateTradeLoadStatus());
     }).catch(() => {
       DerifyTradeModal.failed();
     })

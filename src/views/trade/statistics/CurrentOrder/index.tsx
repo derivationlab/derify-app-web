@@ -7,7 +7,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";
 import {CancelOrderedPositionTypeEnum, fromContractUnit, OrderTypeEnum, PositionView} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import {amountFormt, dateFormat} from "@/utils/utils";
 import LongOrShort from "@/views/trade/LongOrShort";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
@@ -38,6 +38,7 @@ function CurrentOrder() {
   const walletInfo = useSelector((state:RootStore) => state.user);
 
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
+  const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
   const [showLoading, setShowLoading] = useState<boolean>(true);
 
 
@@ -133,6 +134,7 @@ function CurrentOrder() {
         DerifyTradeModal.pendding();
         cancelAllOrderAction(dispatch).then(() => {
           DerifyTradeModal.success();
+          dispatch(AppModel.actions.updateTradeLoadStatus());
         }).catch(e=>{
           DerifyTradeModal.failed();
         }).finally(() => {
@@ -194,6 +196,7 @@ function CurrentOrder() {
         DerifyTradeModal.pendding();
         cancelAllOrderAction(dispatch).then(() => {
           DerifyTradeModal.success();
+          dispatch(AppModel.actions.updateTradeLoadStatus());
         }).catch(e=>{
           DerifyTradeModal.failed();
         }).finally(() => {
@@ -206,7 +209,13 @@ function CurrentOrder() {
 
   useEffect(() => {
     loadMyPositionData()
-  }, [loadMyPositionData])
+  }, [loadMyPositionData]);
+
+  useEffect(() => {
+    if(reloadTrade){
+      loadMyPositionData()
+    }
+  }, [reloadTrade])
 
   const columns: ColumnsType<OrderPositionData> = [
     {

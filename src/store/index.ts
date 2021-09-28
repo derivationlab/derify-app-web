@@ -6,7 +6,7 @@ import {
 } from "redux";
 
 import thunkMiddleware from "redux-thunk";
-import appReducer, { AppState } from "./modules/app/reducers";
+import AppModel, { AppState } from "./modules/app";
 
 import UserModel,{UserState} from "./modules/user";
 import BrokerModel,{BrokerState} from "./modules/broker";
@@ -37,8 +37,8 @@ if (process.env.NODE_ENV === "development") {
   middlewares.push(require("redux-logger").createLogger());
 }
 
-const rootStote  = {
-  app: appReducer,
+const rootStore  = {
+  app: AppModel.reducers,
   user: UserModel.reducers,
   contract: ContractModel.reducers,
   broker: BrokerModel.reducers,
@@ -46,12 +46,12 @@ const rootStote  = {
 };
 
 const store = createStore(
-  combineReducers(rootStote),
+  combineReducers(rootStore),
   composeEnhancers(applyMiddleware(...middlewares))
 );
 
 export {
-  ContractModel,UserModel,BrokerModel,DataModel,RewardModel
+  AppModel,ContractModel,UserModel,BrokerModel,DataModel,RewardModel
 }
 
 export default store;

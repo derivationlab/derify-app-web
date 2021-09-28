@@ -1,7 +1,7 @@
 import React, {useCallback, useState} from "react";
 import {Row, Col, Button, Space, Input, Tabs, message, Spin} from "antd";
 import {useDispatch, useSelector} from "react-redux";
-import { bindPartners } from "@/store/modules/app/actions";
+import { bindPartners } from "@/store/modules/app";
 import PartnersList, { Partners } from "./PartnersList";
 import { RouteProps } from "@/router/types";
 import {useIntl} from "react-intl";
