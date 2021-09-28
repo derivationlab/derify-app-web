@@ -84,7 +84,7 @@ const Withdraw: React.FC<WithdrawProps> = props => {
       DerifyTradeModal.failed();
     });
 
-  },[])
+  },[selectedAddress,amout,broker])
 
   return (
     <Modal

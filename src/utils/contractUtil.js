@@ -854,7 +854,7 @@ export default class Contract {
    * @param amount
    */
   withdrawBrokerReward(amount) {
-    return this.DerifyRewards.methods.burnEdrfExtendValidPeriod(amount).send()
+    return this.DerifyRewards.methods.withdrawBrokerReward(amount).send()
   }
 
   /**
