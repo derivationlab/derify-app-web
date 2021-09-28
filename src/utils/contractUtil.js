@@ -254,11 +254,12 @@ export default class Contract {
   constructor ({from, broker}) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
-    option.gasPrice = 1e9
+    //option.gasPrice = null;
 
     this.web3 = web3
     this.from = from
     this.broker = broker
+    this.option = option;
 
     this.DerifyRewards = new web3.eth.Contract(ABIData.DerifyRewards.abi, ABIData.DerifyRewards.address, option)
     this.DerifyDerivative = {

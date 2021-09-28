@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { RouteProps } from "@/router/types";
 import { Switch, Route, Redirect } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -21,6 +21,10 @@ const Home: React.FC<HomeProps> = props => {
 
   const {selectedAddress,hasBroker,traderBroker,brokerInfo} = useSelector((state:RootStore) => state.user);
 
+  const doRedirect = useCallback((path) => {
+    history.push(path)
+  }, [history]);
+
   useEffect(() => {
     if(!selectedAddress){
       dispatch(UserModel.actions.loadWallet());
@@ -39,20 +43,20 @@ const Home: React.FC<HomeProps> = props => {
 
       if(!menu){
         bindBroker({trader: selectedAddress,brokerId: rootPath}).then(() => {
-          setRedirectPath(tradePath);
+          doRedirect(tradePath);
         }).catch((e) => {
           console.error("bind broker error", e);
         });
       }else if(location.pathname.toLowerCase() !== brokerBindPath){
-        setRedirectPath(brokerBindPath);
+        doRedirect(brokerBindPath);
       }
       return;
     }
 
     if(location.pathname === brokerBindPath){
-      setRedirectPath(tradePath);
+      doRedirect(tradePath);
     }else if(!menu){
-      setRedirectPath(tradePath);
+      doRedirect(tradePath);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

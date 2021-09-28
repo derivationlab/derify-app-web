@@ -373,9 +373,13 @@ const actions = {
         return {}
       }
 
+      const updateAllPairPriceAction = self.updateAllPairPrice(trader)
+      await updateAllPairPriceAction(commit);
+
       const token = curPair.address
 
       data.curSpotPrice = await contract.getSpotPrice(token)
+      commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
 
       // 2.get positionChangeFeeRatio
       data.positionChangeFeeRatio = await contract.getPositionChangeFeeRatio(token)
@@ -391,8 +395,6 @@ const actions = {
       commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
 
       //4.update all token price
-      const updateAllPairPriceAction = self.updateAllPairPrice(trader)
-      await updateAllPairPriceAction(commit)
 
       // 4.get sysOpenUpperBound
       data.sysOpenUpperBound = await contract.getSysOpenUpperBound({token: curPair.address, side: side})
