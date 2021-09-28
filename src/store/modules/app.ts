@@ -14,7 +14,8 @@ export interface AppState {
   fundsDetailShow: boolean;
   operateType: TransferOperateType;
   reloadDataStatus:{
-    trade: number
+    trade: number,
+    account: number
   }
 }
 
@@ -27,7 +28,8 @@ const getInitialState: () => AppState = () => {
     fundsDetailShow: false,
     operateType: TransferOperateType.withdraw,
     reloadDataStatus:{
-      trade: 0
+      trade: 0,
+      account: 0
     }
   };
 };
@@ -62,6 +64,9 @@ const reducers = createReducer(getInitialState(), {
   },
   ['/updateTradeLoadStatus'](state, {payload}) {
     return update(state, {reloadDataStatus:{trade:{$set: state.reloadDataStatus.trade+1}}})
+  },
+  ['/updateLoadStatus'](state, {payload}) {
+    return update(state, {reloadDataStatus:{[payload]:{$set: state.reloadDataStatus.trade+1}}})
   },
 });
 export function changeLang(lang: string) {
@@ -117,6 +122,11 @@ const actions = {
   updateTradeLoadStatus: () => {
     return async (commit:Dispatch) =>{
       commit({type:"/updateTradeLoadStatus"});
+    }
+  },
+  updateLoadStatus: (key:string) => {
+    return async (commit:Dispatch) =>{
+      commit({type:"/updateLoadStatus", payload:key});
     }
   }
 }

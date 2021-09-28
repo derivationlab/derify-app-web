@@ -85,7 +85,7 @@ const Faucet: React.FC<FaucetProps> = props => {
           <Col>
             <Spin spinning={loading}>
               <Button type="primary" onClick={onSendUSDT}>
-                {$t("Faucet.GetUSDT", [<Statistic style={{display: "inline-block"}} valueStyle={{color:"#000"}} value={defaultUSDTAmount}/>])}
+                {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
               </Button>
             </Spin>
           </Col>
