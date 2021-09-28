@@ -261,7 +261,7 @@ function CurrentOrder() {
       key: "price",
       render: (_, record) => (
         <div>
-          <div className="main-white">{amountFormt(record.stopPrice,2,false,"--",-8)}</div>
+          <div className="main-white">{amountFormt(record.orderType == OrderTypeEnum.LimitOrder ? record.price: record.stopPrice,2,false,"--",-8)}</div>
           <div>
             USDT
           </div>

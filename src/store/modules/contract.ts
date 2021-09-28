@@ -52,6 +52,7 @@ export declare type OrderPositionData = {
   size: number,
   leverage: number,
   stopPrice: number,
+  price: number,
   timestamp: number,
   isUsed: boolean
 }
