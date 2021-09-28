@@ -107,6 +107,7 @@ const Deposit: React.FC<DepositProps> = props => {
     }
 
     if(!amount){
+      setErrorMsg($t("global.NumberError"));
       return;
     }
 
