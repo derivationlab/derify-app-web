@@ -68,6 +68,23 @@ function Rewards() {
                 <Col flex="100%" className="main-white key-wrapper">
                   <FormattedMessage id="Rewards.Mining.Card.PositionMining" />（USDT）
                 </Col>
+
+                <Col>
+                  <WalletConnectButtonWrapper type="primary">
+                    <Space>
+                      <Button
+                        type="ghost"
+                        onClick={() => {
+                          setOperateVisible(true);
+                          setRewardsType(RewardsType.USDT);
+                          setOperateType(OperateType.minWithdraw);
+                        }}
+                      >
+                        <FormattedMessage id="Rewards.Mining.Card.Withdraw" />
+                      </Button>
+                    </Space>
+                  </WalletConnectButtonWrapper>
+                </Col>
               </Row>
             </Col>
             <Col flex="33%">
@@ -77,6 +94,15 @@ function Rewards() {
                 </Col>
                 <Col flex="100%" className="key-wrapper">
                   <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> (USDT)
+                </Col>
+                <Col>
+                  <WalletConnectButtonWrapper type="primary">
+                    <Space>
+                      <Link to={'/trade'}>
+                        <Button type="primary">{$t('Rewards.Mining.Card.OpenPosition')}</Button>
+                      </Link>
+                    </Space>
+                  </WalletConnectButtonWrapper>
                 </Col>
               </Row>
             </Col>
@@ -88,41 +114,24 @@ function Rewards() {
                 <Col flex="100%" className="key-wrapper">
                   <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> (USDT)
                 </Col>
+                <Col>
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setThVisible(true);
+                      setRewardsType(RewardsType.USDT);
+                    }}
+                  >
+                    <FormattedMessage id="Rewards.Mining.Card.TransactionHistory" />
+                    <IconFont type="icon-right-arr" />
+                  </Button>
+                </Col>
               </Row>
             </Col>
           </Row>
           <Row justify="space-between">
-            <Col>
-              <Button
-                type="link"
-                onClick={() => {
-                  setThVisible(true);
-                  setRewardsType(RewardsType.USDT);
-                }}
-              >
-                <FormattedMessage id="Rewards.Mining.Card.TransactionHistory" />
-                <IconFont type="icon-right-arr" />
-              </Button>
-            </Col>
-            <Col>
-              <WalletConnectButtonWrapper type="primary">
-                <Space>
-                  <Button
-                    type="ghost"
-                    onClick={() => {
-                      setOperateVisible(true);
-                      setRewardsType(RewardsType.USDT);
-                      setOperateType(OperateType.minWithdraw);
-                    }}
-                  >
-                    <FormattedMessage id="Rewards.Mining.Card.Withdraw" />
-                  </Button>
-                  <Link to={'/trade'}>
-                    <Button type="primary">{$t('Rewards.Mining.Card.OpenPosition')}</Button>
-                  </Link>
-                </Space>
-              </WalletConnectButtonWrapper>
-            </Col>
+
+
           </Row>
 
         </Col>
