@@ -78,12 +78,22 @@ const Transfer: React.FC<TransferProps> = props => {
     const trader = walletInfo?.selectedAddress
     const contract = web3Utils.contract(trader)
 
-    const accountData = await contract.getTraderAccount(trader)
-
-    transferData.accountData = accountData
-    transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
-    transferData.balanceOfDerify = accountData.balance
+    const accountData = new TraderAccount();
     transferData.operateType = transferType
+
+    try{
+      Object.assign(accountData, await contract.getTraderAccount(trader));
+      transferData.accountData = accountData
+      transferData.balanceOfDerify = accountData.balance
+    }catch (e){
+      console.log('getTraderAccount error:', e)
+    }
+
+    try{
+      transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
+    }catch (e) {
+      console.log('getTraderAccount error:', e)
+    }
 
     setTransferData(transferData)
 
