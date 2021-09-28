@@ -52,7 +52,7 @@ const Faucet: React.FC<FaucetProps> = props => {
 
     sendUSDT(traderInputVal, 10000).then((data) => {
 
-      if(data.code === 1){
+      if(data.code === 0){
         DerifyTradeModal.success();
       }else{
         DerifyTradeModal.failed({msg: data.msg});
