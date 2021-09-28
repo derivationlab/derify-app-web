@@ -92,7 +92,7 @@ const Transfer: React.FC<TransferProps> = props => {
     try{
       transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
     }catch (e) {
-      console.log('getTraderAccount error:', e)
+      console.log('balanceOf error:', e)
     }
 
     setTransferData(transferData)
