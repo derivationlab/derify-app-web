@@ -109,7 +109,10 @@ function Record() {
       key: "update_type",
       render:(_,data) => {
         return (
-          <div>{$t(getUpdateType(data.update_type))}</div>
+          <div>
+            <div className={"main-white"}>{data.trader}</div>
+            <div>{$t(getUpdateType(data.update_type))}</div>
+          </div>
         );
       }
     },
