@@ -40,8 +40,8 @@ const TradingVolume: React.FC = () => {
 
   const tokenOptions = [
     {label: $t('Data.Data.Trade.All'), value: 'all'},
+    {label: 'BTC/USDT', value: Token.BTC},
     {label: 'ETH/USDT', value: Token.ETH},
-    {label: 'BTC/USDT', value: Token.BTC}
   ];
 
   const onOptionChange = (value:string) => {
