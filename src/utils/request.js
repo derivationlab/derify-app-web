@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Request timeout
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 60000
 
 // post request header
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'

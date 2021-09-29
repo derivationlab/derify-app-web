@@ -8,7 +8,7 @@ import {
   updateBroker
 } from '@/api/broker'
 import * as web3Utils from '@/utils/web3Utils'
-import {BondAccountType, fromContractUnit, toContractUnit, Token} from '@/utils/contractUtil'
+import {BondAccountType, fromContractUnit, toContractNum, toContractUnit, Token} from '@/utils/contractUtil'
 import { getWebroot } from '@/config'
 import {createReducer} from "redux-create-reducer";
 import update from 'react-addons-update';
@@ -108,7 +108,12 @@ const actions = {
           brokerAccountInfo.reference = getWebroot() + "/" + brokerInfo.id
           Object.assign(brokerAccountInfo, brokerInfo);
         }
-        brokerAccountInfo.todayReward = await getBrokerTodayReward(trader);
+        try{
+          brokerAccountInfo.todayReward = toContractNum(await getBrokerTodayReward(trader));
+        }catch (e){
+          console.error("getBrokerTodayReward", e)
+        }
+
         data.broker = Object.assign({}, accountInfo, brokerAccountInfo);
 
       }catch (e){
