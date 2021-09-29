@@ -13,7 +13,7 @@ import { ModalProps } from "antd/es/modal";
 import {RewardsType} from "@/store/modules/reward";
 import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
-import {RewardModel, RootStore} from "@/store";
+import {AppModel, RewardModel, RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
@@ -334,6 +334,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
     DerifyTradeModal.pendding();
     doSubmitAction(dispatch).then(() => {
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateLoadStatus("reward"));
     }).catch((e) => {
       DerifyTradeModal.failed();
       console.error('doSubmitAction type', e)

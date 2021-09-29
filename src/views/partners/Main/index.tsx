@@ -15,6 +15,7 @@ function Main() {
   const isBroker: boolean | undefined = useSelector(
     (state: RootStore) => state.broker.isBroker
   );
+  const reloadBrokerDataStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.broker);
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -32,7 +33,7 @@ function Main() {
     }).catch(e=>{
       console.error("getTraderBrokerInfo err", e)
     });
-  },[trader,isLogin]);
+  },[trader,isLogin,reloadBrokerDataStatus]);
 
   const [showEditModal,setShowEditModal] = useState<boolean>(false);
 

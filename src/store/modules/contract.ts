@@ -16,7 +16,7 @@ import { createTokenPriceChangeEvenet } from '@/api/trade'
 import {createReducer} from "redux-create-reducer";
 import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
-import {CHANGE_LANG} from "@/store/modules/app/types";
+import {CHANGE_LANG} from "@/store/modules/types";
 
 const tokenPriceRateEnventMap:{[key:string]:EventSource} = {};
 export declare type TokenPair = {

@@ -12,7 +12,7 @@ import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
 import contractModel, {ContractState, PositioData} from "@/store/modules/contract"
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import {Dispatch} from "redux";
 import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
 import {amountFormt, fck} from "@/utils/utils";
@@ -35,6 +35,7 @@ const MyPosition: React.FC = () => {
   const [clickedPostion, setClickedPostion] = useState<PositionView>();
   const [clickedTPSLPostion, setClickedTPSLPostion] = useState<PositionView>();
   const [showClosePosition, setShowClosePosition] = useState<boolean>(true);
+  const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
 
   const dispatch = useDispatch();
 
@@ -86,6 +87,13 @@ const MyPosition: React.FC = () => {
     loadMyPositionData()
   }, [loadMyPositionData])
 
+  useEffect(() => {
+    if(!reloadTrade){
+      return;
+    }
+    loadMyPositionData()
+  }, [reloadTrade])
+
 
   const cancelCb = () => {};
 
@@ -120,6 +128,7 @@ const MyPosition: React.FC = () => {
         setShowClosePosition(false);
         closePositionAction(dispatch).then(() =>{
           DerifyTradeModal.success();
+          dispatch(AppModel.actions.updateTradeLoadStatus());
         }).catch((e) => {
           DerifyTradeModal.failed();
           console.log('closePositionAction',e);

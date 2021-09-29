@@ -65,7 +65,7 @@ export async function getBrokerList(page = 1, size = 10) {
 export async function bindBroker({trader,brokerId}) {
   const content =  await io.post('/api/bind_broker', {brokerId,trader})
 
-  if(content && content.msg) {
+  if(content && content.code === 0) {
     return {success: true, msg: content.msg}
   }else if(content && content.error){
     return {success: false, msg: content.error}

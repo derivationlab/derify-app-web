@@ -254,7 +254,7 @@ export default class Contract {
   constructor ({from, broker}) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
-    //option.gasPrice = null;
+    option.gasPrice = 1e9;
 
     this.web3 = web3
     this.from = from
@@ -838,7 +838,7 @@ export default class Contract {
 
       if(approveRet){
         try{
-          await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send()
+          await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send({type: '0x2'})
           resolve(true)
         }catch (e) {
           reject(e)

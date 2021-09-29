@@ -3,7 +3,7 @@ import {Button, Row, Col, Select, Modal, Popover, Space, Image} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "@/store";
 
-import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app/actions";
+import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app";
 import { FormattedMessage } from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";

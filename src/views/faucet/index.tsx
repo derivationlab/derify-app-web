@@ -9,6 +9,7 @@ import Link from "antd/lib/typography/Link";
 import {sendUSDT} from "@/api/trade";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import ErrorMessage, {DerifyErrorNotice} from "@/components/ErrorMessage";
+import "./index.less"
 
 interface FaucetProps extends RouteProps {}
 
@@ -60,7 +61,7 @@ const Faucet: React.FC<FaucetProps> = props => {
       }
 
     }).catch(e => {
-      DerifyTradeModal.failed();
+      DerifyTradeModal.failed({msg: e?.msg});
     }).finally(() => {
       setLoading(false);
     })
@@ -84,7 +85,7 @@ const Faucet: React.FC<FaucetProps> = props => {
           <Col>
             <Spin spinning={loading}>
               <Button type="primary" onClick={onSendUSDT}>
-                {$t("Faucet.GetUSDT", [<Statistic>{defaultUSDTAmount}</Statistic>])}
+                {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
               </Button>
             </Spin>
           </Col>

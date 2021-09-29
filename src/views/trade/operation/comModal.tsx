@@ -17,7 +17,7 @@ import {
 import ErrorMessage from "@/components/ErrorMessage";
 import {OpenConfirmData} from "@/views/trade/operation/index";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import contractModel, {OpenUpperBound, TokenPair} from "@/store/modules/contract";
 import {amountFormt, fck} from "@/utils/utils";
 
@@ -243,6 +243,7 @@ const ComModal: React.FC<ComModalProps> = props => {
     props.closeModal();
     openPositionAction(dispatch).then(() => {
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateTradeLoadStatus());
     }).catch((e) => {
       DerifyTradeModal.failed();
     });

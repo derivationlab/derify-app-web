@@ -13,13 +13,14 @@ import {createTokenPriceChangeEvenet} from "@/api/trade";
 import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
 import {useDispatch, useSelector} from "react-redux";
-import {showTransfer,showFundsDetail} from "@/store/modules/app/actions";
+import {showTransfer,showFundsDetail} from "@/store/modules/app";
 import {ContractModel, RootStore, UserModel} from "@/store";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,
   blance,
 }) => {
   const {selectedAddress} = useSelector((state:RootStore) => state.user);
+  const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
 
   const {accountData,curPair,contractData} = useSelector((state:RootStore) => state.contract);
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
     }
 
     dispatch(ContractModel.actions.loadAccountData(selectedAddress));
-  },[selectedAddress])
+  },[selectedAddress,loadAccountStatus])
 
   return (
     <Row style={{ width: 500 }}>

@@ -3,7 +3,7 @@ import { Modal, Row, Col, Input, Button, Select } from "antd";
 import { useIntl, FormattedMessage } from "react-intl";
 import { ModalProps } from "antd/es/modal";
 import {useDispatch, useSelector} from "react-redux";
-import {BrokerModel, RootStore} from "@/store";
+import {AppModel, BrokerModel, RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {BrokerAccountInfo} from "@/store/modules/broker";
@@ -80,6 +80,7 @@ const Withdraw: React.FC<WithdrawProps> = props => {
     brokerWithdrawAction(dispatch).then(() => {
       dispatch(BrokerModel.actions.updateBrokerAccountInfo(selectedAddress));
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateLoadStatus("broker"));
     }).catch(e => {
       DerifyTradeModal.failed();
     });
