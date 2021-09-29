@@ -37,7 +37,7 @@ axios.interceptors.request.use(
 // Response interceptor
 axios.interceptors.response.use(
   response => {
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300) {
       return Promise.resolve(response)
     } else {
       return Promise.reject(response)
@@ -69,17 +69,17 @@ axios.interceptors.response.use(
           //   forbidClick: true
           // })
           // Clear token
-          localStorage.removeItem('token')
-          store.commit('loginSuccess', null)
+          // localStorage.removeItem('token')
+          // store.commit('loginSuccess', null)
           // Jump to the login page, and pass the fullPath of the page to be browsed, after successful login, jump to the page that needs to be visited
-          setTimeout(() => {
-            router.replace({
-              path: '/login',
-              query: {
-                redirect: router.currentRoute.fullPath
-              }
-            })
-          }, 1000)
+          // setTimeout(() => {
+          //   router.replace({
+          //     path: '/login',
+          //     query: {
+          //       redirect: router.currentRoute.fullPath
+          //     }
+          //   })
+          // }, 1000)
           break
           // 404 request does not exist
         case 404:
