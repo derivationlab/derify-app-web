@@ -19,7 +19,7 @@ const Home: React.FC<HomeProps> = props => {
   const { routes, history, location } = props;
   const [redirectPath,setRedirectPath] = useState<string|null>(null);
 
-  const {selectedAddress,hasBroker,traderBroker,brokerInfo} = useSelector((state:RootStore) => state.user);
+  const {selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
 
   const doRedirect = useCallback((path) => {
     history.push(path)
@@ -33,7 +33,7 @@ const Home: React.FC<HomeProps> = props => {
 
     const rootPath = location.pathname.split("/")[1];
 
-    if(brokerInfo && rootPath === brokerInfo?.id){
+    if(rootPath === slefBrokerId){
       return;
     }
     const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());

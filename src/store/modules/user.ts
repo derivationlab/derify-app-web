@@ -111,10 +111,9 @@ export type UserState = {
   processStatus?: number,
   processStatusMsg?: string,
   balanceOfDUSD?: number,
-  brokerId?: string|null,
+  brokerId?: string|null, //bind broker address
   hasBroker?: boolean,
-  brokerInfo?: BrokerInfo|null,
-  traderBroker?: BrokerInfo|null
+  slefBrokerId?: string|null
 }
 
 export type WalletInfo ={
@@ -166,36 +165,98 @@ export async function getWallet() : Promise<UserState>{
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  let brokerId = "";
-  let brokerInfo = null;
+  let bindBrokerId = "";
+  let selfBrokerId = null;
   let traderBroker = null;
 
-  try{
-    brokerInfo = await getBrokerByTrader(wethereum.selectedAddress);
-    traderBroker = await getBindBrokerByTrader(wethereum.selectedAddress);
-    brokerId = traderBroker ? traderBroker.broker : "";
-  }catch (e){
-    console.error("getBrokerIdByTrader error", e)
-  }
+
 
   const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
   const trader = isLogin ? wethereum.selectedAddress : "";
+
+  if(isLogin && trader){
+    const bindInfo = await getBrokerBindInfo(wethereum.selectedAddress);
+    bindBrokerId = bindInfo.bindBrokerAddr;
+    selfBrokerId = bindInfo.selfBrokerId;
+  }
+
   return {
     selectedAddress: trader,
     trader: trader,
     isLogin: isLogin,
-    hasBroker: !!brokerId,
+    hasBroker: !!bindBrokerId,
     showWallet: false,
     chainEnum: chainEnum,
-    brokerId: brokerId,
+    brokerId: bindBrokerId,
     isEthum,
     processStatus: 0,
     balanceOfDUSD: 0,
     networkVersion: wethereum.networkVersion,
     isMetaMask: wethereum.isMetaMask,
-    brokerInfo,
-    traderBroker
+    slefBrokerId: selfBrokerId,
   }
+}
+
+export function setHasBroker(trader:string, hasBroker:boolean){
+  window.localStorage.setItem("broker.bind", JSON.stringify({trader, hasBroker}));
+}
+
+/**
+ * @param curTrader
+ * @return {Promise<{
+      trader: string,
+      hasBroker: boolean,
+      bindBrokerAddr: string,
+      bindBrokerId: string,
+      selfBrokerId: string
+    }>}
+ */
+export async function getBrokerBindInfo(curTrader:string) : Promise<{
+  trader: string,
+  hasBroker: boolean,
+  bindBrokerAddr: string,
+  bindBrokerId: string,
+  selfBrokerId: string
+}>{
+  const brokerBindInfo = window.localStorage.getItem("broker.bind");
+
+  if(brokerBindInfo) {
+    const bindInfo = JSON.parse(brokerBindInfo);
+    //const {trader, hasBroker, bindBrokerAddr, bindBrokerId, selfBrokerId} = bindInfo;
+    if (bindInfo.trader === curTrader) {
+      return bindInfo;
+    }
+  }
+
+
+  try{
+    const brokerInfo = await getBrokerByTrader(curTrader);
+    const traderBroker = await getBindBrokerByTrader(curTrader);
+    const brokerId = traderBroker ? traderBroker.broker : "";
+
+    const bindInfo = {
+      trader: curTrader,
+      hasBroker: !!brokerId,
+      bindBrokerAddr: traderBroker?.broker,
+      bindBrokerId: traderBroker?.id,
+      selfBrokerId: brokerInfo?.id
+    };
+
+    window.localStorage.setItem("broker.bind", JSON.stringify(bindInfo));
+
+    return bindInfo;
+  }catch (e){
+    console.error("getBrokerIdByTrader error", e)
+  }
+
+  return {
+    trader: curTrader,
+    hasBroker: false,
+    bindBrokerAddr: "",
+    bindBrokerId: "",
+    selfBrokerId: ""
+  };
+
 }
 
 function setLogout(isLogout:boolean){

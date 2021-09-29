@@ -59,15 +59,22 @@ const Bind: React.FC<BindProps> = props => {
 
     const trader = walletInfo.selectedAddress;
 
-    const data = await bindBroker({trader, brokerId});
+    try{
+      const data = await bindBroker({trader, brokerId});
 
-    if(data.success) {
-      dispatch({type: "user/updateState", palyload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
-      history.push("/trade")
-    }else{
-      DerifyErrorNotice.error(data.msg);
+      if(data.success) {
+        //dispatch({type: "user/updateState", palyload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
+        history.push("/trade")
+      }else{
+        DerifyErrorNotice.error(data.msg);
+      }
+      setLoading(false);
+    }catch (e){
+      console.error("bindBroker error", e);
+    }finally {
+      setLoading(true);
     }
-    setLoading(false);
+
   },[walletInfo]);
 
   const tabsChange = () => {
