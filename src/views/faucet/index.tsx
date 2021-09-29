@@ -61,7 +61,7 @@ const Faucet: React.FC<FaucetProps> = props => {
       }
 
     }).catch(e => {
-      DerifyTradeModal.failed();
+      DerifyTradeModal.failed({msg: e});
     }).finally(() => {
       setLoading(false);
     })
