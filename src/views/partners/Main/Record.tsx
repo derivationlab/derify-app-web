@@ -110,8 +110,8 @@ function Record() {
       render:(_,data) => {
         return (
           <div>
-            <div className={"main-white"}>{data.trader}</div>
-            <div>{$t(getUpdateType(data.update_type))}</div>
+            <div className={"main-white"}>{$t(getUpdateType(data.update_type))}</div>
+            <div>{data.trader}</div>
           </div>
         );
       }
