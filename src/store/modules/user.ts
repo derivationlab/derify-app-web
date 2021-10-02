@@ -14,7 +14,7 @@ import Wallet from "@/assets/images/Metamask.png";
 import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import {Dispatch} from "redux";
-import {mergeNonNull} from "@/utils/utils";
+import {mergeNonNull, toChecksumAddress} from "@/utils/utils";
 
 export class ChainEnum {
   static values : ChainEnum[] = []
@@ -144,7 +144,7 @@ export async function asyncInitWallet() : Promise<UserState> {
   window.ethereum.ethAccounts = await window.ethereum.request({method: 'eth_accounts'})
 
   if(window.ethereum.ethAccounts.length > 0){
-    window.ethereum.selectedAddress = window.ethereum.ethAccounts[0]
+    window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.ethAccounts[0])
   }
 
   window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
