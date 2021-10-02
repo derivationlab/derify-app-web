@@ -10,6 +10,7 @@ import {sendUSDT} from "@/api/trade";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import ErrorMessage, {DerifyErrorNotice} from "@/components/ErrorMessage";
 import "./index.less"
+import {Token} from "@/utils/contractUtil";
 
 interface FaucetProps extends RouteProps {}
 
@@ -52,6 +53,8 @@ const Faucet: React.FC<FaucetProps> = props => {
       return;
     }
 
+    addTestTokentoWallet();
+
     sendUSDT(traderInputVal, defaultUSDTAmount).then((data) => {
 
       if(data.code === 0){
@@ -66,6 +69,31 @@ const Faucet: React.FC<FaucetProps> = props => {
       setLoading(false);
     })
   },[traderInputVal]);
+
+  const addTestTokentoWallet = useCallback(async() => {
+    const tokenAddress = Token.USDT;
+    const tokenSymbol = 'USDT';
+    const tokenDecimals = 18;
+    const tokenImage = null;
+
+    try {
+      // wasAdded is a boolean. Like any RPC method, an error may be thrown.
+      const wasAdded = await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  },[]);
 
 
   return (

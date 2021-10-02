@@ -16,7 +16,7 @@ const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
 const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
 const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
 
-const isNotCallEvent = true;
+const isNotCallEvent = false;
 /**
  *
  * @param trader
