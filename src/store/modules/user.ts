@@ -101,7 +101,7 @@ export const mainChain = ChainEnum.Rinkeby
 export type UserState = {
   selectedAddress?: string|null,
   showWallet?: boolean,
-  trader: "",
+  trader: string,
   isLogin?: boolean,
   chainEnum?: ChainEnum,
   chainId?: string,
@@ -172,7 +172,7 @@ export async function getWallet() : Promise<UserState>{
 
 
   const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
-  const trader = isLogin ? wethereum.selectedAddress : "";
+  const trader = isLogin ? toChecksumAddress(wethereum.selectedAddress) : "";
 
   if(isLogin && trader){
     const bindInfo = await getBrokerBindInfo(wethereum.selectedAddress);
