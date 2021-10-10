@@ -111,7 +111,7 @@ function Record() {
         return (
           <div>
             <div className={"main-white"}>{$t(getUpdateType(data.update_type))}</div>
-            <div>{data.trader}</div>
+            {data.update_type === 1 ? <></> : <div>{data.trader}</div>}
           </div>
         );
       }
