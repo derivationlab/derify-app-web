@@ -152,7 +152,6 @@ const reducers = createReducer(state, {
     return update(state,{accountData:{$merge: payload}})
   },
   'contract/RESET_POSITION_DATA' (state : ContractState,{payload}) {
-    console.log(`RESET_POSITION_DATA ${state}`)
     state.positionData.positions.splice(0)
     state.positionData.orderPositions.splice(0)
 

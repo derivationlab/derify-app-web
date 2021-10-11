@@ -10,7 +10,7 @@ import React, {
 import { Modal, Row, Col, Input, Button, Select } from "antd";
 import { useIntl, FormattedMessage } from "react-intl";
 import { ModalProps } from "antd/es/modal";
-import {RewardsType} from "@/store/modules/reward";
+import {RewardState, RewardsType} from "@/store/modules/reward";
 import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {AppModel, RewardModel, RootStore} from "@/store";
@@ -166,7 +166,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
   }
   const $t = intl;
 
-  const getMaxAmount = useCallback((rewardState, type, accountType = BondAccountType.DerifyAccount) => {
+  const getMaxAmount = useCallback((rewardState:RewardState, type, accountType = BondAccountType.DerifyAccount) => {
     if (type === OperateType.minWithdraw) {
       return rewardState.pmrBalance
     }
@@ -201,7 +201,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
       if(accountType === BondAccountType.DerifyAccount){
         return rewardState.bondInfo.bondBalance
       }else{
-        return rewardState.wallet.drfBalance
+        return rewardState.wallet.bdrfBalance
       }
     }
 
@@ -353,10 +353,13 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
 
     if(typeLangKey.accountOptions){
       setAccountType(typeLangKey.accountOptions[0].value)
+      if(trader){
+        updateMaxAmout(trader, amount, typeLangKey.accountOptions[0].value);
+      }
+
     }
 
   }, [typeLangKey,visible]);
-
 
   switch (type) {
     case OperateType.minWithdraw:

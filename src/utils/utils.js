@@ -102,8 +102,6 @@ export function mergeNonNull(obj1, obj2){
       }else{
         resultObj[name] = source[name];
       }
-
-      console.log(resultObj,source[name])
     }
   }
 

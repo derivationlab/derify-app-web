@@ -47,7 +47,7 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
       data: data.data
     })
   })
-console.log(xaxisDta)
+
   return {
     color: colors,
     grid: {
