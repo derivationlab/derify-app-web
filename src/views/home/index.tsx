@@ -11,20 +11,23 @@ import {bindBroker} from "@/api/broker";
 import Trade from "@/views/trade";
 import {ReactComponent} from "*.svg";
 import {useAsync} from "react-use";
+import Bind from "@/views/partners/Bind";
 
 interface HomeProps extends RouteProps {}
 const brokerBindPath = "/broker/bind";
 const tradePath = "/trade";
 
 const  RouteGuard: React.FC<HomeProps> = props => {
+  const dispatch = useDispatch();
   const {routes} = props;
   const location = useLocation();
-  const {selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
+  let {selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
   const {pathname} = location;
+  const [RoutNode, setRoutNode] = useState(<></>);
 
   let routeConfig = routes.find(
     (item) => {
-      return item.path.replace(/\s*/g,"") === pathname
+      return pathname.startsWith(item.path)
     }
   );
 
@@ -33,91 +36,76 @@ const  RouteGuard: React.FC<HomeProps> = props => {
   }
 
   let targetRoute = null;
-  let redirectPath = null;
-
   useEffect(() => {
-    if(hasBroker === undefined){
-      targetRoute = <></>
-    }else{
+    (async() =>{
+      if(hasBroker === undefined){
+        const loadWalletAction = UserModel.actions.loadWallet();
+        try{
+          const walletInfo = await loadWalletAction(dispatch);
+          hasBroker = walletInfo.hasBroker;
+        }catch (e){
+          console.error("loadWalletAction exception", e)
+        }
+      }
 
       const currentRoute = <Trade/>;
 
-      const rootPath = location.pathname.split("/")[1];
+      let rootPath = location.pathname.split("/")[1];
+      if(rootPath === ''){
+        setRoutNode(<Redirect to={tradePath}/>);
+        return;
+      }
 
       if(rootPath === slefBrokerId){
         targetRoute = currentRoute;
         return;
       }
+
       const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());
 
       if (!hasBroker) {
         if(!menu){
-          bindBroker({trader: selectedAddress,brokerId: rootPath}).then(() => {
-            redirectPath = tradePath;
-          }).catch((e) => {
-            console.error("bind broker error", e);
-          });
+          const data = await bindBroker({trader: selectedAddress,brokerId: rootPath});
+          if(data.success){
+            setRoutNode(<Redirect to={tradePath}/>);
+            return;
+          }
         }else if(location.pathname.toLowerCase() !== brokerBindPath){
-          redirectPath = brokerBindPath;
+          setRoutNode(<Redirect to={brokerBindPath}/>);
+          return;
+        }
+
+        if(menu){
+          setRoutNode(<Route
+            path={menu.path}
+            exact={menu.exact}
+            render={(props) => menu ? <menu.component {...props} routes={menu.routes}/> : <></>}
+          />)
         }
         return;
       }
 
-      if(hasBroker && routeConfig){
-        targetRoute = currentRoute;
+      //1.if bind path,redirect to trade
+      //2.else render
+      if(routeConfig){
+        if(location.pathname.toLowerCase() !== brokerBindPath){
+          setRoutNode(<Route
+            path={routeConfig.path}
+            exact={routeConfig.exact}
+            render={(props) => routeConfig ? <routeConfig.component {...props} routes={routeConfig.routes}/> : <></>}
+          />)
+        }else{
+          setRoutNode(<Redirect to={tradePath}/>)
+        }
+
       }
-    }
+    })();
   }, [location, hasBroker, selectedAddress]);
 
-  return <>{redirectPath ? <Redirect to={redirectPath}/> : targetRoute}</>
+  return <>{RoutNode}</>
 }
 
 const Home: React.FC<HomeProps> = props => {
-  const dispatch = useDispatch();
-  const { routes, history, location } = props;
-  const [redirectPath,setRedirectPath] = useState<string|null>(null);
-
-  const {selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
-
-  const doRedirect = useCallback((path) => {
-    history.push(path)
-  }, [history]);
-
-  useEffect(() => {
-    if(!selectedAddress){
-      dispatch(UserModel.actions.loadWallet());
-      return;
-    }
-
-    const rootPath = location.pathname.split("/")[1];
-
-    if(rootPath === slefBrokerId){
-      return;
-    }
-    const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());
-
-    if (!hasBroker) {
-      if(!menu){
-        bindBroker({trader: selectedAddress,brokerId: rootPath}).then(() => {
-          doRedirect(tradePath);
-        }).catch((e) => {
-          console.error("bind broker error", e);
-        });
-      }else if(location.pathname.toLowerCase() !== brokerBindPath){
-        doRedirect(brokerBindPath);
-      }
-      return;
-    }
-
-    if(location.pathname === brokerBindPath){
-      doRedirect(tradePath);
-    }else if(!menu){
-      doRedirect(tradePath);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, hasBroker, selectedAddress]);
-
   return (
     <>
       <IntlPro>

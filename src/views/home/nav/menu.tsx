@@ -4,6 +4,8 @@ import classNames from "classnames";
 import { useIntl } from "react-intl";
 import { _findIndex } from "@/utils/loash";
 import { withRouter, RouteComponentProps } from "react-router-dom";
+import {useSelector} from "react-redux";
+import {RootStore} from "@/store";
 
 interface MenuProps extends RouteComponentProps {}
 const menu: Array<{ path:string,key:string }> = [
@@ -16,13 +18,17 @@ const menu: Array<{ path:string,key:string }> = [
 
 const Menu: React.FC<MenuProps> = props => {
   const { location, history } = props;
+  let {hasBroker} = useSelector((state:RootStore) => state.user);
 
   const { formatMessage } = useIntl();
 
   const [index, setIndex] = useState<number>(0);
   const activeRoute = (index: number): void => {
-    history.push(`/${menu[index].path}`);
-    setIndex(index);
+
+    if(hasBroker){
+      history.push(`/${menu[index].path}`);
+      setIndex(index);
+    }
   };
 
   const initMenu = () => {
