@@ -242,7 +242,7 @@ export async function getBrokerBindInfo(curTrader:string) : Promise<{
       selfBrokerId: brokerInfo?.id
     };
 
-    if(brokerInfo && traderBroker){
+    if(traderBroker){
       window.localStorage.setItem("broker.bind", JSON.stringify(bindInfo));
     }
 
