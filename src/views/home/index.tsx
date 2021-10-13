@@ -14,7 +14,7 @@ import {useAsync} from "react-use";
 import Bind from "@/views/partners/Bind";
 
 interface HomeProps extends RouteProps {}
-const brokerBindPath = "/broker/bind";
+const brokerBindPath = "/broker-bind";
 const tradePath = "/trade";
 
 const  RouteGuard: React.FC<HomeProps> = props => {
