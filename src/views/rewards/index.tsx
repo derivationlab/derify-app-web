@@ -206,7 +206,7 @@ function Rewards() {
               <Col flex="33%">
                 <Row>
                   <Col flex="100%">
-                    <Statistic value={fck(edrfInfo.edrfBalance, -8,2)} />{" "}
+                    <Statistic value={fck(edrfInfo.drfBalance, -8,2)} />{" "}
                   </Col>
                   <Col flex="100%" className="key-wrapper">
                     <FormattedMessage id="Rewards.Staking.Card.DailyYield(eDRF)" />
