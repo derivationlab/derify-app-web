@@ -95,12 +95,26 @@ export async function getBrokerByBrokerId(brokerId) {
  * @return {Promise<BrokerInfo|null>}
  */
 export async function getBrokerByTrader(trader) {
-  const content = await io.get(`/api/broker_info_by_addr/${trader}`)
-  if(content && content.data && content.data.length > 0) {
-    return content.data[0]
+  let localStr = localStorage.getItem("broker_info_by_addr");
+  let broker = null;
+
+  if(localStr){
+    broker = JSON.parse(localStr);
+    if(broker && broker.broker !== trader){
+      broker = null;
+      localStorage.removeItem("broker_info_by_addr");
+    }
   }
 
-  return null
+  if(!broker){
+    const content = await io.get(`/api/broker_info_by_addr/${trader}`)
+    if(content && content.data && content.data.length > 0) {
+      localStorage.setItem("broker_info_by_addr", content.data[0]);
+      return content.data[0]
+    }
+  }
+
+  return broker
 }
 
 /**

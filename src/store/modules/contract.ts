@@ -12,7 +12,6 @@ import {
   PositionView, OpenType, CancelOrderedPositionTypeEnum, PositionDataView, OrderLimitPositionView, OrderTypeEnum
 } from '@/utils/contractUtil'
 import { amountFormt, fck } from '@/utils/utils'
-import { createTokenPriceChangeEvenet } from '@/api/trade'
 import {createReducer} from "redux-create-reducer";
 import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
@@ -373,7 +372,7 @@ const actions = {
         return {}
       }
 
-      const updateAllPairPriceAction = self.updateAllPairPrice(trader)
+      const updateAllPairPriceAction = self.updateAllPairPrice(trader, curPair.address, 0)
       await updateAllPairPriceAction(commit);
 
       const token = curPair.address
@@ -441,16 +440,15 @@ const actions = {
       return sysCloseUpperBound
   })
   },
-  updateAllPairPrice (trader:string) {
+  updateAllPairPrice (trader:string, token:string,priceChangeRate:number) {
     return async (commit:Dispatch) => {
+      const contract = web3Utils.contract(trader)
 
       if(!trader){
         return {}
       }
-      const contract = web3Utils.contract(trader)
 
       state.pairs.forEach((pair) => {
-
         if(!pair.enable){
           return
         }
@@ -459,29 +457,13 @@ const actions = {
           commit({type:'contract/UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: pair.key}]})
         })
 
-        if(!tokenPriceRateEnventMap[pair.key]){
-          tokenPriceRateEnventMap[pair.key] = createTokenPriceChangeEvenet(pair.key, (pairKey:string, priceChangeRate:number) => {
-            //Update token price change
+        if(pair.address === token){
+          if(pair.key === state.curPairKey) {
+            commit({type:'contract/SET_CONTRACT_DATA', payload:{tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)}})
+          }
 
-            if(pair.key === state.curPairKey) {
-              commit({type:'contract/SET_CONTRACT_DATA', payload:{tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)}})
-            }
-
-            commit({type:'contract/UPDATE_PAIRS', payload:[{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pairKey}]})
-
-            const matchPair = state.pairs.find((item) => item.key === pairKey)
-
-            if(!matchPair){
-              return {}
-            }
-
-            contract.getSpotPrice(matchPair.address).then((spotPrice) => {
-              commit({type:'contract/UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: matchPair.key}]})
-            })
-          })
+          commit({type:'contract/UPDATE_PAIRS', payload:[{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pair.key}]})
         }
-
-
       })
     }
   },

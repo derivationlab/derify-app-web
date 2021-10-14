@@ -105,7 +105,7 @@ const actions = {
         const brokerInfo = await getBrokerByTrader(trader);
 
         if(brokerInfo !== null){
-          brokerAccountInfo.reference = getWebroot() + "/" + brokerInfo.id
+          brokerAccountInfo.reference = getWebroot() + "/broker/" + brokerInfo.id
           Object.assign(brokerAccountInfo, brokerInfo);
         }
         try{

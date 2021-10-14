@@ -32,8 +32,9 @@ const Menu: React.FC<MenuProps> = props => {
   };
 
   const initMenu = () => {
-    const currentPath: string = location.pathname.split("/")[1];
-    const index = _findIndex(menu, o => currentPath.startsWith(o.path));
+    const [currentPath,bindBrokerId] = location.pathname.split("/");
+    const isBindBroker = currentPath === "broker" && !bindBrokerId;
+    const index = isBindBroker ? menu.findIndex((o) => o.path === 'trade') : _findIndex(menu, o => currentPath.startsWith(o.path));
     setIndex(Math.max(index, 0));
   };
 

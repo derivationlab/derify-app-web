@@ -26,6 +26,11 @@ const routes: Array<any> = [
             component: Trade,
           },
           {
+            path: "/broker/:id",
+            exact:true,
+            component: Trade,
+          },
+          {
             path: "/data",
             exact: false,
             component: Data,
