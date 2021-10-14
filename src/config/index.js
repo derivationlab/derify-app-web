@@ -22,9 +22,9 @@ const config = {
     production: 'https://test-m.derify.exchange',
   },
   webroot: {
-    development: '',
-    debug: 'https://test-m.derify.exchange',
-    production: 'https://m.derify.exchange',
+    development: 'http://localhost:3000',
+    debug: 'https://test-web.derify.exchange',
+    production: 'https://derify.exchange',
   },
   contract: {
     development: {
