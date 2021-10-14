@@ -12,14 +12,14 @@ const config = {
   currentEnv: currentEnv,
   debug: true,
   server: {
-    development: "https://test-m.derify.exchange",
-    debug: "https://test-m.derify.exchange",
-    production: "https://test-m.derify.exchange"
+    development: "https://test-api.derify.exchange",
+    debug: "https://test-api.derify.exchange",
+    production: "https://api.derify.exchange"
   },
   kdata:{
-    development: 'https://test-m.derify.exchange',
-    debug: 'https://test-m.derify.exchange',
-    production: 'https://test-m.derify.exchange',
+    development: 'https://test-api.derify.exchange',
+    debug: 'https://test-api.derify.exchange',
+    production: 'https://api.derify.exchange',
   },
   webroot: {
     development: 'http://localhost:3000',
