@@ -258,7 +258,7 @@ const Edit: React.FC<EditProps> = props => {
               const brokerId = form.getFieldValue("id")
 
               return (<>
-                <span>{`${webroot}/`}</span><span className="main-white">{brokerId}</span>
+                <span>{`${webroot}/broker/`}</span><span className="main-white">{brokerId}</span>
               </>)
             }}
 
