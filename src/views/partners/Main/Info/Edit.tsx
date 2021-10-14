@@ -104,6 +104,11 @@ const Edit: React.FC<EditProps> = props => {
       return false
     }
 
+    if(!/^[0-9a-zA-Z_@$]+$/.test(broker.id)){
+      setErrorMsg($t('Broker.Broker.InfoEdit.FormatError'));
+      return false;
+    }
+
     const resBroker = await getBrokerByBrokerId(broker.id)
     if(resBroker && resBroker.id && resBroker.broker.toUpperCase() !== broker.broker.toUpperCase()) {
       setErrorMsg($t('Broker.Broker.InfoEdit.CodeOccuError'))
@@ -244,7 +249,7 @@ const Edit: React.FC<EditProps> = props => {
             name="id"
           >
             <Input value={broker.id} onChange={({target:{value}}) =>{
-              broker.id = value;
+              broker.id = value.toLowerCase();
               setBroker(broker);
             }}/>
           </Form.Item>

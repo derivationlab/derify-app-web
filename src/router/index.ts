@@ -41,12 +41,12 @@ const routes: Array<any> = [
             component: Partners,
             routes: [
               {
-                path: "/broker/main",
+                path: "/broker-main",
                 exact: true,
                 component: MainPartners,
               },
               {
-                path: "/broker/bind",
+                path: "/broker-bind",
                 exact: true,
                 component: BindPartners,
               },

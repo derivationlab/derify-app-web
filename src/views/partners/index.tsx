@@ -25,7 +25,7 @@ const Partners: React.FC<PartnersProps> = props => {
             )}
           />
         ))}
-        <Redirect from="/broker" to="/broker/main" />
+        <Redirect from="/broker" to="/broker-main" />
       </Switch>
     </div>
   );
