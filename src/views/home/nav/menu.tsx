@@ -16,6 +16,26 @@ const menu: Array<{ path:string,key:string }> = [
   {path: "faucet", key: "Faucet.Faucet"},
 ];
 
+const rootPathMapping:{[key:string]:string} = {
+  bind: "broker"
+};
+
+export function getRootPath(pathname:string){
+
+  let [,rootPath,bindBrokerId] = pathname.split("/");
+
+  if(!rootPath || (rootPath === "broker" && bindBrokerId)){
+    rootPath = "trade";
+  }
+
+  if(rootPathMapping[rootPath]){
+    rootPath = rootPathMapping[rootPath];
+  }
+
+  return rootPath;
+}
+
+
 const Menu: React.FC<MenuProps> = props => {
   const { location, history } = props;
   let {hasBroker} = useSelector((state:RootStore) => state.user);
@@ -32,10 +52,7 @@ const Menu: React.FC<MenuProps> = props => {
   };
 
   const initMenu = () => {
-    const [,currentPath,bindBrokerId] = location.pathname.split("/");
-    const isBindBroker = currentPath === "broker" && bindBrokerId;
-    const index = isBindBroker ? menu.findIndex((o) => o.path === 'trade') : _findIndex(menu, o => currentPath.startsWith(o.path));
-    setIndex(Math.max(index, 0));
+    setIndex(Math.max(menu.findIndex(mu => mu.path === getRootPath(location.pathname)), 0));
   };
 
   useEffect(() => {

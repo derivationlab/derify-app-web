@@ -14,9 +14,10 @@ import {useAsync} from "react-use";
 import Bind from "@/views/partners/Bind";
 import {createDataEvenet} from "@/api/trade";
 import {TokenPair} from "@/store/modules/contract";
+import {getRootPath} from "@/views/home/nav/menu";
 
 interface HomeProps extends RouteProps {}
-const brokerBindPath = "/broker-bind";
+const brokerBindPath = "/bind";
 const tradePath = "/trade";
 const brokerPath = "/broker";
 let dataEventSource:EventSource|null = null;
@@ -31,12 +32,13 @@ const  RouteGuard: React.FC<HomeProps> = props => {
   let {trader,selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
   const {pathname} = location;
   const [RoutNode, setRoutNode] = useState(<></>);
-  let [,rootPath, pathBrokerId] = location.pathname.split("/");
+  const [,rootPath, pathBrokerId] = location.pathname.split("/");
+  const menuPath = getRootPath(location.pathname);
 
 
   let routeConfig = routes.find(
     (item) => {
-      return rootPath.startsWith(item.path.replace('/', ''))
+      return `/${menuPath}` === item.path;
     }
   );
 
@@ -84,28 +86,28 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         }
       }
 
-      const tradeMenu = routes.find(men => men.path==="/trade")
+      const tradeMenu = routes.find(men => men.path === tradePath)
 
       const currentRoute = tradeMenu ? <tradeMenu.component {...props} routes={tradeMenu.routes}/> : <></>;
 
-      if(rootPath === ''){
+      if(menuPath === ''){
         setRoutNode(<Redirect to={tradePath}/>);
         return;
       }
 
-      if(rootPath === 'broker' && pathBrokerId != null && pathBrokerId === slefBrokerId){
+      if(`/${rootPath}` === brokerPath && pathBrokerId && pathBrokerId === slefBrokerId){
         targetRoute = currentRoute;
         setRoutNode(currentRoute);
         return;
       }
 
-      const menu = routes.find((men) => rootPath.startsWith(men.path.replace('/', '').toLowerCase()));
+
+      const menu = routes.find((men) => `/${menuPath}` === men.path);
 
       if (!hasBroker) {
-        if(menu && menu.path === brokerPath){
-          const data = await bindBroker({trader: selectedAddress,brokerId: rootPath});
+        if(menu && menu.path === brokerPath && pathBrokerId){
+          const data = await bindBroker({trader: selectedAddress,brokerId: pathBrokerId});
           if(data.success){
-
             setRoutNode(<Redirect to={tradePath}/>);
             return;
           }

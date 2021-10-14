@@ -9,6 +9,7 @@ import {RootStore} from "@/store";
 import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
 import {Dispatch} from "redux";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
+import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 
 interface BindProps extends RouteProps {}
 const { TabPane } = Tabs;
@@ -112,20 +113,22 @@ const Bind: React.FC<BindProps> = props => {
         <Row>
           <Col flex="100%">
             <Row>
-              <Space size={24}>
-                <Col>
-                  <Spin spinning={loading}>
-                    <Button type="primary" onClick={() => doBindBroker(brokerId)}>
-                      {intl("Trade.BrokerBind.BrokerCodes.Submit")}
+              <WalletConnectButtonWrapper type="primary">
+                <Space size={24}>
+                  <Col>
+                    <Spin spinning={loading}>
+                      <Button type="primary" onClick={() => doBindBroker(brokerId)}>
+                        {intl("Trade.BrokerBind.BrokerCodes.Submit")}
+                      </Button>
+                    </Spin>
+                  </Col>
+                  <Col>
+                    <Button type="link" onClick={tabsChange}>
+                      {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
                     </Button>
-                  </Spin>
-                </Col>
-                <Col>
-                  <Button type="link" onClick={tabsChange}>
-                    {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
-                  </Button>
-                </Col>
-              </Space>
+                  </Col>
+                </Space>
+              </WalletConnectButtonWrapper>
             </Row>
           </Col>
         </Row>
