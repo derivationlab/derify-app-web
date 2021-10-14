@@ -61,7 +61,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         return;
       }
 
-      const menu = routes.find((men) => men.path.toLowerCase()===(`/${rootPath}`).toLowerCase());
+      const menu = routes.find((men) => rootPath.startsWith(men.path.toLowerCase()));
 
       if (!hasBroker) {
         if(!menu){
