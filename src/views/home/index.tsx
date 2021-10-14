@@ -21,6 +21,7 @@ const tradePath = "/trade";
 const brokerPath = "/broker";
 let dataEventSource:EventSource|null = null;
 
+let loading = false;
 const  RouteGuard: React.FC<HomeProps> = props => {
   const dispatch = useDispatch();
   const {routes} = props;
@@ -30,8 +31,8 @@ const  RouteGuard: React.FC<HomeProps> = props => {
   let {trader,selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
   const {pathname} = location;
   const [RoutNode, setRoutNode] = useState(<></>);
-  let rootPath = location.pathname.split("/")[1];
-  let pathBrokerId = location.pathname.split("/")[2];
+  let [,rootPath, pathBrokerId] = location.pathname.split("/");
+
 
   let routeConfig = routes.find(
     (item) => {
@@ -65,12 +66,19 @@ const  RouteGuard: React.FC<HomeProps> = props => {
 
   let targetRoute = null;
   useEffect(() => {
-    (async() =>{
+
+    if(loading){
+      return;
+    }
+
+    ((async() =>{
+      loading = true;
       if(hasBroker === undefined){
         const loadWalletAction = UserModel.actions.loadWallet();
         try{
           const walletInfo = await loadWalletAction(dispatch);
           hasBroker = walletInfo.hasBroker;
+          slefBrokerId = walletInfo.slefBrokerId;
         }catch (e){
           console.error("loadWalletAction exception", e)
         }
@@ -85,7 +93,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         return;
       }
 
-      if(pathBrokerId != null && pathBrokerId === slefBrokerId){
+      if(rootPath === 'broker' && pathBrokerId != null && pathBrokerId === slefBrokerId){
         targetRoute = currentRoute;
         setRoutNode(currentRoute);
         return;
@@ -122,8 +130,10 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         }
 
       }
-    })();
-  }, [location, hasBroker, selectedAddress]);
+    })()).finally(() => {
+      loading = false;
+    });
+  }, [location, hasBroker, selectedAddress, slefBrokerId]);
 
   return <>{RoutNode}</>
 }

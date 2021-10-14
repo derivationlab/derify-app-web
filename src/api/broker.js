@@ -99,7 +99,12 @@ export async function getBrokerByTrader(trader) {
   let broker = null;
 
   if(localStr){
-    broker = JSON.parse(localStr);
+    try{
+      broker = JSON.parse(localStr);
+    }catch (e){
+      console.log('getBrokerByTrader failed,' + localStr, e);
+    }
+
     if(broker && broker.broker !== trader){
       broker = null;
       localStorage.removeItem("broker_info_by_addr");
@@ -109,7 +114,7 @@ export async function getBrokerByTrader(trader) {
   if(!broker){
     const content = await io.get(`/api/broker_info_by_addr/${trader}`)
     if(content && content.data && content.data.length > 0) {
-      localStorage.setItem("broker_info_by_addr", content.data[0]);
+      localStorage.setItem("broker_info_by_addr", JSON.stringify(content.data[0]));
       return content.data[0]
     }
   }

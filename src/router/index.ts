@@ -46,6 +46,11 @@ const routes: Array<any> = [
             component: Partners,
             routes: [
               {
+                path: "/broker",
+                exact: true,
+                component: MainPartners,
+              },
+              {
                 path: "/broker-main",
                 exact: true,
                 component: MainPartners,
