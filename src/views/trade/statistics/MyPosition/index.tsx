@@ -141,11 +141,14 @@ const MyPosition: React.FC = () => {
 
   const { formatMessage } = useIntl();
 
-  function intl(id:string) {
-    return formatMessage({id})
+
+  function intl<T>(id:string,values:{[key:string]:T} = {}) {
+
+
+    return formatMessage({id}, values)
   }
 
-  const $t = intl
+  const $t = intl;
 
   const columns: ColumnsType<PositionView> = [
     {
@@ -295,7 +298,7 @@ const MyPosition: React.FC = () => {
               <Col className="title" flex="100%">
                 {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.RiskDetail")}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.RiskDetail", {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">{chunks}</a>})}</Col>
             </Row>
           }
           trigger="hover"
@@ -324,7 +327,7 @@ const MyPosition: React.FC = () => {
               <Col className="title" flex="100%">
                 {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail")}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail", {link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">{chunks}</a>})}</Col>
             </Row>
           }
           trigger="hover"

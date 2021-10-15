@@ -36,11 +36,14 @@ function DataPanel() {
   const {formatMessage} = useIntl()
 
 
-  function intl(id:string) {
-    return formatMessage({id})
+  function intl<T>(id:string,values:{[key:string]:T} = {}) {
+
+
+    return formatMessage({id}, values)
   }
 
-  const $t = intl
+  const $t = intl;
+
   const contractState = useSelector<RootStore,ContractState>(state => state.contract)
 
   const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
@@ -111,7 +114,7 @@ function DataPanel() {
                           {intl("Trade.OpenPosition.Hint.PCFRate")}
                         </Col>
                         <Col>
-                          {intl("Trade.OpenPosition.Hint.PCFRateDetail")}
+                          {$t("Trade.OpenPosition.Hint.PCFRateDetail",{link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/position-change-fee">{chunks}</a>})}
                         </Col>
                       </Row>
                     }
@@ -127,8 +130,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(longPmrRate,2,true,"--", 2)}%/
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(shortPmrRate,2,true,"--", 2)}%
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(longPmrRate,2,true,"--", 0)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(shortPmrRate,2,true,"--", 0)}%
                   </span>
                   <Popover
                     placement="bottom"
@@ -138,7 +141,7 @@ function DataPanel() {
                           { $t('Trade.OpenPosition.Hint.PositionMiningAPY') }
                         </Col>
                         <Col>
-                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail') }
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail', {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/position-mining">{chunks}</a>}) }
                         </Col>
                       </Row>
                     }
