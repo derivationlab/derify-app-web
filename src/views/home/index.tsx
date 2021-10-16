@@ -75,22 +75,20 @@ const  RouteGuard: React.FC<HomeProps> = props => {
 
     ((async() =>{
       loading = true;
-      if(hasBroker === undefined){
-        const loadWalletAction = UserModel.actions.loadWallet();
-        try{
-          const walletInfo = await loadWalletAction(dispatch);
+      const loadWalletAction = UserModel.actions.loadWallet();
+      try{
+        const walletInfo = await loadWalletAction(dispatch);
 
-          if(!walletInfo.isLogin){
-            const brokerMenu = routes.find(men => men.path === brokerPath)
-            setRoutNode(brokerMenu ? <brokerMenu.component {...props} routes={brokerMenu.routes}/> : <></>);
-            return;
-          }
-
-          hasBroker = walletInfo.hasBroker;
-          slefBrokerId = walletInfo.slefBrokerId;
-        }catch (e){
-          console.error("loadWalletAction exception", e)
+        if(!walletInfo.isLogin){
+          const brokerMenu = routes.find(men => men.path === brokerPath)
+          setRoutNode(brokerMenu ? <brokerMenu.component {...props} routes={brokerMenu.routes}/> : <></>);
+          return;
         }
+
+        hasBroker = walletInfo.hasBroker;
+        slefBrokerId = walletInfo.slefBrokerId;
+      }catch (e){
+        console.error("loadWalletAction exception", e)
       }
 
       const tradeMenu = routes.find(men => men.path === tradePath)
@@ -103,7 +101,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
       }
       const isBrokerReferPage = `/${rootPath}` === brokerPath && pathBrokerId;
 
-      if(isBrokerReferPage && pathBrokerId.toLowerCase() === slefBrokerId?.toLowerCase()){
+      if(isBrokerReferPage){
         targetRoute = currentRoute;
         setRoutNode(currentRoute);
         return;
@@ -135,7 +133,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
       if(routeConfig){
         const isBindBrokerPath =  location.pathname.toLowerCase() === brokerBindPath;
 
-        if(isBrokerReferPage || isBindBrokerPath){
+        if(isBindBrokerPath){
           setRoutNode(<Redirect to={tradePath}/>)
         }else{
           setRoutNode(routeConfig ? <routeConfig.component {...props} routes={routeConfig.routes}/> : <></>)
