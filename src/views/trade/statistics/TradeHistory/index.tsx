@@ -303,7 +303,7 @@ const TradeHistory: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.TradeHistory.Hint.PCF" })}</Col>
+              <Col className="title" flex="100%"> {formatMessage({ id: "Trade.TradeHistory.Hint.PCF" })}</Col>
               <Col>
                 {$t("Trade.TradeHistory.Hint.PCFDetail")}
               </Col>
@@ -332,7 +332,7 @@ const TradeHistory: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.TradeHistory.Hint.Compensation" })}</Col>
+              <Col className="title" flex="100%"> {formatMessage({ id: "Trade.TradeHistory.Hint.Compensation" })}</Col>
               <Col>
                 {$t("Trade.TradeHistory.Hint.CompensationDetail")}
               </Col>

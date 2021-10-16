@@ -209,7 +209,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.PositionHeld" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.PositionHeld" })}
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.PositionHeldDetail")}</Col>
             </Row>
@@ -353,7 +353,7 @@ const MyPosition: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
+              <Col className="title" > {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
               <Col>
                 {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
               </Col>

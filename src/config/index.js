@@ -24,7 +24,7 @@ const config = {
   webroot: {
     development: 'https://test-web.derify.exchange',
     debug: 'http://localhost:3000',
-    production: 'https://derify.exchange',
+    production: 'https://test-web.derify.exchange',
   },
   contract: {
     development: {
