@@ -225,6 +225,8 @@ export async function getBrokerBindInfo(curTrader:string) : Promise<{
     //const {trader, hasBroker, bindBrokerAddr, bindBrokerId, selfBrokerId} = bindInfo;
     if (bindInfo.trader === curTrader) {
       return bindInfo;
+    }else{
+      window.localStorage.removeItem("broker.bind");
     }
   }
 
