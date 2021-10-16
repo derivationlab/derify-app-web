@@ -352,17 +352,25 @@ const MyPosition: React.FC = () => {
         <Popover
           placement="bottom"
           content={
+            <>
             <Row>
               <Col className="title" > {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
               <Col>
                 {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
               </Col>
             </Row>
+            <Row>
+              <Col className="title" > {formatMessage({ id: "Trade.MyPosition.Hint.StopLossSetting" })}</Col>
+              <Col>
+                {$t("Trade.MyPosition.Hint.StopLossSettingDetail")}
+              </Col>
+            </Row>
+            </>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.TP" })}
+            {formatMessage({ id: "Trade.MyPosition.List.SetTPSL" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>

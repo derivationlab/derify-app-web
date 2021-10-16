@@ -245,9 +245,9 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderPrice" })}
+                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderAmount" })}
               </Col>
-              <Col>{$t("Trade.TradeHistory.Hint.OrderPriceDetail")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.OrderAmountDetail")}</Col>
             </Row>
           }
           trigger="hover"
