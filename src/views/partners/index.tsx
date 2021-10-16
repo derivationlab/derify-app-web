@@ -30,7 +30,7 @@ const Partners: React.FC<PartnersProps> = props => {
               <route.component {...props} routes={route.routes} />
             )}
           />
-        )):<></>}
+        )):<Bind {...props}/>}
         {/*<Redirect from="/broker" to="/broker-main" />*/}
       </Switch>
     </div>

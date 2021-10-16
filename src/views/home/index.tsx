@@ -101,8 +101,9 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         setRoutNode(<Redirect to={tradePath}/>);
         return;
       }
+      const isBrokerReferPage = `/${rootPath}` === brokerPath && pathBrokerId;
 
-      if(`/${rootPath}` === brokerPath && pathBrokerId && pathBrokerId === slefBrokerId){
+      if(isBrokerReferPage && pathBrokerId === slefBrokerId){
         targetRoute = currentRoute;
         setRoutNode(currentRoute);
         return;
@@ -112,10 +113,10 @@ const  RouteGuard: React.FC<HomeProps> = props => {
       const menu = routes.find((men) => `/${menuPath}` === men.path);
 
       if (!hasBroker) {
-        if(menu && menu.path === brokerPath && pathBrokerId){
+        if(isBrokerReferPage){
           const data = await bindBroker({trader: selectedAddress,brokerId: pathBrokerId});
           if(data.success){
-            setRoutNode(<Redirect to={tradePath}/>);
+            setRoutNode(currentRoute);
             return;
           }
         }else if(location.pathname.toLowerCase() !== brokerBindPath){
@@ -132,10 +133,12 @@ const  RouteGuard: React.FC<HomeProps> = props => {
       //1.if bind path,redirect to trade
       //2.else render
       if(routeConfig){
-        if(location.pathname.toLowerCase() !== brokerBindPath){
-          setRoutNode(routeConfig ? <routeConfig.component {...props} routes={routeConfig.routes}/> : <></>)
-        }else{
+        const isBindBrokerPath =  location.pathname.toLowerCase() === brokerBindPath;
+
+        if(isBrokerReferPage || isBindBrokerPath){
           setRoutNode(<Redirect to={tradePath}/>)
+        }else{
+          setRoutNode(routeConfig ? <routeConfig.component {...props} routes={routeConfig.routes}/> : <></>)
         }
 
       }
