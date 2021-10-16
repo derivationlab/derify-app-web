@@ -8,6 +8,7 @@ import eDRF from '../utils/contract/eDRF'
 
 const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) > -1 ? process.env.NODE_ENV : "production"
 
+console.log(`currentEnv ${currentEnv}`)
 const config = {
   currentEnv: currentEnv,
   debug: true,
