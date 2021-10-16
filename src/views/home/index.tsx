@@ -79,6 +79,13 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         const loadWalletAction = UserModel.actions.loadWallet();
         try{
           const walletInfo = await loadWalletAction(dispatch);
+
+          if(!walletInfo.isLogin){
+            const brokerMenu = routes.find(men => men.path === brokerPath)
+            setRoutNode(brokerMenu ? <brokerMenu.component {...props} routes={brokerMenu.routes}/> : <></>);
+            return;
+          }
+
           hasBroker = walletInfo.hasBroker;
           slefBrokerId = walletInfo.slefBrokerId;
         }catch (e){
