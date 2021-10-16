@@ -103,7 +103,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
       }
       const isBrokerReferPage = `/${rootPath}` === brokerPath && pathBrokerId;
 
-      if(isBrokerReferPage && pathBrokerId === slefBrokerId){
+      if(isBrokerReferPage && pathBrokerId.toLowerCase() === slefBrokerId?.toLowerCase()){
         targetRoute = currentRoute;
         setRoutNode(currentRoute);
         return;
