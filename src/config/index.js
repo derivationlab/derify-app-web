@@ -6,9 +6,10 @@ import bDRF from '../utils/contract/bDRF'
 import DRF from '../utils/contract/DRF'
 import eDRF from '../utils/contract/eDRF'
 
-const currentEnv = "production,development,debug".indexOf(process.env.REACT_APP_NODE_ENV) > -1 ? process.env.REACT_APP_NODE_ENV : "production"
-
-console.log(`${process.env.REACT_APP_NODE_ENV},currentEnv ${currentEnv}`)
+const nodeEnv = process.env.REACT_APP_NODE_ENV ? process.env.REACT_APP_NODE_ENV : process.env.NODE_ENV;
+const currentEnv = "production,development,debug".indexOf(nodeEnv) > -1 ? nodeEnv : "production"
+window.currentEnv = currentEnv;
+console.log(`currentEnv ${currentEnv}`)
 const config = {
   currentEnv: currentEnv,
   debug: true,
@@ -23,9 +24,9 @@ const config = {
     production: 'https://api.derify.exchange',
   },
   webroot: {
-    development: 'https://test-web.derify.exchange',
-    debug: 'http://localhost:3000',
-    production: 'https://derify.exchange',
+    development: 'https://test-m.derify.exchange',
+    debug: 'https://test-m.derify.exchange',
+    production: 'https://m.derify.exchange',
   },
   contract: {
     development: {
@@ -167,7 +168,7 @@ export function getWebroot(){
 }
 
 export function  isDebug() {
-  if(config.debug || window.isDebug) {
+  if(config.debug) {
     return true
   }
 

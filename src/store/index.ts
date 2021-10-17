@@ -14,6 +14,7 @@ import DataModel,{DataState} from "./modules/data";
 import RewardModel,{RewardState} from "./modules/reward";
 
 import ContractModel,{ContractState} from "@/store/modules/contract";
+import {getCurrentEnv} from "@/config";
 export interface RootStore {
   app: AppState
   user: UserState
@@ -33,7 +34,7 @@ const composeEnhancers =
 
 const middlewares = [thunkMiddleware];
 
-if (process.env.REACT_APP_NODE_ENV === "development") {
+if (getCurrentEnv() === "development") {
   middlewares.push(require("redux-logger").createLogger());
 }
 

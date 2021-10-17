@@ -6,16 +6,10 @@ import QS from 'qs'
 
 import router from '../router/index'
 import store from '../store/index'
-import cfg from '../config'
+import cfg, {getCurrentServerEndPoint} from '../config'
 
 // Environment switch
-if (process.env.REACT_APP_NODE_ENV === 'development') {
-  axios.defaults.baseURL = cfg.server.development
-} else if (process.env.REACT_APP_NODE_ENV === 'debug') {
-  axios.defaults.baseURL = cfg.server.debug
-} else if (process.env.REACT_APP_NODE_ENV === 'production') {
-  axios.defaults.baseURL = cfg.server.production
-}
+axios.defaults.baseURL = getCurrentServerEndPoint();
 
 // Request timeout
 axios.defaults.timeout = 60000
