@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import ABIData from './contract'
 import BigNumber from 'bignumber.js'
+import {TraderAccount, TraderVariable} from "@/utils/types";
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -382,7 +383,8 @@ export default class Contract {
    * @return {Promise<TraderAccount>}
    */
   getTraderAccount (trader) {
-    return this.DerifyExchange.methods.getTraderAccount(trader).call()
+    const ret = this.DerifyExchange.methods.getTraderAccount(trader).call();
+    return this.__tryWithPromoise(ret, new TraderAccount());
   }
   /**
    * Get the user's maximum open position
@@ -394,7 +396,8 @@ export default class Contract {
    * @return {{amount:0,size:0}}
    */
   getTraderOpenUpperBound ({token, trader, openType, price, leverage}) {
-    return this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
+    const ret = this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
+    return this.__tryWithPromoise(ret, {amount: 0, size: 0});
   }
 
   /**
@@ -404,17 +407,19 @@ export default class Contract {
    * @return {*}
    */
   getSysOpenUpperBound ({token, side}) {
-    return this.DerifyExchange.methods.getSysOpenUpperBound(token, side).call()
+    const ret = this.DerifyExchange.methods.getSysOpenUpperBound(token, side).call();
+    return this.__tryWithPromoise(ret, {amount: 0, size: 0});
   }
 
   /**
    * getSysCloseUpperBound
    * @param token
    * @param side
-   * @returns {*}
+   * @returns {size:number}
    */
   getSysCloseUpperBound ({token, side}) {
-    return this.DerifyExchange.methods.getSysCloseUpperBound(token, side).call()
+    const ret =  this.DerifyExchange.methods.getSysCloseUpperBound(token, side).call();
+    return this.__tryWithPromoise(ret, {size: 0});
   }
 
   /**
@@ -428,7 +433,8 @@ export default class Contract {
    * @param averagePrice
    */
   getTraderPositionVariables ({trader, token, side, spotPrice, size, leverage, averagePrice}) {
-    return this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
+    const ret = this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
+    return this.__tryWithPromoise(ret, {margin:0,unrealizedPnl:0,returnRate:0});
   }
   /**
    * Get user margin information
@@ -436,7 +442,29 @@ export default class Contract {
    * @return {Promise<TraderVariable>}
    */
   getTraderVariables (trader) {
-    return this.DerifyExchange.methods.getTraderVariables(trader).call()
+    const ret = this.DerifyExchange.getTraderVariables(trader);
+    return this.__tryWithPromoise(ret, new TraderVariable());
+  }
+
+  /**
+   *
+   * @param ret:Promise<T>
+   * @param defaultVal:<T>
+   * @return {Promise<T>}
+   * @private
+   */
+  __tryWithPromoise(ret, defaultVal){
+  return async() => {
+      let data = defaultVal;
+
+      try{
+        data = await ret;
+      }catch (e){
+        console.error('__tryWithPromoise', e);
+      }
+
+      return data;
+    }
   }
 
   /**
