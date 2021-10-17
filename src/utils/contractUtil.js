@@ -461,6 +461,7 @@ export default class Contract {
         data = await ret;
       }catch (e){
         console.error('__tryWithPromoise', e);
+        data = defaultVal;
       }
 
       return data;
