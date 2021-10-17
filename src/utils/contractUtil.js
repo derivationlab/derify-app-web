@@ -442,7 +442,7 @@ export default class Contract {
    * @return {Promise<TraderVariable>}
    */
   getTraderVariables (trader) {
-    const ret = this.DerifyExchange.getTraderVariables(trader);
+    const ret = this.DerifyExchange.getTraderVariables(trader).call();
     return this.__tryWithPromoise(ret, new TraderVariable());
   }
 
