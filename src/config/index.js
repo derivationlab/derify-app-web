@@ -6,9 +6,9 @@ import bDRF from '../utils/contract/bDRF'
 import DRF from '../utils/contract/DRF'
 import eDRF from '../utils/contract/eDRF'
 
-const currentEnv = "production,development,debug".indexOf(process.env.NODE_ENV) > -1 ? process.env.NODE_ENV : "production"
+const currentEnv = "production,development,debug".indexOf(process.env.REACT_APP_NODE_ENV) > -1 ? process.env.REACT_APP_NODE_ENV : "production"
 
-console.log(`currentEnv ${currentEnv}`)
+console.log(`${process.env.REACT_APP_NODE_ENV},currentEnv ${currentEnv}`)
 const config = {
   currentEnv: currentEnv,
   debug: true,
