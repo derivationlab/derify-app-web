@@ -454,7 +454,7 @@ export default class Contract {
    * @private
    */
   __tryWithPromoise(ret, defaultVal){
-  return async() => {
+    return (async() => {
       let data = defaultVal;
 
       try{
@@ -465,7 +465,7 @@ export default class Contract {
       }
 
       return data;
-    }
+    })()
   }
 
   /**
