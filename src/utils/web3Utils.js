@@ -9,49 +9,46 @@ export function contract (account, broker = '') {
 
   const contractObj = new Contract({from: account, broker: broker})
 
-  if(contractDebug){
+  return new Proxy(contractObj, {
+    get(target, propKey, receiver) {
+      const ret = Reflect.get(...arguments)
 
-    /**
-     * debug log
-     */
-    return new Proxy(contractObj, {
-      get(target, propKey, receiver) {
-        const ret = Reflect.get(...arguments)
+      if(ret instanceof Function && isProxyPropertyKey(propKey)){
+        return new Proxy(ret, {
+          apply (target, ctx, args) {
+            try{
+              const ret = Reflect.apply(...arguments)
 
-        if(ret instanceof Function && isProxyPropertyKey(propKey)){
-          return new Proxy(ret, {
-            apply (target, ctx, args) {
-              try{
-                const ret = Reflect.apply(...arguments)
-
-                if(ret instanceof Promise){
+              if(ret instanceof Promise){
+                if(contractDebug){
                   console.log('request.contract.'+ propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from)
+                }
 
-                  return (async () => {
-                    let data = await ret;
-                    console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", data)
-                    return data
-                  })();
+                return (async () => {
+                  let data = await ret;
+                  if(contractDebug) {
+                    console.log('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",ret=", data)
+                  }
+                  return data
+                })();
 
-                }else{
+              }else{
+                if(contractDebug){
                   console.log('response.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",ret=", ret)
                 }
-                return ret;
-              }catch (e) {
-                console.log('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
-                throw e;
               }
-
+              return ret;
+            }catch (e) {
+              console.error('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
             }
-          })
-        }else{
-          return ret
-        }
+
+          }
+        })
+      }else{
+        return ret
       }
-    });
-  }else{
-    return contractObj
-  }
+    }
+  });
 }
 
 function isProxyPropertyKey(key) {
