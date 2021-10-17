@@ -17,7 +17,7 @@ export function contract (account, broker = '') {
         return new Proxy(ret, {
           apply (target, ctx, args) {
             try{
-              const ret = Reflect.apply(...arguments)
+              const ret = Reflect.apply(...arguments);
 
               if(ret instanceof Promise){
                 if(contractDebug){
@@ -25,11 +25,16 @@ export function contract (account, broker = '') {
                 }
 
                 return (async () => {
-                  let data = await ret;
-                  if(contractDebug) {
-                    console.log('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",ret=", data)
+                  try{
+                    let data = await ret;
+                    if(contractDebug) {
+                      console.log('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",ret=", data)
+                    }
+                    return data;
+                  }catch (e){
+                    console.error('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",exception", e);
+                    return null;
                   }
-                  return data
                 })();
 
               }else{
@@ -39,7 +44,8 @@ export function contract (account, broker = '') {
               }
               return ret;
             }catch (e) {
-              console.error('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e)
+              console.error('exception.contract.'+ propKey + ',args=' + JSON.stringify(args)+ ',trader=' + contractObj.from + ",error=", e);
+              return {};
             }
 
           }
