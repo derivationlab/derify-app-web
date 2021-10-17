@@ -38,10 +38,16 @@ export class TraderAccount {
   }
 }
 
-export declare class TraderVariable {
+export class TraderVariable {
   marginBalance:number;
   totalPositionAmount: number;
   marginRate: number;
+
+  constructor() {
+    this.marginBalance = 0;
+    this.totalPositionAmount = 0;
+    this.marginRate = 0;
+  }
 }
 
 export declare class DerifyAction<T> {
