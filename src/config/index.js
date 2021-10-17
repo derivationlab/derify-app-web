@@ -167,7 +167,7 @@ export function getWebroot(){
 }
 
 export function  isDebug() {
-  if(config.debug) {
+  if(config.debug || window.isDebug) {
     return true
   }
 
