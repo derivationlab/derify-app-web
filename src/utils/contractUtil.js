@@ -1,6 +1,7 @@
 import Web3 from 'web3'
 import ABIData from './contract'
 import BigNumber from 'bignumber.js'
+import {TraderAccount, TraderVariable} from "@/utils/types";
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -223,6 +224,7 @@ export function toContractNum (number) {
 export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
   return numConvert(unit, -contractDecimals, bit, rounding)
 }
+
 export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
   const number = new BigNumber(unit)
   if(bit < 0) {
@@ -240,6 +242,7 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
   return (new BigNumber(amount)).shiftedBy(tokenDecimals).toNumber()
 }
 
+
 /**
  *
  * @param abi
@@ -252,11 +255,12 @@ export default class Contract {
   constructor ({from, broker}) {
     const option = {from}
     const web3 = new Web3(window.ethereum)
-    option.gasPrice = 1e9
+//    option.gasPrice = 1e9;
 
     this.web3 = web3
     this.from = from
     this.broker = broker
+    this.option = option;
 
     this.DerifyRewards = new web3.eth.Contract(ABIData.DerifyRewards.abi, ABIData.DerifyRewards.address, option)
     this.DerifyDerivative = {
@@ -294,7 +298,7 @@ export default class Contract {
       const approveRet = await this.__approve(tokenContract, ABIData.DerifyExchange, amount)
       if(approveRet){
         try{
-          let depositRes = await  this.DerifyExchange.methods.deposit(amount).send();
+          let depositRes = await  this.DerifyExchange.methods.deposit(amount).send({gasPrice:1e9});
           resolve(depositRes)
         }catch (e) {
           reject(e)
@@ -310,7 +314,7 @@ export default class Contract {
    * @returns {*}
    */
   withdraw (amount) {
-    return this.DerifyExchange.methods.withdraw(amount).send()
+    return this.DerifyExchange.methods.withdraw(amount).send({gasPrice:1e9})
   }
 
   balanceOf (trader, token) {
@@ -350,7 +354,7 @@ export default class Contract {
   openPosition ({token, side, openType, size, price, leverage}) {
     return this.DerifyExchange.methods
       .openPosition(this.broker, token, side, openType, size, price, leverage)
-      .send()
+      .send({gasPrice:1e9})
   }
   /**
    * close position
@@ -361,7 +365,7 @@ export default class Contract {
    */
   closePosition (token, side, size) {
     return this.DerifyExchange.methods.closePosition(this.broker, token, side, size)
-      .send()
+      .send({gasPrice:1e9})
   }
 
   /**
@@ -369,7 +373,7 @@ export default class Contract {
    */
   closeAllPositions () {
     return this.DerifyExchange.methods.closeAllPositions(this.broker)
-      .send()
+      .send({gasPrice:1e9})
   }
 
 
@@ -379,7 +383,8 @@ export default class Contract {
    * @return {Promise<TraderAccount>}
    */
   getTraderAccount (trader) {
-    return this.DerifyExchange.methods.getTraderAccount(trader).call()
+    const ret = this.DerifyExchange.methods.getTraderAccount(trader).call();
+    return this.__tryWithPromoise(ret, new TraderAccount());
   }
   /**
    * Get the user's maximum open position
@@ -391,7 +396,8 @@ export default class Contract {
    * @return {{amount:0,size:0}}
    */
   getTraderOpenUpperBound ({token, trader, openType, price, leverage}) {
-    return this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
+    const ret = this.DerifyExchange.methods.getTraderOpenUpperBound(token, trader, openType, price, leverage).call()
+    return this.__tryWithPromoise(ret, {amount: 0, size: 0});
   }
 
   /**
@@ -401,17 +407,19 @@ export default class Contract {
    * @return {*}
    */
   getSysOpenUpperBound ({token, side}) {
-    return this.DerifyExchange.methods.getSysOpenUpperBound(token, side).call()
+    const ret = this.DerifyExchange.methods.getSysOpenUpperBound(token, side).call();
+    return this.__tryWithPromoise(ret, {amount: 0, size: 0});
   }
 
   /**
    * getSysCloseUpperBound
    * @param token
    * @param side
-   * @returns {*}
+   * @returns {size:number}
    */
   getSysCloseUpperBound ({token, side}) {
-    return this.DerifyExchange.methods.getSysCloseUpperBound(token, side).call()
+    const ret =  this.DerifyExchange.methods.getSysCloseUpperBound(token, side).call();
+    return this.__tryWithPromoise(ret, {size: 0});
   }
 
   /**
@@ -425,7 +433,8 @@ export default class Contract {
    * @param averagePrice
    */
   getTraderPositionVariables ({trader, token, side, spotPrice, size, leverage, averagePrice}) {
-    return this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
+    const ret = this.DerifyExchange.methods.getTraderPositionVariables(side, spotPrice, size, leverage, averagePrice).call()
+    return this.__tryWithPromoise(ret, {margin:0,unrealizedPnl:0,returnRate:0});
   }
   /**
    * Get user margin information
@@ -433,7 +442,30 @@ export default class Contract {
    * @return {Promise<TraderVariable>}
    */
   getTraderVariables (trader) {
-    return this.DerifyExchange.methods.getTraderVariables(trader).call()
+    const ret = this.DerifyExchange.methods.getTraderVariables(trader).call();
+    return this.__tryWithPromoise(ret, new TraderVariable());
+  }
+
+  /**
+   *
+   * @param ret:Promise<T>
+   * @param defaultVal:<T>
+   * @return {Promise<T>}
+   * @private
+   */
+  __tryWithPromoise(ret, defaultVal){
+    return (async() => {
+      let data = defaultVal;
+
+      try{
+        data = await ret;
+      }catch (e){
+        console.error('__tryWithPromoise', e);
+        data = defaultVal;
+      }
+
+      return data;
+    })()
   }
 
   /**
@@ -500,7 +532,7 @@ export default class Contract {
    * @return {*}
    */
   setSpotPrice (token, price) {
-    return this.__getDerifyDerivativeContract(token).methods.setSpotPrice(price).send()
+    return this.__getDerifyDerivativeContract(token).methods.setSpotPrice(price).send({gasPrice:1e9})
   }
 
   /**
@@ -545,18 +577,18 @@ export default class Contract {
 
     if(operateType.method === 'orderStopPosition') {
       return this.__getDerifyDerivativeContract(token).methods.orderStopPosition(trader, side, operateType.stopType, takeProfitPrice, stopLossPrice)
-        .send()
+        .send({gasPrice:1e9})
     }
 
     if(operateType.method === 'cancleOrderedStopPosition') {
       return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, operateType.stopType, side)
-        .send()
+        .send({gasPrice:1e9})
     }
 
     if(operateType.method === 'orderAndCancleStopPosition') {
       let price = operateType.orderStopType === 0 ? takeProfitPrice : stopLossPrice;
       return this.__getDerifyDerivativeContract(token).methods.orderAndCancleStopPosition(trader, side, operateType.orderStopType, price, operateType.cancleStopType)
-        .send()
+        .send({gasPrice:1e9})
     }
 
     return Promise.resolve(true)
@@ -573,7 +605,7 @@ export default class Contract {
    */
   cancleOrderedPosition ({token, trader, closeType, side, timestamp}) {
     if (closeType === CancelOrderedPositionTypeEnum.LimitedOrder) {
-      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send()
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedLimitPosition(trader, side, timestamp).send({gasPrice:1e9})
     } else {
       //CancelOrderedPositionTypeEnum => StopTypeEnum
       const closeTypeStopTypeMap = {}
@@ -587,7 +619,7 @@ export default class Contract {
         return async () => {}
       }
 
-      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, stopType, side).send()
+      return this.__getDerifyDerivativeContract(token).methods.cancleOrderedStopPosition(trader, stopType, side).send({gasPrice:1e9})
     }
 
   }
@@ -596,7 +628,7 @@ export default class Contract {
    * @return {*}
    */
   cancleAllOrderedPositions () {
-    return this.DerifyExchange.methods.cancleAllOrderedPositions().send()
+    return this.DerifyExchange.methods.cancleAllOrderedPositions().send({gasPrice:1e9})
   }
 
   /**
@@ -644,7 +676,7 @@ export default class Contract {
    * @return {*}
    */
   withdrawBond (amount) {
-    return this.DerifyRewards.methods.withdrawBond(amount).send();
+    return this.DerifyRewards.methods.withdrawBond(amount).send({gasPrice:1e9});
   }
 
   /**
@@ -668,7 +700,7 @@ export default class Contract {
           }
 
           if(approveRet){
-            resolve(await this.DerifyRewards.methods.exchangeBond(amount, bondAccountType).send())
+            resolve(await this.DerifyRewards.methods.exchangeBond(amount, bondAccountType).send({gasPrice:1e9}))
           }else{
             reject('approve failed')
           }
@@ -699,7 +731,7 @@ export default class Contract {
           }
 
           if(approveRet){
-            resolve(await this.DerifyRewards.methods.depositBondToBank(amount, bondAccountType).send())
+            resolve(await this.DerifyRewards.methods.depositBondToBank(amount, bondAccountType).send({gasPrice:1e9}))
           }else{
             reject('approve failed')
           }
@@ -721,7 +753,7 @@ export default class Contract {
       const approveNum = toShiftedHexString(amount, decimalNum - contractDecimals);
 
       //The wallet obtains the authorized amount
-      return await tokenContract.methods.approve(contractABI.address, approveNum).send()
+      return await tokenContract.methods.approve(contractABI.address, approveNum).send({gasPrice:1e9})
     } catch (e) {
       console.error(`__approve exception`, e)
       return false
@@ -736,7 +768,7 @@ export default class Contract {
    * @return {*}
    */
   redeemBondFromBank ({amount, bondAccountType }) {
-    return this.DerifyRewards.methods.redeemBondFromBank(amount, bondAccountType).send();
+    return this.DerifyRewards.methods.redeemBondFromBank(amount, bondAccountType).send({gasPrice:1e9});
   }
 
   /**
@@ -765,7 +797,7 @@ export default class Contract {
    * @return {*}
    */
   withdrawPMReward (amount) {
-    return this.DerifyRewards.methods.withdrawPMReward(amount).send();
+    return this.DerifyRewards.methods.withdrawPMReward(amount).send({gasPrice:1e9});
   }
 
   /**
@@ -806,7 +838,7 @@ export default class Contract {
 
       if(approveRet){
         try{
-          await this.DerifyRewards.methods.applyBroker(accountType).send()
+          await this.DerifyRewards.methods.applyBroker(accountType).send({gasPrice:1e9})
           resolve(true)
         }catch (e) {
           reject(e)
@@ -835,7 +867,7 @@ export default class Contract {
 
       if(approveRet){
         try{
-          await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send()
+          await this.DerifyRewards.methods.burnEdrfExtendValidPeriod(accountType, amount).send({type: '0x2'})
           resolve(true)
         }catch (e) {
           reject(e)
@@ -851,7 +883,7 @@ export default class Contract {
    * @param amount
    */
   withdrawBrokerReward(amount) {
-    return this.DerifyRewards.methods.burnEdrfExtendValidPeriod(amount).send()
+    return this.DerifyRewards.methods.withdrawBrokerReward(amount).send({gasPrice:1e9})
   }
 
   /**
@@ -869,7 +901,7 @@ export default class Contract {
    * @return {Promise}
    */
   withdrawEdrf(amount) {
-    return this.DerifyRewards.methods.withdrawEdrf(amount).send()
+    return this.DerifyRewards.methods.withdrawEdrf(amount).send({gasPrice:1e9})
   }
 
   /**
@@ -883,7 +915,7 @@ export default class Contract {
       const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
       if(approveRet){
         try{
-          await this.DerifyRewards.methods.stakingDrf(amount).send()
+          await this.DerifyRewards.methods.stakingDrf(amount).send({gasPrice:1e9})
           resolve(true)
         }catch (e) {
           reject(e)
@@ -900,7 +932,7 @@ export default class Contract {
    * @return {*}
    */
   redeemDrf(amount) {
-    return this.DerifyRewards.methods.redeemDrf(amount).send()
+    return this.DerifyRewards.methods.redeemDrf(amount).send({gasPrice:1e9})
   }
 
   /**

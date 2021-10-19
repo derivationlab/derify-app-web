@@ -102,7 +102,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
   const modalTitleMap = {
     "USDT": <p>{$t("Rewards.Mining.History.PositionMining")}{$t("Rewards.Mining.Card.TransactionHistory")}</p>,
     "eDRF": <p>eDRF&nbsp;{$t("Rewards.Staking.Card.TransactionHistory")}</p>,
-    "bDRF": <p>eDRF&nbsp;{$t("Rewards.Bond.Card.TransactionHistory")}</p>,
+    "bDRF": <p>bDRF&nbsp;{$t("Rewards.Bond.Card.TransactionHistory")}</p>,
   };
   return (
     <Modal

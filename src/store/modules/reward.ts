@@ -128,7 +128,13 @@ const actions = {
 
       const contract = web3Util.contract(trader)
       const pmrReward = await contract.getPMReward(trader)
-      const traderVariable = await contract.getTraderVariables(trader)
+      let traderVariable = {};
+      try{
+        traderVariable = await contract.getTraderVariables(trader)
+      }catch (e){
+        console.log('getTraderVariables error', e);
+      }
+
       const bondInfo = await contract.getBondInfo(trader)
       const bdrfBalance = await contract.balanceOf(trader, Token.bDRF)
 

@@ -68,6 +68,8 @@ const Edit: React.FC<EditProps> = props => {
       setBroker(brokerData);
       form.setFieldsValue(brokerData);
       setSpining(false);
+    }).finally(() => {
+      setSpining(false);
     });
 
   },[walletInfo, props]);
@@ -100,6 +102,11 @@ const Edit: React.FC<EditProps> = props => {
     if(!broker.id) {
       setErrorMsg($t('Broker.Broker.InfoEdit.InfoRequired'))
       return false
+    }
+
+    if(!/^[0-9a-zA-Z_@$]+$/.test(broker.id)){
+      setErrorMsg($t('Broker.Broker.InfoEdit.FormatError'));
+      return false;
     }
 
     const resBroker = await getBrokerByBrokerId(broker.id)
@@ -242,7 +249,7 @@ const Edit: React.FC<EditProps> = props => {
             name="id"
           >
             <Input value={broker.id} onChange={({target:{value}}) =>{
-              broker.id = value;
+              broker.id = value.toLowerCase();
               setBroker(broker);
             }}/>
           </Form.Item>
@@ -251,7 +258,7 @@ const Edit: React.FC<EditProps> = props => {
               const brokerId = form.getFieldValue("id")
 
               return (<>
-                <span>{`${webroot}/`}</span><span className="main-white">{brokerId}</span>
+                <span>{`${webroot}/broker/`}</span><span className="main-white">{brokerId}</span>
               </>)
             }}
 

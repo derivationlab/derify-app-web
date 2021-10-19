@@ -3,11 +3,11 @@ import { Modal, Row, Col, Input, Button, Select } from "antd";
 import { useIntl, FormattedMessage } from "react-intl";
 import { ModalProps } from "antd/es/modal";
 import {useDispatch, useSelector} from "react-redux";
-import {BrokerModel, RootStore} from "@/store";
+import {AppModel, BrokerModel, RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {BrokerAccountInfo} from "@/store/modules/broker";
-import {toContractUnit} from "@/utils/contractUtil";
+import {fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 const { Option } = Select;
@@ -39,7 +39,7 @@ const Withdraw: React.FC<WithdrawProps> = props => {
 
   const checkAmount = (amount:string, broker:BrokerAccountInfo) => {
 
-    const chekRet = checkNumber(amount, getMaxSize(broker), 0, false);
+    const chekRet = checkNumber(amount, fromContractUnit(getMaxSize(broker)), 0, false);
 
     if(chekRet.value != null) {
       setAmount(chekRet.value)
@@ -80,11 +80,12 @@ const Withdraw: React.FC<WithdrawProps> = props => {
     brokerWithdrawAction(dispatch).then(() => {
       dispatch(BrokerModel.actions.updateBrokerAccountInfo(selectedAddress));
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateLoadStatus("broker"));
     }).catch(e => {
       DerifyTradeModal.failed();
     });
 
-  },[])
+  },[selectedAddress,amout,broker])
 
   return (
     <Modal
@@ -106,7 +107,9 @@ const Withdraw: React.FC<WithdrawProps> = props => {
           <Row justify="space-between" align="middle">
             <Col>{$t("Broker.Broker.WithdrawPopup.Max")}：{fck(getMaxSize(broker),-8,4)} USDT</Col>
             <Col>
-              <Button type="link">{$t("Broker.Broker.WithdrawPopup.All")}</Button>
+              <Button type="link" onClick={() => {
+                setAmount(fck(getMaxSize(broker),-8,4))
+              }}>{$t("Broker.Broker.WithdrawPopup.All")}</Button>
             </Col>
           </Row>
         </Col>

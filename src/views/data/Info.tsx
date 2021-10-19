@@ -32,7 +32,7 @@ function Info() {
       type: "DRF",
     },
     {
-      pre: "DRF",
+      pre: "",
       aft: "(USDT)",
       key: "Data.Data.Token.BuyBackFundBalance",
       val: fck(tokenData.drfBuyBack,0,2),

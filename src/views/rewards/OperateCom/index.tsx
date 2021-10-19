@@ -10,10 +10,10 @@ import React, {
 import { Modal, Row, Col, Input, Button, Select } from "antd";
 import { useIntl, FormattedMessage } from "react-intl";
 import { ModalProps } from "antd/es/modal";
-import {RewardsType} from "@/store/modules/reward";
+import {RewardState, RewardsType} from "@/store/modules/reward";
 import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
-import {RewardModel, RootStore} from "@/store";
+import {AppModel, RewardModel, RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
@@ -89,7 +89,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
     max: 'Rewards.Staking.RedeemPopup.Max',
     all: 'Rewards.Staking.RedeemPopup.All',
     accountOptions:[
-      {label:'Rewards.Staking.RedeemPopup.DRFAccount',value: BondAccountType.DerifyAccount},
+      // {label:'Rewards.Staking.RedeemPopup.DRFAccount',value: BondAccountType.DerifyAccount},
       {label:'Rewards.Staking.RedeemPopup.MyWallet',value: BondAccountType.WalletAccount},
     ],
     confirm: 'Rewards.Staking.RedeemPopup.Redeem',
@@ -102,7 +102,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
     max: 'Rewards.Staking.PledgePopup.Max',
     all: 'Rewards.Staking.PledgePopup.All',
     accountOptions:[
-      {label:'Rewards.Staking.PledgePopup.DRFAccount',value: BondAccountType.DerifyAccount},
+      // {label:'Rewards.Staking.PledgePopup.DRFAccount',value: BondAccountType.DerifyAccount},
       {label:'Rewards.Staking.PledgePopup.MyWallet',value: BondAccountType.WalletAccount},
     ],
     confirm: 'Rewards.Staking.PledgePopup.Staking',
@@ -149,7 +149,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
   }
 };
 
-const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKey,closeModal },ref) => {
+const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKey,closeModal,visible },ref) => {
 
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -157,8 +157,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
 
   const rewardState = useSelector((state:RootStore) => state.reward);
 
-
-  const [accountType, setAccountType] = useState<BondAccountType>(BondAccountType.DerifyAccount);
+  const [accountType, setAccountType] = useState<number>(typeLangKey.accountOptions ? typeLangKey.accountOptions[0].value : BondAccountType.DerifyAccount);
   const [amount, setAmount] = useState<string>("");
   const [errorMsg,setErrorMsg] = useState<any>("")
 
@@ -167,7 +166,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
   }
   const $t = intl;
 
-  const getMaxAmount = useCallback((rewardState, type, accountType = BondAccountType.DerifyAccount) => {
+  const getMaxAmount = useCallback((rewardState:RewardState, type, accountType = BondAccountType.DerifyAccount) => {
     if (type === OperateType.minWithdraw) {
       return rewardState.pmrBalance
     }
@@ -202,7 +201,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
       if(accountType === BondAccountType.DerifyAccount){
         return rewardState.bondInfo.bondBalance
       }else{
-        return rewardState.wallet.drfBalance
+        return rewardState.wallet.bdrfBalance
       }
     }
 
@@ -335,6 +334,7 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
     DerifyTradeModal.pendding();
     doSubmitAction(dispatch).then(() => {
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateLoadStatus("reward"));
     }).catch((e) => {
       DerifyTradeModal.failed();
       console.error('doSubmitAction type', e)
@@ -350,8 +350,16 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
 
   useEffect(() => {
     setAmount('');
-  }, [type]);
 
+    if(typeLangKey.accountOptions){
+      setAccountType(typeLangKey.accountOptions[0].value)
+      if(trader){
+        updateMaxAmout(trader, amount, typeLangKey.accountOptions[0].value);
+      }
+
+    }
+
+  }, [typeLangKey,visible]);
 
   switch (type) {
     case OperateType.minWithdraw:
@@ -388,7 +396,8 @@ const RenderModule: React.FC<RenderModuleProps> = forwardRef(({ type, typeLangKe
           <ErrorMessage style={{margin: "10px 0"}} msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg("")}/>
           <Row>
             <Col flex="100%" className="margin-b-m">
-              <Select defaultValue={0}
+              <Select
+                      value={accountType}
                       size="large"
                       getPopupContainer={(item) => item.parentNode}
                       onChange={(value) => onAccountChange(value)}
@@ -459,7 +468,7 @@ const OperateCom: React.FC<OperateComProps> = props => {
       onOk={() => onModalSumit()}
       cancelText={$t(typeLangKey.cancel)}
     >
-      <RenderModule closeModal={closeModal} typeLangKey={typeLangKey} type={type} ref={rewardModal}/>
+      <RenderModule visbile={props.visible} closeModal={closeModal} typeLangKey={typeLangKey} type={type} ref={rewardModal}/>
     </Modal>
   );
 };

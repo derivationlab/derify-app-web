@@ -29,7 +29,7 @@ function getUpdateType(type:string|number) {
 
 function Record() {
   const {formatMessage} = useIntl();
-  const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"")
+  const trader = useSelector<RootStore,string>(state => state.user.trader)
 
   const [sping, setSping] = useState<boolean>(true);
   const [traderPagenation,setTraderPagenation] = useState<Pagenation>(new Pagenation());
@@ -51,6 +51,12 @@ function Record() {
   const $t = intl;
 
   const fetchBrokerRewardHistory = useCallback(() => {
+
+    if(!trader){
+      setSping(false)
+      return;
+    }
+
     setSping(true);
     getBrokerRewardHistory(trader,rewardPagenation.current,10).then((pagenation)=>{
       setRewardPagenation(pagenation);
@@ -59,6 +65,11 @@ function Record() {
   },[trader,rewardPagenation.current,rewardPagenation.pageSize]);
 
   const fetchBrokerTraders = useCallback(() => {
+    if(!trader){
+      setSping(false)
+      return;
+    }
+
     setSping(true);
     getbrokerBindTraders(trader,traderPagenation.current,traderPagenation.pageSize).then((pagenation)=>{
       setTraderPagenation(pagenation);
@@ -85,11 +96,11 @@ function Record() {
 
   useEffect(() => {
     fetchBrokerRewardHistory()
-  }, [rewardPagenation.current,rewardPagenation.pageSize])
+  }, [trader,rewardPagenation.current,rewardPagenation.pageSize])
 
   useEffect(() => {
     fetchBrokerTraders()
-  }, [traderPagenation.current,traderPagenation.pageSize])
+  }, [trader,traderPagenation.current,traderPagenation.pageSize])
 
   const AcColumns: ColumnsType<BrokerHistoryRecord> = [
     {
@@ -98,7 +109,10 @@ function Record() {
       key: "update_type",
       render:(_,data) => {
         return (
-          <div>{$t(getUpdateType(data.update_type))}</div>
+          <div>
+            <div className={"main-white"}>{$t(getUpdateType(data.update_type))}</div>
+            {data.update_type === 1 ? <></> : <div>{data.trader}</div>}
+          </div>
         );
       }
     },
@@ -182,6 +196,7 @@ function Record() {
                   columns={AcColumns}
                   dataSource={rewardPagenation.records}
                   rowKey={'tx'}
+                  pagination={false}
                 />
                 <Col flex="100%">
                   <Row justify="center">

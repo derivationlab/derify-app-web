@@ -13,10 +13,10 @@ import userModel,{UserState} from "@/store/modules/user";
 import {fromContractUnit, toContractUnit, Token} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import {useDispatchAction} from "@/hooks/useDispatchAction"
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import ErrorMessage from "@/components/ErrorMessage";
 import contractModel from "@/store/modules/contract"
-import {showTransfer} from "@/store/modules/app/actions";
+import {showTransfer} from "@/store/modules/app";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
 
@@ -54,6 +54,7 @@ const Transfer: React.FC<TransferProps> = props => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const walletInfo = useSelector((state:RootStore) => state.user);
+
   const dispatch = useDispatch();
   function intl(id:string) {
     return formatMessage({id})
@@ -78,12 +79,22 @@ const Transfer: React.FC<TransferProps> = props => {
     const trader = walletInfo?.selectedAddress
     const contract = web3Utils.contract(trader)
 
-    const accountData = await contract.getTraderAccount(trader)
-
-    transferData.accountData = accountData
-    transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
-    transferData.balanceOfDerify = accountData.balance
+    const accountData = new TraderAccount();
     transferData.operateType = transferType
+
+    try{
+      Object.assign(accountData, await contract.getTraderAccount(trader));
+      transferData.accountData = accountData
+      transferData.balanceOfDerify = accountData.balance
+    }catch (e){
+      console.log('getTraderAccount error:', e)
+    }
+
+    try{
+      transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
+    }catch (e) {
+      console.log('balanceOf error:', e)
+    }
 
     setTransferData(transferData)
 
@@ -181,7 +192,8 @@ const Transfer: React.FC<TransferProps> = props => {
       const action = contractModel.actions.withdrawAccount(trader, toContractUnit(amount));
       action(dispatch).then((data) => {
         DerifyTradeModal.success();
-        dispatch(showTransfer(false,operateType))
+        dispatch(showTransfer(false,operateType));
+        dispatch(AppModel.actions.updateLoadStatus("account"))
       }).catch((e) => {
         DerifyTradeModal.failed();
         console.error(`${transferData.operateType} failed, ${e}`)
@@ -193,6 +205,7 @@ const Transfer: React.FC<TransferProps> = props => {
       action(dispatch).then((data) => {
         dispatch(showTransfer(false,operateType));
         DerifyTradeModal.success();
+        dispatch(AppModel.actions.updateLoadStatus("account"))
       }).catch((e) => {
         console.error(`${transferData.operateType} success, ${e}`);
         DerifyTradeModal.failed();

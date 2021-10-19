@@ -40,8 +40,8 @@ const TradingVolume: React.FC = () => {
 
   const tokenOptions = [
     {label: $t('Data.Data.Trade.All'), value: 'all'},
+    {label: 'BTC/USDT', value: Token.BTC},
     {label: 'ETH/USDT', value: Token.ETH},
-    {label: 'BTC/USDT', value: Token.BTC}
   ];
 
   const onOptionChange = (value:string) => {
@@ -67,6 +67,10 @@ const TradingVolume: React.FC = () => {
         xaxis.push(item.day_time)
         tradAmSeries.data.push(item.trading_amount)
         tradFeeSeries.data.push(item.trading_fee)
+      }
+
+      if(xaxis.length < 1) {
+        return;
       }
 
       const options = generateDataEchartsOptions(color, xaxis, seriers)
@@ -127,7 +131,7 @@ const TradingVolume: React.FC = () => {
           </Row>
         </Col>
         <Col flex="100%">
-          <CommonCharts ref={chartRef} options={generateDataEchartsOptions(color, [], [])} height={330} />
+          <CommonCharts ref={chartRef} height={330} />
         </Col>
       </Row>
     </Spin>

@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Provider } from "react-redux";
 import "./App.less";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import routes from "@/router";
 import store from "./store";
+import {createDataEvenet} from "@/api/trade";
 
 
 Date.prototype.Format = function (fmt) {
@@ -27,8 +28,6 @@ Date.prototype.Format = function (fmt) {
 }
 
 export const App: React.FC = props => {
-
-
   return (
     <Provider store={store}>
       <Router>

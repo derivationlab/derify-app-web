@@ -18,7 +18,7 @@ declare type InfoProps = {
 const Info:React.FC<InfoProps> = (props) => {
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const walletInfo = useSelector((state:RootStore) => state.user);
+  const {isLogin,trader} = useSelector((state:RootStore) => state.user);
   const broker = useSelector<RootStore, BrokerAccountInfo>(state => state.broker.broker);
   const {formatMessage} = useIntl();
 

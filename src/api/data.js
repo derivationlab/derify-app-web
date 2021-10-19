@@ -1,5 +1,6 @@
 import * as io from '@/utils/request'
 import * as configUtil from '../config'
+import {dateFormat} from "@/utils/utils";
 
 /**
  * get history trading data
@@ -7,12 +8,12 @@ import * as configUtil from '../config'
  * @param days
  * @return {Promise<{trading_fee: number, day_time: string, trading_amount: number}[]>}
  */
-export async function getHistoryTradingData(token, days=30) {
+export async function getHistoryTradingData(token, days=7) {
   const content =  await io.get(`/api/history_trading_amount/${token}/${days}`)
   if(content && content.data) {
     content.data.reverse()
     content.data.forEach((item) => {
-      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+      item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
 
     return content.data;
@@ -42,12 +43,12 @@ export async function getCurrentPositionData(token) {
  * @param days
  * @return {Promise<[{long_position_amount: number, short_position_amount: number, day_time: string}]>}
  */
-export async function getHistoryPositionData(token, days = 30) {
+export async function getHistoryPositionData(token, days = 7) {
   const content =  await io.get(`/api/history_positions_amount/${token}/${days}`)
   if(content && content.data) {
     content.data.reverse()
     content.data.forEach((item) => {
-      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+      item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
 
     return content.data;
@@ -80,13 +81,13 @@ export async function getCurrentInsurancePoolData() {
  * @param days
  * @return {Promise<{insurance_pool: number, day_time: string}[]>}
  */
-export async function getHistoryInsurancePoolData(days = 30) {
+export async function getHistoryInsurancePoolData(days = 7) {
   const content =  await io.get(`/api/history_insurance_pool/${days}`)
   if(content && content.data) {
     content.data.reverse()
 
     content.data.forEach((item) => {
-      item.day_time = (new Date(item.day_time)).Format('MM-dd')
+      item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
 
     return content.data;

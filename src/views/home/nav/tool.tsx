@@ -3,7 +3,7 @@ import {Button, Row, Col, Select, Modal, Popover, Space, Image} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "@/store";
 
-import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app/actions";
+import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app";
 import { FormattedMessage } from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
@@ -222,7 +222,7 @@ function Tool() {
             <Row className="network-list" justify="space-between">
               {networkList.map((item, i) => (
                 <Col
-                  className={classNames({ active: item.chainEnum?.chainId === network?.chainId })}
+                  className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
                   onClick={() => onChangeNetwork((item.chainEnum?.disabled || item.chainEnum?.chainId === network?.chainId) ? undefined : item.chainEnum)}
                   key={i}
                 >

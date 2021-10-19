@@ -15,6 +15,8 @@ const { Option } = Select;
 interface NotOpenedProps extends ModalProps {
   onOK:()=>void
 }
+
+
 const NotOpened:React.FC<NotOpenedProps> = (props)=>{
   const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
@@ -33,10 +35,14 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
   }
 
   const $t = intl;
+  const accountOptions = [
+    {label:$t("Broker.Apply.eDRFAccount"), value: BondAccountType.DerifyAccount},
+    {label:$t("Broker.Apply.MyWallet"), value: BondAccountType.WalletAccount},
+  ];
 
   const applyBurnAmount = 60000;
 
-  const [accountType, setAccountType] = useState<number>(BondAccountType.DerifyAccount);
+  const [accountType, setAccountType] = useState<number>(accountOptions[0].value);
   const [showAddInfo, setShowAddInfo] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string|React.ReactNode>("");
 
@@ -104,7 +110,7 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
         </WalletConnectButtonWrapper>
       </Col>
       <Modal
-        title={$t("Broker.Apply.ApplyBroker")}
+        title={<></>}
         width={300}
         getContainer={false}
         visible={isModalVisible}
@@ -115,12 +121,13 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
         <Row >
           <Col flex="100%" className="margin-b-m">
             <Row className="column-flex">
-              <Col className="margin-b-s">{$t("Broker.Apply.GetBrokersPrivilege", [<span className="main-color"><Statistic value={applyBurnAmount}/></span>])}</Col>
+              <Col className="margin-b-s">{$t("Broker.Apply.GetBrokersPrivilege", [<span className="main-color"><Statistic style={{fontSize: "30px"}} value={applyBurnAmount}/></span>])}</Col>
             </Row>
           </Col>
           <Col flex="100%" className="margin-b-m">
             <Select defaultValue={accountType} size="large"
                     style={{ width: "100%" }}
+                    options={accountOptions}
                     onChange={(val) => {
                       setAccountType(val);
                       setErrorMsg("");

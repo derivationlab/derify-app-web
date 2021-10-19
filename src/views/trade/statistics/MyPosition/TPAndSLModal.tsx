@@ -1,13 +1,20 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { Modal, Row, Col, Input } from "antd";
 import { ModalProps } from "antd/es/modal";
 import {useIntl} from "react-intl";
 import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";
-import {fromContractUnit, PositionView, SideEnum, toContractNum, toContractUnit} from "@/utils/contractUtil";
+import {
+  fromContractUnit,
+  numConvert,
+  PositionView,
+  SideEnum,
+  toContractNum,
+  toContractUnit
+} from "@/utils/contractUtil";
 import {amountFormt, checkNumber, fck} from "@/utils/utils";
 import ErrorMessage from "@/components/ErrorMessage";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import contractModel from "@/store/modules/contract"
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 
@@ -38,10 +45,12 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
 
   const $t = intl
 
+  const clickedTPSLPostion = props.position;
 
+  const [takeProfitPrice,setTakeProfitPrice] = useState<string>('')
 
-  const [takeProfitPrice,setTakeProfitPrice] = useState<string>("")
-  const [stopLossPrice,setStopLossPrice] = useState<string>("")
+  const [stopLossPrice,setStopLossPrice] = useState<string>('')
+
   const [profitAmount,setProfitAmount] = useState<number>(0)
   const [lossAmount,setLossAmount] = useState<number>(0)
   const [errorMsg,setErrorMsg] = useState<any>("")
@@ -88,8 +97,8 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
   }
 
   const calLossAndProfit = useCallback((takeProfitPrice, stopLossPrice) => {
-    const takeProfitPriceNum = parseFloat(takeProfitPrice);
-    const stopLossPriceNum = parseFloat(stopLossPrice);
+    const takeProfitPriceNum = takeProfitPrice ? parseFloat(takeProfitPrice) : -1;
+    const stopLossPriceNum = stopLossPrice ? parseFloat(stopLossPrice) : -1;
 
     const position = props.position;
 
@@ -98,6 +107,8 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
         * fromContractUnit(position?.size) * (position?.side === SideEnum.LONG ? 1 : -1)
 
       setProfitAmount(profitAmount);
+    }else{
+      setProfitAmount(0);
     }
 
     if(stopLossPriceNum > 0) {
@@ -105,9 +116,13 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
         * fromContractUnit(position?.size) * (position?.side === SideEnum.LONG ? 1 : -1)
 
       setLossAmount(lostAmount)
+    }else{
+      setLossAmount(0);
     }
 
   }, [takeProfitPrice,stopLossPrice,position?.size,position?.side,position?.averagePrice,position?.spotPrice])
+
+
 
 
   const onOk = useCallback((e) => {
@@ -136,26 +151,23 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
       return;
     }
 
-    let takeProfitPriceNum = -1;
-    let stopLossPriceNum = -1;
-    if(takeProfitPrice == ''){
-      takeProfitPriceNum = -1;
-    }else{
-      takeProfitPriceNum = parseFloat(takeProfitPrice)
-    }
+    let takeProfitPriceNum: number;
+    let stopLossPriceNum: number;
 
-    if(stopLossPrice == ''){
+    if(amountFormt(stopLossPrice,-1,false,"") === amountFormt(position?.stopLossPrice,-1,false,"",-8)){
+      stopLossPriceNum = 0;
+    }else if(stopLossPrice == ''){
       stopLossPriceNum = -1;
     }else{
       stopLossPriceNum = parseFloat(stopLossPrice)
     }
 
-    if(stopLossPriceNum === fromContractUnit(position?.stopLossPrice)){
-      stopLossPriceNum = 0;
-    }
-
-    if(takeProfitPriceNum === fromContractUnit(position?.stopProfitPrice)){
+    if(amountFormt(takeProfitPrice,-1,false,"") === amountFormt(position?.stopProfitPrice,-1,false,"",-8).toString()){
       takeProfitPriceNum = 0;
+    }else if(takeProfitPrice == ''){
+      takeProfitPriceNum = -1;
+    }else{
+      takeProfitPriceNum = parseFloat(takeProfitPrice)
     }
 
     const orerStopPositionAction = contractModel.actions.orderStopPosition({trader,
@@ -166,10 +178,30 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
     props.closeModal();
     orerStopPositionAction(dispatch).then(() => {
       DerifyTradeModal.success();
+      dispatch(AppModel.actions.updateTradeLoadStatus());
     }).catch(() => {
       DerifyTradeModal.failed();
     })
   }, [walletInfo.selectedAddress,takeProfitPrice,stopLossPrice]);
+
+  useEffect(() => {
+
+    if(clickedTPSLPostion && clickedTPSLPostion.stopProfitPrice && clickedTPSLPostion.stopProfitPrice > 0){
+      setTakeProfitPrice(fck(clickedTPSLPostion?.stopProfitPrice,-8,2))
+    }else{
+      setTakeProfitPrice("")
+    }
+
+
+    if(clickedTPSLPostion && clickedTPSLPostion.stopLossPrice && clickedTPSLPostion.stopLossPrice > 0){
+      setStopLossPrice(fck(clickedTPSLPostion?.stopLossPrice,-8,2))
+    }else{
+      setStopLossPrice("")
+    }
+
+    calLossAndProfit(fromContractUnit(clickedTPSLPostion?.stopProfitPrice), fromContractUnit(clickedTPSLPostion?.stopLossPrice))
+
+  }, [clickedTPSLPostion, props.visible])
 
   return (
     <Modal
@@ -190,10 +222,10 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
             </Col>
             <Col>
               <div>
-                <span className="main-white">{fck(position?.averagePrice, -8,2)}</span>USDT
+                <span className="main-white">{fck(position?.averagePrice, -8,2)}</span>&nbsp;USDT
               </div>
               <div>
-                <span className="main-green">{fck(position?.spotPrice, -8,2)}</span>USDT
+                <span className="main-green">{fck(position?.spotPrice, -8,2)}</span>&nbsp;USDT
               </div>
             </Col>
           </Row>
@@ -201,23 +233,23 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
         <Col flex="100%" className="margin-b-max">
           <Row>{$t("Trade.MyPosition.SetStopPricePopup.TakeProfit")}</Row>
           <Row className="margin-b-m">
-            <Input size="large" addonAfter="USDT" defaultValue="" onChange={({target:{value}}) => {
+            <Input size="large" addonAfter="USDT" onChange={({target:{value}}) => {
               onTakeProfitPriceChange(value)
             }} value={takeProfitPrice}/>
           </Row>
-          <Row>
-            {$t("Trade.MyPosition.SetStopPricePopup.StopPriceProfitNotice",[<span className="main-white">{takeProfitPrice}</span>,<span className={profitAmount > 0 ? "main-green":"main-red"}>{amountFormt(profitAmount,2,true,"--")}</span>])}
+          <Row style={{display: "inline-block"}}>
+            {$t("Trade.MyPosition.SetStopPricePopup.StopPriceProfitNotice",[<span className="main-white">{amountFormt(takeProfitPrice ? takeProfitPrice : '--')}</span>,<span className={profitAmount > 0 ? "main-green":"main-red"}>{amountFormt(profitAmount,2,true,"--")}</span>])}
           </Row>
         </Col>
         <Col flex="100%">
           <Row>{$t("Trade.MyPosition.SetStopPricePopup.StopLoss")}</Row>
           <Row className="margin-b-m">
-            <Input size="large" addonAfter="USDT" defaultValue="" onChange={({target:{value}}) => {
+            <Input size="large" addonAfter="USDT"  onChange={({target:{value}}) => {
               onStopLossPriceChange(value)
             }} value={stopLossPrice}/>
           </Row>
-          <Row>
-            {$t("Trade.MyPosition.SetStopPricePopup.StopPriceLossNotice",[<span className="main-white">{stopLossPrice}</span>,<span className={lossAmount > 0 ? "main-green":"main-red"}>{amountFormt(lossAmount,2,true,"--")}</span>])}
+          <Row  style={{display: "inline-block"}}>
+            {$t("Trade.MyPosition.SetStopPricePopup.StopPriceLossNotice",[<span className="main-white">{stopLossPrice ? stopLossPrice : '--'}</span>,<span className={lossAmount > 0 ? "main-green":"main-red"}>{amountFormt(lossAmount,2,true,"--")}</span>])}
           </Row>
         </Col>
       </Row>

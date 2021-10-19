@@ -11,17 +11,18 @@ import {BrokerModel, RootStore} from "@/store";
 function Main() {
   const dispatch = useDispatch();
 
-  const {selectedAddress,isLogin} = useSelector((state:RootStore) => state.user)
+  const {trader,isLogin} = useSelector((state:RootStore) => state.user)
   const isBroker: boolean | undefined = useSelector(
     (state: RootStore) => state.broker.isBroker
   );
-  const trader = selectedAddress;
+  const reloadBrokerDataStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.broker);
 
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() =>{
 
     if(!trader){
+      setLoading(false);
       return
     }
 
@@ -32,7 +33,7 @@ function Main() {
     }).catch(e=>{
       console.error("getTraderBrokerInfo err", e)
     });
-  },[trader,isLogin]);
+  },[trader,isLogin,reloadBrokerDataStatus]);
 
   const [showEditModal,setShowEditModal] = useState<boolean>(false);
 
@@ -42,7 +43,7 @@ function Main() {
 
   return (
     <Spin spinning={loading}>
-      {loading ? "" : (isBroker ? (
+      {loading ? "" : ( isLogin && isBroker ? (
         <Row className="opended-container" gutter={[0, 20]}>
           <Col flex="100%">
             <Info showEditModal={showEditModal}/>

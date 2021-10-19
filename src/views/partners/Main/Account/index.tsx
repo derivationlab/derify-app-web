@@ -20,6 +20,8 @@ function Account() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [operateVisible, setOperateVisible] = useState(false);
+
+
   const trader = useSelector<RootStore,string>(state => state.user.selectedAddress||"");
   const brokerState = useSelector<RootStore, BrokerState>(state => state.broker);
   const {broker} = brokerState;
@@ -86,7 +88,7 @@ function Account() {
             </WalletConnectButtonWrapper>
           </Col>
           <Col className="main-color">
-            <Link to={`/${broker.id}`}>{$t("Broker.Broker.Account.Myreferralpage")} <IconFont type="icon-right-arr" />{" "}</Link>
+            <a target={"_blank"} href={broker.reference}>{$t("Broker.Broker.Account.Myreferralpage")} <IconFont type="icon-right-arr" />{" "}</a>
           </Col>
           <Col className="explain">
             <div>{$t("Broker.Broker.Account.BrokerHint")}</div>

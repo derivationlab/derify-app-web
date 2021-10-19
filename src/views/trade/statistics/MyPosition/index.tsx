@@ -12,7 +12,7 @@ import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
 import contractModel, {ContractState, PositioData} from "@/store/modules/contract"
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore} from "@/store";
+import {AppModel, RootStore} from "@/store";
 import {Dispatch} from "redux";
 import {fromContractUnit, PositionView, SideEnum} from "@/utils/contractUtil";
 import {amountFormt, fck} from "@/utils/utils";
@@ -35,6 +35,7 @@ const MyPosition: React.FC = () => {
   const [clickedPostion, setClickedPostion] = useState<PositionView>();
   const [clickedTPSLPostion, setClickedTPSLPostion] = useState<PositionView>();
   const [showClosePosition, setShowClosePosition] = useState<boolean>(true);
+  const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
 
   const dispatch = useDispatch();
 
@@ -86,6 +87,13 @@ const MyPosition: React.FC = () => {
     loadMyPositionData()
   }, [loadMyPositionData])
 
+  useEffect(() => {
+    if(!reloadTrade){
+      return;
+    }
+    loadMyPositionData()
+  }, [reloadTrade])
+
 
   const cancelCb = () => {};
 
@@ -120,6 +128,7 @@ const MyPosition: React.FC = () => {
         setShowClosePosition(false);
         closePositionAction(dispatch).then(() =>{
           DerifyTradeModal.success();
+          dispatch(AppModel.actions.updateTradeLoadStatus());
         }).catch((e) => {
           DerifyTradeModal.failed();
           console.log('closePositionAction',e);
@@ -132,15 +141,18 @@ const MyPosition: React.FC = () => {
 
   const { formatMessage } = useIntl();
 
-  function intl(id:string) {
-    return formatMessage({id})
+
+  function intl<T>(id:string,values:{[key:string]:T} = {}) {
+
+
+    return formatMessage({id}, values)
   }
 
-  const $t = intl
+  const $t = intl;
 
   const columns: ColumnsType<PositionView> = [
     {
-      title: intl("Trade.MyPosition.List.PositionHeld"),
+      title: intl("Trade.MyPosition.List.Position"),
       dataIndex: "type",
       width: 110,
       key: "type",
@@ -197,7 +209,7 @@ const MyPosition: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.MyPosition.Hint.PositionHeld" })}：
+                {formatMessage({ id: "Trade.MyPosition.Hint.PositionHeld" })}
               </Col>
               <Col>{$t("Trade.MyPosition.Hint.PositionHeldDetail")}</Col>
             </Row>
@@ -286,7 +298,7 @@ const MyPosition: React.FC = () => {
               <Col className="title" flex="100%">
                 {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.RiskDetail")}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.RiskDetail", {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">{chunks}</a>})}</Col>
             </Row>
           }
           trigger="hover"
@@ -315,7 +327,7 @@ const MyPosition: React.FC = () => {
               <Col className="title" flex="100%">
                 {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail")}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail", {link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">{chunks}</a>})}</Col>
             </Row>
           }
           trigger="hover"
@@ -340,17 +352,25 @@ const MyPosition: React.FC = () => {
         <Popover
           placement="bottom"
           content={
+            <>
             <Row>
-              <Col> {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
+              <Col className="title" > {formatMessage({ id: "Trade.MyPosition.Hint.TakeProfitSetting" })}</Col>
               <Col>
                 {$t("Trade.MyPosition.Hint.TakeProfitSettingDetail")}
               </Col>
             </Row>
+            <Row>
+              <Col className="title" > {formatMessage({ id: "Trade.MyPosition.Hint.StopLossSetting" })}</Col>
+              <Col>
+                {$t("Trade.MyPosition.Hint.StopLossSettingDetail")}
+              </Col>
+            </Row>
+            </>
           }
           trigger="hover"
         >
           <Space>
-            {formatMessage({ id: "Trade.MyPosition.List.TP" })}
+            {formatMessage({ id: "Trade.MyPosition.List.SetTPSL" })}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>
@@ -366,8 +386,8 @@ const MyPosition: React.FC = () => {
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>
-            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
-            <div> {$t("Trade.MyPosition.List.StopLoss")}{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
+            <div className={"main-white"}> {$t("Trade.MyPosition.List.TP")}&nbsp;{amountFormt(record.stopProfitPrice,2,false,"--",-8)}</div>
+            <div> {$t("Trade.MyPosition.List.StopLoss")}&nbsp;{amountFormt(record.stopLossPrice,2,false,"--",-8)}</div>
           </Col>
         </Row>
       ),

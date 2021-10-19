@@ -1,3 +1,4 @@
+
 .long-or-short{
     display: flex;
     align-items: center;
@@ -10,19 +11,20 @@
           text-align: center;
           border-radius: 2px;
           padding: 1px 1px;
+          color: @main-white;
         }
-        >span:first-child{
+        >span.side{
             background:@main-green;
-            color: @main-black;
-            padding-left: 0.1rem;
-            padding-right: 0.1rem;
+            color: @main-white;
+            font-weight: bold;
+            padding: 0.2rem 0.2rem 0 0.2rem;
         }
-        >span:last-child{
+        >span.leverage{
             border: 1px solid @main-green;
             color:@main-green;
             margin-left: 6px;
-            padding-left: 0.2rem;
-            padding-right: 0.2rem;
+            padding-left: 0.1rem;
+            padding-right: 0.1rem;
         }
     }
     &.short{
@@ -35,14 +37,18 @@
           border-radius: 2px;
           padding: 1px 1px;
         }
-        >span:first-child{
-            background:@main-red;
-            color: @main-black;
+        >span.side{
+          background:@main-red;
+          color: @main-white;
+          font-weight: bold;
+          padding: 0.2rem 0.2rem 0 0.2rem;
         }
-        >span:last-child{
+        >span.leverage{
             border: 1px solid @main-red;
             color:@main-red;
             margin-left: 6px;
+            padding-left: 0.1rem;
+            padding-right: 0.1rem;
         }
     }
 }

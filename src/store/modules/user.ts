@@ -3,7 +3,7 @@ import { createReducer } from "redux-create-reducer";
 
 import * as web3Utils from '@/utils/web3Utils'
 import {Token} from "@/utils/contractUtil";
-import { getBrokerIdByTrader } from '@/api/broker'
+import {BrokerInfo, getBindBrokerByTrader, getBrokerByTrader, getBrokerIdByTrader} from '@/api/broker'
 // import {BIND_PARTNERS, CHANGE_LANG} from "@/store/modules/app/types";
 
 import Eth from "@/assets/images/Eth.png";
@@ -14,7 +14,7 @@ import Wallet from "@/assets/images/Metamask.png";
 import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import {Dispatch} from "redux";
-import {mergeNonNull} from "@/utils/utils";
+import {mergeNonNull, toChecksumAddress} from "@/utils/utils";
 
 export class ChainEnum {
   static values : ChainEnum[] = []
@@ -101,7 +101,7 @@ export const mainChain = ChainEnum.Rinkeby
 export type UserState = {
   selectedAddress?: string|null,
   showWallet?: boolean,
-  trader: "",
+  trader: string,
   isLogin?: boolean,
   chainEnum?: ChainEnum,
   chainId?: string,
@@ -111,8 +111,9 @@ export type UserState = {
   processStatus?: number,
   processStatusMsg?: string,
   balanceOfDUSD?: number,
-  brokerId?: string|null,
-  hasBroker?: boolean
+  brokerId?: string|null, //bind broker address
+  hasBroker?: boolean,
+  slefBrokerId?: string|null
 }
 
 export type WalletInfo ={
@@ -143,7 +144,7 @@ export async function asyncInitWallet() : Promise<UserState> {
   window.ethereum.ethAccounts = await window.ethereum.request({method: 'eth_accounts'})
 
   if(window.ethereum.ethAccounts.length > 0){
-    window.ethereum.selectedAddress = window.ethereum.ethAccounts[0]
+    window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.ethAccounts[0])
   }
 
   window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
@@ -164,23 +165,102 @@ export async function getWallet() : Promise<UserState>{
   const chainId = parseInt(wethereum.chainId)
 
   const chainEnum = networkMap.hasOwnProperty(chainId) ? networkMap[chainId] : new ChainEnum(chainId, 'unkown');
-  const brokerId = wethereum.selectedAddress ? await getBrokerIdByTrader(wethereum.selectedAddress) : "";
+  let bindBrokerId = "";
+  let selfBrokerId = null;
+  let traderBroker = null;
+
+
+
   const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
-  const trader = isLogin ? wethereum.selectedAddress : "";
+  const trader = isLogin ? toChecksumAddress(wethereum.selectedAddress) : "";
+
+  if(isLogin && trader){
+    const bindInfo = await getBrokerBindInfo(wethereum.selectedAddress);
+    bindBrokerId = bindInfo.bindBrokerAddr;
+    selfBrokerId = bindInfo.selfBrokerId;
+  }
+
   return {
     selectedAddress: trader,
     trader: trader,
     isLogin: isLogin,
-    hasBroker: !!brokerId,
+    hasBroker: !!bindBrokerId,
     showWallet: false,
     chainEnum: chainEnum,
-    brokerId: brokerId,
+    brokerId: bindBrokerId,
     isEthum,
     processStatus: 0,
     balanceOfDUSD: 0,
     networkVersion: wethereum.networkVersion,
-    isMetaMask: wethereum.isMetaMask
+    isMetaMask: wethereum.isMetaMask,
+    slefBrokerId: selfBrokerId,
   }
+}
+
+export function setHasBroker(trader:string, hasBroker:boolean){
+  window.localStorage.setItem("broker.bind", JSON.stringify({trader, hasBroker}));
+}
+
+/**
+ * @param curTrader
+ * @return {Promise<{
+      trader: string,
+      hasBroker: boolean,
+      bindBrokerAddr: string,
+      bindBrokerId: string,
+      selfBrokerId: string
+    }>}
+ */
+export async function getBrokerBindInfo(curTrader:string) : Promise<{
+  trader: string,
+  hasBroker: boolean,
+  bindBrokerAddr: string,
+  bindBrokerId: string,
+  selfBrokerId: string
+}>{
+  const brokerBindInfo = window.localStorage.getItem("broker.bind");
+
+  if(brokerBindInfo) {
+    const bindInfo = JSON.parse(brokerBindInfo);
+    //const {trader, hasBroker, bindBrokerAddr, bindBrokerId, selfBrokerId} = bindInfo;
+    if (bindInfo.trader === curTrader) {
+      return bindInfo;
+    }else{
+      window.localStorage.removeItem("broker.bind");
+    }
+  }
+
+
+  try{
+    const brokerInfo = await getBrokerByTrader(curTrader);
+    const traderBroker = await getBindBrokerByTrader(curTrader);
+    const brokerId = traderBroker ? traderBroker.broker : "";
+
+    const bindInfo = {
+      trader: curTrader,
+      hasBroker: !!brokerId,
+      bindBrokerAddr: traderBroker?.broker,
+      bindBrokerId: traderBroker?.id,
+      selfBrokerId: brokerInfo?.id
+    };
+
+    if(traderBroker){
+      window.localStorage.setItem("broker.bind", JSON.stringify(bindInfo));
+    }
+
+    return bindInfo;
+  }catch (e){
+    console.error("getBrokerIdByTrader error", e)
+  }
+
+  return {
+    trader: curTrader,
+    hasBroker: false,
+    bindBrokerAddr: "",
+    bindBrokerId: "",
+    selfBrokerId: ""
+  };
+
 }
 
 function setLogout(isLogout:boolean){
@@ -221,7 +301,6 @@ const actions = {
 
       const walletInfo = await getWallet();
       walletInfo.showWallet = undefined;
-
 
       commit({type: "user/updateState", payload: mergeNonNull({},walletInfo)})
       return walletInfo

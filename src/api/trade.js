@@ -15,6 +15,7 @@ const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
 
 const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
 const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
+const DATA_EVENT_URL = serverEndPoint + "/api/events_data/"
 
 const isNotCallEvent = false;
 /**
@@ -98,6 +99,19 @@ export async function getTraderBondBalance (trader, pageNum = 1, pageSize = 10) 
 /**
  *
  * @param trader
+ * @param amount
+ * @return {Promise<{code:number, msg:string}>}
+ */
+export async function sendUSDT (trader, amount) {
+  const content =  await io.post(`/api/send_usdt`, {trader, amount});
+
+  return content;
+
+}
+
+/**
+ *
+ * @param trader
  * @param pageNum
  * @param pageSize
  * @returns {Promise<Pagenation<TradePMRBalance>>}
@@ -145,6 +159,31 @@ export async function getTraderEDRFBalance (trader, pageNum = 1, pageSize = 10) 
   }
 
   return pagenation;
+}
+
+/**
+ * get event data
+ * @param callback {(data:{
+          "token": string,
+          "price_change_rate": number,
+          "longPmrRate":number,
+          "shortPmrRate":number
+        }[]) => void}
+ */
+export function createDataEvenet (callback){
+  if(isNotCallEvent){
+    return null
+  }
+
+
+  const events = new EventSource(DATA_EVENT_URL);
+
+  events.onmessage = (event) => {
+    const parsedData = JSON.parse(event.data)
+    callback(parsedData)
+  }
+
+  return events
 }
 
 /**

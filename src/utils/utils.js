@@ -1,4 +1,4 @@
-
+import createKeccakHash from "keccak";
 /* eslint-disable */
 export function dateFormat  (date, fmt) {
   var o = {
@@ -45,10 +45,10 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
     val *= Math.pow(10, shiftNum)
 
     if(showPositive && val > 0) {
-      return "+" +  Number(val).toFixed(bit)
+      return "+" +  bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
     }
 
-    return Number(val).toFixed(bit)
+    return bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
   }
 
   return num
@@ -102,10 +102,24 @@ export function mergeNonNull(obj1, obj2){
       }else{
         resultObj[name] = source[name];
       }
-
-      console.log(resultObj,source[name])
     }
   }
 
   return resultObj;
+}
+
+export function toChecksumAddress (address) {
+  address = address.toLowerCase().replace('0x', '')
+  var hash = createKeccakHash('keccak256').update(address).digest('hex')
+  var ret = '0x'
+
+  for (var i = 0; i < address.length; i++) {
+    if (parseInt(hash[i], 16) >= 8) {
+      ret += address[i].toUpperCase()
+    } else {
+      ret += address[i]
+    }
+  }
+
+  return ret
 }

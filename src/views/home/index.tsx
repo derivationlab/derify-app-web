@@ -1,70 +1,160 @@
-import React, { useEffect } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { RouteProps } from "@/router/types";
-import { Switch, Route, Redirect } from "react-router-dom";
+import {Switch, Route, Redirect, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {RootStore, UserModel} from "@/store/index";
+import {ContractModel, RootStore, UserModel} from "@/store/index";
 import Nav from "./nav";
 import IntlPro from "@/locales/index";
 
 import "./index.less";
 import {bindBroker} from "@/api/broker";
+import Trade from "@/views/trade";
+import {ReactComponent} from "*.svg";
+import {useAsync} from "react-use";
+import Bind from "@/views/partners/Bind";
+import {createDataEvenet} from "@/api/trade";
+import {TokenPair} from "@/store/modules/contract";
+import {getRootPath} from "@/views/home/nav/menu";
 
 interface HomeProps extends RouteProps {}
-const brokerBindPath = "/broker/bind";
+const brokerBindPath = "/bind";
+const tradePath = "/trade";
+const brokerPath = "/broker";
+let dataEventSource:EventSource|null = null;
 
-const Home: React.FC<HomeProps> = props => {
+let loading = false;
+const  RouteGuard: React.FC<HomeProps> = props => {
   const dispatch = useDispatch();
-  const { routes, history, location } = props;
+  const {routes} = props;
+  const location = useLocation();
 
-  const {selectedAddress,hasBroker} = useSelector((state:RootStore) => state.user);
+  const curPair = useSelector<RootStore, TokenPair>(state => state.contract.curPair);
+  let {trader,selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
+  const {pathname} = location;
+  const [RoutNode, setRoutNode] = useState(<></>);
+  const [,rootPath, pathBrokerId] = location.pathname.split("/");
+  const menuPath = getRootPath(location.pathname);
+
+
+  let routeConfig = routes.find(
+    (item) => {
+      return `/${menuPath}` === item.path;
+    }
+  );
+
+  if(!routeConfig) {
+    routeConfig = routes[0];
+  }
+
 
   useEffect(() => {
-    if(!selectedAddress){
-      dispatch(UserModel.actions.loadWallet());
+
+    if(dataEventSource){
+      dataEventSource.close();
+      dataEventSource = null;
+    }
+
+    dataEventSource = createDataEvenet(datas => {
+      datas.forEach((data) => {
+        if(data.token === curPair.address){
+          dispatch({type: 'contract/SET_CONTRACT_DATA', payload:{longPmrRate: data.longPmrRate * 100, shortPmrRate: data.shortPmrRate * 100}})
+        }
+
+        const updateAllPairPriceAction = ContractModel.actions.updateAllPairPrice(trader, data.token, data.price_change_rate);
+        updateAllPairPriceAction(dispatch);
+      })
+    });
+  },[]);
+
+  let targetRoute = null;
+  useEffect(() => {
+
+    if(loading){
       return;
     }
 
-    if (!hasBroker) {
-      const rootPath = location.pathname.split("/")[1];
+    ((async() =>{
+      loading = true;
+      const loadWalletAction = UserModel.actions.loadWallet();
+      try{
+        const walletInfo = await loadWalletAction(dispatch);
 
-      const menu = routes.find((men) => men.path.toLowerCase()===location.pathname.toLowerCase());
+        if(!walletInfo.isLogin){
+          const brokerMenu = routes.find(men => men.path === brokerPath)
+          setRoutNode(brokerMenu ? <brokerMenu.component {...props} routes={brokerMenu.routes}/> : <></>);
+          return;
+        }
 
-      if(!menu){
-        bindBroker({trader: selectedAddress,brokerId: rootPath}).then(() => {
-          history.push("/trade");
-        }).catch((e) => {
-          console.error("bind broker error", e);
-        });
-      }else if(location.pathname.toLowerCase() !== brokerBindPath){
-        history.push(brokerBindPath);
+        hasBroker = walletInfo.hasBroker;
+        slefBrokerId = walletInfo.slefBrokerId;
+      }catch (e){
+        console.error("loadWalletAction exception", e)
       }
-      return;
-    }
 
-    if(location.pathname === brokerBindPath){
-      history.push("/trade");
-    }
+      const tradeMenu = routes.find(men => men.path === tradePath)
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, hasBroker, selectedAddress]);
+      const currentRoute = tradeMenu ? <tradeMenu.component {...props} routes={tradeMenu.routes}/> : <></>;
 
+      if(menuPath === ''){
+        setRoutNode(<Redirect to={tradePath}/>);
+        return;
+      }
+      const isBrokerReferPage = `/${rootPath}` === brokerPath && pathBrokerId;
+
+      if(isBrokerReferPage && pathBrokerId.toLowerCase() === slefBrokerId?.toLowerCase()){
+        targetRoute = currentRoute;
+        setRoutNode(currentRoute);
+        return;
+      }
+
+      const menu = routes.find((men) => `/${menuPath}` === men.path);
+
+      if (!hasBroker) {
+        if(isBrokerReferPage){
+          const data = await bindBroker({trader: selectedAddress,brokerId: pathBrokerId});
+          if(data.success){
+            setRoutNode(currentRoute);
+            return;
+          }
+        }else if(location.pathname.toLowerCase() !== brokerBindPath){
+          setRoutNode(<Redirect to={brokerBindPath}/>);
+          return;
+        }
+
+        if(menu){
+          setRoutNode(menu ? <menu.component {...props} routes={menu.routes}/> : <></>)
+        }
+        return;
+      }
+
+      //1.if bind path,redirect to trade
+      //2.else render
+      if(routeConfig){
+        const isBindBrokerPath =  location.pathname.toLowerCase() === brokerBindPath;
+
+        if(isBindBrokerPath){
+          setRoutNode(<Redirect to={tradePath}/>)
+        }else{
+          setRoutNode(routeConfig ? <routeConfig.component {...props} routes={routeConfig.routes}/> : <></>)
+        }
+
+      }
+    })()).finally(() => {
+      loading = false;
+    });
+  }, [location, hasBroker, selectedAddress, slefBrokerId]);
+
+  return <>{RoutNode}</>
+}
+
+const Home: React.FC<HomeProps> = props => {
   return (
     <>
       <IntlPro>
         <Nav></Nav>
         <div className="main">
           <Switch>
-            {routes.map((route, i) => (
-              <Route
-                path={route.path}
-                exact={route.exact}
-                key={i}
-                render={props => (
-                  <route.component {...props} routes={route.routes} />
-                )}
-              />
-            ))}
-            <Redirect from="/" to="/trade" />
+            <RouteGuard {...props}/>
           </Switch>
         </div>
       </IntlPro>

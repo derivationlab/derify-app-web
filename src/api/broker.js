@@ -10,9 +10,23 @@ const serverEndPoint = configUtil.getCurrentServerEndPoint()
  * @return {Promise<String>} brokerId
  */
 export async function getBrokerIdByTrader(trader) {
+  const content =  await getBindBrokerByTrader(trader)
+  if(content != null) {
+    return content.broker;
+  }
+
+  return null;
+}
+
+/**
+ * get trader's brokerId
+ * @param trader
+ * @return {Promise<BrokerInfo>}
+ */
+export async function getBindBrokerByTrader(trader) {
   const content =  await io.get("/api/broker_info_of_trader/" + trader)
   if(content && content.data && content.data.length > 0) {
-    return content.data[0].broker;
+    return content.data[0];
   }
 
   return null;
@@ -51,7 +65,7 @@ export async function getBrokerList(page = 1, size = 10) {
 export async function bindBroker({trader,brokerId}) {
   const content =  await io.post('/api/bind_broker', {brokerId,trader})
 
-  if(content && content.msg) {
+  if(content && content.code === 0) {
     return {success: true, msg: content.msg}
   }else if(content && content.error){
     return {success: false, msg: content.error}
@@ -81,12 +95,31 @@ export async function getBrokerByBrokerId(brokerId) {
  * @return {Promise<BrokerInfo|null>}
  */
 export async function getBrokerByTrader(trader) {
-  const content = await io.get(`/api/broker_info_by_addr/${trader}`)
-  if(content && content.data && content.data.length > 0) {
-    return content.data[0]
+  let localStr = localStorage.getItem("broker_info_by_addr");
+  let broker = null;
+
+  if(localStr){
+    try{
+      broker = JSON.parse(localStr);
+    }catch (e){
+      console.log('getBrokerByTrader failed,' + localStr, e);
+    }
+
+    if(broker && broker.broker !== trader){
+      broker = null;
+      localStorage.removeItem("broker_info_by_addr");
+    }
   }
 
-  return null
+  if(!broker){
+    const content = await io.get(`/api/broker_info_by_addr/${trader}`)
+    if(content && content.data && content.data.length > 0) {
+      localStorage.setItem("broker_info_by_addr", JSON.stringify(content.data[0]));
+      return content.data[0]
+    }
+  }
+
+  return broker
 }
 
 /**

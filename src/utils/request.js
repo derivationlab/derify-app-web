@@ -6,19 +6,13 @@ import QS from 'qs'
 
 import router from '../router/index'
 import store from '../store/index'
-import cfg from '../config'
+import cfg, {getCurrentServerEndPoint} from '../config'
 
 // Environment switch
-if (process.env.NODE_ENV === 'development') {
-  axios.defaults.baseURL = cfg.server.development
-} else if (process.env.NODE_ENV === 'debug') {
-  axios.defaults.baseURL = cfg.server.debug
-} else if (process.env.NODE_ENV === 'production') {
-  axios.defaults.baseURL = cfg.server.production
-}
+axios.defaults.baseURL = getCurrentServerEndPoint();
 
 // Request timeout
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 60000
 
 // post request header
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -37,7 +31,7 @@ axios.interceptors.request.use(
 // Response interceptor
 axios.interceptors.response.use(
   response => {
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300) {
       return Promise.resolve(response)
     } else {
       return Promise.reject(response)
@@ -69,17 +63,17 @@ axios.interceptors.response.use(
           //   forbidClick: true
           // })
           // Clear token
-          localStorage.removeItem('token')
-          store.commit('loginSuccess', null)
+          // localStorage.removeItem('token')
+          // store.commit('loginSuccess', null)
           // Jump to the login page, and pass the fullPath of the page to be browsed, after successful login, jump to the page that needs to be visited
-          setTimeout(() => {
-            router.replace({
-              path: '/login',
-              query: {
-                redirect: router.currentRoute.fullPath
-              }
-            })
-          }, 1000)
+          // setTimeout(() => {
+          //   router.replace({
+          //     path: '/login',
+          //     query: {
+          //       redirect: router.currentRoute.fullPath
+          //     }
+          //   })
+          // }, 1000)
           break
           // 404 request does not exist
         case 404:

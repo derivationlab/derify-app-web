@@ -37,8 +37,8 @@ function PositionHeld() {
 
   const tokenOptions = [
     {label: $t('Data.Data.Trade.All'), value: 'all'},
+    {label: 'BTC/USDT', value: Token.BTC},
     {label: 'ETH/USDT', value: Token.ETH},
-    {label: 'BTC/USDT', value: Token.BTC}
   ];
 
   const onOptionChange = (value:string) => {
@@ -60,6 +60,10 @@ function PositionHeld() {
         longSeries.data.push(item.long_position_amount)
         shortSeries.data.push(item.short_position_amount)
       })
+
+      if(xaxis.length < 1) {
+        return;
+      }
 
       const options = generateDataEchartsOptions(color, xaxis, seriers)
 
@@ -115,7 +119,7 @@ function PositionHeld() {
           </Row>
         </Col>
         <Col flex="100%">
-          <CommonCharts ref={chartRef} options={generateDataEchartsOptions(color,[],[])} height={330} />
+          <CommonCharts ref={chartRef} height={330} />
         </Col>
       </Row>
     </Spin>

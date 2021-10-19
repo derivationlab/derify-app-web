@@ -11,7 +11,6 @@ import contractModel, {ContractState, TokenPair} from "@/store/modules/contract"
 import {RootStore} from "@/store";
 import {amountFormt, fck} from "@/utils/utils";
 import {fromContractUnit, OpenType, SideEnum, Token} from "@/utils/contractUtil";
-import {createTokenMiningFeeEvenet} from "@/api/trade";
 
 const timeOptions: Array<{ label: string; value: string }> = [
   { label: "1m", value: "1m" },
@@ -37,16 +36,20 @@ function DataPanel() {
   const {formatMessage} = useIntl()
 
 
-  function intl(id:string) {
-    return formatMessage({id})
+  function intl<T>(id:string,values:{[key:string]:T} = {}) {
+
+
+    return formatMessage({id}, values)
   }
+
+  const $t = intl;
 
   const contractState = useSelector<RootStore,ContractState>(state => state.contract)
 
   const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
   const curTokenPair = useSelector<RootStore,TokenPair>(state => state.contract.curPair)
+  const {longPmrRate, shortPmrRate} = useSelector((state:RootStore) => state.contract.contractData);
 
-  const $t = intl
 
   const curPrice = contractState.curPair.num||0
 
@@ -57,7 +60,6 @@ function DataPanel() {
   const [timeGap, setTimeGap] = useState<Partial<string>>("15m")
   const walletInfo = useSelector((state:RootStore) => state.user);
   const curPair = useSelector((state:RootStore) => state.contract.curPair);
-  const [pmrRate, setPmrRate] = useState<{longPmrRate:number,shortPmrRate:number}>({longPmrRate: 0,shortPmrRate: 0})
 
   const loadHomeData = useCallback(() => {
 
@@ -75,18 +77,6 @@ function DataPanel() {
   useEffect(() => {
     loadHomeData()
   },[loadHomeData])
-
-  useEffect(() => {
-
-    if(context.tokenMiningRateEvent != null){
-      context.tokenMiningRateEvent.close()
-      setPmrRate({longPmrRate:0,shortPmrRate:0})
-    }
-
-    context.tokenMiningRateEvent = createTokenMiningFeeEvenet(curPair.address, (tokenAddr:string, positionMiniRate:{longPmrRate:number,shortPmrRate:number}) => {
-      setPmrRate(positionMiniRate)
-    })
-  },[curPair])
 
   return (
     <Row className="main-block data-panel-container">
@@ -124,7 +114,7 @@ function DataPanel() {
                           {intl("Trade.OpenPosition.Hint.PCFRate")}
                         </Col>
                         <Col>
-                          {intl("Trade.OpenPosition.Hint.PCFRateDetail")}
+                          {$t("Trade.OpenPosition.Hint.PCFRateDetail",{link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/position-change-fee">{chunks}</a>})}
                         </Col>
                       </Row>
                     }
@@ -140,8 +130,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(pmrRate.longPmrRate,2,true,"--", 2)}%/
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(pmrRate.shortPmrRate,2,true,"--", 2)}%
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(longPmrRate,2,true,"--", 0)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(shortPmrRate,2,true,"--", 0)}%
                   </span>
                   <Popover
                     placement="bottom"
@@ -151,7 +141,7 @@ function DataPanel() {
                           { $t('Trade.OpenPosition.Hint.PositionMiningAPY') }
                         </Col>
                         <Col>
-                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail') }
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail', {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/position-mining">{chunks}</a>}) }
                         </Col>
                       </Row>
                     }

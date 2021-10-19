@@ -75,6 +75,8 @@ const TradeHistory: React.FC = () => {
   const walletInfo = useSelector((state:RootStore) => state.user);
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
   const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
+  const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
+
 
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
@@ -95,6 +97,18 @@ const TradeHistory: React.FC = () => {
     }).finally(() => setShowLoading(false))
   }, [pagenation.current,pagenation.pageSize,walletInfo])
 
+  useEffect(() => {
+    const trader = walletInfo.selectedAddress;
+    if(!trader || !reloadTrade){
+      return
+    }
+    getTradeList(trader, pagenation.current, pagenation.pageSize).then((pagenation:Pagenation) => {
+      setPagenation(pagenation);
+    }).catch(e => {
+      console.log('getTradeList',e)
+    }).finally(() => setShowLoading(false))
+  }, [reloadTrade]);
+
   const getPairByAddress = (token:string) => {
     const pair = tokenPairs.find((pair) => pair.address === token)
     if(!pair){
@@ -106,7 +120,7 @@ const TradeHistory: React.FC = () => {
 
   const columns: ColumnsType<TradeRecord> = [
     {
-      title: $t("Trade.MyPosition.List.PositionHeld"),
+      title: $t("Trade.TradeHistory.List.Position"),
       dataIndex: "type",
       width: 110,
       key: "type",
@@ -162,7 +176,7 @@ const TradeHistory: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={getTradeType(record.type).showType}>{$t(getTradeType(record.type).tradeType+"1")}</div>
-          <div>{$t(getTradeType(record.type).tradeType+"2")}</div>
+          <div>{$t(getTradeType(record.type).tradeType+"2").replace("/","")}</div>
         </div>
       ),
     },
@@ -219,7 +233,7 @@ const TradeHistory: React.FC = () => {
       key: "margin",
       render: (_, record) => (
         <div>
-          <div className="main-white">{amountFormt(record.size,2,false,"--")}</div>
+          <div className="main-white">{amountFormt(record.size,4,false,"--")}</div>
           <div>{getPairByAddress(record.token).key}</div>
         </div>
       ),
@@ -231,9 +245,9 @@ const TradeHistory: React.FC = () => {
           content={
             <Row>
               <Col className="title" flex="100%">
-                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderPrice" })}
+                {formatMessage({ id: "Trade.TradeHistory.Hint.OrderAmount" })}
               </Col>
-              <Col>{$t("Trade.TradeHistory.Hint.OrderPriceDetail")}</Col>
+              <Col>{$t("Trade.TradeHistory.Hint.OrderAmountDetail")}</Col>
             </Row>
           }
           trigger="hover"
@@ -289,7 +303,7 @@ const TradeHistory: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.TradeHistory.Hint.PCF" })}</Col>
+              <Col className="title" flex="100%"> {formatMessage({ id: "Trade.TradeHistory.Hint.PCF" })}</Col>
               <Col>
                 {$t("Trade.TradeHistory.Hint.PCFDetail")}
               </Col>
@@ -318,7 +332,7 @@ const TradeHistory: React.FC = () => {
           placement="bottom"
           content={
             <Row>
-              <Col> {formatMessage({ id: "Trade.TradeHistory.Hint.Compensation" })}</Col>
+              <Col className="title" flex="100%"> {formatMessage({ id: "Trade.TradeHistory.Hint.Compensation" })}</Col>
               <Col>
                 {$t("Trade.TradeHistory.Hint.CompensationDetail")}
               </Col>
@@ -343,7 +357,7 @@ const TradeHistory: React.FC = () => {
     },
 
     {
-      title: "",
+      title: $t("Trade.TradeHistory.List.Time"),
       dataIndex: "event_time",
       key: "event_time",
       render: (_,record) => (
