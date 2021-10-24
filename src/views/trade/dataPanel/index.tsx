@@ -130,8 +130,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}
                   <span>
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(longPmrRate,2,true,"--", 0)}%/
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(shortPmrRate,2,true,"--", 0)}%
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(longPmrRate,2,true,"0", 0)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(shortPmrRate,2,true,"0", 0)}%
                   </span>
                   <Popover
                     placement="bottom"
