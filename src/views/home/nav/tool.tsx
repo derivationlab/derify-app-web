@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {Button, Row, Col, Select, Modal, Popover, Space, Image} from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { RootStore } from "@/store";
+import React, {useCallback, useEffect, useState} from "react";
+import {Button, Col, Image, Modal, Popover, Row, Select, Space} from "antd";
+import {useDispatch, useSelector} from "react-redux";
+import {RootStore} from "@/store";
 
-import {changeLang, showTransfer, showFundsDetail} from "@/store/modules/app";
-import { FormattedMessage } from "react-intl";
+import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
+import {FormattedMessage} from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
 
@@ -16,14 +16,11 @@ import Wallet from "@/assets/images/Metamask.png";
 import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import classNames from "classnames";
-import * as web3Utils from '@/utils/web3Utils'
-import userModel, {asyncInitWallet, ChainEnum, getWallet, mainChain, UserState, WalletEnum} from "@/store/modules/user";
-import {fck} from "@/utils/utils";
+import userModel, {ChainEnum, mainChain, WalletEnum} from "@/store/modules/user";
 import ErrorMessage from "@/components/ErrorMessage";
 import Transfer from "@/views/CommonViews/Transfer";
-import {TransferOperateType} from "@/utils/types";
-import {Dispatch} from "redux";
 import FundsDetails from "@/views/home/nav/Account/FundsDetail";
+import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 
 const { Option } = Select;
 
@@ -162,7 +159,7 @@ function Tool() {
               icon={<Image preview={false} src={chainEnum?.logo}/>}
               type="primary"
             >
-              {selectedAddress}
+              <TextOverflowView text={selectedAddress||''} showPos={ShowPosEnum.mid} len={10}/>
             </Button>
           </Popover>
         ) : (

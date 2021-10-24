@@ -4,6 +4,7 @@ import {Row, Col, Avatar, Space, Pagination, Spin} from "antd";
 import classNames from "classnames";
 import {BrokerInfo, getBrokerList} from "@/api/broker";
 import {Pagenation} from "@/api/types";
+import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 
 export type Partners = {
   name: string;
@@ -59,7 +60,9 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                   <Row style={{overflow:"hidden",textOverflow:"ellipsis"}}>
                     <Col flex="100%">{item.name}</Col>
                     <Col flex="100%">{item.id}</Col>
-                    <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>{item.broker}</Col>
+                    <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
+                      <TextOverflowView text={item.broker} showPos={ShowPosEnum.mid} len={19}/>
+                    </Col>
                   </Row>
                 </Col>
               </Row>

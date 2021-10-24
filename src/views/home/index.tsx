@@ -64,7 +64,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
         updateAllPairPriceAction(dispatch);
       })
     });
-  },[]);
+  },[trader]);
 
   let targetRoute = null;
   useEffect(() => {
