@@ -117,11 +117,11 @@ function CurrentOrder() {
       content: (
         <div>
           <p>
-            {$t("Trade.CurrentOrder.CancelOrderPopup.CancelAllOrder")}
+            {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
           </p>
         </div>
       ),
-      okText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
+      okText: $t("Trade.CurrentOrder.CancelOrderPopup.Cancel"),
       cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
       onOk: () => {
         const trader = walletInfo.selectedAddress;
