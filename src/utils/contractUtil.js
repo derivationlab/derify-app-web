@@ -181,8 +181,8 @@ export const Token = {
 }
 
 
-const cache = {gasPrice: 1e9}
-
+const cache = {gasPrice: 1.5*1e9, gas: 21000, gasLimit: 21009}
+let lastCacheTime = 0;
 export const contractDecimals = 8
 
 export function toContractUnit (number) {
@@ -243,6 +243,18 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
 }
 
 
+async function updateGasPrice(web3){
+  const currentTime = (new Date()).getTime();
+  if((currentTime - lastCacheTime) > 1000 * 60 * 60){
+    lastCacheTime = currentTime;
+    web3.eth.getGasPrice().then((gasPrice) => {
+      if(gasPrice) {
+        cache.gasPrice = gasPrice
+      }
+    });
+  }
+}
+
 /**
  *
  * @param abi
@@ -257,11 +269,7 @@ export default class Contract {
     const web3 = new Web3(window.ethereum)
 
     //update gas price
-    web3.eth.getGasPrice().then((gasPrice) => {
-      if(gasPrice) {
-        cache.gasPrice = gasPrice
-      }
-    });
+    updateGasPrice(web3);
 
     this.web3 = web3
     this.from = from
@@ -280,15 +288,6 @@ export default class Contract {
     this.eDRF = new web3.eth.Contract(ABIData.eDRF.abi, ABIData.eDRF.address, option)
     this.DRF = new web3.eth.Contract(ABIData.DRF.abi, ABIData.DRF.address, option)
   }
-
-  updateGasPrice (web3) {
-    web3.eth.getGasPrice().then((gasPrice) => {
-      if(gasPrice) {
-        cache.gasPrice = gasPrice
-      }
-    })
-  }
-
   /**
    * deposit amount
    * @param amount
@@ -667,7 +666,7 @@ export default class Contract {
    * @param size
    * @param price
    */
-  async getPositionChangeFee ({token, side, actionType, size, price}) {
+  async getPositionChangeFee (token, side, actionType, size, price) {
     const ratioSum = await this.__getPredictPositionChangeFeeRatioSum(token, side,
       size,
       price,
