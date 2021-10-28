@@ -181,7 +181,7 @@ export const Token = {
 }
 
 
-const cache = {gasPrice: 1.5*1e9,gasLimit: 50000}
+const cache = {gasPrice: 1.5*1e9,gasLimit: 21000}
 let lastCacheTime = 0;
 export const contractDecimals = 8
 
