@@ -246,7 +246,7 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
 async function updateGasPrice(web3){
   const currentTime = (new Date()).getTime();
   if((currentTime - lastCacheTime) > 1000 * 60 * 60){
-    lastCacheTime = currentTime;
+    //lastCacheTime = currentTime;
     web3.eth.getGasPrice().then((gasPrice) => {
       if(gasPrice) {
         cache.gasPrice = gasPrice
