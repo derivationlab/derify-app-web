@@ -25,16 +25,11 @@ export function contract (account, broker = '') {
                 }
 
                 return (async () => {
-                  try{
-                    let data = await ret;
-                    if(contractDebug) {
-                      console.log('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",ret=", data)
-                    }
-                    return data;
-                  }catch (e){
-                    console.error('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",exception", e);
-                    return null;
+                  let data = await ret;
+                  if(contractDebug) {
+                    console.log('response.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",ret=", data)
                   }
+                  return data;
                 })();
 
               }else{

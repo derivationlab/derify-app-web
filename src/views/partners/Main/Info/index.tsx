@@ -10,6 +10,7 @@ import {BrokerInfo, getBrokerByTrader} from "@/api/broker";
 import broker, {BrokerAccountInfo, BrokerState} from "@/store/modules/broker";
 import {useIntl} from "react-intl";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 
 declare type InfoProps = {
   showEditModal?:boolean;
@@ -53,7 +54,7 @@ const Info:React.FC<InfoProps> = (props) => {
           </Col>
           <Col>
             <div className="name-wrapper">{broker?.name}</div>
-            <div>{broker?.broker}</div>
+            <div><TextOverflowView text={broker.broker} showPos={ShowPosEnum.mid} len={64}/></div>
             <div>@{broker?.id}</div>
           </Col>
         </Row>

@@ -20,7 +20,7 @@ const Faucet: React.FC<FaucetProps> = props => {
   const [traderInputVal,setTraderInputValue] = useState("");
   const [loading,setLoading] = useState(false);
   const defaultUSDTAmount = 100000;
-
+  const tokenAddress = Token.USDT;
   const dispatch = useDispatch();
 
   const {formatMessage} = useIntl();
@@ -103,7 +103,7 @@ const Faucet: React.FC<FaucetProps> = props => {
             {$t("Faucet.Address")}
           </Col>
           <Col>
-            <Input  size="large" style={{width: "400px"}} value={trader} onChange={({target:{value}}) => setTraderInputValue(value)}/>
+            <Input  size="large" style={{width: "400px"}} value={tokenAddress} readOnly={true}/>
           </Col>
         </Row>
       </Col>
