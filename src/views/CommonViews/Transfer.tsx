@@ -85,7 +85,7 @@ const Transfer: React.FC<TransferProps> = props => {
     try{
       Object.assign(accountData, await contract.getTraderAccount(trader));
       transferData.accountData = accountData
-      transferData.balanceOfDerify = accountData.balance
+      transferData.balanceOfDerify = accountData.availableMargin
     }catch (e){
       console.log('getTraderAccount error:', e)
     }
