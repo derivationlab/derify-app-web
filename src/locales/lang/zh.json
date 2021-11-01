@@ -319,6 +319,7 @@
 	"Rewards.Bond.Card.Exchange":"兑换",
 	"Rewards.Bond.Card.Redeem":"赎回",
 	"Rewards.Bond.Card.Staking":"存入",
+	"Rewards.Bond.Card.APY":"债券APY",
 	"Rewards.Bond.WithdrawPopup.title":"提现 bDRF",
 	"Rewards.Bond.WithdrawPopup.Amount":"提现数量",
 	"Rewards.Bond.WithdrawPopup.Max":"可提现",
