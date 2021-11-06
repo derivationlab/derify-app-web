@@ -68,6 +68,7 @@ const Faucet: React.FC<FaucetProps> = props => {
     sendUSDT(traderInputVal, defaultUSDTAmount).then((data) => {
 
       if(data.code === 0){
+        setUsdtClaimed(true);
         addTestTokentoWallet();
         DerifyTradeModal.success();
       }else{
