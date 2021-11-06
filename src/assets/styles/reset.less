@@ -23,9 +23,10 @@
       color: @text-color;
       background: @main-block;
     }
-    &[disabled]{
+    &[disabled],&.disabled{
       color: #e0e0e0;
       background: #ccc;
+      border: 1px solid #ccc;
     }
   }
 

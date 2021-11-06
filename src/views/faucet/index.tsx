@@ -123,7 +123,7 @@ const Faucet: React.FC<FaucetProps> = props => {
         <Row justify={"center"}>
           <Col>
             <Spin spinning={loading}>
-              <Button disabled={usdtClaimed} type={"primary"} onClick={onSendUSDT}>
+              <Button className={usdtClaimed ? 'disabled' :''} type={"primary"} onClick={onSendUSDT}>
                 {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
               </Button>
             </Spin>
