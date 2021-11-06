@@ -59,12 +59,6 @@ const Faucet: React.FC<FaucetProps> = props => {
     }
 
     setLoading(true);
-    if(!traderInputVal){
-      setLoading(false);
-      DerifyTradeModal.failed({msg: "error input!"});
-      return;
-    }
-
     sendUSDT(traderInputVal, defaultUSDTAmount).then((data) => {
 
       if(data.code === 0){
@@ -80,7 +74,7 @@ const Faucet: React.FC<FaucetProps> = props => {
     }).finally(() => {
       setLoading(false);
     })
-  },[traderInputVal]);
+  },[traderInputVal,usdtClaimed]);
 
   const addTestTokentoWallet = useCallback(async() => {
     const tokenAddress = Token.USDT;
