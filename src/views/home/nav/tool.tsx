@@ -148,7 +148,7 @@ function Tool() {
   return (
     <Row align={"middle"} className="tool">
       <Col style={{ marginRight: "10px" }}>
-        <Button type="link"><FormattedMessage id="Trade.navbar.Feedback" /></Button>
+        <Button type="link"><a href={"https://derify.canny.io/"} target={"_blank"}><FormattedMessage id="Trade.navbar.Feedback" /></a> </Button>
       </Col>
       <Col style={{ marginRight: "10px" }}>
         {isLogin ? (
