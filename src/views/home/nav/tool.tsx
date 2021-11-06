@@ -148,6 +148,9 @@ function Tool() {
   return (
     <Row align={"middle"} className="tool">
       <Col style={{ marginRight: "10px" }}>
+        <Button type="link"><FormattedMessage id="Trade.navbar.Feedback" /></Button>
+      </Col>
+      <Col style={{ marginRight: "10px" }}>
         {isLogin ? (
           <Popover
             content={<Account {...{ account: account, blance: blance }} />}
