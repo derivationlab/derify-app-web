@@ -249,7 +249,7 @@ async function updateGasPrice(web3){
     //lastCacheTime = currentTime;
     web3.eth.getGasPrice().then((gasPrice) => {
       if(gasPrice) {
-        cache.gasPrice = gasPrice
+        cache.gasPrice = Math.ceil(parseInt(gasPrice) * 1.2)
       }
     });
   }

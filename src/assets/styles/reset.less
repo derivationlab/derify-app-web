@@ -3,6 +3,12 @@
   color: @primary-color;
   background: @main-block;
   border-radius: 16px;
+  &-link{
+    span{
+      border-bottom: 1px solid @primary-color;
+    }
+
+  }
   &-lg{
     border-radius: 22px;
   }
@@ -16,6 +22,11 @@
       border-color: @main-border-color;
       color: @text-color;
       background: @main-block;
+    }
+    &[disabled],&.disabled{
+      color: #e0e0e0;
+      background: #ccc;
+      border: 1px solid #ccc;
     }
   }
 
@@ -158,6 +169,7 @@
 
 .ant-table-thead>tr>th {
   border-bottom: none;
+  padding: 16px 6px;
 }
 
 .ant-table-thead>tr>th {
@@ -167,6 +179,7 @@
 
 .ant-table-tbody>tr>td {
   border-bottom: none;
+  padding: 16px 6px;
 }
 
 .ant-table-cell-fix-left,

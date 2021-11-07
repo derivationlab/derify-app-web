@@ -42,7 +42,7 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
 
   const applyBurnAmount = 60000;
 
-  const [accountType, setAccountType] = useState<number>(accountOptions[0].value);
+  const [accountType, setAccountType] = useState<number>(accountOptions[1].value);
   const [showAddInfo, setShowAddInfo] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string|React.ReactNode>("");
 

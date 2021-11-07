@@ -554,7 +554,7 @@ const actions = {
       if(!trader){
         return {}
       }
-      return await web3Utils.contract(trader).getPositionChangeFee({token, side, actionType, size, price})
+      return await web3Utils.contract(trader).getPositionChangeFee(token, side, actionType, size, price)
     }
   },
   getTradingFee (token:string, trader:string, size:string|number, price:string|number):Promise<number> {

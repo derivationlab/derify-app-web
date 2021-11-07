@@ -10,7 +10,7 @@ const NavBar: React.FC<any> = props => {
     <Row align={'middle'} justify="space-between" className="nav">
       <Col>
         <Row>
-          <img height={48}  className="logo" src={Icon} alt="" />
+          <a href="https://derify.finance/" target="_blank"><img height={48}  className="logo" src={Icon} alt="" /></a>
           <Menu />
         </Row>
       </Col>

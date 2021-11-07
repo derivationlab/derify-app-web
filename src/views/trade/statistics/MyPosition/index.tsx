@@ -181,7 +181,7 @@ const MyPosition: React.FC = () => {
           trigger="hover"
         >
           <Space>
-            {$t("Trade.TradeHistory.List.RealizedPnL")}
+            {$t("Trade.MyPosition.List.UnrealizedPnL")}
             <IconFont type="icon-wenhao" />
           </Space>
         </Popover>

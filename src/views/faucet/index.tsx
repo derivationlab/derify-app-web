@@ -6,7 +6,7 @@ import {useIntl} from "react-intl";
 import {RootStore} from "@/store";
 import {Dispatch} from "redux";
 import Link from "antd/lib/typography/Link";
-import {sendUSDT} from "@/api/trade";
+import {isUSDTClaimed, sendUSDT} from "@/api/trade";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import ErrorMessage, {DerifyErrorNotice} from "@/components/ErrorMessage";
 import "./index.less"
@@ -18,6 +18,8 @@ const Faucet: React.FC<FaucetProps> = props => {
   const { history } = props;
   const {trader} = useSelector((state:RootStore) => state.user);
   const [traderInputVal,setTraderInputValue] = useState("");
+  const [usdtClaimed,setUsdtClaimed] = useState(true);
+
   const [loading,setLoading] = useState(false);
   const defaultUSDTAmount = 100000;
   const tokenAddress = Token.USDT;
@@ -40,22 +42,27 @@ const Faucet: React.FC<FaucetProps> = props => {
   useEffect(() => {
     if(trader){
       setTraderInputValue(trader);
+      isUSDTClaimed(trader).then((res) => {
+        setUsdtClaimed(res);
+      }).catch(e => {
+        console.log('error', e);
+      })
     }
   }, [trader])
 
   const $t = intl;
 
   const onSendUSDT = useCallback(() => {
-    setLoading(true);
-    if(!traderInputVal){
-      setLoading(false);
-      DerifyTradeModal.failed({msg: "error input!"});
+    if(usdtClaimed){
+      DerifyTradeModal.failed({msg: formatMessage({id: 'Faucet.GetUSDTError'})});
       return;
     }
 
+    setLoading(true);
     sendUSDT(traderInputVal, defaultUSDTAmount).then((data) => {
 
       if(data.code === 0){
+        setUsdtClaimed(true);
         addTestTokentoWallet();
         DerifyTradeModal.success();
       }else{
@@ -67,7 +74,7 @@ const Faucet: React.FC<FaucetProps> = props => {
     }).finally(() => {
       setLoading(false);
     })
-  },[traderInputVal]);
+  },[traderInputVal,usdtClaimed]);
 
   const addTestTokentoWallet = useCallback(async() => {
     const tokenAddress = Token.USDT;
@@ -111,7 +118,7 @@ const Faucet: React.FC<FaucetProps> = props => {
         <Row justify={"center"}>
           <Col>
             <Spin spinning={loading}>
-              <Button type="primary" onClick={onSendUSDT}>
+              <Button className={usdtClaimed ? 'disabled' :''} type={"primary"} onClick={onSendUSDT}>
                 {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
               </Button>
             </Spin>

@@ -309,7 +309,7 @@ function Rewards() {
                   <Statistic value={fck(bondInfo.bondAnnualInterestRatio,-6,2)} suffix={"%"} />
                 </Col>
                 <Col flex="100%" className="key-wrapper">
-                  APY
+                  {$t('Rewards.Bond.Card.APY')}
                 </Col>
                 <Col flex="100%">
                   <Button

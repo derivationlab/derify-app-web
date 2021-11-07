@@ -24,7 +24,7 @@ const Deposit: React.FC<DepositProps> = props => {
   const {selectedAddress} = useSelector((state:RootStore) => state.user);
   const [errorMsg, setErrorMsg] = useState<string|React.ReactNode>("");
   const [amount, setAmount] = useState<string>("");
-  const [accountType, setAccountType] = useState<number>(BondAccountType.DerifyAccount);
+  const [accountType, setAccountType] = useState<number>(BondAccountType.WalletAccount);
 
   const { formatMessage } = useIntl();
   const unitAmount = 600;
