@@ -13,6 +13,7 @@ interface TextOverflowViewProps {
 }
 
 const TextOverflowView: React.FC<TextOverflowViewProps> = ({ text, len,showPos}) => {
+  text = text || "";
   let resultText = text;
   const showLen = len;
   const pos = showPos;

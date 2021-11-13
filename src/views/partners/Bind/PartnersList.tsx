@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
-import {Row, Col, Avatar, Space, Pagination, Spin} from "antd";
+import {Row, Col, Avatar, Space, Pagination, Spin, Button} from "antd";
 import classNames from "classnames";
 import {BrokerInfo, getBrokerList} from "@/api/broker";
 import {Pagenation} from "@/api/types";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
+import {useIntl} from "react-intl";
 
 export type Partners = {
   name: string;
@@ -20,6 +21,22 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
 
   const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
   const [loading, setLoading] = useState(true);
+  const { formatMessage } = useIntl();
+  const [intrMap, setIntrMap] = useState<{[key:string]:boolean}>({})
+
+  function intl<T>(id:string,values:T[] = []) {
+
+    const intlValues:{[key:number]:T} = {}
+
+    values.forEach((item, index) => {
+      intlValues[index] = item
+    })
+
+
+    return formatMessage({id}, intlValues)
+  }
+
+  const $t = intl;
 
   useEffect(() => {
     setLoading(true);
@@ -59,9 +76,13 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                 <Col  style={{flex:"1",overflow:"hidden",textOverflow:"ellipsis"}}>
                   <Row style={{overflow:"hidden",textOverflow:"ellipsis"}}>
                     <Col flex="100%">{item.name}</Col>
-                    <Col flex="100%">{item.id}</Col>
+                    <Col flex="100%">@{item.id}</Col>
                     <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
-                      <TextOverflowView text={item.broker} showPos={ShowPosEnum.mid} len={19}/>
+                      <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={!!intrMap[item.broker] ? item.introduction.length : 25}></TextOverflowView>
+                      <Button style={{display:!item.introduction?"none":""}} onClick={() => {
+                        intrMap[item.broker] = !intrMap[item.broker];
+                        setIntrMap(intrMap);
+                      }} type={"link"}>{!!intrMap[item.broker] ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</Button>
                     </Col>
                   </Row>
                 </Col>
