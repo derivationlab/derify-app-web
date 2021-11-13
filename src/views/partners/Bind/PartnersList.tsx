@@ -94,7 +94,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                             </Col>
                           </Row>
                         }
-                        trigger="hover"
+                        trigger="click"
                       >
                         <Button style={{display:!item.introduction?"none":""}} type={"link"}>{$t("Broker.Broker.InfoEdit.Introduction")}</Button>
                       </Popover>
