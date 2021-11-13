@@ -19,6 +19,7 @@ export class BrokerAccountInfo{
   broker:string = "";
   name:string = "";
   logo:string = "";
+  introduction:string = "";
   update_time:string = "";
   referencePage:string = "";
   rewardBalance: number|string = 0;

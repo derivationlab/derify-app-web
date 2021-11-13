@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Row, Col, Button, Avatar } from "antd";
+import {Row, Col, Button, Avatar, Space} from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
 import IconFont from "@/components/IconFont";
@@ -11,6 +11,8 @@ import broker, {BrokerAccountInfo, BrokerState} from "@/store/modules/broker";
 import {useIntl} from "react-intl";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
+import classNames from "classnames";
+import './index.less'
 
 declare type InfoProps = {
   showEditModal?:boolean;
@@ -22,6 +24,7 @@ const Info:React.FC<InfoProps> = (props) => {
   const {isLogin,trader} = useSelector((state:RootStore) => state.user);
   const broker = useSelector<RootStore, BrokerAccountInfo>(state => state.broker.broker);
   const {formatMessage} = useIntl();
+  const [showAllIntrudct, setShowAllIntrudct] = useState(false);
 
   function intl<T>(id:string,values:T[] = []) {
 
@@ -46,35 +49,44 @@ const Info:React.FC<InfoProps> = (props) => {
 
   const $t = intl;
   return (
-    <Row justify="space-between" align="middle" className="info-container">
-      <Col>
-        <Row gutter={20} align="middle">
-          <Col>
-            <Avatar src={broker?.logo} size={64} icon={<UserOutlined />} />
-          </Col>
-          <Col>
-            <div className="name-wrapper">{broker?.name}</div>
-            <div><TextOverflowView text={broker.broker} showPos={ShowPosEnum.mid} len={64}/></div>
-            <div>@{broker?.id}</div>
-          </Col>
-        </Row>
-      </Col>
-      <Col>
-        <WalletConnectButtonWrapper type="primary">
-          <Button
-            type="primary"
-            icon={<IconFont type="icon-bianji" />}
-            onClick={() => setIsModalVisible(true)}
-          >
-            {$t("Broker.Broker.InfoEdit.Edit")}
-          </Button>
-        </WalletConnectButtonWrapper>
-      </Col>
-      <Edit visible={isModalVisible} onSubmitSunccess={(broker) => {
-        setIsModalVisible(false);
-        dispatch({type:"broker/updateBroker", payload:broker});
-      }} onCancel={() => setIsModalVisible(false)} />
-    </Row>
+    <>
+      <Row justify="space-between" align="middle" className="info-container">
+        <Col>
+          <Row gutter={20} align="middle">
+            <Col>
+              <Avatar src={broker?.logo} size={64} icon={<UserOutlined />} />
+            </Col>
+            <Col>
+              <div className="name-wrapper">{broker?.name}</div>
+              <div>@{broker?.id}</div>
+            </Col>
+          </Row>
+        </Col>
+        <Col>
+          <WalletConnectButtonWrapper type="primary">
+            <Button
+              type="primary"
+              icon={<IconFont type="icon-bianji" />}
+              onClick={() => setIsModalVisible(true)}
+            >
+              {$t("Broker.Broker.InfoEdit.Edit")}
+            </Button>
+          </WalletConnectButtonWrapper>
+        </Col>
+        <Edit visible={isModalVisible} onSubmitSunccess={(broker) => {
+          setIsModalVisible(false);
+          dispatch({type:"broker/updateBroker", payload:broker});
+        }} onCancel={() => setIsModalVisible(false)} />
+      </Row>
+      <Row gutter={20} align={"top"}>
+        <Col>
+          <div className="intr-wrapper">
+            <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? broker.introduction.length : 240}></TextOverflowView>
+            <Button onClick={() => setShowAllIntrudct(!showAllIntrudct)} type={"link"}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</Button>
+          </div>
+        </Col>
+      </Row>
+    </>
   );
 }
 
