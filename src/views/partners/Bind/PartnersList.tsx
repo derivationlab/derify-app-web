@@ -7,6 +7,7 @@ import {Pagenation} from "@/api/types";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import {FormattedMessage, useIntl} from "react-intl";
 import {amountFormt} from "@/utils/utils";
+import "./PartnersList.less"
 
 export type Partners = {
   name: string;
@@ -79,6 +80,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                     <Col flex="100%">{item.name}</Col>
                     <Col flex="100%">@{item.id}</Col>
                     <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
+                      <div className={"intr-desc"}>
                       <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={!!intrMap[item.broker] ? item.introduction.length : 25}/>
                       <Popover
                         placement="bottom"
@@ -96,6 +98,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                       >
                         <Button style={{display:!item.introduction?"none":""}} type={"link"}>{$t("Broker.Broker.InfoEdit.Introduction")}</Button>
                       </Popover>
+                      </div>
                     </Col>
                   </Row>
                 </Col>
