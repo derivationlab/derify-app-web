@@ -6,7 +6,7 @@ import {BrokerInfo, getBrokerList} from "@/api/broker";
 import {Pagenation} from "@/api/types";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import {FormattedMessage, useIntl} from "react-intl";
-import {amountFormt, countLength} from "@/utils/utils";
+import {amountFormt, countLength, cutLength} from "@/utils/utils";
 import "./PartnersList.less"
 
 export type Partners = {
@@ -83,7 +83,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                         {
                           countLength(item.introduction) <= 47 ? <>{item.introduction}</> :
                             <>
-                              <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={47}/>
+                              <span>{cutLength(item.introduction, 47) + "..."}</span>
                               <Popover
                                 placement="bottom"
                                 content={
