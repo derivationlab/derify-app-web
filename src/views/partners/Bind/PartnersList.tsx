@@ -52,8 +52,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
     <Spin spinning={loading}>
       <Row
         className="partners-list-wrapper"
-        gutter={[0, 20]}
-        justify="space-between"
+        gutter={[20, 20]}
       >
         {pagenation.records.map((item, i) => (
           <Col
