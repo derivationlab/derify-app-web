@@ -268,7 +268,7 @@ export function updateTraderAccess(trader){
 
 
 /**
- * 交易记录
+ * trade record domain
  */
 export class TradeRecord {
   id;// uuid
