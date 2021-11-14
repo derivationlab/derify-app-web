@@ -12,7 +12,7 @@ import Trade from "@/views/trade";
 import {ReactComponent} from "*.svg";
 import {useAsync} from "react-use";
 import Bind from "@/views/partners/Bind";
-import {createDataEvenet} from "@/api/trade";
+import {createDataEvenet, updateTraderAccess} from "@/api/trade";
 import {TokenPair} from "@/store/modules/contract";
 import {getRootPath} from "@/views/home/nav/menu";
 

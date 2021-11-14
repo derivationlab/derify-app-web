@@ -245,6 +245,10 @@ export function createTokenPriceChangeEvenet (tokenKey, callback){
   return events
 }
 
+export function updateTraderAccess(trader){
+  return io.post('/api/trader_info_updates',{trader});
+}
+
 
 /**
  * 交易记录
