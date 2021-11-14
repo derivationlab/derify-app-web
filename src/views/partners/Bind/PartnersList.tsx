@@ -6,7 +6,7 @@ import {BrokerInfo, getBrokerList} from "@/api/broker";
 import {Pagenation} from "@/api/types";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import {FormattedMessage, useIntl} from "react-intl";
-import {amountFormt} from "@/utils/utils";
+import {amountFormt, countLength} from "@/utils/utils";
 import "./PartnersList.less"
 
 export type Partners = {
@@ -81,23 +81,29 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                     <Col flex="100%">@{item.id}</Col>
                     <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
                       <div className={"intr-desc"}>
-                      <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={!!intrMap[item.broker] ? item.introduction.length : 25}/>
-                      <Popover
-                        placement="bottom"
-                        content={
-                          <Row>
-                            <Col className="title" flex="100%">
-                              {item.name}-{$t("Broker.Broker.InfoEdit.Introduction")}
-                            </Col>
-                            <Col>
-                              {item.introduction}
-                            </Col>
-                          </Row>
+                        {
+                          countLength(item.introduction) <= 25 ? <>{item.introduction}</> :
+                            <>
+                              <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={25}/>
+                              <Popover
+                                placement="bottom"
+                                content={
+                                  <Row>
+                                    <Col className="title" flex="100%">
+                                      {item.name}-{$t("Broker.Broker.InfoEdit.Introduction")}
+                                    </Col>
+                                    <Col>
+                                      {item.introduction}
+                                    </Col>
+                                  </Row>
+                                }
+                                trigger="click"
+                              >
+                                <Button style={{display: !item.introduction ? "none" : ""}}
+                                        type={"link"}>{$t("Broker.Broker.InfoEdit.Introduction")}</Button>
+                              </Popover>
+                            </>
                         }
-                        trigger="click"
-                      >
-                        <Button style={{display:!item.introduction?"none":""}} type={"link"}>{$t("Broker.Broker.InfoEdit.Introduction")}</Button>
-                      </Popover>
                       </div>
                     </Col>
                   </Row>

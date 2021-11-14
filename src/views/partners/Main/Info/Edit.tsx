@@ -274,7 +274,10 @@ const Edit: React.FC<EditProps> = props => {
             label={$t("Broker.Broker.InfoEdit.Introduction")}
             name="introduction"
           >
-            <Input.TextArea showCount={true} autoSize={{ minRows: 2, maxRows: 6 }} value={broker.introduction} maxLength={800}/>
+            <Input.TextArea autoSize={{ minRows: 2, maxRows: 6 }} value={broker.introduction} onChange={({target:{value}}) =>{
+              broker.id = value.toLowerCase();
+              form.setFields
+            }}/>
           </Form.Item>
         </Form>
       </Spin>

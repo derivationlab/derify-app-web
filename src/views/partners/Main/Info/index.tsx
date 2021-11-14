@@ -13,6 +13,7 @@ import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import classNames from "classnames";
 import './index.less'
+import {countLength} from "@/utils/utils";
 
 declare type InfoProps = {
   showEditModal?:boolean;
@@ -81,8 +82,13 @@ const Info:React.FC<InfoProps> = (props) => {
       <Row gutter={20} align={"top"}>
         <Col>
           <div className="intr-wrapper">
-            <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? broker.introduction.length : 240}></TextOverflowView>
-            <Button onClick={() => setShowAllIntrudct(!showAllIntrudct)} type={"link"}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</Button>
+            {
+              countLength(broker.introduction) <= 240 ? <>{broker.introduction}</>:
+              <>
+                <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? (broker||"").introduction.length : 240}></TextOverflowView>
+                <Button onClick={() => setShowAllIntrudct(!showAllIntrudct)} type={"link"}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</Button>
+              </>
+            }
           </div>
         </Col>
       </Row>
