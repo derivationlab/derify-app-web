@@ -120,7 +120,7 @@ function DataPanel() {
                     trigger="hover"
                   >
                     <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />:
-                    <span className={pcRate < 0 ? "main-red" :"main-green"}> {amountFormt(pcRate, 4,true,"0",-6)}%</span>
+                    <span className={pcRate < 0 ? "main-red" :"main-green"}> {amountFormt(pcRate, 2,true,"0",-6)}%</span>
                     <IconFont type="icon-wenhao" />
                   </Popover>
                 </Space>
