@@ -13,12 +13,13 @@ interface TextOverflowViewProps {
 }
 
 const TextOverflowView: React.FC<TextOverflowViewProps> = ({ text, len,showPos}) => {
+  text = text || "";
   let resultText = text;
   const showLen = len;
   const pos = showPos;
 
   if(showLen < text.length){
-    if(pos === ShowPosEnum.left){
+    if(pos === ShowPosEnum.right){
       resultText = text.substr(0, showLen) + "...";
     }else if(pos === ShowPosEnum.mid){
       resultText = text.substr(0, showLen/2) + "..." + text.substr(text.length - showLen/2, showLen/2);

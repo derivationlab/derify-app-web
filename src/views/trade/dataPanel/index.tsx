@@ -48,7 +48,6 @@ function DataPanel() {
 
   const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
   const curTokenPair = useSelector<RootStore,TokenPair>(state => state.contract.curPair)
-  const {longPmrRate, shortPmrRate} = useSelector((state:RootStore) => state.contract.contractData);
 
 
   const curPrice = contractState.curPair.num||0
@@ -68,11 +67,11 @@ function DataPanel() {
       return
     }
 
-    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: curPair.address,openType: OpenType.MarketOrder})
+    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: curTokenPair.address,openType: OpenType.MarketOrder})
 
     dispatch(action)
 
-  }, [walletInfo])
+  }, [walletInfo,curTokenPair])
 
   useEffect(() => {
     loadHomeData()
@@ -87,18 +86,18 @@ function DataPanel() {
           setIsModalVisible(true);
         }}
       >
-        <span>{contractState.curPair.name}</span>
+        <span>{curTokenPair.name}</span>
         <RightOutlined />
       </Col>
       <Col flex="100%">
         <Row justify={"space-between"} align="bottom">
           <Col>
             <Row className="trade-data">
-              <Col><Statistic className={curPercent
-              < 0 ? 'main-red' : 'main-green'} value={fck(curPrice,0,2)}/></Col>
+              <Col><Statistic className={curTokenPair.percent
+              < 0 ? 'main-red' : 'main-green'} value={fck(curTokenPair.num,0,2)}/></Col>
               <Col>
-                <span className={curPercent
-                < 0 ? 'red' : 'green'}>{amountFormt(contractState.curPair.percent, 2,true, "--",0)}%</span>
+                <span className={curTokenPair.percent
+                < 0 ? 'red' : 'green'}>{amountFormt(curTokenPair.percent, 2,true, "--",0)}%</span>
               </Col>
             </Row>
           </Col>
@@ -130,8 +129,8 @@ function DataPanel() {
                 <Space size={4}>
                   {intl("Trade.OpenPosition.Kline.PMAPY")}:
                   <span>
-                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(longPmrRate,2,true,"--", 0)}%/
-                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(shortPmrRate,2,true,"--", 0)}%
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(curTokenPair.longPmrRate,2,false,"--", 0)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(curTokenPair.shortPmrRate,2,false,"--", 0)}%
                   </span>
                   <Popover
                     placement="bottom"
@@ -210,13 +209,11 @@ function DataPanel() {
                   <Col>
                     <div>{token.num}</div>
                     <div>
-                      <Statistic
+                      <span
                         className={classNames(
                           (token.percent||0) > 0 ? "main-green" : "main-red "
                         )}
-                        value={amountFormt(token.percent,2,true,"--",0)}
-                        suffix="%"
-                      />
+                      >{amountFormt(token.percent,2,true,"--",0)}%</span>
                     </div>
                   </Col>
                 </Row>

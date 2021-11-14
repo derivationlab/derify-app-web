@@ -45,7 +45,7 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
     val *= Math.pow(10, shiftNum)
 
     if(showPositive && val > 0) {
-      return "+" +  bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
+      return "+" +  (bit >=0 ? Number(val).toFixed(bit) : Number(val).toString());
     }
 
     return bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
@@ -122,4 +122,48 @@ export function toChecksumAddress (address) {
   }
 
   return ret
+}
+
+
+export function countLength(str) {
+  if(!str){
+    return 0;
+  }
+
+  var r = 0;
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    // Shift_JIS: 0x0 ～ 0x80, 0xa0 , 0xa1 ～ 0xdf , 0xfd ～ 0xff
+    // Unicode : 0x0 ～ 0x80, 0xf8f0, 0xff61 ～ 0xff9f, 0xf8f1 ～ 0xf8f3
+    if ( (c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
+      r += 1;
+    } else {
+      r += 2;
+    }
+  }
+  return r;
+}
+
+export function cutLength(str, length){
+  if(!str){
+    return "";
+  }
+
+  var r = 0;
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charCodeAt(i);
+    // Shift_JIS: 0x0 ～ 0x80, 0xa0 , 0xa1 ～ 0xdf , 0xfd ～ 0xff
+    // Unicode : 0x0 ～ 0x80, 0xf8f0, 0xff61 ～ 0xff9f, 0xf8f1 ～ 0xf8f3
+    if ( (c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
+      r += 1;
+    } else {
+      r += 2;
+    }
+
+    if(r > length){
+      return str.substr(0,i);
+    }
+  }
+
+  return str;
 }

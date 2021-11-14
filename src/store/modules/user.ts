@@ -15,6 +15,7 @@ import EnIcon from "@/assets/images/en.png";
 import ZhIcon from "@/assets/images/zh.png";
 import {Dispatch} from "redux";
 import {mergeNonNull, toChecksumAddress} from "@/utils/utils";
+import {updateTraderAccess} from "@/api/trade";
 
 export class ChainEnum {
   static values : ChainEnum[] = []
@@ -301,6 +302,7 @@ const actions = {
 
       const walletInfo = await getWallet();
       walletInfo.showWallet = undefined;
+      updateTraderAccess(walletInfo.selectedAddress);
 
       commit({type: "user/updateState", payload: mergeNonNull({},walletInfo)})
       return walletInfo

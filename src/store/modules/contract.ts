@@ -1,21 +1,24 @@
 import * as web3Utils from '@/utils/web3Utils'
 import update from "react-addons-update";
 
-import { getTradeList, getTradeBalanceDetail, getTraderEDRFBalance } from '@/api/trade'
+import {getTradeBalanceDetail, getTradeList} from '@/api/trade'
 import {
-  Token,
-  SideEnum,
-  toHexString,
-  toContractUnit,
+  CancelOrderedPositionTypeEnum,
   fromContractUnit,
-  UnitTypeEnum,
-  PositionView, OpenType, CancelOrderedPositionTypeEnum, PositionDataView, OrderLimitPositionView, OrderTypeEnum
+  OpenType,
+  OrderTypeEnum,
+  PositionDataView,
+  PositionView,
+  SideEnum,
+  toContractUnit,
+  toHexString,
+  Token,
+  UnitTypeEnum
 } from '@/utils/contractUtil'
-import { amountFormt, fck } from '@/utils/utils'
+import {amountFormt} from '@/utils/utils'
 import {createReducer} from "redux-create-reducer";
 import {TraderAccount} from "@/utils/types";
 import {Dispatch} from "redux";
-import {CHANGE_LANG} from "@/store/modules/types";
 
 const tokenPriceRateEnventMap:{[key:string]:EventSource} = {};
 export declare type TokenPair = {
@@ -23,6 +26,8 @@ export declare type TokenPair = {
   name: string,
   num: number,
   percent: number,
+  longPmrRate:number,
+  shortPmrRate:number,
   enable: boolean,
   address: string
 }
@@ -74,10 +79,10 @@ export declare type ContractState = {
 
 const state : ContractState = {
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC},
-    {key: 'ETH', name: 'ETH / USDT', num: 0, percent: 0, enable: true, address: Token.ETH},
-    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'},
-    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b'}
+    {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC,longPmrRate: 0,shortPmrRate:0},
+    {key: 'ETH', name: 'ETH / USDT', num: 0, percent: 0, enable: true, address: Token.ETH,longPmrRate: 0,shortPmrRate:0},
+    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0},
+    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0}
   ],
   get curPair () {
     const pair = this.pairs.find(pair => pair.key == this.curPairKey)
@@ -355,7 +360,7 @@ const actions = {
         .cancleAllOrderedPositions()
     }
   },
-  loadHomeData ({trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {
+  loadHomeData ({token, trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {
     // load home page data
     const self = this
     return async (commit:Dispatch) => {
@@ -367,15 +372,13 @@ const actions = {
       const contract = web3Utils.contract(trader)
 
       // 1.get cur token spotPrice
-      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
+      const curPair = state.pairs.find(pair => pair.address === token)
       if(curPair == undefined){
         return {}
       }
 
-      const updateAllPairPriceAction = self.updateAllPairPrice(trader, curPair.address, 0)
+      const updateAllPairPriceAction = self.updateAllPairPrice(trader, curPair.address)
       await updateAllPairPriceAction(commit);
-
-      const token = curPair.address
 
       data.curSpotPrice = await contract.getSpotPrice(token)
       commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
@@ -440,7 +443,7 @@ const actions = {
       return sysCloseUpperBound
   })
   },
-  updateAllPairPrice (trader:string, token:string,priceChangeRate:number) {
+  updateAllPairPrice (trader:string, token:string,priceChangeRate?:number,longPmrRate?:number|undefined, shortPmrRate?:number) {
     return async (commit:Dispatch) => {
       const contract = web3Utils.contract(trader)
 
@@ -448,23 +451,31 @@ const actions = {
         return {}
       }
 
-      state.pairs.forEach((pair) => {
-        if(!pair.enable){
-          return
+      for (const pair of state.pairs) {
+        if(!pair.enable || pair.address != token){
+          continue;
         }
 
-        contract.getSpotPrice(pair.address).then((spotPrice) => {
-          commit({type:'contract/UPDATE_PAIRS', payload:[{num: fromContractUnit(spotPrice), key: pair.key}]})
-        })
-
-        if(pair.address === token){
-          if(pair.key === state.curPairKey) {
-            commit({type:'contract/SET_CONTRACT_DATA', payload:{tokenPriceRate: amountFormt(priceChangeRate * 100,4, true,0)}})
-          }
-
-          commit({type:'contract/UPDATE_PAIRS', payload:[{percent: amountFormt(priceChangeRate * 100,4, true,0), key: pair.key}]})
+        if(longPmrRate !== undefined){
+          pair.longPmrRate = longPmrRate * 100;
         }
-      })
+
+        if(shortPmrRate != undefined){
+          pair.shortPmrRate = shortPmrRate * 100;
+        }
+
+        const num = await contract.getSpotPrice(pair.address);
+        if(num || num == 0){
+          pair.num = fromContractUnit(num);
+        }
+
+        if(priceChangeRate || priceChangeRate == 0){
+          pair.percent = priceChangeRate * 100;
+        }
+
+
+        commit({type:'contract/UPDATE_PAIRS', payload:[pair]});
+      }
     }
   },
 

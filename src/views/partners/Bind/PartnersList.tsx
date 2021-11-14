@@ -1,10 +1,13 @@
 import React, {useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
-import {Row, Col, Avatar, Space, Pagination, Spin} from "antd";
+import {Row, Col, Avatar, Space, Pagination, Spin, Button, Popconfirm, Popover} from "antd";
 import classNames from "classnames";
 import {BrokerInfo, getBrokerList} from "@/api/broker";
 import {Pagenation} from "@/api/types";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
+import {FormattedMessage, useIntl} from "react-intl";
+import {amountFormt, countLength, cutLength} from "@/utils/utils";
+import "./PartnersList.less"
 
 export type Partners = {
   name: string;
@@ -20,6 +23,22 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
 
   const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
   const [loading, setLoading] = useState(true);
+  const { formatMessage } = useIntl();
+  const [intrMap, setIntrMap] = useState<{[key:string]:boolean}>({})
+
+  function intl<T>(id:string,values:T[] = []) {
+
+    const intlValues:{[key:number]:T} = {}
+
+    values.forEach((item, index) => {
+      intlValues[index] = item
+    })
+
+
+    return formatMessage({id}, intlValues)
+  }
+
+  const $t = intl;
 
   useEffect(() => {
     setLoading(true);
@@ -33,8 +52,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
     <Spin spinning={loading}>
       <Row
         className="partners-list-wrapper"
-        gutter={[0, 20]}
-        justify="space-between"
+        gutter={[20, 20]}
       >
         {pagenation.records.map((item, i) => (
           <Col
@@ -59,9 +77,32 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                 <Col  style={{flex:"1",overflow:"hidden",textOverflow:"ellipsis"}}>
                   <Row style={{overflow:"hidden",textOverflow:"ellipsis"}}>
                     <Col flex="100%">{item.name}</Col>
-                    <Col flex="100%">{item.id}</Col>
+                    <Col flex="100%">@{item.id}</Col>
                     <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
-                      <TextOverflowView text={item.broker} showPos={ShowPosEnum.mid} len={19}/>
+                      <div className={"intr-desc"}>
+                        {
+                          countLength(item.introduction) <= 47 ? <>{item.introduction}</> :
+                            <>
+                              <span>{cutLength(item.introduction, 47) + "..."}</span>
+                              <Popover
+                                placement="bottom"
+                                content={
+                                  <Row>
+                                    <Col className="title" flex="100%">
+                                      {item.name}-{$t("Broker.Broker.InfoEdit.Introduction")}
+                                    </Col>
+                                    <Col>
+                                      {item.introduction}
+                                    </Col>
+                                  </Row>
+                                }
+                                trigger="click"
+                              >
+                                <span className={"derify-link"}>{$t("Broker.Broker.InfoEdit.SeeMore")}</span>
+                              </Popover>
+                            </>
+                        }
+                      </div>
                     </Col>
                   </Row>
                 </Col>

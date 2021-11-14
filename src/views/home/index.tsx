@@ -12,7 +12,7 @@ import Trade from "@/views/trade";
 import {ReactComponent} from "*.svg";
 import {useAsync} from "react-use";
 import Bind from "@/views/partners/Bind";
-import {createDataEvenet} from "@/api/trade";
+import {createDataEvenet, updateTraderAccess} from "@/api/trade";
 import {TokenPair} from "@/store/modules/contract";
 import {getRootPath} from "@/views/home/nav/menu";
 
@@ -56,11 +56,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
 
     dataEventSource = createDataEvenet(datas => {
       datas.forEach((data) => {
-        if(data.token === curPair.address){
-          dispatch({type: 'contract/SET_CONTRACT_DATA', payload:{longPmrRate: data.longPmrRate * 100, shortPmrRate: data.shortPmrRate * 100}})
-        }
-
-        const updateAllPairPriceAction = ContractModel.actions.updateAllPairPrice(trader, data.token, data.price_change_rate);
+        const updateAllPairPriceAction = ContractModel.actions.updateAllPairPrice(trader, data.token, data.price_change_rate, data.longPmrRate,data.shortPmrRate);
         updateAllPairPriceAction(dispatch);
       })
     });

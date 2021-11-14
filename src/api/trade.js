@@ -177,7 +177,7 @@ export async function getTraderEDRFBalance (trader, pageNum = 1, pageSize = 10) 
 
   return pagenation;
 }
-
+const eventDataKey = 'eventData';
 /**
  * get event data
  * @param callback {(data:{
@@ -192,15 +192,32 @@ export function createDataEvenet (callback){
     return null
   }
 
+  getEventData(callback);
 
   const events = new EventSource(DATA_EVENT_URL);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
+    window.localStorage.setItem(eventDataKey, event.data);
     callback(parsedData)
   }
 
   return events
+}
+
+/** get event data
+ * @param callback {(data:{
+  "token": string,
+  "price_change_rate": number,
+  "longPmrRate":number,
+  "shortPmrRate":number
+}[]) => void}
+ */
+export function getEventData(callback){
+  const localData = window.localStorage.getItem(eventDataKey);
+  if(localData){
+    callback(JSON.parse(localData))
+  }
 }
 
 /**
@@ -245,9 +262,13 @@ export function createTokenPriceChangeEvenet (tokenKey, callback){
   return events
 }
 
+export function updateTraderAccess(trader){
+  return io.post('/api/trader_info_updates',{trader});
+}
+
 
 /**
- * 交易记录
+ * trade record domain
  */
 export class TradeRecord {
   id;// uuid

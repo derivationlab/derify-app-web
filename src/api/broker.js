@@ -140,6 +140,7 @@ export async function updateBroker(param) {
   const content =  await io.post(`/api/broker_info_updates`, data, config)
 
   if(content && content.msg) {
+    localStorage.removeItem("broker_info_by_addr");
     return {success: true, msg: content.msg, data: content.data}
   }else if(content && content.error){
     return {success: false, msg: content.error,data: undefined}
@@ -233,6 +234,7 @@ export class BrokerInfo {
   name;
   logo;
   update_time;
+  introduction;
 }
 
 

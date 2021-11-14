@@ -10,6 +10,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {UploadChangeParam} from "antd/es/upload";
 import {useHistory} from "react-router-dom";
 import {UserState} from "@/store/modules/user";
+import {countLength, cutLength} from "@/utils/utils";
 
 interface EditProps extends ModalProps {
   onSubmitSunccess:(broker:BrokerInfo) =>void
@@ -170,7 +171,7 @@ const Edit: React.FC<EditProps> = props => {
       return
     }
 
-    const param:any = {broker: broker.broker, id: broker.id, name: broker.name};
+    const param:any = {...broker};
 
     if(logoFile){
       param.logo = logoFile
@@ -208,22 +209,24 @@ const Edit: React.FC<EditProps> = props => {
           }}
         >
           <ErrorMessage style={{margin: "10px 0"}} msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg("")}/>
-          <Form.Item
-
+          <Form.Item hidden={true}
             label={$t("Broker.Broker.InfoEdit.WalletAddress")}
             name="broker"
-            rules={[{ required: true, message: "Please input your username!" }]}
           >
             <Input disabled value={broker.broker}/>
           </Form.Item>
 
           <Form.Item
+            labelAlign={"left"}
+            required={true}
             label={$t("Broker.Broker.InfoEdit.Name")}
             name="name"
           >
             <Input value={broker.name}/>
           </Form.Item>
           <Form.Item
+            labelAlign={"left"}
+            required={true}
             label={$t("Broker.Broker.InfoEdit.Avatar")}
             name="logo"
           >
@@ -245,6 +248,8 @@ const Edit: React.FC<EditProps> = props => {
             </Space>
           </Form.Item>
           <Form.Item
+            labelAlign={"left"}
+            required={true}
             label={$t("Broker.Broker.InfoEdit.BrokerCode")}
             name="id"
           >
@@ -262,6 +267,21 @@ const Edit: React.FC<EditProps> = props => {
               </>)
             }}
 
+          </Form.Item>
+
+          <Form.Item
+            labelAlign={"left"}
+            required={true}
+            label={$t("Broker.Broker.InfoEdit.Introduction")}
+            name="introduction"
+          >
+            <Input.TextArea showCount={{formatter:() => `${countLength(form.getFieldValue('introduction'))}/800`}}
+                            autoSize={{ minRows: 2, maxRows: 6 }}
+                            onChange={({target:{value}}) => {
+                              form.setFields([{name:'introduction', value: cutLength(value,800)}])
+                            }}
+                            value={broker.introduction}
+            />
           </Form.Item>
         </Form>
       </Spin>
