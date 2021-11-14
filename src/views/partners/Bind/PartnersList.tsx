@@ -81,9 +81,9 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                     <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
                       <div className={"intr-desc"}>
                         {
-                          countLength(item.introduction) <= 50 ? <>{item.introduction}</> :
+                          countLength(item.introduction) <= 47 ? <>{item.introduction}</> :
                             <>
-                              <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={50}/>
+                              <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={47}/>
                               <Popover
                                 placement="bottom"
                                 content={
