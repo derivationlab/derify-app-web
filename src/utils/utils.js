@@ -45,7 +45,7 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
     val *= Math.pow(10, shiftNum)
 
     if(showPositive && val > 0) {
-      return "+" +  bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();
+      return "+" +  (bit >=0 ? Number(val).toFixed(bit) : Number(val).toString());
     }
 
     return bit >=0 ? Number(val).toFixed(bit) : Number(val).toString();

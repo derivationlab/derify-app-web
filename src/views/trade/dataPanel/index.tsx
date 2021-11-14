@@ -209,13 +209,11 @@ function DataPanel() {
                   <Col>
                     <div>{token.num}</div>
                     <div>
-                      <Statistic
+                      <span
                         className={classNames(
                           (token.percent||0) > 0 ? "main-green" : "main-red "
                         )}
-                        value={amountFormt(token.percent,2,true,"--",0)}
-                        suffix="%"
-                      />
+                      >{amountFormt(token.percent,2,true,"--",0)}%</span>
                     </div>
                   </Col>
                 </Row>
