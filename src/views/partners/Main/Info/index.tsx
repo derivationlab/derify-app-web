@@ -60,6 +60,15 @@ const Info:React.FC<InfoProps> = (props) => {
             <Col>
               <div className="name-wrapper">{broker?.name}</div>
               <div>@{broker?.id}</div>
+              <div className="intr-wrapper">
+                {
+                  countLength(broker.introduction) <= 240 ? <>{broker.introduction}</>:
+                    <>
+                      <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? (broker||"").introduction.length : 240}></TextOverflowView>
+                      <span className={"derify-link"} onClick={() => setShowAllIntrudct(!showAllIntrudct)}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</span>
+                    </>
+                }
+              </div>
             </Col>
           </Row>
         </Col>
@@ -78,19 +87,6 @@ const Info:React.FC<InfoProps> = (props) => {
           setIsModalVisible(false);
           dispatch({type:"broker/updateBroker", payload:broker});
         }} onCancel={() => setIsModalVisible(false)} />
-      </Row>
-      <Row gutter={20} align={"top"}>
-        <Col>
-          <div className="intr-wrapper">
-            {
-              countLength(broker.introduction) <= 240 ? <>{broker.introduction}</>:
-              <>
-                <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? (broker||"").introduction.length : 240}></TextOverflowView>
-                <span className={"derify-link"} onClick={() => setShowAllIntrudct(!showAllIntrudct)}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</span>
-              </>
-            }
-          </div>
-        </Col>
       </Row>
     </>
   );
