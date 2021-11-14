@@ -13,7 +13,7 @@ import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import classNames from "classnames";
 import './index.less'
-import {countLength} from "@/utils/utils";
+import {countLength, cutLength} from "@/utils/utils";
 
 declare type InfoProps = {
   showEditModal?:boolean;
@@ -62,9 +62,9 @@ const Info:React.FC<InfoProps> = (props) => {
               <div>@{broker?.id}</div>
               <div className="intr-wrapper">
                 {
-                  countLength(broker.introduction) <= 300 ? <>{broker.introduction}</>:
+                  countLength(broker.introduction) <= 284 ? <>{broker.introduction}</>:
                     <>
-                      <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? (broker||"").introduction.length : 280}></TextOverflowView>
+                      <span>{showAllIntrudct ? (broker||"").introduction : (cutLength((broker||"").introduction, 284)+" ...")}</span>
                       <span className={"derify-link"} onClick={() => setShowAllIntrudct(!showAllIntrudct)}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</span>
                     </>
                 }
