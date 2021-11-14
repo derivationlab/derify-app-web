@@ -67,11 +67,11 @@ function DataPanel() {
       return
     }
 
-    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: curPair.address,openType: OpenType.MarketOrder})
+    const action = contractModel.actions.loadHomeData({trader,side:SideEnum.SHORT, token: curTokenPair.address,openType: OpenType.MarketOrder})
 
     dispatch(action)
 
-  }, [walletInfo])
+  }, [walletInfo,curTokenPair])
 
   useEffect(() => {
     loadHomeData()

@@ -360,7 +360,7 @@ const actions = {
         .cancleAllOrderedPositions()
     }
   },
-  loadHomeData ({trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {
+  loadHomeData ({token, trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {
     // load home page data
     const self = this
     return async (commit:Dispatch) => {
@@ -372,15 +372,13 @@ const actions = {
       const contract = web3Utils.contract(trader)
 
       // 1.get cur token spotPrice
-      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
+      const curPair = state.pairs.find(pair => pair.address === token)
       if(curPair == undefined){
         return {}
       }
 
       const updateAllPairPriceAction = self.updateAllPairPrice(trader, curPair.address, 0)
       await updateAllPairPriceAction(commit);
-
-      const token = curPair.address
 
       data.curSpotPrice = await contract.getSpotPrice(token)
       commit({type: 'contract/SET_CONTRACT_DATA', payload: {...data}})
