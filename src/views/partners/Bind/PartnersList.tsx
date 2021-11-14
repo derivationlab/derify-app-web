@@ -82,9 +82,9 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                     <Col flex="100%" style={{overflow:"hidden",textOverflow:"ellipsis"}}>
                       <div className={"intr-desc"}>
                         {
-                          countLength(item.introduction) <= 25 ? <>{item.introduction}</> :
+                          countLength(item.introduction) <= 50 ? <>{item.introduction}</> :
                             <>
-                              <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={25}/>
+                              <TextOverflowView showPos={ShowPosEnum.right} text={item.introduction} len={50}/>
                               <Popover
                                 placement="bottom"
                                 content={
@@ -99,8 +99,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                                 }
                                 trigger="click"
                               >
-                                <Button style={{display: !item.introduction ? "none" : ""}}
-                                        type={"link"}>{$t("Broker.Broker.InfoEdit.Introduction")}</Button>
+                                <span className={"derify-link"}>{$t("Broker.Broker.InfoEdit.SeeMore")}</span>
                               </Popover>
                             </>
                         }

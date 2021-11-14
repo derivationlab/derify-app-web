@@ -86,7 +86,7 @@ const Info:React.FC<InfoProps> = (props) => {
               countLength(broker.introduction) <= 240 ? <>{broker.introduction}</>:
               <>
                 <TextOverflowView showPos={ShowPosEnum.right} text={broker.introduction} len={showAllIntrudct ? (broker||"").introduction.length : 240}></TextOverflowView>
-                <Button onClick={() => setShowAllIntrudct(!showAllIntrudct)} type={"link"}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</Button>
+                <span className={"derify-link"} onClick={() => setShowAllIntrudct(!showAllIntrudct)}>{showAllIntrudct ? $t("Broker.Broker.InfoEdit.PackUp") : $t("Broker.Broker.InfoEdit.SeeMore")}</span>
               </>
             }
           </div>
