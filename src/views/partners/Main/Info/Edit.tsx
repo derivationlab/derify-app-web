@@ -10,6 +10,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {UploadChangeParam} from "antd/es/upload";
 import {useHistory} from "react-router-dom";
 import {UserState} from "@/store/modules/user";
+import {countLength, cutLength} from "@/utils/utils";
 
 interface EditProps extends ModalProps {
   onSubmitSunccess:(broker:BrokerInfo) =>void
@@ -274,7 +275,13 @@ const Edit: React.FC<EditProps> = props => {
             label={$t("Broker.Broker.InfoEdit.Introduction")}
             name="introduction"
           >
-            <Input.TextArea showCount={true} autoSize={{ minRows: 2, maxRows: 6 }} value={broker.introduction} maxLength={400}/>
+            <Input.TextArea showCount={{formatter:() => `${countLength(form.getFieldValue('introduction'))}/800`}}
+                            autoSize={{ minRows: 2, maxRows: 6 }}
+                            onChange={({target:{value}}) => {
+                              form.setFields([{name:'introduction', value: cutLength(value,800)}])
+                            }}
+                            value={broker.introduction}
+            />
           </Form.Item>
         </Form>
       </Spin>
