@@ -377,7 +377,7 @@ const actions = {
         return {}
       }
 
-      const updateAllPairPriceAction = self.updateAllPairPrice(trader, curPair.address, 0)
+      const updateAllPairPriceAction = self.updateAllPairPrice(trader, curPair.address)
       await updateAllPairPriceAction(commit);
 
       data.curSpotPrice = await contract.getSpotPrice(token)
@@ -443,7 +443,7 @@ const actions = {
       return sysCloseUpperBound
   })
   },
-  updateAllPairPrice (trader:string, token:string,priceChangeRate:number,longPmrRate?:number|undefined, shortPmrRate?:number) {
+  updateAllPairPrice (trader:string, token:string,priceChangeRate?:number,longPmrRate?:number|undefined, shortPmrRate?:number) {
     return async (commit:Dispatch) => {
       const contract = web3Utils.contract(trader)
 
