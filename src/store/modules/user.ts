@@ -146,9 +146,6 @@ export async function asyncInitWallet() : Promise<UserState> {
 
   if(window.ethereum.ethAccounts.length > 0){
     window.ethereum.selectedAddress = toChecksumAddress(window.ethereum.ethAccounts[0])
-    if(window.ethereum.selectedAddress){
-      updateTraderAccess(window.ethereum.selectedAddress);
-    }
   }
 
   window.ethereum.networkVersion = await window.ethereum.request({ method: 'net_version' })
@@ -305,6 +302,7 @@ const actions = {
 
       const walletInfo = await getWallet();
       walletInfo.showWallet = undefined;
+      updateTraderAccess(walletInfo.selectedAddress);
 
       commit({type: "user/updateState", payload: mergeNonNull({},walletInfo)})
       return walletInfo
