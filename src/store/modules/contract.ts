@@ -472,7 +472,7 @@ const actions = {
         }
 
         if(priceChangeRate || priceChangeRate == 0){
-          pair.percent = amountFormt(priceChangeRate * 100,4, true,0);
+          pair.percent = priceChangeRate * 100;
         }
 
 
