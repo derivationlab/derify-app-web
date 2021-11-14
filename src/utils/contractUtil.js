@@ -1177,7 +1177,7 @@ export default class Contract {
     // system data from DerifyExchange
     const sysTotalPositionAmount = await this.DerifyExchange.methods.getSysTotalPositionAmount().call();
 
-    let amount = size * price;
+    let amount = toContractNum(fromContractUnit(size) * fromContractUnit(price));
     let diffAmountAfter = 0;
     let sysTotalPositionAmountAfter = 0;
     // open position
@@ -1191,10 +1191,10 @@ export default class Contract {
 
     let ratioAfter = 0;
     if (sysTotalPositionAmountAfter > 0) {
-      if (sysTotalPositionAmountAfter * kRatio > gRatio) {
-        ratioAfter = diffAmountAfter / gRatio;
+      if (toContractUnit(fromContractUnit(sysTotalPositionAmountAfter) * fromContractUnit(kRatio)) > gRatio) {
+        ratioAfter = toContractNum(fromContractUnit(diffAmountAfter) / fromContractUnit(gRatio));
       } else {
-        ratioAfter = diffAmountAfter / (sysTotalPositionAmountAfter * kRatio);
+        ratioAfter = toContractNum(fromContractUnit(diffAmountAfter) / (fromContractUnit(sysTotalPositionAmountAfter) * fromContractUnit(kRatio)));
       }
     }
 
