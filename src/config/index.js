@@ -106,22 +106,22 @@ const config = {
     production: {
       DerifyRewards: {
         abi: DerifyRewards,
-        address: '0x5BaFC3f4cb564F60A7A4913693dA2dD2b98ea49A'
+        address: '0xC73Eb71CB8C35668c9FAC44EdDF1321c4431044F'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0x0d6FFeeb8154B9dC7c26F4126d348342f750e278',
+          address: '0xF26e3FdA260167A4ED0ABf7402DC8286ac770395',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0xc5Ab814D2b21971296483c889a7E18Fef20b149b',
+          address: '0xB61c88A0ED9b03eBf7573046DFD5FeE8c7a8987d',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xFC992420D38390e1B5dFC37c8c345357B6AF8f8b'
+        address: '0x0d7B6b79b6b0398fa40C7c1f65586332349EA46F'
       },
       DUSD: {
         abi: DUSD,
