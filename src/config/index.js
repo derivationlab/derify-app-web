@@ -32,22 +32,22 @@ const config = {
     development: {
       DerifyRewards: {
         abi: DerifyRewards,
-        address: '0x40fB4B2B165989BdAd60cA577502cB8E839e3a16'
+        address: '0x067BcAA44A8d630314Ae3a0BB7e674810Dc2BF41'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0x3D7fef78aA65fE667A87Cb6f13a7E4D016D9EE14',
+          address: '0x28640fcB71FBdfe6EAe7A06c506cFeb86d31ca83',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0x911c8e1c0048e496F0737009aA70c842A5ed2D65',
+          address: '0x77208aC1DF97179f5A5d95DCc532ac25D935F74B',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xe859a05cc233Be7B6BeEC9b9Cb96e76AD672cce5'
+        address: '0x55fC6A4DfFe3BA32fCd0C6f19062b462C89282CE'
       },
       DUSD: {
         abi: DUSD,
@@ -55,7 +55,7 @@ const config = {
       },
       bDRF: {
         abi: bDRF,
-        address: '0x57dC009Bc7068A5772d41c9eC872BB217578995E'
+        address: '0x991f80d5AAb74aCFD86cDde25e8a31aA492A64a2'
       },
       DRF: {
         abi: DRF,
@@ -63,28 +63,28 @@ const config = {
       },
       eDRF: {
         abi: eDRF,
-        address: '0x02B9aFa0D8BB9BA1e5A6A44f78BC8Ffc852642C9'
+        address: '0x2D889b28dC1Af5e614Eefd821Bb6AbE3d6C860Fe'
       },
     },
     debug: {
       DerifyRewards: {
         abi: DerifyRewards,
-        address: '0x40fB4B2B165989BdAd60cA577502cB8E839e3a16'
+        address: '0x067BcAA44A8d630314Ae3a0BB7e674810Dc2BF41'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0x3D7fef78aA65fE667A87Cb6f13a7E4D016D9EE14',
+          address: '0x28640fcB71FBdfe6EAe7A06c506cFeb86d31ca83',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0x911c8e1c0048e496F0737009aA70c842A5ed2D65',
+          address: '0x77208aC1DF97179f5A5d95DCc532ac25D935F74B',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xe859a05cc233Be7B6BeEC9b9Cb96e76AD672cce5'
+        address: '0x55fC6A4DfFe3BA32fCd0C6f19062b462C89282CE'
       },
       DUSD: {
         abi: DUSD,
@@ -92,7 +92,7 @@ const config = {
       },
       bDRF: {
         abi: bDRF,
-        address: '0x57dC009Bc7068A5772d41c9eC872BB217578995E'
+        address: '0x991f80d5AAb74aCFD86cDde25e8a31aA492A64a2'
       },
       DRF: {
         abi: DRF,
@@ -100,28 +100,28 @@ const config = {
       },
       eDRF: {
         abi: eDRF,
-        address: '0x02B9aFa0D8BB9BA1e5A6A44f78BC8Ffc852642C9'
+        address: '0x2D889b28dC1Af5e614Eefd821Bb6AbE3d6C860Fe'
       },
     },
     production: {
       DerifyRewards: {
         abi: DerifyRewards,
-        address: '0x5BaFC3f4cb564F60A7A4913693dA2dD2b98ea49A'
+        address: '0xC73Eb71CB8C35668c9FAC44EdDF1321c4431044F'
       },
       DerifyDerivative: {
         abi: DerifyDerivative,
         BTC: {
-          address: '0x0d6FFeeb8154B9dC7c26F4126d348342f750e278',
+          address: '0xF26e3FdA260167A4ED0ABf7402DC8286ac770395',
           token: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
         },
         ETH: {
-          address: '0xc5Ab814D2b21971296483c889a7E18Fef20b149b',
+          address: '0xB61c88A0ED9b03eBf7573046DFD5FeE8c7a8987d',
           token: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
         }
       },
       DerifyExchange: {
         abi: DerifyExchange,
-        address: '0xFC992420D38390e1B5dFC37c8c345357B6AF8f8b'
+        address: '0x0d7B6b79b6b0398fa40C7c1f65586332349EA46F'
       },
       DUSD: {
         abi: DUSD,
@@ -129,7 +129,7 @@ const config = {
       },
       bDRF: {
         abi: bDRF,
-        address: '0x8d3B6Eb5451a0bc72d1083011267409beceB03D3'
+        address: '0xdf470A7868d782f0D66C77B937926eC8aC58fce7'
       },
       DRF: {
         abi: DRF,
@@ -137,7 +137,7 @@ const config = {
       },
       eDRF: {
         abi: eDRF,
-        address: '0xc1E48d502EFea2997080d0A9A61Db57EE8b09e06'
+        address: '0x721ab1c27976e10D30FCe48151F40e6D8C11D99B'
       },
     }
   }
