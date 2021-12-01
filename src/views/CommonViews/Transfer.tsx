@@ -68,7 +68,7 @@ const Transfer: React.FC<TransferProps> = props => {
     }else{
       return transferData.balanceOfDerify
     }
-  }
+  };
 
   const loadTransferData = useCallback(async () => {
 
@@ -98,7 +98,7 @@ const Transfer: React.FC<TransferProps> = props => {
 
     setTransferData(transferData)
 
-  }, [walletInfo, transferType])
+  }, [walletInfo, transferType, visible])
 
   const checkAmount = useCallback((amount,transferData,transferType)=>{
 
@@ -161,7 +161,7 @@ const Transfer: React.FC<TransferProps> = props => {
 
   useEffect(() => {
     loadTransferData()
-  },[loadTransferData, walletInfo])
+  },[loadTransferData, visible, walletInfo])
 
   const onchange = useCallback((e) => {
 
