@@ -62,15 +62,15 @@ const Transfer: React.FC<TransferProps> = props => {
 
   const $t = intl
 
-  const getMaxAmount = (transferData:TransferData, operateType:TransferOperateType) => {
+  const getMaxAmount = useCallback((transferData:TransferData, operateType:TransferOperateType) => {
     if(operateType === TransferOperateType.deposit) {
       return transferData.balanceOfWallet
     }else{
       return transferData.balanceOfDerify
     }
-  };
+  },[transferData, operateType]);
 
-  const loadTransferData = useCallback(async () => {
+  const loadTransferData = useCallback(async (transferType) => {
 
     if(!walletInfo.isLogin || !walletInfo.selectedAddress){
       return
@@ -115,7 +115,7 @@ const Transfer: React.FC<TransferProps> = props => {
     return true
   }, [transferData, amount]);
 
-  const ChangeType = useCallback(() => {
+  const changeTransferType = useCallback(() => {
     form.setFieldsValue({
       from: form.getFieldValue("to"),
       to: form.getFieldValue("from"),
@@ -134,12 +134,7 @@ const Transfer: React.FC<TransferProps> = props => {
     setTransferData(transferData);
 
     checkAmount(amount, transferData,newTransferType);
-
-    setTransferType(val => {
-      return val === TransferOperateType.deposit ? TransferOperateType.deposit : TransferOperateType.withdraw;
-    });
-
-    loadTransferData()
+     loadTransferData(newTransferType)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadTransferData,checkAmount,transferType]);
 
@@ -157,11 +152,11 @@ const Transfer: React.FC<TransferProps> = props => {
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[operateType,visible,checkAmount])
+  },[operateType,visible])
 
   useEffect(() => {
-    loadTransferData()
-  },[loadTransferData, visible, walletInfo])
+    loadTransferData(transferType)
+  },[transferType, visible, walletInfo])
 
   const onchange = useCallback((e) => {
 
@@ -172,9 +167,9 @@ const Transfer: React.FC<TransferProps> = props => {
     // return value
   }, [transferData,transferType]);
 
-  const onTransferAll = useCallback((maxAmount) => {
-    setAmount(maxAmount);
-  }, []);
+  const onTransferAll = useCallback(() => {
+    setAmount(fck(getMaxAmount(transferData,transferType), -8, 4));
+  }, [transferData,transferType]);
 
   const doTransfer = useCallback(() => {
     if(!walletInfo.selectedAddress){
@@ -186,7 +181,7 @@ const Transfer: React.FC<TransferProps> = props => {
     }
 
     const trader = walletInfo.selectedAddress;
-    if(transferData.operateType == TransferOperateType.withdraw) {
+    if(transferType == TransferOperateType.withdraw) {
       DerifyTradeModal.pendding();
       props.closeModal();
       const action = contractModel.actions.withdrawAccount(trader, toContractUnit(amount));
@@ -226,7 +221,7 @@ const Transfer: React.FC<TransferProps> = props => {
       <Row>
         <Col flex="100%">
           <ErrorMessage msg={errorMsg} visible={!!errorMsg} onCancel={() => setErrorMsg("")}/>
-          <div className="transfers-wrapper" onClick={ChangeType}>
+          <div className="transfers-wrapper" onClick={changeTransferType}>
             <IconFont size={16} type="icon-transfers" />
           </div>
           <Form layout={"vertical"} form={form}>
@@ -251,7 +246,7 @@ const Transfer: React.FC<TransferProps> = props => {
                     shape="round"
                     block
                     type="link"
-                    onClick={() => onTransferAll(fck(getMaxAmount(transferData,transferType), -8, 4))}
+                    onClick={() => onTransferAll()}
                   >
                     <FormattedMessage id="Trade.Account.Transfer.All" />
                   </Button>
