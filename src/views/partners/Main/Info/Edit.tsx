@@ -236,7 +236,7 @@ const Edit: React.FC<EditProps> = props => {
                 name="logoFile"
                 listType="picture-card"
                 className="avatar-uploader"
-                accept="image/gif,image/jpeg,image/jpg,image/png"
+                accept="image/*"
                 maxCount={0}
                 multiple={false}
                 showUploadList={false}
