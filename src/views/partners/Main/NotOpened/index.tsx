@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Row, Col, Button, Modal, Select, Statistic} from "antd";
+import {Row, Col, Button, Modal, Select, Statistic, Space} from "antd";
 import {useIntl} from "react-intl";
 import {BondAccountType, fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {BrokerModel, RootStore} from "@/store";
@@ -97,16 +97,33 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
   return (
     <Row className="not-opened-container" justify="center">
       <Col className="margin-b-m">{$t("Broker.Apply.NotBrokerMessage")}</Col>
+      <Col className="margin-b-m">{$t("Broker.Apply.GetBrokersPrivilege", [<span className="main-color">&nbsp;<Statistic style={{fontSize: "15px", "display": "inline-block"}} value={applyBurnAmount}/>&nbsp;</span>])}</Col>
+
       <Col>
         <WalletConnectButtonWrapper type="primary"
                                     size="large">
-          <Button
-            type="primary"
-            size="large"
-            onClick={() => setIsModalVisible(true)}
-          >
-            {$t("Broker.Apply.ApplyBroker")}
-          </Button>
+          <Space>
+            <Row>
+              <Col><Button
+                type="primary"
+                size="large"
+                onClick={() => setIsModalVisible(true)}
+              >
+                {$t("Broker.Apply.ApplyBroker")}
+              </Button>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button
+                  type="ghost"
+                  size="large"
+                >
+                  <a href="https://form.jotform.com/213133802570042" target={"_blank"}>{$t("Broker.Apply.GetTestEDRF")}</a>
+                </Button>
+              </Col>
+            </Row>
+          </Space>
         </WalletConnectButtonWrapper>
       </Col>
       <Modal

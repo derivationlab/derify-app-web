@@ -148,7 +148,10 @@ function Tool() {
   return (
     <Row align={"middle"} className="tool">
       <Col style={{ marginRight: "10px" }}>
-        <Button type="link"><a href={"https://docs.derify.finance/tutorial/connect-wallet"} target={"_blank"}><FormattedMessage id="Trade.navbar.Guide" /></a> </Button>
+        <Button type="primary"
+                danger
+                shape="round"
+                block><a href={"https://docs.derify.finance/tutorial/connect-wallet"} target={"_blank"}><FormattedMessage id="Trade.navbar.Guide" /></a> </Button>
       </Col>
       <Col style={{ marginRight: "10px" }}>
         {isLogin ? (
