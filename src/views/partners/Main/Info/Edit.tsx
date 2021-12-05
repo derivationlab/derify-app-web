@@ -86,6 +86,11 @@ const Edit: React.FC<EditProps> = props => {
       return false
     }
 
+    if(!broker.introduction) {
+      setErrorMsg($t('Broker.Broker.InfoEdit.InfoRequired'))
+      return false
+    }
+
 
     if(!logoFile && !broker.logo) {
       setErrorMsg($t('Broker.Broker.InfoEdit.InfoRequired'))
@@ -236,7 +241,7 @@ const Edit: React.FC<EditProps> = props => {
                 name="logoFile"
                 listType="picture-card"
                 className="avatar-uploader"
-                accept="image/gif,image/jpeg,image/jpg,image/png"
+                accept="image/*"
                 maxCount={0}
                 multiple={false}
                 showUploadList={false}

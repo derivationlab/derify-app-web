@@ -41,9 +41,9 @@ function Operation() {
   const [token, setToken] = useState<number>(UnitTypeEnum.USDT);
   const [openConfirmData, setOpenConfirmData] = useState<OpenConfirmData>();
 
-  const getMaxSize = (traderOpenUpperBound:OpenUpperBound, token:number) => {
+  const getMaxSize = useCallback((traderOpenUpperBound:OpenUpperBound, token:number) => {
     return contractModel.actions.getOpenUpperBoundMaxSize(traderOpenUpperBound, token);
-  };
+  }, [isModalVisible]);
 
   const walletInfo = useSelector((state:RootStore) => state.user);
 
