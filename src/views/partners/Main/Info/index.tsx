@@ -42,7 +42,7 @@ const Info:React.FC<InfoProps> = (props) => {
   useEffect(() => {
     setIsModalVisible(!!props.showEditModal);
 
-    if(!broker.id || !broker.name || !broker.logo){
+    if(!broker.id || !broker.name || !broker.logo || !broker.introduction){
       setIsModalVisible(true);
     }
 
@@ -86,7 +86,11 @@ const Info:React.FC<InfoProps> = (props) => {
         <Edit visible={isModalVisible} onSubmitSunccess={(broker) => {
           setIsModalVisible(false);
           dispatch({type:"broker/updateBroker", payload:broker});
-        }} onCancel={() => setIsModalVisible(false)} />
+        }} onCancel={() => {
+          if(!(!broker.id || !broker.name || !broker.logo || !broker.introduction)){
+            setIsModalVisible(false)
+          }
+        }} />
       </Row>
     </>
   );
