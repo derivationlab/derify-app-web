@@ -86,6 +86,11 @@ const Edit: React.FC<EditProps> = props => {
       return false
     }
 
+    if(!broker.introduction) {
+      setErrorMsg($t('Broker.Broker.InfoEdit.InfoRequired'))
+      return false
+    }
+
 
     if(!logoFile && !broker.logo) {
       setErrorMsg($t('Broker.Broker.InfoEdit.InfoRequired'))
