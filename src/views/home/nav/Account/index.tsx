@@ -32,6 +32,9 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
     }
 
     dispatch(ContractModel.actions.loadAccountData(selectedAddress));
+
+    dispatch(ContractModel.actions.onDeposit(selectedAddress));
+    dispatch(ContractModel.actions.onWithDraw(selectedAddress));
   },[selectedAddress,loadAccountStatus])
 
   return (
