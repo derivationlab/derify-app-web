@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
-import {FormattedMessage} from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
 
@@ -35,8 +35,8 @@ function Tool() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
-  const [network, setNetwork] = useState<ChainEnum|undefined>(undefined);
-  const [wallet, setWallet] = useState<Partial<string|undefined>>();
+  const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
+  const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
@@ -104,8 +104,6 @@ function Tool() {
 
   useEffect(() => {
     dispatch(userModel.actions.loadWallet());
-    setWallet(undefined);
-    setNetwork(undefined);
   }, [selectedAddress]);
 
   useEffect(() => {
@@ -137,13 +135,19 @@ function Tool() {
 
   const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
     setNetwork(item);
-    checkLogin(item, wallet);
   }, [checkLogin, wallet]);
 
   const onChangeWallet = useCallback((val) => {
     setWallet(val);
-    checkLogin(network,val);
   }, [checkLogin]);
+
+  const {formatMessage} = useIntl()
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl;
 
   return (
     <Row align={"middle"} className="tool">
@@ -226,7 +230,7 @@ function Tool() {
               {networkList.map((item, i) => (
                 <Col
                   className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
-                  onClick={() => onChangeNetwork((item.chainEnum?.disabled || item.chainEnum?.chainId === network?.chainId) ? undefined : item.chainEnum)}
+                  onClick={() => onChangeNetwork(item.chainEnum)}
                   key={i}
                 >
                   <IconFont size={18} type="icon-Group-" />
@@ -243,13 +247,18 @@ function Tool() {
             <Row className="wallet-list">
               <Col
                 className={classNames({ active: wallet === WalletEnum.MetaMask })}
-                onClick={() => onChangeWallet(wallet === WalletEnum.MetaMask ? undefined : WalletEnum.MetaMask)}
+                onClick={() => onChangeWallet(WalletEnum.MetaMask)}
               >
                 <IconFont size={18} type="icon-Group-" />
                 <img src={Wallet} alt="" />
                 <div>Metamask</div>
               </Col>
             </Row>
+          </Col>
+        </Row>
+        <Row gutter={[20,20]} justify={"center"}>
+          <Col>
+            <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(chainEnum, wallet)}>{$t('global.Confirm')}</Button>
           </Col>
         </Row>
       </Modal>
