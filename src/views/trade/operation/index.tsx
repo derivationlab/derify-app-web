@@ -116,17 +116,10 @@ function Operation() {
   }, [limitPrice,openType]);
 
   const onSliderChange = useCallback((value:number) => {
-    const maxSize = getMaxSize(traderOpenUpperBound, token);
-
+    const tokenSize = calculatePositionSize(size, token, traderOpenUpperBound,value);
     setSliderVal(value);
-    setSize(value.toString());
-    setToken(UnitTypeEnum.Percent);
-
-    if(maxSize > 0){
-      DerifyErrorNotice.error(null);
-    }
-
-  }, [traderOpenUpperBound, token]);
+    setSize(tokenSize.toString());
+  }, [traderOpenUpperBound, token, size]);
 
   const onTokenChange = useCallback((token) => {
     setToken(token);
@@ -175,17 +168,13 @@ function Operation() {
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
 
-    if(unit === UnitTypeEnum.Percent){
-      const maxSize = getMaxSize(traderOpenUpperBound, unit);
-      let newSize = 0;
-      if(maxSize > 0){
-        newSize =  numConvert(sliderValue / 100 * getMaxSize(traderOpenUpperBound,unit), 0, 2)
-      }
-
-      return newSize
+    const maxSize = getMaxSize(traderOpenUpperBound, unit);
+    let newSize = 0;
+    if(maxSize > 0){
+      newSize =  sliderValue / 100 * maxSize
     }
 
-    return parseFloat(size);
+    return newSize
 
   }, []);
 
@@ -218,7 +207,6 @@ function Operation() {
     <Select value={token} className="select-after" onChange={(value) => onTokenChange(value)}>
       <Option value={UnitTypeEnum.USDT}>USDT</Option>
       <Option value={UnitTypeEnum.CurPair}>{curPair.key}</Option>
-      <Option value={UnitTypeEnum.Percent}>%</Option>
     </Select>
   );
 
