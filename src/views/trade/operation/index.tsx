@@ -7,7 +7,7 @@ import ComModal from "./comModal";
 import {fromContractUnit, numConvert, OpenType, SideEnum, toContractUnit, UnitTypeEnum} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import contractModel, {TokenPair, OpenUpperBound} from "@/store/modules/contract";
-import {RootStore} from "@/store";
+import {ContractModel, RootStore} from "@/store";
 import {checkNumber, fck} from "@/utils/utils";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
@@ -36,6 +36,7 @@ function Operation() {
   const curPair = useSelector<RootStore, TokenPair>(state => state.contract.curPair);
   const [limitPrice, setLimitPrice] = useState<string>(curPair.num.toFixed(2));
   const [size, setSize] = useState<string>("");
+  const [maxAmount, setMaxAmount] = useState<number>(0);
   const [traderOpenUpperBound, setTraderOpenUpperBound] = useState<{amount:number|string,size:number|string}>({amount:0,size:0})
   const [sliderVal, setSliderVal] = useState<number>(0);
   const [token, setToken] = useState<number>(UnitTypeEnum.USDT);
@@ -159,6 +160,7 @@ function Operation() {
 
     getTraderOpenUpperBoundAction(dispatch).then((data)=>{
       setTraderOpenUpperBound(data);
+      setMaxAmount(getMaxSize(data, token));
       resetMax(getMaxSize(data, token));
     }).catch((e)=>{
       console.error("getTraderOpenUpperBoundAction",e);
@@ -212,6 +214,39 @@ function Operation() {
 
   useEffect(() => {
     updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+
+
+    const trader = walletInfo.trader;
+    if(!trader){
+      return;
+    }
+
+    const onWithdrawAction = ContractModel.actions.onWithDraw(trader, () => {
+      console.log('onWithdrawAction,updateMaxAmount');
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    });
+
+    onWithdrawAction(dispatch);
+
+    const onDepositAction = ContractModel.actions.onDeposit(trader, () => {
+      console.log('onDepositAction,updateMaxAmount');
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    });
+
+    const onOpenPositionAction = ContractModel.actions.onOpenPosition(trader, () => {
+      console.log('onOpenPositionAction,updateMaxAmount');
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    })
+
+    onOpenPositionAction(dispatch);
+
+    const onClosePositionAction = ContractModel.actions.onClosePosition(trader, () => {
+      console.log('onClosePositionAction,updateMaxAmount');
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    })
+
+    onClosePositionAction(dispatch);
+
   }, [walletInfo,openType, curPair, leverage, limitPrice]);
 
   return (
@@ -285,7 +320,7 @@ function Operation() {
                 <Row gutter={2} align={"middle"}>
                   <Col>
                     <FormattedMessage id="Trade.OpenPosition.OpenPage.Max" />
-                    ：{getMaxSize(traderOpenUpperBound, token)} {token === UnitTypeEnum.USDT ? "USDT" : curPair.key}
+                    ：{maxAmount} {token === UnitTypeEnum.USDT ? "USDT" : curPair.key}
                   </Col>
                   <Col>
                     <Button type="link" onClick={() => setModalVisible(true)}>

@@ -216,6 +216,11 @@ const reducers = createReducer(state, {
   }
 })
 
+const openPositionListener:{callback:Function, commit:Dispatch}[] = [];
+const closePositionListener:{callback:Function, commit:Dispatch}[] = [];
+
+
+
 const actions = {
 
   depositAccount (trader:string, amount:string|number) {
@@ -302,8 +307,15 @@ const actions = {
         token, side, openType, size, price, leverage
       }
 
-      return await web3Utils.contract(trader, brokerId)
+      const ret = await web3Utils.contract(trader, brokerId)
         .openPosition(params)
+
+      if(openPositionListener.length > 0){
+        openPositionListener.forEach(listener => {
+          listener.callback(listener.commit);
+        });
+      }
+      return ret;
     }
   },
   closePosition (trader:string, token:string, side:SideEnum, size:string|number, brokerId:string) {
@@ -312,8 +324,16 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(trader, brokerId)
+      const ret = await web3Utils.contract(trader, brokerId)
         .closePosition(token, side, size)
+
+      if(closePositionListener.length > 0){
+        closePositionListener.forEach(listener => {
+          listener.callback(listener.commit);
+        });
+      }
+
+      return ret;
     }
   },
   orderStopPosition(params:{trader:string, token:string, side:SideEnum, takeProfitPrice:string|number, stopLossPrice:string|number}) {
@@ -571,30 +591,38 @@ const actions = {
   getTradingFee (token:string, trader:string, size:string|number, price:string|number):Promise<number> {
     return web3Utils.contract(trader).getTradingFee(token, size, price)
   },
-  onDeposit (trader:string) {
+  onDeposit (trader:string, callback?:Function) {
     return async (commit:Dispatch) => {
       if(!trader){
         return {}
       }
 
+      if(!callback){
+        callback = function (){
+          const loadAccountAction = self.loadAccountData(trader);
+          loadAccountAction(commit)
+        };
+      }
+
       const self = this;
-      web3Utils.contract(trader).onDeposit(trader, function (){
-        const loadAccountAction = self.loadAccountData(trader);
-        loadAccountAction(commit)
-      })
+      web3Utils.contract(trader).onDeposit(trader, callback)
     }
   },
-  onWithDraw (trader:string) {
+  onWithDraw (trader:string, callback?:Function) {
     return async (commit:Dispatch) => {
       if(!trader){
         return {}
       }
 
       const self = this;
-      web3Utils.contract(trader).onDeposit(trader, function (){
-        const loadAccountAction = self.loadAccountData(trader);
-        loadAccountAction(commit)
-      })
+
+      if(!callback){
+        callback = function (){
+          const loadAccountAction = self.loadAccountData(trader);
+          loadAccountAction(commit)
+        };
+      }
+      web3Utils.contract(trader).onWithdraw(trader, callback)
     }
   },
 
@@ -607,6 +635,17 @@ const actions = {
       commit({type: "contract/SET_CURPAIRKEY", payload: tokenPair})
 
       return true
+    }
+  },
+
+  onOpenPosition(trader:string, callback:Function){
+    return async (commit:Dispatch) => {
+      openPositionListener.push({callback, commit});
+    }
+  },
+  onClosePosition(trader:string, callback:Function){
+    return async (commit:Dispatch) => {
+      closePositionListener.push({callback, commit});
     }
   }
 }
