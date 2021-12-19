@@ -44,7 +44,7 @@ function Operation() {
 
   const getMaxSize = useCallback((traderOpenUpperBound:OpenUpperBound, token:number) => {
     return contractModel.actions.getOpenUpperBoundMaxSize(traderOpenUpperBound, token);
-  }, [isModalVisible]);
+  }, [isModalVisible, token]);
 
   const walletInfo = useSelector((state:RootStore) => state.user);
 
@@ -167,7 +167,7 @@ function Operation() {
       console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
 
-  }, [walletInfo.selectedAddress,leverage,curPair, openType,token]);
+  }, [walletInfo.selectedAddress,leverage,curPair, openType, token]);
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
 
