@@ -175,7 +175,7 @@ function Operation() {
     const maxSize = getMaxSize(traderOpenUpperBound, unit);
     let newSize = 0;
     if(maxSize > 0){
-      newSize =  sliderValue / 100 * maxSize
+      newSize =  sliderValue / 100.0 * maxSize
     }
 
     return newSize
