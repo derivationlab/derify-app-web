@@ -36,13 +36,24 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
     const onDepositAction = ContractModel.actions.onDeposit(selectedAddress, function(){
       loadAccountAction(dispatch);
     });
-
     onDepositAction(dispatch);
+
     const onWithdrawAction = ContractModel.actions.onWithDraw(selectedAddress, function (){
       loadAccountAction(dispatch);
     });
 
     onWithdrawAction(dispatch);
+
+    const onOpenPositionAction = ContractModel.actions.onOpenPosition(selectedAddress, function(){
+      loadAccountAction(dispatch);
+    });
+    onOpenPositionAction(dispatch);
+
+    const onClosePositionAction = ContractModel.actions.onClosePosition(selectedAddress, function(){
+      loadAccountAction(dispatch);
+    });
+    onClosePositionAction(dispatch);
+
   },[selectedAddress,loadAccountStatus])
 
   return (
