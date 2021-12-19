@@ -69,7 +69,7 @@ function Tool() {
     return true
   },[wallet])
 
-  const checkNetwork = useCallback((newNetWork) => {
+  const checkNetwork = useCallback(async (newNetWork) => {
 
     if(!isEthum){
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
@@ -83,6 +83,12 @@ function Tool() {
     const networkIsMain = newNetWork?.chainId === mainChain.chainId;
 
     if(!networkIsMain) {
+      const ret = await switchNetwork(mainChain);
+
+      if(ret){
+        setErrorMsg(undefined);
+        return true;
+      }
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
       return false
     }
@@ -93,8 +99,8 @@ function Tool() {
   },[network,isEthum]);
 
 
-  const checkLogin = useCallback((network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
-    if (checkNetwork(network) && checkWallet(wallet)) {
+  const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
+    if (await checkNetwork(network) && checkWallet(wallet)) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
         dispatch(userModel.actions.loginSuccess());
@@ -138,8 +144,6 @@ function Tool() {
       return;
     }
     setNetwork(item);
-
-    switchNetwork(item);
   }, [checkLogin, wallet]);
 
   const switchNetwork = async (item:ChainEnum) => {
@@ -149,8 +153,10 @@ function Tool() {
         method: 'wallet_switchEthereumChain',
         params: [{chainId: '0x'+(item.chainId).toString(16)}], // chainId must be in hexadecimal numbers
       });
+      return true;
     } catch (error) {
       console.error(error);
+      return false
     }
   }
 
