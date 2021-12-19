@@ -159,10 +159,11 @@ function Operation() {
 
     const getTraderOpenUpperBoundAction = contractModel.actions.getTraderOpenUpperBound(params);
 
+    const tokenNew = token;
     getTraderOpenUpperBoundAction(dispatch).then((data)=>{
       setTraderOpenUpperBound(data);
-      setMaxAmount(getMaxSize(data, token));
-      resetMax(getMaxSize(data, token));
+      setMaxAmount(getMaxSize(data, tokenNew));
+      resetMax(getMaxSize(data, tokenNew));
     }).catch((e)=>{
       console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
@@ -230,27 +231,27 @@ function Operation() {
     onWithdrawAction(dispatch);
 
     const onDepositAction = ContractModel.actions.onDeposit(trader, () => {
-      console.log('onDepositAction,updateMaxAmount');
+      console.log(`onDepositAction,updateMaxAmount,${token}`);
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     });
 
     onDepositAction(dispatch);
 
     const onOpenPositionAction = ContractModel.actions.onOpenPosition(trader, () => {
-      console.log('onOpenPositionAction,updateMaxAmount');
+      console.log(`onOpenPositionAction,updateMaxAmount, ${token}`);
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     })
 
     onOpenPositionAction(dispatch);
 
     const onClosePositionAction = ContractModel.actions.onClosePosition(trader, () => {
-      console.log('onClosePositionAction,updateMaxAmount');
+      console.log(`onClosePositionAction,updateMaxAmount, ${token}`);
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     })
 
     onClosePositionAction(dispatch);
 
-  }, [walletInfo,openType, curPair, leverage, limitPrice]);
+  }, [walletInfo,openType, curPair, leverage, limitPrice, token]);
 
   return (
     <Row className="main-block operation-container">
