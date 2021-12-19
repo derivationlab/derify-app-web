@@ -104,7 +104,15 @@ function CurrentOrder() {
       console.error(`loadPositionDataAction exception: ${e}`)
     }).finally(() => setShowLoading(false))
 
-  }, [walletInfo])
+  }, [walletInfo]);
+
+  useEffect(() => {
+    const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
+      loadMyPositionData();
+    });
+
+    priceChangeAction(dispatch);
+  }, []);
 
   const cancelCb = useCallback(() => {
 

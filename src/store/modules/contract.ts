@@ -218,6 +218,7 @@ const reducers = createReducer(state, {
 
 const openPositionListener:{callback:Function, commit:Dispatch}[] = [];
 const closePositionListener:{callback:Function, commit:Dispatch}[] = [];
+const priceChangeListener:{callback:Function, commit:Dispatch}[] = [];
 
 
 
@@ -471,6 +472,7 @@ const actions = {
         return {}
       }
 
+
       for (const pair of state.pairs) {
         if(!pair.enable || pair.address != token){
           continue;
@@ -495,6 +497,10 @@ const actions = {
 
 
         commit({type:'contract/UPDATE_PAIRS', payload:[pair]});
+      }
+      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
+      if(curPair && token == curPair.address && priceChangeListener.length){
+        priceChangeListener.forEach((listener) => listener.callback(listener.commit))
       }
     }
   },
@@ -646,6 +652,11 @@ const actions = {
   onClosePosition(trader:string, callback:Function){
     return async (commit:Dispatch) => {
       closePositionListener.push({callback, commit});
+    }
+  },
+  onPriceChange(trader:string, callback:Function){
+    return async (commit:Dispatch) => {
+      priceChangeListener.push({callback, commit});
     }
   }
 }

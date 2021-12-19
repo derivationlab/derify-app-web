@@ -10,11 +10,12 @@ import LongOrShort from "@/views/trade/LongOrShort";
 import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
 import {getTradeBalanceDetail, getTradeList, TradeBalanceDetail, TradeRecord} from "@/api/trade";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {fromContractUnit} from "@/utils/contractUtil";
 import {amountFormt, dateFormat} from "@/utils/utils";
 import {Pagenation} from "@/api/types";
+import contractModel from "@/store/modules/contract";
 
 class OpTypeEnum {
   opType:number;
@@ -76,7 +77,7 @@ const TradeHistory: React.FC = () => {
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
   const [pagenation,setPagenation] = useState<Pagenation>(new Pagenation());
   const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
@@ -97,7 +98,7 @@ const TradeHistory: React.FC = () => {
     }).finally(() => setShowLoading(false))
   }, [pagenation.current,pagenation.pageSize,walletInfo])
 
-  useEffect(() => {
+  const loadTradeList = useCallback(() => {
     const trader = walletInfo.selectedAddress;
     if(!trader || !reloadTrade){
       return
@@ -107,7 +108,18 @@ const TradeHistory: React.FC = () => {
     }).catch(e => {
       console.log('getTradeList',e)
     }).finally(() => setShowLoading(false))
-  }, [reloadTrade]);
+  },[reloadTrade])
+
+  useEffect(loadTradeList, [reloadTrade]);
+
+
+  useEffect(() => {
+    const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
+      loadTradeList();
+    });
+
+    priceChangeAction(dispatch);
+  }, []);
 
   const getPairByAddress = (token:string) => {
     const pair = tokenPairs.find((pair) => pair.address === token)

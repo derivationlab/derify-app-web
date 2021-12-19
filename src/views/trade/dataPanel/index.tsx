@@ -62,9 +62,25 @@ function DataPanel() {
 
   }, [walletInfo,curTokenPair])
 
+
+
+
   useEffect(() => {
     loadHomeData()
-  },[loadHomeData])
+  },[loadHomeData]);
+  useEffect(() => {
+
+    if(!walletInfo.trader){
+      return;
+    }
+
+    const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
+      loadHomeData();
+    });
+
+    priceChangeAction(dispatch);
+
+  }, [walletInfo]);
 
   return (
     <Row className="main-block data-panel-container">
