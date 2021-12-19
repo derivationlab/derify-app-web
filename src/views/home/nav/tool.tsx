@@ -71,18 +71,18 @@ function Tool() {
 
   const checkNetwork = useCallback(async (newNetWork) => {
 
-    if(!isEthum){
-      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
-      return false;
-    }
-
     if(!newNetWork){
       return false
     }
 
     const networkIsMain = newNetWork?.chainId === mainChain.chainId;
 
-    if(!networkIsMain) {
+    if(!networkIsMain){
+      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
+      return false;
+    }
+
+    if(!isEthum) {
       const ret = await switchNetwork(mainChain);
 
       if(ret){
@@ -283,7 +283,7 @@ function Tool() {
         </Row>
         <Row gutter={[20,20]} justify={"center"}>
           <Col>
-            <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(chainEnum, wallet)}>{$t('global.Confirm')}</Button>
+            <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(network, wallet)}>{$t('global.Confirm')}</Button>
           </Col>
         </Row>
       </Modal>
