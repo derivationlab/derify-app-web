@@ -215,7 +215,7 @@ const Transfer: React.FC<TransferProps> = props => {
       })
     }
 
-  }, [walletInfo,amount,transferData])
+  }, [walletInfo,amount,transferData,transferType])
 
   return (
     <Modal
