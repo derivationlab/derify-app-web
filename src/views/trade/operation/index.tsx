@@ -234,6 +234,8 @@ function Operation() {
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     });
 
+    onDepositAction(dispatch);
+
     const onOpenPositionAction = ContractModel.actions.onOpenPosition(trader, () => {
       console.log('onOpenPositionAction,updateMaxAmount');
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
