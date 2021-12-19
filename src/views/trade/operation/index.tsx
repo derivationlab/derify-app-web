@@ -176,6 +176,11 @@ function Operation() {
     let newSize = 0;
     if(maxSize > 0){
       newSize =  sliderValue / 100.0 * maxSize
+      const matches = newSize.toString().match(/^(\d+\.[0]*?[1-9][0-9]{0,3}).*?$/);
+      if(matches){
+        newSize = parseFloat(matches[1]);
+      }
+
     }
 
     return newSize
