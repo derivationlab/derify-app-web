@@ -116,6 +116,8 @@ const state : ContractState = {
   curSpotPrice: 0
 }
 
+let lastPriceChangeTime = 0;
+
 const reducers = createReducer(state, {
   'contract/UPDATE_PAIRS' (state : ContractState, {payload}) {
     const pairMap:{[key:string]:{item:TokenPair, index: number}} = {};
@@ -499,7 +501,11 @@ const actions = {
         commit({type:'contract/UPDATE_PAIRS', payload:[pair]});
       }
       const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
-      if(curPair && token == curPair.address && priceChangeListener.length){
+      const currentTimestamp = (new Date()).getTime();
+
+      if(curPair && token == curPair.address && priceChangeListener.length
+        && (lastPriceChangeTime - currentTimestamp) > 1000){
+        lastPriceChangeTime = currentTimestamp;
         priceChangeListener.forEach((listener) => listener.callback(listener.commit))
       }
     }
