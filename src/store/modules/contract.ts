@@ -503,8 +503,9 @@ const actions = {
       const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
       const currentTimestamp = (new Date()).getTime();
 
-      if(curPair && token == curPair.address && priceChangeListener.length
+      if(curPair && token == curPair.address && priceChangeListener.length > 0
         && (lastPriceChangeTime - currentTimestamp) > 1000){
+        console.log('price change listener');
         lastPriceChangeTime = currentTimestamp;
         priceChangeListener.forEach((listener) => listener.callback(listener.commit))
       }

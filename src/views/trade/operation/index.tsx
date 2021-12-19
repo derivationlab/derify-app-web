@@ -125,6 +125,7 @@ function Operation() {
   const onTokenChange = useCallback((token) => {
     setToken(token);
     resetMax(getMaxSize(traderOpenUpperBound, token));
+    setMaxAmount(getMaxSize(traderOpenUpperBound, token));
   },[traderOpenUpperBound]);
 
   const onOpenTypeChange = useCallback((val) => {
