@@ -3,7 +3,7 @@ import IconFont from "@/components/IconFont";
 import { Row, Col, Radio, Space, Modal, Statistic, Popover } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 
-import Chart from "./chart";
+import Chart,{timeOptions} from "./chart";
 import {FormattedMessage, useIntl} from "react-intl";
 import classNames from "classnames";
 import {useDispatch, useSelector} from "react-redux";
@@ -11,17 +11,6 @@ import contractModel, {ContractState, TokenPair} from "@/store/modules/contract"
 import {RootStore} from "@/store";
 import {amountFormt, fck} from "@/utils/utils";
 import {fromContractUnit, OpenType, SideEnum, Token} from "@/utils/contractUtil";
-
-const timeOptions: Array<{ label: string; value: string }> = [
-  { label: "1m", value: "1m" },
-  { label: "5m", value: "5m" },
-  { label: "15m", value: "15m" },
-  { label: "1h", value: "1H" },
-  { label: "4h", value: "4H" },
-  { label: "1D", value: "1D" },
-  { label: "1W", value: "1W" },
-  { label: "1M", value: "1M" },
-];
 
 declare type Context = {
   tokenMiningRateEvent:EventSource|null
