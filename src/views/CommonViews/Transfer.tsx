@@ -43,6 +43,8 @@ export class TransferData {
 }
 
 const Transfer: React.FC<TransferProps> = props => {
+  const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
+
   const { visible, operateType = TransferOperateType.withdraw } = props;
   const [form] = Form.useForm();
 
@@ -51,6 +53,7 @@ const Transfer: React.FC<TransferProps> = props => {
   const [transferType, setTransferType] = useState(operateType);
   const [transferData, setTransferData]  = useState<TransferData>(new TransferData())
   const [amount, setAmount]  = useState<Partial<string>>("")
+  const [maxAmount, setMaxAmount]  = useState<number>(0)
   const [errorMsg, setErrorMsg] = useState("");
 
   const walletInfo = useSelector((state:RootStore) => state.user);
@@ -68,7 +71,7 @@ const Transfer: React.FC<TransferProps> = props => {
     }else{
       return transferData.balanceOfDerify
     }
-  },[transferData, operateType]);
+  }, [operateType, transferData.balanceOfDerify, transferData.balanceOfWallet]);
 
   const loadTransferData = useCallback(async (transferType) => {
 
@@ -96,9 +99,11 @@ const Transfer: React.FC<TransferProps> = props => {
       console.log('balanceOf error:', e)
     }
 
-    setTransferData(transferData)
 
-  }, [walletInfo, transferType, visible])
+    setTransferData(transferData)
+    setMaxAmount(fck(getMaxAmount(transferData, transferType), -8, 4))
+
+  }, [walletInfo, transferType, visible, loadAccountStatus])
 
   const checkAmount = useCallback((amount,transferData,transferType)=>{
 
@@ -155,7 +160,10 @@ const Transfer: React.FC<TransferProps> = props => {
   },[operateType,visible])
 
   useEffect(() => {
-    loadTransferData(transferType)
+    if(visible){
+      console.log(`loadTransferData ${transferType}, ${visible}`);
+      loadTransferData(transferType)
+    }
   },[transferType, visible, walletInfo])
 
   const onchange = useCallback((e) => {
@@ -207,7 +215,7 @@ const Transfer: React.FC<TransferProps> = props => {
       })
     }
 
-  }, [walletInfo,amount,transferData])
+  }, [walletInfo,amount,transferData,transferType])
 
   return (
     <Modal
@@ -238,7 +246,7 @@ const Transfer: React.FC<TransferProps> = props => {
               <Row align="middle" justify="space-between">
                 <Col>
                   <FormattedMessage id="Trade.Account.Transfer.Max" />
-                  ：{fck(getMaxAmount(transferData,transferType), -8, 4)} USDT
+                  ：{maxAmount} USDT
                 </Col>
                 <Col>
                   <Button

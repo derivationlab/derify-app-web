@@ -244,6 +244,10 @@ export function convertTokenNumToContractNum (amount, tokenDecimals) {
 
 
 async function updateGasPrice(web3){
+  if(!web3 || !web3.eth){
+    return;
+  }
+
   const currentTime = (new Date()).getTime();
   if((currentTime - lastCacheTime) > 1000 * 60 * 60){
     //lastCacheTime = currentTime;
@@ -269,7 +273,9 @@ export default class Contract {
     const web3 = new Web3(window.ethereum)
 
     //update gas price
-    updateGasPrice(web3);
+    if(window.ethereum){
+      updateGasPrice(web3);
+    }
 
     this.web3 = web3
     this.from = from

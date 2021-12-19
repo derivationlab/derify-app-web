@@ -86,11 +86,12 @@ const Bind: React.FC<BindProps> = props => {
   const setPartnersCb = (val: Partners) => {
     setPartners(val);
   };
+  const {isLogin} = useSelector((state:RootStore) => state.user);
   return (
     <Row className="bind-partners-container main-block">
       <Col className="title margin-b-l">{intl('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')}</Col>
       <Col flex="100%" className="main-wrapper">
-        <Tabs activeKey={tabsIndex} className="margin-b-l">
+        {!isLogin ? <></> : <Tabs activeKey={tabsIndex} className="margin-b-l">
           <TabPane tab="" key="1">
             <Row align="middle">
               <Space size={24}>
@@ -99,7 +100,7 @@ const Bind: React.FC<BindProps> = props => {
                   <Input placeholder="" onChange={(e) => {
                     const {value} = e.target
                     setBrokerId(value)
-                  }} size="large" />
+                  }} size="large"/>
                 </Col>
               </Space>
             </Row>
@@ -107,9 +108,10 @@ const Bind: React.FC<BindProps> = props => {
           <TabPane tab="" key="2">
             <PartnersList onSelectBroker={(item) => {
               setBrokerId(item.id);
-            }} />
+            }}/>
           </TabPane>
         </Tabs>
+        }
         <Row>
           <Col flex="100%">
             <Row>

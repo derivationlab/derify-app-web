@@ -7,8 +7,8 @@ import ComModal from "./comModal";
 import {fromContractUnit, numConvert, OpenType, SideEnum, toContractUnit, UnitTypeEnum} from "@/utils/contractUtil";
 import {useDispatch, useSelector} from "react-redux";
 import contractModel, {TokenPair, OpenUpperBound} from "@/store/modules/contract";
-import {RootStore} from "@/store";
-import {checkNumber, fck} from "@/utils/utils";
+import {ContractModel, RootStore} from "@/store";
+import {amountFormt, checkNumber, fck} from "@/utils/utils";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import {TransferOperateType} from "@/utils/types";
@@ -36,6 +36,7 @@ function Operation() {
   const curPair = useSelector<RootStore, TokenPair>(state => state.contract.curPair);
   const [limitPrice, setLimitPrice] = useState<string>(curPair.num.toFixed(2));
   const [size, setSize] = useState<string>("");
+  const [maxAmount, setMaxAmount] = useState<number>(0);
   const [traderOpenUpperBound, setTraderOpenUpperBound] = useState<{amount:number|string,size:number|string}>({amount:0,size:0})
   const [sliderVal, setSliderVal] = useState<number>(0);
   const [token, setToken] = useState<number>(UnitTypeEnum.USDT);
@@ -43,7 +44,7 @@ function Operation() {
 
   const getMaxSize = useCallback((traderOpenUpperBound:OpenUpperBound, token:number) => {
     return contractModel.actions.getOpenUpperBoundMaxSize(traderOpenUpperBound, token);
-  }, [isModalVisible]);
+  }, [isModalVisible, token]);
 
   const walletInfo = useSelector((state:RootStore) => state.user);
 
@@ -116,21 +117,15 @@ function Operation() {
   }, [limitPrice,openType]);
 
   const onSliderChange = useCallback((value:number) => {
-    const maxSize = getMaxSize(traderOpenUpperBound, token);
-
+    const tokenSize = calculatePositionSize(size, token, traderOpenUpperBound,value);
     setSliderVal(value);
-    setSize(value.toString());
-    setToken(UnitTypeEnum.Percent);
-
-    if(maxSize > 0){
-      DerifyErrorNotice.error(null);
-    }
-
-  }, [traderOpenUpperBound, token]);
+    setSize(tokenSize.toString());
+  }, [traderOpenUpperBound, token, size]);
 
   const onTokenChange = useCallback((token) => {
     setToken(token);
     resetMax(getMaxSize(traderOpenUpperBound, token));
+    setMaxAmount(getMaxSize(traderOpenUpperBound, token));
   },[traderOpenUpperBound]);
 
   const onOpenTypeChange = useCallback((val) => {
@@ -164,28 +159,26 @@ function Operation() {
 
     const getTraderOpenUpperBoundAction = contractModel.actions.getTraderOpenUpperBound(params);
 
+    const tokenNew = token;
     getTraderOpenUpperBoundAction(dispatch).then((data)=>{
       setTraderOpenUpperBound(data);
-      resetMax(getMaxSize(data, token));
+      setMaxAmount(getMaxSize(data, tokenNew));
+      resetMax(getMaxSize(data, tokenNew));
     }).catch((e)=>{
       console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
 
-  }, [walletInfo.selectedAddress,leverage,curPair, openType]);
+  }, [walletInfo.selectedAddress,leverage,curPair, openType, token]);
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
 
-    if(unit === UnitTypeEnum.Percent){
-      const maxSize = getMaxSize(traderOpenUpperBound, unit);
-      let newSize = 0;
-      if(maxSize > 0){
-        newSize =  numConvert(sliderValue / 100 * getMaxSize(traderOpenUpperBound,unit), 0, 2)
-      }
-
-      return newSize
+    const maxSize = getMaxSize(traderOpenUpperBound, unit);
+    let newSize = 0;
+    if(maxSize > 0){
+      newSize =  amountFormt(sliderValue / 100.0 * maxSize, 4, false, 0, 0);
     }
 
-    return parseFloat(size);
+    return newSize
 
   }, []);
 
@@ -218,13 +211,47 @@ function Operation() {
     <Select value={token} className="select-after" onChange={(value) => onTokenChange(value)}>
       <Option value={UnitTypeEnum.USDT}>USDT</Option>
       <Option value={UnitTypeEnum.CurPair}>{curPair.key}</Option>
-      <Option value={UnitTypeEnum.Percent}>%</Option>
     </Select>
   );
 
   useEffect(() => {
     updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
-  }, [walletInfo,openType, curPair, leverage, limitPrice]);
+
+
+    const trader = walletInfo.trader;
+    if(!trader){
+      return;
+    }
+
+    const onWithdrawAction = ContractModel.actions.onWithDraw(trader, () => {
+      console.log('onWithdrawAction,updateMaxAmount');
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    });
+
+    onWithdrawAction(dispatch);
+
+    const onDepositAction = ContractModel.actions.onDeposit(trader, () => {
+      console.log(`onDepositAction,updateMaxAmount,${token}`);
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    });
+
+    onDepositAction(dispatch);
+
+    const onOpenPositionAction = ContractModel.actions.onOpenPosition(trader, () => {
+      console.log(`onOpenPositionAction,updateMaxAmount, ${token}`);
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    })
+
+    onOpenPositionAction(dispatch);
+
+    const onClosePositionAction = ContractModel.actions.onClosePosition(trader, () => {
+      console.log(`onClosePositionAction,updateMaxAmount, ${token}`);
+      updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
+    })
+
+    onClosePositionAction(dispatch);
+
+  }, [walletInfo,openType, curPair, leverage, limitPrice, token]);
 
   return (
     <Row className="main-block operation-container">
@@ -297,7 +324,7 @@ function Operation() {
                 <Row gutter={2} align={"middle"}>
                   <Col>
                     <FormattedMessage id="Trade.OpenPosition.OpenPage.Max" />
-                    ：{getMaxSize(traderOpenUpperBound, token)} {token === UnitTypeEnum.USDT ? "USDT" : curPair.key}
+                    ：{maxAmount} {token === UnitTypeEnum.USDT ? "USDT" : curPair.key}
                   </Col>
                   <Col>
                     <Button type="link" onClick={() => setModalVisible(true)}>

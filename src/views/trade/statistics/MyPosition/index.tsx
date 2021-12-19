@@ -94,6 +94,13 @@ const MyPosition: React.FC = () => {
     loadMyPositionData()
   }, [reloadTrade])
 
+  useEffect(() => {
+    const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
+      loadMyPositionData();
+    });
+
+    priceChangeAction(dispatch);
+  }, []);
 
   const cancelCb = () => {};
 

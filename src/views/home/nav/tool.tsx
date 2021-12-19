@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
-import {FormattedMessage} from "react-intl";
+import {FormattedMessage, useIntl} from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
 
@@ -35,13 +35,13 @@ function Tool() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
-  const [network, setNetwork] = useState<ChainEnum|undefined>(undefined);
-  const [wallet, setWallet] = useState<Partial<string|undefined>>();
+  const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
+  const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
   const [account, setAccount] = useState<Partial<string>>();
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
 
-  const {selectedAddress, isLogin, isEthum, showWallet, chainEnum} = useSelector((state : RootStore) => state.user)
+  const {selectedAddress, isLogin, isEthum, showWallet, chainEnum, isMetaMask} = useSelector((state : RootStore) => state.user)
 
   const dispatch = useDispatch();
 
@@ -57,7 +57,7 @@ function Tool() {
       return false
     }
 
-    const walletIsMetaMask = newWallet === WalletEnum.MetaMask;
+    const walletIsMetaMask = newWallet === WalletEnum.MetaMask && isMetaMask;
 
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
@@ -67,14 +67,9 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[wallet])
+  },[wallet,isMetaMask])
 
-  const checkNetwork = useCallback((newNetWork) => {
-
-    if(!isEthum){
-      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
-      return false;
-    }
+  const checkNetwork = useCallback(async (newNetWork) => {
 
     if(!newNetWork){
       return false
@@ -82,7 +77,18 @@ function Tool() {
 
     const networkIsMain = newNetWork?.chainId === mainChain.chainId;
 
-    if(!networkIsMain) {
+    if(!networkIsMain){
+      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
+      return false;
+    }
+
+    if(!isEthum) {
+      const ret = await switchNetwork(mainChain);
+
+      if(ret){
+        setErrorMsg(undefined);
+        return true;
+      }
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
       return false
     }
@@ -93,8 +99,8 @@ function Tool() {
   },[network,isEthum]);
 
 
-  const checkLogin = useCallback((network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
-    if (checkNetwork(network) && checkWallet(wallet)) {
+  const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
+    if (checkWallet(wallet) && await checkNetwork(network)) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
         dispatch(userModel.actions.loginSuccess());
@@ -104,8 +110,6 @@ function Tool() {
 
   useEffect(() => {
     dispatch(userModel.actions.loadWallet());
-    setWallet(undefined);
-    setNetwork(undefined);
   }, [selectedAddress]);
 
   useEffect(() => {
@@ -115,6 +119,11 @@ function Tool() {
     }
 
     window.onload = function () {
+
+      if(!window.ethereum){
+        return;
+      }
+
       window.ethereum.on('accountsChanged', function () {
         dispatch(userModel.actions.loadWallet())
       })
@@ -136,14 +145,39 @@ function Tool() {
   }, [isLogin]);
 
   const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
+    if(!item || item.disabled) {
+      return;
+    }
     setNetwork(item);
-    checkLogin(item, wallet);
   }, [checkLogin, wallet]);
+
+  const switchNetwork = async (item:ChainEnum) => {
+    try {
+      // check if the chain to connect to is installed
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{chainId: '0x'+(item.chainId).toString(16)}], // chainId must be in hexadecimal numbers
+      });
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false
+    }
+  }
+
+
 
   const onChangeWallet = useCallback((val) => {
     setWallet(val);
-    checkLogin(network,val);
   }, [checkLogin]);
+
+  const {formatMessage} = useIntl()
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl;
 
   return (
     <Row align={"middle"} className="tool">
@@ -214,7 +248,7 @@ function Tool() {
         }}
       >
         <Row>
-          {errorMsg?.id ? <Col style={{ marginBottom: "10px" }}>
+          {errorMsg?.id ? <Col flex="100%" style={{ marginBottom: "10px" }}>
             <ErrorMessage msg={<FormattedMessage id={errorMsg?.id} values={{0:errorMsg?.value}}/>} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>
           </Col>:''}
           <Col style={{ marginBottom: "10px" }}>
@@ -226,7 +260,7 @@ function Tool() {
               {networkList.map((item, i) => (
                 <Col
                   className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
-                  onClick={() => onChangeNetwork((item.chainEnum?.disabled || item.chainEnum?.chainId === network?.chainId) ? undefined : item.chainEnum)}
+                  onClick={() => onChangeNetwork(item.chainEnum)}
                   key={i}
                 >
                   <IconFont size={18} type="icon-Group-" />
@@ -243,13 +277,18 @@ function Tool() {
             <Row className="wallet-list">
               <Col
                 className={classNames({ active: wallet === WalletEnum.MetaMask })}
-                onClick={() => onChangeWallet(wallet === WalletEnum.MetaMask ? undefined : WalletEnum.MetaMask)}
+                onClick={() => onChangeWallet(WalletEnum.MetaMask)}
               >
                 <IconFont size={18} type="icon-Group-" />
                 <img src={Wallet} alt="" />
                 <div>Metamask</div>
               </Col>
             </Row>
+          </Col>
+        </Row>
+        <Row gutter={[20,20]} justify={"center"}>
+          <Col>
+            <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(network, wallet)}>{$t('global.Confirm')}</Button>
           </Col>
         </Row>
       </Modal>

@@ -116,6 +116,8 @@ const state : ContractState = {
   curSpotPrice: 0
 }
 
+let lastPriceChangeTime = 0;
+
 const reducers = createReducer(state, {
   'contract/UPDATE_PAIRS' (state : ContractState, {payload}) {
     const pairMap:{[key:string]:{item:TokenPair, index: number}} = {};
@@ -216,6 +218,12 @@ const reducers = createReducer(state, {
   }
 })
 
+const openPositionListener:{callback:Function, commit:Dispatch}[] = [];
+const closePositionListener:{callback:Function, commit:Dispatch}[] = [];
+const priceChangeListener:{callback:Function, commit:Dispatch}[] = [];
+
+
+
 const actions = {
 
   depositAccount (trader:string, amount:string|number) {
@@ -302,8 +310,15 @@ const actions = {
         token, side, openType, size, price, leverage
       }
 
-      return await web3Utils.contract(trader, brokerId)
+      const ret = await web3Utils.contract(trader, brokerId)
         .openPosition(params)
+
+      if(openPositionListener.length > 0){
+        openPositionListener.forEach(listener => {
+          listener.callback(listener.commit);
+        });
+      }
+      return ret;
     }
   },
   closePosition (trader:string, token:string, side:SideEnum, size:string|number, brokerId:string) {
@@ -312,8 +327,16 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(trader, brokerId)
+      const ret = await web3Utils.contract(trader, brokerId)
         .closePosition(token, side, size)
+
+      if(closePositionListener.length > 0){
+        closePositionListener.forEach(listener => {
+          listener.callback(listener.commit);
+        });
+      }
+
+      return ret;
     }
   },
   orderStopPosition(params:{trader:string, token:string, side:SideEnum, takeProfitPrice:string|number, stopLossPrice:string|number}) {
@@ -322,8 +345,13 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(params.trader)
+      const ret = await web3Utils.contract(params.trader)
         .orderStopPosition(params)
+
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+      return ret;
     }
   },
   closeAllPositions (trader:string, brokerId:string) {
@@ -331,8 +359,14 @@ const actions = {
       if(!trader) {
         return false
       }
-      return await web3Utils.contract(trader, brokerId)
-        .closeAllPositions()
+      const ret = await web3Utils.contract(trader, brokerId)
+        .closeAllPositions();
+
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+
+      return ret;
     }
   },
   /**
@@ -346,8 +380,13 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(params.trader)
+      const ret = await web3Utils.contract(params.trader)
         .cancleOrderedPosition(params)
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+
+      return ret;
     }
   },
   cancleAllOrderedPositions (trader:string) {
@@ -356,8 +395,14 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(trader)
+      const ret = await web3Utils.contract(trader)
         .cancleAllOrderedPositions()
+
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+
+      return ret;
     }
   },
   loadHomeData ({token, trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {
@@ -451,6 +496,7 @@ const actions = {
         return {}
       }
 
+
       for (const pair of state.pairs) {
         if(!pair.enable || pair.address != token){
           continue;
@@ -475,6 +521,15 @@ const actions = {
 
 
         commit({type:'contract/UPDATE_PAIRS', payload:[pair]});
+      }
+      const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
+      const currentTimestamp = (new Date()).getTime();
+
+      if(curPair && token == curPair.address && priceChangeListener.length > 0
+        && (lastPriceChangeTime - currentTimestamp) > 1000){
+        console.log('price change listener');
+        lastPriceChangeTime = currentTimestamp;
+        priceChangeListener.forEach((listener) => listener.callback(listener.commit))
       }
     }
   },
@@ -571,30 +626,38 @@ const actions = {
   getTradingFee (token:string, trader:string, size:string|number, price:string|number):Promise<number> {
     return web3Utils.contract(trader).getTradingFee(token, size, price)
   },
-  onDeposit (trader:string) {
+  onDeposit (trader:string, callback?:Function) {
     return async (commit:Dispatch) => {
       if(!trader){
         return {}
       }
 
+      if(!callback){
+        callback = function (){
+          const loadAccountAction = self.loadAccountData(trader);
+          loadAccountAction(commit)
+        };
+      }
+
       const self = this;
-      web3Utils.contract(trader).onDeposit(trader, function (){
-        const loadAccountAction = self.loadAccountData(trader);
-        loadAccountAction(commit)
-      })
+      web3Utils.contract(trader).onDeposit(trader, callback)
     }
   },
-  onWithDraw (trader:string) {
+  onWithDraw (trader:string, callback?:Function) {
     return async (commit:Dispatch) => {
       if(!trader){
         return {}
       }
 
       const self = this;
-      web3Utils.contract(trader).onDeposit(trader, function (){
-        const loadAccountAction = self.loadAccountData(trader);
-        loadAccountAction(commit)
-      })
+
+      if(!callback){
+        callback = function (){
+          const loadAccountAction = self.loadAccountData(trader);
+          loadAccountAction(commit)
+        };
+      }
+      web3Utils.contract(trader).onWithdraw(trader, callback)
     }
   },
 
@@ -607,6 +670,22 @@ const actions = {
       commit({type: "contract/SET_CURPAIRKEY", payload: tokenPair})
 
       return true
+    }
+  },
+
+  onOpenPosition(trader:string, callback:Function){
+    return async (commit:Dispatch) => {
+      openPositionListener.push({callback, commit});
+    }
+  },
+  onClosePosition(trader:string, callback:Function){
+    return async (commit:Dispatch) => {
+      closePositionListener.push({callback, commit});
+    }
+  },
+  onPriceChange(trader:string, callback:Function){
+    return async (commit:Dispatch) => {
+      priceChangeListener.push({callback, commit});
     }
   }
 }
