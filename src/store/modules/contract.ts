@@ -345,8 +345,13 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(params.trader)
+      const ret = await web3Utils.contract(params.trader)
         .orderStopPosition(params)
+
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+      return ret;
     }
   },
   closeAllPositions (trader:string, brokerId:string) {
@@ -354,8 +359,14 @@ const actions = {
       if(!trader) {
         return false
       }
-      return await web3Utils.contract(trader, brokerId)
-        .closeAllPositions()
+      const ret = await web3Utils.contract(trader, brokerId)
+        .closeAllPositions();
+
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+
+      return ret;
     }
   },
   /**
@@ -369,8 +380,13 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(params.trader)
+      const ret = await web3Utils.contract(params.trader)
         .cancleOrderedPosition(params)
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+
+      return ret;
     }
   },
   cancleAllOrderedPositions (trader:string) {
@@ -379,8 +395,14 @@ const actions = {
         return false
       }
 
-      return await web3Utils.contract(trader)
+      const ret = await web3Utils.contract(trader)
         .cancleAllOrderedPositions()
+
+      closePositionListener.forEach(listener => {
+        listener.callback(listener.commit);
+      });
+
+      return ret;
     }
   },
   loadHomeData ({token, trader, side = 0, openType = OpenType.MarketOrder}:{token:string,trader:string,side:SideEnum,openType:OpenType}) {

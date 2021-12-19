@@ -167,7 +167,7 @@ function Operation() {
       console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
 
-  }, [walletInfo.selectedAddress,leverage,curPair, openType]);
+  }, [walletInfo.selectedAddress,leverage,curPair, openType,token]);
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
 
