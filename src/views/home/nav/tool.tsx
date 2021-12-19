@@ -41,7 +41,7 @@ function Tool() {
   const [blance, setBlance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
 
-  const {selectedAddress, isLogin, isEthum, showWallet, chainEnum} = useSelector((state : RootStore) => state.user)
+  const {selectedAddress, isLogin, isEthum, showWallet, chainEnum, isMetaMask} = useSelector((state : RootStore) => state.user)
 
   const dispatch = useDispatch();
 
@@ -57,7 +57,7 @@ function Tool() {
       return false
     }
 
-    const walletIsMetaMask = newWallet === WalletEnum.MetaMask;
+    const walletIsMetaMask = newWallet === WalletEnum.MetaMask && isMetaMask;
 
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
@@ -100,7 +100,7 @@ function Tool() {
 
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
-    if (await checkNetwork(network) && checkWallet(wallet)) {
+    if (checkWallet(wallet) && await checkNetwork(network)) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
         dispatch(userModel.actions.loginSuccess());
@@ -119,6 +119,11 @@ function Tool() {
     }
 
     window.onload = function () {
+
+      if(!window.ethereum){
+        return;
+      }
+
       window.ethereum.on('accountsChanged', function () {
         dispatch(userModel.actions.loadWallet())
       })
@@ -243,7 +248,7 @@ function Tool() {
         }}
       >
         <Row>
-          {errorMsg?.id ? <Col style={{ marginBottom: "10px" }}>
+          {errorMsg?.id ? <Col flex="100%" style={{ marginBottom: "10px" }}>
             <ErrorMessage msg={<FormattedMessage id={errorMsg?.id} values={{0:errorMsg?.value}}/>} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>
           </Col>:''}
           <Col style={{ marginBottom: "10px" }}>
