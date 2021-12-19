@@ -67,7 +67,7 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[wallet])
+  },[wallet,isMetaMask])
 
   const checkNetwork = useCallback(async (newNetWork) => {
 
