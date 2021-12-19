@@ -70,23 +70,27 @@ const Chart: React.FC<ChartModalProps> = props => {
   },[token,bar,after,before,limit,curPrice])
 
   const onWheel = (e:WheelEvent) => {
+    e.stopPropagation();
+
     if(!limit){
       limit = (35).toString();
     }
 
-    if(e.deltaMode > 0){
+    if(e.deltaY > 1){
 
       if(parseInt(limit) > 300){
         return;
       }
 
       limit = (parseInt(limit) + 1).toString();
-    }else if(e.deltaMode < 0){
+    }else if(e.deltaY < -1){
       if(parseInt(limit) < 10){
         return;
       }
 
       limit = (parseInt(limit) -1 ).toString();
+    }else{
+      return;
     }
 
     updateChartKlineData(token,bar,after,before,limit,curPrice);
@@ -94,8 +98,14 @@ const Chart: React.FC<ChartModalProps> = props => {
 
   let dragStartEvent:MouseEvent|null = null;
   const onMouseDown = (e:MouseEvent) => {
+
+    if(e.buttons > 1){
+      return;
+    }
+
     dragStartEvent = e;
   }
+  const chartEle:HTMLDivElement = chartContainer.current;
 
   const onMouseMove = (e:MouseEvent) => {
     if(dragStartEvent == null){
@@ -105,8 +115,12 @@ const Chart: React.FC<ChartModalProps> = props => {
       limit = (35).toString();
     }
 
-    const deltaX = e.clientX - dragStartEvent.clientX;
-    const chartEle:HTMLDivElement = chartContainer.current;
+    const deltaX = e.pageX - dragStartEvent.pageX;
+
+    if(deltaX < 10){
+      return;
+    }
+
 
     const timeOption = timeOptions.find((item) => item.value == bar);
 
@@ -116,11 +130,12 @@ const Chart: React.FC<ChartModalProps> = props => {
 
     let afterTimestamp = after ? parseInt(after) : (new Date()).getTime();
 
-    afterTimestamp = afterTimestamp - deltaX / chartEle.clientWidth * parseInt(limit) * timeOption.time;
+    afterTimestamp = afterTimestamp - Math.ceil(deltaX / chartEle.clientWidth * parseInt(limit) * timeOption.time);
 
     after = afterTimestamp.toString();
 
     updateChartKlineData(token,bar,after,before,limit,curPrice);
+    dragStartEvent = e;
   }
 
   const onMouseUp = (e:MouseEvent) => {
@@ -129,7 +144,10 @@ const Chart: React.FC<ChartModalProps> = props => {
 
 
   return (
-    <div className="charts-container" ref={chartContainer} onWheel={onWheel} onMouseDown={onMouseDown}>
+    <div className="charts-container" ref={chartContainer} onWheelCapture={onWheel}
+         onMouseUp={onMouseUp}
+         onMouseMove={onMouseMove}
+         onMouseDown={onMouseDown}>
       <CommonCharts height={380} ref={chartRef}/>
     </div>);
 };
