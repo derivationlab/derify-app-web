@@ -134,8 +134,27 @@ function Tool() {
   }, [isLogin]);
 
   const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
+    if(!item || item.disabled) {
+      return;
+    }
     setNetwork(item);
+
+    switchNetwork(item);
   }, [checkLogin, wallet]);
+
+  const switchNetwork = async (item:ChainEnum) => {
+    try {
+      // check if the chain to connect to is installed
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{chainId: '0x'+(item.chainId).toString(16)}], // chainId must be in hexadecimal numbers
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
 
   const onChangeWallet = useCallback((val) => {
     setWallet(val);
