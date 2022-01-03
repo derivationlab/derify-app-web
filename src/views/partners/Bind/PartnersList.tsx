@@ -42,7 +42,6 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
 
   useEffect(() => {
     setLoading(true);
-    console.log('getBrokerList', pagenation);
     getBrokerList(pagenation.current, pagenation.pageSize).then((pagenation) => {
       setIndex(undefined);
       setPagenation(pagenation);
@@ -120,8 +119,6 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                 if(pageSize){
                   pagenation.pageSize = pageSize;
                 }
-
-                console.log(pagenation);
 
                 setPagenation(Object.assign({}, pagenation,{current: pageNum, pageSize}));
               }} defaultCurrent={pagenation.current} pageSize={pagenation.pageSize} total={pagenation.totalItems} showSizeChanger={false} />
