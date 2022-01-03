@@ -221,11 +221,11 @@ export function toContractNum (number) {
   return Math.ceil(num)
 }
 
-export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
+export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_DOWN) {
   return numConvert(unit, -contractDecimals, bit, rounding)
 }
 
-export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
+export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_DOWN) {
   const number = new BigNumber(unit)
   if(bit < 0) {
     return number.shiftedBy(pow).toNumber()
