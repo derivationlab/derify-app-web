@@ -3,7 +3,7 @@
  */
 export class Pagenation{
   current = 1;
-  pageSize = 10;
+  pageSize = 5;
   totalPage = 1;
   totalItems = 0;
   /**
