@@ -118,6 +118,9 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
                 if(pageSize){
                   pagenation.pageSize = pageSize;
                 }
+
+                console.log(pagenation);
+
                 setPagenation(pagenation);
               }} defaultCurrent={pagenation.current} pageSize={pagenation.pageSize} total={pagenation.totalItems} showSizeChanger={false} />
             </Row>
