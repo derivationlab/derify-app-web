@@ -1,5 +1,5 @@
 import createKeccakHash from "keccak";
-import {numConvert} from "@/utils/contractUtil";
+import { numConvert } from '@/utils/contractUtil'
 /* eslint-disable */
 export function dateFormat  (date, fmt) {
   var o = {
@@ -103,6 +103,8 @@ export function mergeNonNull(obj1, obj2){
       }else{
         resultObj[name] = source[name];
       }
+
+      console.log(resultObj,source[name])
     }
   }
 
@@ -110,6 +112,10 @@ export function mergeNonNull(obj1, obj2){
 }
 
 export function toChecksumAddress (address) {
+  if(!address){
+    return address
+  }
+
   address = address.toLowerCase().replace('0x', '')
   var hash = createKeccakHash('keccak256').update(address).digest('hex')
   var ret = '0x'

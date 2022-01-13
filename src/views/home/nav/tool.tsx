@@ -27,7 +27,7 @@ const { Option } = Select;
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Eth, name: mainChain.name, chainEnum: mainChain },
   { url: HECO, name: "HECO", chainEnum: ChainEnum.Kovan },
-  { url: Binance, name: "Binance", chainEnum: ChainEnum.Goerli},
+  { url: Binance, name: "Binance", chainEnum: ChainEnum.BSC},
   { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
 ];
 
@@ -75,7 +75,7 @@ function Tool() {
       return false
     }
 
-    const networkIsMain = newNetWork?.chainId === mainChain.chainId;
+    const networkIsMain = newNetWork?.chainId === chainEnum?.chainId;
 
     if(!networkIsMain){
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
@@ -83,13 +83,13 @@ function Tool() {
     }
 
     if(!isEthum) {
-      const ret = await switchNetwork(mainChain);
+      const ret = await switchNetwork(newNetWork);
 
       if(ret){
         setErrorMsg(undefined);
         return true;
       }
-      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
+      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: chainEnum?.name})
       return false
     }
 
@@ -161,6 +161,42 @@ function Tool() {
       return true;
     } catch (error) {
       console.error(error);
+
+
+      if (error.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                // chainId: string; // A 0x-prefixed hexadecimal string
+                // chainName: string;
+                // nativeCurrency: {
+                //   name: string;
+                //   symbol: string; // 2-6 characters long
+                //   decimals: 18;
+                // };
+                // rpcUrls: string[];
+                // blockExplorerUrls?: string[];
+                // iconUrls?: string[]; // Currently ignored.
+
+                chainId: '0x'+(item.chainId).toString(16),
+                rpcUrls: [item.rpc],
+                chainName: item.name,
+                blockExplorerUrls: [item.explorer],
+                nativeCurrency:{
+                  name:"BNB",
+                  symbol: "BNB",
+                  decimals: 18
+                }
+              },
+            ],
+          });
+        } catch (addError) {
+          console.error(addError);
+        }
+      }
+
       return false
     }
   }

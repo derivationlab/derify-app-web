@@ -23,12 +23,16 @@ export class ChainEnum {
   name:string;
   logo:string;
   disabled:boolean;
+  rpc:string;
+  explorer:string;
 
-  constructor(chainId:number, name:string, logo = Eth, disabled = true){
+  constructor(chainId:number, name:string, logo = Eth, disabled = true, rpcUrl= '', explorerUrl=''){
     this.chainId = chainId
     this.name = name
     this.logo = logo
     this.disabled = disabled
+    this.rpc = rpcUrl;
+    this.explorer = explorerUrl;
     ChainEnum.values.push(this)
   }
 
@@ -55,6 +59,10 @@ export class ChainEnum {
   static get Morden() {
     return new ChainEnum(2, "Morden")
   }
+
+  static get BSC() {
+    return new ChainEnum(0x38, "BSC-TEST", '', false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
+  }
 }
 
 const networkMap:{[key:number]:ChainEnum} = {
@@ -64,6 +72,7 @@ const networkMap:{[key:number]:ChainEnum} = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
+  0x38: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
