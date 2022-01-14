@@ -61,7 +61,7 @@ export class ChainEnum {
   }
 
   static get BSC() {
-    return new ChainEnum(0x31, "BSC-TEST", '', false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
+    return new ChainEnum(0x61, "BSC-TEST", '', false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
   }
 }
 
