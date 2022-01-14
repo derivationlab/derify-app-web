@@ -136,7 +136,7 @@ const state : UserState = {
   showWallet: false,
   isLogin: false,
   chainEnum: mainChain,
-  isEthum: false,
+  isEthum: true,
   networkVersion: "",
   isMetaMask: false,
   processStatus: UserProcessStatus.finished,
@@ -170,7 +170,7 @@ export async function getWallet() : Promise<UserState>{
 
 
   let wethereum = window.ethereum
-  const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
+  const isEthum = true
 
   const chainId = parseInt(wethereum.chainId)
 
