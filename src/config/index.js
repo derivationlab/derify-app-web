@@ -34,7 +34,7 @@ export function getWebroot(chain = 'rinkeby'){
 }
 
 export function  isDebug() {
-  if(config.debug || location.href.indexOf("debug") > -1) {
+  if(config.debug || window.location.href.indexOf("debug") > -1) {
     return true
   }
 
