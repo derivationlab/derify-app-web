@@ -72,7 +72,7 @@ const networkMap:{[key:number]:ChainEnum} = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
-  0x38: ChainEnum.BSC,
+  0x61: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
