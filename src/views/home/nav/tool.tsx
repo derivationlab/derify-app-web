@@ -95,7 +95,10 @@ function Tool() {
 
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
-    if (checkWallet(wallet) && await checkNetwork(network)) {
+    const networkCheckRes:boolean = await checkNetwork(network);
+    const walletCheckRes:boolean = await checkWallet(wallet);
+
+    if (networkCheckRes && walletCheckRes) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
         dispatch(userModel.actions.loginSuccess());
@@ -187,6 +190,8 @@ function Tool() {
               },
             ],
           });
+
+          return true;
         } catch (addError) {
           console.error(addError);
         }
