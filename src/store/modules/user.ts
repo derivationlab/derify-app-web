@@ -61,7 +61,7 @@ export class ChainEnum {
   }
 
   static get BSC() {
-    return new ChainEnum(0x61, "BSC-TEST", '', false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
+    return new ChainEnum(0x61, "BSC testnet", Binance, false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
   }
 }
 
@@ -106,7 +106,7 @@ export class UserProcessStatus {
   }
 }
 
-export const mainChain = ChainEnum.Rinkeby
+export const mainChain = ChainEnum.BSC
 
 export type UserState = {
   selectedAddress?: string|null,
