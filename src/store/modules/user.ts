@@ -181,7 +181,7 @@ export async function getWallet() : Promise<UserState>{
 
 
 
-  const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
+  const isLogin = wethereum.selectedAddress && isEthum && !isLogout() && !chainEnum.disabled;
   const trader = isLogin ? toChecksumAddress(wethereum.selectedAddress) : "";
 
   if(isLogin && trader){
