@@ -11,12 +11,13 @@ import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import ErrorMessage, {DerifyErrorNotice} from "@/components/ErrorMessage";
 import "./index.less"
 import {Token} from "@/utils/contractUtil";
+import {ChainEnum} from "@/store/modules/user";
 
 interface FaucetProps extends RouteProps {}
 
 const Faucet: React.FC<FaucetProps> = props => {
   const { history } = props;
-  const {trader} = useSelector((state:RootStore) => state.user);
+  const {trader,chainEnum} = useSelector((state:RootStore) => state.user);
   const [traderInputVal,setTraderInputValue] = useState("");
   const [usdtClaimed,setUsdtClaimed] = useState(true);
 
@@ -128,11 +129,19 @@ const Faucet: React.FC<FaucetProps> = props => {
       <Col flex="100%">
         <Row justify={"center"}>
           <Col>
-            <Link target="_blank" href="https://www.rinkeby.io/#faucet">
-              <Button type="link">
-                {$t("Faucet.GetETH")}
-              </Button>
-            </Link>
+            {chainEnum?.chainId == ChainEnum.Rinkeby.chainId
+              ? <Link target="_blank" href="https://www.rinkeby.io/#faucet">
+                <Button type="link">
+                  {$t("Faucet.GetETH")}
+                </Button>
+              </Link> :<></>}
+            {chainEnum?.chainId == ChainEnum.BSC.chainId
+              ? <Link target="_blank" href="https://testnet.binance.org/faucet-smart">
+                <Button type="link">
+                  {$t("Faucet.GetBNB")}
+                </Button>
+              </Link> :<></>}
+
           </Col>
         </Row>
       </Col>
