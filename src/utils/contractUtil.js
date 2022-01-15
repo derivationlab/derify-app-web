@@ -714,12 +714,21 @@ export default class Contract {
       price,
       actionType)
 
-    //TODO trading naked position cal
-    // const longTotalSize = await this.__getDerifyDerivativeContract(token).methods.longTotalSize().call();
-    // const shortTotalSize = await this.__getDerifyDerivativeContract(token).methods.shortTotalSize().call();
+    //trading naked position cal
+    const longTotalSizeBefore = await this.__getDerifyDerivativeContract(token).methods.longTotalSize().call();
+    const shortTotalSizeBefore = await this.__getDerifyDerivativeContract(token).methods.shortTotalSize().call();
 
+    const diffBefore = Math.abs(longTotalSizeBefore) - Math.abs(shortTotalSizeBefore);
+    let amount = Math.abs(size);
 
-    const nakedPositionDiff = 0;
+    if ((actionType === 0  && side === SideEnum.SHORT) || (actionType === 1 && side === SideEnum.LONG)) {
+      amount = -amount
+    }
+
+    let diffAfter = Math.abs(longTotalSizeBefore) + amount - Math.abs(shortTotalSizeBefore);
+
+    const nakedPositionDiff = diffAfter - diffBefore;
+    console.log(`nakedPositionDiff=${nakedPositionDiff}, ratioSum=${ratioSum}`);
     return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(nakedPositionDiff, ratioSum).call()
   }
 
