@@ -163,11 +163,12 @@ export default {
           "abi": DerifyDerivative,
           "BTC": {
             "address": "0x7F4c1429a99b16df381430818F826a00Ae463578",
-            "token": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e"
+            "token": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
           },
           "ETH": {
             "address": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e",
-            "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            "token": "0xC02" +
+              "aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
           }
         },
         "DerifyExchange": {
