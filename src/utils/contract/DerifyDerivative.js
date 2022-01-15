@@ -9,6 +9,11 @@ export default
       },
       {
         "internalType": "address",
+        "name": "_aggregator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "_exchange",
         "type": "address"
       }
@@ -234,6 +239,19 @@ export default
   },
   {
     "inputs": [],
+    "name": "longAveragePrice",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "longTotalSize",
     "outputs": [
       {
@@ -248,6 +266,19 @@ export default
   {
     "inputs": [],
     "name": "roRatio",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "shortAveragePrice",
     "outputs": [
       {
         "internalType": "uint256",
@@ -375,6 +406,34 @@ export default
       }
     ],
     "name": "updateParams",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_exchange",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_aggregator",
+        "type": "address"
+      }
+    ],
+    "name": "updateContracts",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -668,19 +727,6 @@ export default
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      }
-    ],
-    "name": "setSpotPrice",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "getSideTotalAmount",
     "outputs": [
@@ -717,12 +763,7 @@ export default
     "outputs": [
       {
         "internalType": "int256",
-        "name": "tokenTotalUnrealizedProfit",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "tokenTotalUnrealizedLoss",
+        "name": "tokenTotalUnrealizedPnl",
         "type": "int256"
       }
     ],
@@ -987,48 +1028,9 @@ export default
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      }
-    ],
-    "name": "getTradingFee",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "tradingFee",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "enum IDerifyDerivative.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "enum IDerifyDerivative.ActionType",
-        "name": "actionType",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
+        "internalType": "int256",
+        "name": "nakedPositionDiff",
+        "type": "int256"
       },
       {
         "internalType": "int256",

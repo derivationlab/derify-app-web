@@ -229,8 +229,9 @@ const ComModal: React.FC<ComModalProps> = props => {
     const params = {
       trader: walletInfo.selectedAddress,
       token: openConfirmData.token.address,
+      quantityType: unit === UnitTypeEnum.USDT ? 1 : 0,
       side: openConfirmData.side,
-      size: toContractNum(tokenSize),
+      size: toContractNum(size),
       openType: openConfirmData.openType,
       price: toContractNum(price),
       leverage: toContractNum(leverage),

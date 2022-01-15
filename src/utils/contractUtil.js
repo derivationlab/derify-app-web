@@ -388,14 +388,15 @@ export default class Contract {
    * @param token Current contract token address
    * @param side LONG，SHORT，HEDGE
    * @param openType 0-MarketOrder，1-LimitOrder
+   * @param quantityType 0-Size,1-Amount
    * @param size Open position volume (based on currency, precision is 8 digits)
    * @param price Opening price (precision is 8 digits)
    * @param leverage（precision is 8 digits）
    * @return {*}
    */
-  openPosition ({token, side, openType, size, price, leverage}) {
+  openPosition ({token, side, openType, quantityType, size, price, leverage}) {
     return this.DerifyExchange.methods
-      .openPosition(this.broker, token, side, openType, size, price, leverage)
+      .openPosition(this.broker, token, side, openType, quantityType, size, price, leverage)
       .send(cache)
   }
   /**
@@ -687,10 +688,14 @@ export default class Contract {
    * @param token
    * @param size
    * @param price
+   * @return {Promise<number>}
    */
-  getTradingFee (token, size, price) {
-    return this.__getDerifyDerivativeContract(token).methods.getTradingFee(size, price).call()
+  async getTradingFee (token, size, price) {
+    const self = this;
+    const ratio = await self.__getDerifyDerivativeContract(token).methods.tradingFeeRatio().call()
+    return toContractUnit(fromContractUnit(ratio) * fromContractUnit(size) * fromContractUnit(price));
   }
+
   getCloseUpperBound ({token, trader, side}) {
     return this.DerifyExchange.methods.getCloseUpperBound(token, trader, side).call()
   }
@@ -708,7 +713,14 @@ export default class Contract {
       size,
       price,
       actionType)
-    return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price, ratioSum).call()
+
+    //TODO trading naked position cal
+    // const longTotalSize = await this.__getDerifyDerivativeContract(token).methods.longTotalSize().call();
+    // const shortTotalSize = await this.__getDerifyDerivativeContract(token).methods.shortTotalSize().call();
+
+
+    const nakedPositionDiff = 0;
+    return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(nakedPositionDiff, ratioSum).call()
   }
 
   /**

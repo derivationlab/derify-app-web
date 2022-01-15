@@ -24,6 +24,11 @@ export default
       },
       {
         "internalType": "uint256",
+        "name": "_marginMaintenanceRatioMultiple",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "_marginLiquidationRatio",
         "type": "uint256"
       },
@@ -177,8 +182,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -191,8 +195,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -205,8 +208,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -219,8 +221,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -233,8 +234,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -247,8 +247,20 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "marginMaintenanceRatioMultiple",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -261,8 +273,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -275,8 +286,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -289,8 +299,71 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalAccountBalance",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_marginMaintenanceRatio",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_marginMaintenanceRatioMultiple",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_marginLiquidationRatio",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_thetaRatio",
+        "type": "uint256"
+      }
+    ],
+    "name": "updateParams",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_rewards",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenUSD",
+        "type": "address"
+      }
+    ],
+    "name": "updateContracts",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [
@@ -327,50 +400,6 @@ export default
     ],
     "name": "operateTradingFee",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "trader",
-        "type": "address"
-      },
-      {
-        "internalType": "int256",
-        "name": "unrealizedPnl",
-        "type": "int256"
-      },
-      {
-        "internalType": "enum IDerifyDerivative.Side",
-        "name": "side",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "size",
-        "type": "uint256"
-      }
-    ],
-    "name": "operateProfitAndLoss",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "pnlUsdt",
-        "type": "int256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "pnlBond",
-        "type": "uint256"
-      }
-    ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -477,8 +506,13 @@ export default
         "type": "uint8"
       },
       {
+        "internalType": "enum IDerifyExchange.QuantityType",
+        "name": "quantityType",
+        "type": "uint8"
+      },
+      {
         "internalType": "uint256",
-        "name": "size",
+        "name": "quantity",
         "type": "uint256"
       },
       {
@@ -556,8 +590,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -570,12 +603,11 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
-    "name": "getSysTotalProfitAndLoss",
+    "name": "getCompensationParams",
     "outputs": [
       {
         "internalType": "int256",
@@ -584,23 +616,12 @@ export default
       },
       {
         "internalType": "int256",
-        "name": "sysTotalUnrealizedProfit",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "sysTotalUnrealizedLoss",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "allHeldPositionsTradersMarginBalance",
+        "name": "allTradersMarginBalance",
         "type": "int256"
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -613,8 +634,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -658,8 +678,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -683,8 +702,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -713,8 +731,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -738,8 +755,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -773,8 +789,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -803,8 +818,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -853,8 +867,7 @@ export default
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [

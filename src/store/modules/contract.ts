@@ -295,7 +295,7 @@ const actions = {
       return closeUpperBound
     }
   },
-  openPosition ({trader, token, side, openType, size, price, leverage,brokerId}:{trader:string, token:string,side:SideEnum, size:number|string
+  openPosition ({trader, token, side, openType, quantityType, size, price, leverage,brokerId}:{trader:string, token:string,side:SideEnum, quantityType:number, size:number|string
   , openType:OpenType, price:string|number, leverage:string|number, brokerId:string}) {
     return async (dispatch:Dispatch) => {
       if(!trader){
@@ -307,7 +307,7 @@ const actions = {
       }
 
       const params = {
-        token, side, openType, size, price, leverage
+        token, side, openType, quantityType, size, price, leverage
       }
 
       const ret = await web3Utils.contract(trader, brokerId)
