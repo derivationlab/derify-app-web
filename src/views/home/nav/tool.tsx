@@ -25,9 +25,9 @@ import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 const { Option } = Select;
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
+  { url: Binance, name: ChainEnum.name, chainEnum: ChainEnum.BSC},
   { url: Eth, name: mainChain.name, chainEnum: mainChain },
   { url: HECO, name: "HECO", chainEnum: ChainEnum.Kovan },
-  { url: Binance, name: "Binance", chainEnum: ChainEnum.BSC},
   { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
 ];
 
