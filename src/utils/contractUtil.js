@@ -721,8 +721,13 @@ export default class Contract {
     const diffBefore = Math.abs(longTotalSizeBefore) - Math.abs(shortTotalSizeBefore);
     let amount = Math.abs(size);
 
+
     if ((actionType === 0  && side === SideEnum.SHORT) || (actionType === 1 && side === SideEnum.LONG)) {
       amount = -amount
+    }
+
+    if(side === SideEnum.HEDGE){
+      amount = 0;
     }
 
     let diffAfter = Math.abs(longTotalSizeBefore) + amount - Math.abs(shortTotalSizeBefore);
