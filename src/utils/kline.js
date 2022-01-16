@@ -162,7 +162,11 @@ const barDateFmtMap = {
 function splitData (rawData, bar) {
   const categoryData = []
   const values = []
-  rawData.reverse()
+
+  rawData.sort((o1, o2) =>{
+    return parseInt(o1[0]) - parseInt(o2[0]);
+  });
+
   for (let i = 0; i < rawData.length; i++) {
     const date = new Date(parseInt(rawData[i].splice(0, 1)[0]) * 1000);
     categoryData.push(date.Format(barDateFmtMap[bar]))
@@ -171,6 +175,8 @@ function splitData (rawData, bar) {
     //[open, close, highest, lowest]
     values.push([rawData[i][0],rawData[i][3],rawData[i][1],rawData[i][2]])
   }
+
+
   return {
     categoryData: categoryData,
     values: values
