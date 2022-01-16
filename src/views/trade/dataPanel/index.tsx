@@ -212,7 +212,7 @@ function DataPanel() {
                 <Row justify="space-between" align="middle">
                   <Col className="currency">{token.name}</Col>
                   <Col>
-                    <div>{token.num}</div>
+                    <div>{amountFormt(token.num,2,false, "--", 0)}</div>
                     <div>
                       <span
                         className={classNames(
