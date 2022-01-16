@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
 import * as configUtil from '@/config'
 import { ChainEnum } from '@/store/modules/user'
+import { getABIData } from '@/config'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -169,18 +170,6 @@ export class OpenType {
   static get LimitOrder() {
     return 1
   }
-}
-
-
-function getABIData(){
-  const curChain = ChainEnum.values.find((chain) => parseInt(window.ethereum.chainId, 16) === chain.chainId);
-  let chainKey = 'rinkeby';
-
-  if(curChain && curChain.chainId === ChainEnum.BSC.chainId){
-    chainKey = 'bsc';
-  }
-  const ABIData = configUtil.getCurrentContractConfig(chainKey);
-  return ABIData;
 }
 
 export const Token = {

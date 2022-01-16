@@ -74,4 +74,14 @@ export function  isDebug() {
   return !isCurrentProduction()
 }
 
+export function getABIData(){
+  const curChain = ChainEnum.values.find((chain) => parseInt(window.ethereum.chainId, 16) === chain.chainId);
+  let chainKey = 'rinkeby';
+
+  if(curChain && curChain.chainId === ChainEnum.BSC.chainId){
+    chainKey = 'bsc';
+  }
+  return getCurrentContractConfig(chainKey);
+}
+
 export default config
