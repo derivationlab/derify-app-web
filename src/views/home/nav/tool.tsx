@@ -91,7 +91,7 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[network,isEthum]);
+  },[network,chainEnum,isEthum]);
 
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
