@@ -131,7 +131,7 @@ export function post (url, params, config = null) {
           reject(err.data)
         })
     }else {
-      axios.post(url, QS.stringify(params))
+      axios.post(getUrlWithBase(url), QS.stringify(params))
         .then(res => {
           resolve(res.data)
         })
@@ -144,7 +144,7 @@ export function post (url, params, config = null) {
 
 
 function getUrlWithBase(url){
-  if(url.test(/^https?:\/\/.*/)){
+  if(/^https?:\/\/.*$/.test(url)){
     return url;
   }else{
     return getCurrentServerEndPoint() + url;
