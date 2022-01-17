@@ -9,7 +9,7 @@ import store from '../store/index'
 import cfg, {getCurrentServerEndPoint} from '../config'
 
 // Environment switch
-axios.defaults.baseURL = getCurrentServerEndPoint();
+//axios.defaults.baseURL = getCurrentServerEndPoint();
 
 // Request timeout
 axios.defaults.timeout = 60000
@@ -102,7 +102,7 @@ axios.interceptors.response.use(
   */
 export function get (url, params) {
   return new Promise((resolve, reject) => {
-    axios.get(url, {
+    axios.get(getUrlWithBase(url), {
       params: params
     })
       .then(res => {
@@ -121,10 +121,9 @@ export function get (url, params) {
  * @param config
   */
 export function post (url, params, config = null) {
-
   return new Promise((resolve, reject) => {
     if(config) {
-      axios.post(url, params, config)
+      axios.post(getUrlWithBase(url), params, config)
         .then(res => {
           resolve(res.data)
         })
@@ -141,4 +140,13 @@ export function post (url, params, config = null) {
         })
     }
   })
+}
+
+
+function getUrlWithBase(url){
+  if(url.test(/^https?:\/\/.*/)){
+    return url;
+  }else{
+    return getCurrentServerEndPoint() + url;
+  }
 }
