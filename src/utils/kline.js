@@ -9,7 +9,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
   let max = values[0][2]
   values.forEach(item => {
     if(item[3] > 0){
-      min = Math.min(item[3], min)
+      min = min = 0 ? item[3] : Math.min(item[3], min)
     }
 
     if(item[2] > 0){
@@ -23,9 +23,11 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     min = Math.min(curPrice, min)
   }
 
+  console.log(`max=${max},min=${min}`);
 
   max = max + (max - min)/10
   min = min - (max - min)/10
+
 
   const distance = 10
   const rightOffset = ((curPrice+"").length) * 7
