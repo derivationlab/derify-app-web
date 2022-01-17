@@ -162,7 +162,7 @@ export async function updateBroker(param) {
 export async function getBrokerTodayReward(trader, start=(new Date()).Format('yyyy-MM-ddT00:00:00'), end = (new Date()).Format('yyyy-MM-ddT23:59:59')) {
   const content = await io.get(`/api/broker_today_reward/${trader}/${start}/${end}`)
 
-  if(content && content.data) {
+  if(content && content.data && (typeof content.data) == 'number') {
     return content.data
   }
 
