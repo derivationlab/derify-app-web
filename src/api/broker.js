@@ -1,6 +1,7 @@
 import * as io from '@/utils/request'
 import * as configUtil from '../config'
 import {Pagenation} from "@/api/types";
+import {getCurChain, getCurrentServerEndPoint} from "../config";
 
 const serverEndPoint = configUtil.getCurrentServerEndPoint()
 
@@ -95,7 +96,9 @@ export async function getBrokerByBrokerId(brokerId) {
  * @return {Promise<BrokerInfo|null>}
  */
 export async function getBrokerByTrader(trader) {
-  let localStr = localStorage.getItem("broker_info_by_addr");
+  const chainKey = getCurChain();
+  const cacheKey = chainKey + "_broker_info_by_addr"
+  let localStr = localStorage.getItem(cacheKey);
   let broker = null;
 
   if(localStr){
@@ -107,14 +110,14 @@ export async function getBrokerByTrader(trader) {
 
     if(broker && broker.broker !== trader){
       broker = null;
-      localStorage.removeItem("broker_info_by_addr");
+      localStorage.removeItem(cacheKey);
     }
   }
 
   if(!broker){
     const content = await io.get(`/api/broker_info_by_addr/${trader}`)
     if(content && content.data && content.data.length > 0) {
-      localStorage.setItem("broker_info_by_addr", JSON.stringify(content.data[0]));
+      localStorage.setItem(cacheKey, JSON.stringify(content.data[0]));
       return content.data[0]
     }
   }
