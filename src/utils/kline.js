@@ -21,7 +21,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     }
 
   })
-  curPrice = numConvert(curPrice, 0, 0)
+  curPrice = numConvert(curPrice, 0, 2)
   if(curPrice > 0) {
     max = Math.max(curPrice, max)
     min = Math.min(curPrice, min)
