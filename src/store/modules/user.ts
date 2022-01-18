@@ -49,7 +49,7 @@ export class ChainEnum {
   }
 
   static get Rinkeby() {
-    return new ChainEnum(4, "Rinkeby", Eth, false)
+    return new ChainEnum(4, "Rinkeby", Eth, true)
   }
 
   static get Ropsten() {
