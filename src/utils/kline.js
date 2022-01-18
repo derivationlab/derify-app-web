@@ -23,8 +23,6 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     min = Math.min(curPrice, min)
   }
 
-  console.log(`max=${max},min=${min}`);
-
   max = max + (max - min)/10
   min = min - (max - min)/10
 
@@ -181,7 +179,21 @@ function splitData (rawData, bar) {
     //[open, highest, lowest, close]
     //convert to
     //[open, close, highest, lowest]
-    values.push([rawData[i][0],rawData[i][3],rawData[i][1],rawData[i][2]])
+
+    let open = rawData[i][0];
+    if(i > 0 && rawData[i - 1][3] > 0) {
+      open = rawData[i - 1][3];
+    }
+
+    let close = rawData[i][3];
+    // if(i < (rawData.length - 1)){
+    //   close = rawData[i + 1][0];
+    // }
+
+    let highest = Math.max(open, close, rawData[i][1], rawData[i][2]);
+    let lowest = Math.min(open, close, rawData[i][1], rawData[i][2]);
+
+    values.push([open,close,rawData[i][1],rawData[i][2]])
   }
 
 
