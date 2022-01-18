@@ -141,12 +141,12 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
       return;
     }
 
-    if(profitAmount <= 0){
+    if(checkNumber(takeProfitPrice).value != null && profitAmount <= 0){
       setErrorMsg($t("global.NumberError"));
       return;
     }
 
-    if(lossAmount > 0){
+    if(checkNumber(stopLossPrice).value != null && lossAmount > 0){
       setErrorMsg($t("global.NumberError"));
       return;
     }
