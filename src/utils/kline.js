@@ -1,5 +1,5 @@
 import { getKLineData } from '../api/kdata'
-import { Token } from '@/utils/contractUtil'
+import {numConvert, Token} from '@/utils/contractUtil'
 
 export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm')]
                                        , values = [[0,0,0,0]], curPrice = 0
@@ -21,7 +21,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
     }
 
   })
-
+  curPrice = numConvert(curPrice, 0, 2)
   if(curPrice > 0) {
     max = Math.max(curPrice, max)
     min = Math.min(curPrice, min)
