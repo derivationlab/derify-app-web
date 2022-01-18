@@ -7,6 +7,10 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
 
   let min = values[0][3]
   let max = values[0][2]
+  if(values.length > 0){
+    values[values.length - 1][1] = curPrice;
+  }
+
   values.forEach(item => {
     if(item[3] > 0){
       min = min === 0 ? item[3] : Math.min(item[3], min)
