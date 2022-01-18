@@ -45,7 +45,7 @@ function DataPanel() {
   const curPercent = contractState.curPair.percent || 0
   const pcRate = contractState.contractData.positionChangeFeeRatio || 0
 
-  const [timeGap, setTimeGap] = useState<Partial<string>>("1D")
+  const [timeGap, setTimeGap] = useState<Partial<string>>("1h")
   const walletInfo = useSelector((state:RootStore) => state.user);
   const curPair = useSelector((state:RootStore) => state.contract.curPair);
 
