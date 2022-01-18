@@ -159,8 +159,8 @@ const barDateFmtMap = {
   '5m': 'hh:mm',
   '15m': 'hh:mm',
   '30m': 'hh:mm',
-  '1H': 'hh:mm',
-  '4H': 'hh:mm',
+  '1h': 'hh:mm',
+  '4h': 'hh:mm',
   '1D': 'MM-dd',
   '1W': 'MM-dd',
   '1M': 'yyyy-MM'
