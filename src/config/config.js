@@ -250,7 +250,7 @@ export default {
         },
         "DUSD": {
           "abi": DUSD,
-          "address": "0xD5eC82071D0c870BfBa60B58A0AA52E42A3BEFba"
+          "address": "0xCABcFdBddf6e03cdfEFD0dCC33115F3E7Ea790D4"
         },
         "bDRF": {
           "abi": bDRF,
