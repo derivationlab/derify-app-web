@@ -16,11 +16,11 @@ import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 const dataSource = [
   {
     key: "1",
-    type: "ETH/BUSD",
+    type: "ETH/USDT",
   },
   {
     key: "2",
-    type: "ETH/BUSD",
+    type: "ETH/USDT",
   },
 ];
 function CurrentOrder() {
@@ -280,7 +280,7 @@ function CurrentOrder() {
         <div>
           <div className="main-white">{amountFormt(record.orderType == OrderTypeEnum.LimitOrder ? record.price: record.stopPrice,2,false,"--",-8)}</div>
           <div>
-            BUSD
+            USDT
           </div>
         </div>
       ),

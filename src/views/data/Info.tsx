@@ -24,7 +24,7 @@ function Info() {
     val: number|string;
     type: string;
   }> = [
-    { pre: "DRF", key: "Data.Data.Token.Price", val: fck(tokenData.drfPrice,0,2), type: "BUSD" },
+    { pre: "DRF", key: "Data.Data.Token.Price", val: fck(tokenData.drfPrice,0,2), type: "USDT" },
     {
       pre: "DRF",
       key: "Data.Data.Token.TotalDestroyedVolume",
@@ -33,13 +33,13 @@ function Info() {
     },
     {
       pre: "",
-      aft: "(BUSD)",
+      aft: "(USDT)",
       key: "Data.Data.Token.BuyBackFundBalance",
       val: fck(tokenData.drfBuyBack,0,2),
-      type: "BUSD",
+      type: "USDT",
     },
-    { pre: "eDRF", key: "Data.Data.Token.Price", val: tokenData.edrfPrice, type: "BUSD" },
-    { pre: "bDRF", key: "Data.Data.Token.Price", val: tokenData.bdrfPrice, type: "BUSD" },
+    { pre: "eDRF", key: "Data.Data.Token.Price", val: tokenData.edrfPrice, type: "USDT" },
+    { pre: "bDRF", key: "Data.Data.Token.Price", val: tokenData.bdrfPrice, type: "USDT" },
     // { key: "", val: "", type: "" },
   ];
 

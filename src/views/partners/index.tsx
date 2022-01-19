@@ -8,7 +8,7 @@ import {RootStore} from "@/store";
 import Bind from "@/views/partners/Bind";
 import BindPartners from "@/views/partners/Bind";
 
-// export type RewardsType = "BUSD" | "bDRF" | "eDRF";
+// export type RewardsType = "USDT" | "bDRF" | "eDRF";
 
 interface PartnersProps extends RouteProps {}
 

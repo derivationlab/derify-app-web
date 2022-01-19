@@ -205,7 +205,7 @@ const MyPosition: React.FC = () => {
           >
             {amountFormt(record.unrealizedPnl, 2,true,"--", -8)}(<span>{amountFormt(record.returnRate, 2,true, "--", -6)}%</span>)
           </div>
-          <div>BUSD</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -263,7 +263,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={"main-white"}>{amountFormt(record.averagePrice,2,false,"--", -8)}</div>
-          <div>BUSD</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -292,7 +292,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={"main-white"}>{amountFormt(record.margin,2,false,"--",-8)}</div>
-          <div>BUSD</div>
+          <div>USDT</div>
         </div>
       ),
     },
@@ -350,7 +350,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={"main-white"}>{amountFormt(record.liquidatePrice, 2, false,"--",-8)}</div>
-          <div>BUSD</div>
+          <div>USDT</div>
         </div>
       ),
     },

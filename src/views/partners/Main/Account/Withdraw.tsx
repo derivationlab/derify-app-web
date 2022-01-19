@@ -101,11 +101,11 @@ const Withdraw: React.FC<WithdrawProps> = props => {
           <Row>{$t("Broker.Broker.WithdrawPopup.Amount")}</Row>
         </Col>
         <Col flex="100%" className="margin-b-m">
-          <Input size="large" addonAfter="BUSD" value={amout} onChange={({target:{value}}) => checkAmount(value, broker)} />
+          <Input size="large" addonAfter="USDT" value={amout} onChange={({target:{value}}) => checkAmount(value, broker)} />
         </Col>
         <Col flex="100%">
           <Row justify="space-between" align="middle">
-            <Col>{$t("Broker.Broker.WithdrawPopup.Max")}：{fck(getMaxSize(broker),-8,4)} BUSD</Col>
+            <Col>{$t("Broker.Broker.WithdrawPopup.Max")}：{fck(getMaxSize(broker),-8,4)} USDT</Col>
             <Col>
               <Button type="link" onClick={() => {
                 setAmount(fck(getMaxSize(broker),-8,4))

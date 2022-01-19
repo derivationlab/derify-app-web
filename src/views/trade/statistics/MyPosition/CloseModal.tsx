@@ -188,7 +188,7 @@ const CloseModal: React.FC<CloseModalProps> = props => {
               <FormattedMessage id="Trade.MyPosition.ClosePositionPopup.AveragePrice" />
             </Col>
             <Col>
-              <span className="main-white">{fck(position?.averagePrice, -8, 2)}</span> BUSD
+              <span className="main-white">{fck(position?.averagePrice, -8, 2)}</span> USDT
             </Col>
           </Row>
         </Col>
@@ -198,7 +198,7 @@ const CloseModal: React.FC<CloseModalProps> = props => {
               <FormattedMessage id="Trade.MyPosition.ClosePositionPopup.CurrentPrice" />
             </Col>
             <Col>
-              <span className="main-green"> {getPairByAddress(position?.token).num}</span> BUSD
+              <span className="main-green"> {getPairByAddress(position?.token).num}</span> USDT
             </Col>
           </Row>
         </Col>

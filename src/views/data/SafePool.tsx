@@ -46,7 +46,7 @@ function SafePool() {
           <Col className="title">{formatMessage({id:'Data.Data.Insurance.InsurancePool'})}</Col>
           <Col>
               <span>{formatMessage({id:'Data.Data.Insurance.InsurancePoolBalance'})}：</span>
-            <span className="yellow-text">{fck(currentData.insurance_pool,0,7)}</span> BUSD
+            <span className="yellow-text">{fck(currentData.insurance_pool,0,7)}</span> USDT
           </Col>
         </Row>
       </Col>

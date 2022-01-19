@@ -37,8 +37,8 @@ function PositionHeld() {
 
   const tokenOptions = [
     {label: $t('Data.Data.Trade.All'), value: 'all'},
-    {label: 'BTC/BUSD', value: Token.BTC},
-    {label: 'ETH/BUSD', value: Token.ETH},
+    {label: 'BTC/USDT', value: Token.BTC},
+    {label: 'ETH/USDT', value: Token.ETH},
   ];
 
   const onOptionChange = (value:string) => {
@@ -104,7 +104,7 @@ function PositionHeld() {
                 {formatMessage({ id: "Data.Data.Held.TotalLong" })}
               </div>
               <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                <span className="white-color">{fck(currentData?.long_position_amount,0,2)}</span> BUSD
+                <span className="white-color">{fck(currentData?.long_position_amount,0,2)}</span> USDT
               </div>
             </Col>
             <Col flex="50%">
@@ -113,7 +113,7 @@ function PositionHeld() {
                 {formatMessage({ id: "Data.Data.Held.TotalShort" })}
               </div>
               <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                <span className="white-color">{fck(currentData?.short_position_amount,0,2)}</span> BUSD
+                <span className="white-color">{fck(currentData?.short_position_amount,0,2)}</span> USDT
               </div>
             </Col>
           </Row>

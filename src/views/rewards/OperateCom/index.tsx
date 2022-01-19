@@ -58,7 +58,7 @@ const typeLangKeyMap:{[key:number]:RewardPopupLang} = {
   [OperateType.minWithdraw]:{
     title: 'Rewards.Mining.WithdrawPopup.title',
     amount: 'Rewards.Mining.WithdrawPopup.Amount',
-    token: 'BUSD',
+    token: 'USDT',
     max: 'Rewards.Mining.WithdrawPopup.Max',
     all: 'Rewards.Mining.WithdrawPopup.All',
     confirm: 'Rewards.Mining.WithdrawPopup.Withdraw',
