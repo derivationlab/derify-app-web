@@ -79,7 +79,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           >
             <Statistic value={fck(accountData.balance, -8, 2)} />
           </Col>
-          <Col>USDT</Col>
+          <Col>BUSD</Col>
           {/*<Col*/}
           {/*  className="main-green"*/}
           {/*  style={{*/}
@@ -100,13 +100,13 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.MarginBalance"/></div>
             <div>
-              <Statistic value={fck(accountData?.marginBalance, -8, 2)}/>USDT
+              <Statistic value={fck(accountData?.marginBalance, -8, 2)}/>BUSD
             </div>
           </Col>
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.Margin"/></div>
             <div>
-              <Statistic value={fck(accountData?.totalMargin, -8,2)} precision={2}/>USDT
+              <Statistic value={fck(accountData?.totalMargin, -8,2)} precision={2}/>BUSD
             </div>
           </Col>
         </Row>

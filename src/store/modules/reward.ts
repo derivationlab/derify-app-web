@@ -14,7 +14,7 @@ import {ReactNode} from "react";
 import {Pagenation} from "@/api/types";
 
 export enum RewardsType{
-  USDT = "USDT",
+  USDT = "BUSD",
   eDRF = "eDRF",
   bDRF = "bDRF",
 }
@@ -302,9 +302,9 @@ const actions = {
         results.push({
           id: item.id,
           amount: item.amount,
-          amoutToken: "USDT",
+          amoutToken: "BUSD",
           balance: item.balance,
-          balanceToken: "USDT",
+          balanceToken: "BUSD",
           time: item.event_time,
           type: item.pmr_update_type === 0 ? "Rewards.Mining.History.Earning" : "Rewards.Mining.History.Withdraw"
         });

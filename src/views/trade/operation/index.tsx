@@ -324,7 +324,7 @@ function Operation() {
                 <Row gutter={2} align={"middle"}>
                   <Col>
                     <FormattedMessage id="Trade.OpenPosition.OpenPage.Max" />
-                    ：{maxAmount} {token === UnitTypeEnum.USDT ? "USDT" : curPair.key}
+                    ：{maxAmount} {token === UnitTypeEnum.USDT ? "BUSD" : curPair.key}
                   </Col>
                   <Col>
                     <Button type="link" onClick={() => setModalVisible(true)}>

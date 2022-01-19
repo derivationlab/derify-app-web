@@ -68,7 +68,7 @@ function Rewards() {
                   <Statistic value={fck(pmrBalance, -8, 2)} />
                 </Col>
                 <Col flex="100%" className="main-white key-wrapper">
-                  <FormattedMessage id="Rewards.Mining.Card.PositionMining" />（USDT）
+                  <FormattedMessage id="Rewards.Mining.Card.PositionMining" />（BUSD）
                 </Col>
 
                 <Col>
@@ -95,7 +95,7 @@ function Rewards() {
                   <Statistic value={fck(accountData.totalPositionAmount, -8, 2)} />
                 </Col>
                 <Col flex="100%" className="key-wrapper">
-                  <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> (USDT)
+                  <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> (BUSD)
                 </Col>
                 <Col>
                   <WalletConnectButtonWrapper type="primary">

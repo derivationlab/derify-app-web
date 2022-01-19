@@ -124,7 +124,7 @@ function Record() {
         return (
           <div>
             <div className={classNames(data.amount > 0? "main-green":"main-red")}>{amountFormt(data.amount,2, true, '--')}</div>
-            <div>USDT</div>
+            <div>BUSD</div>
           </div>
         );
       },
@@ -137,7 +137,7 @@ function Record() {
         return (
           <div>
             <div>{amountFormt(data.balance,2, false, '--')}</div>
-            <div>USDT</div>
+            <div>BUSD</div>
           </div>
         );
       },

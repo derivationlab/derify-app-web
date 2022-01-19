@@ -79,7 +79,7 @@ const Faucet: React.FC<FaucetProps> = props => {
 
   const addTestTokentoWallet = useCallback(async() => {
     const tokenAddress = Token.USDT;
-    const tokenSymbol = 'USDT';
+    const tokenSymbol = 'BUSD';
     const tokenDecimals = 18;
     const tokenImage = null;
 

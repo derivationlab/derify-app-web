@@ -134,7 +134,7 @@ const ComModal: React.FC<ComModalProps> = props => {
       {
         key: "Trade.OpenPosition.OpenPopup.Price",
         val: isMarketOrder ? $t("Trade.OpenPosition.OpenPopup.Market") : openConfirmData.limitPrice,
-        suffix: isMarketOrder ? "" : "USDT",
+        suffix: isMarketOrder ? "" : "BUSD",
       },
       {
         key: "Trade.OpenPosition.OpenPopup.Type",
@@ -145,19 +145,19 @@ const ComModal: React.FC<ComModalProps> = props => {
       {
         key: "Trade.OpenPosition.OpenPopup.Amount",
         val: openConfirmData.size,
-        suffix: openConfirmData.unit === UnitTypeEnum.USDT ? "USDT": curPair.key,
+        suffix: openConfirmData.unit === UnitTypeEnum.USDT ? "BUSD": curPair.key,
       },
       {
         key: "Trade.OpenPosition.OpenPopup.PCF",
         classNames:[-pcf >0  ? "main-green" : "main-red"],
         val: amountFormt(-pcf,4, true, 0),
-        suffix: "USDT",
+        suffix: "BUSD",
       },
       {
         key: "Trade.OpenPosition.OpenPopup.TradFee",
         classNames:[],
         val: amountFormt(-tradeFee,4, true, 0),
-        suffix: "USDT",
+        suffix: "BUSD",
       },
     ];
 
@@ -188,7 +188,7 @@ const ComModal: React.FC<ComModalProps> = props => {
     if(unit === UnitTypeEnum.USDT){
       if (size > fromContractUnit(sysOpenUpperBound.size)) {
 
-        setErrorMsg(`${$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(sysOpenUpperBound.size, -8)} USDT`)
+        setErrorMsg(`${$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(sysOpenUpperBound.size, -8)} BUSD`)
         return fromContractUnit(sysOpenUpperBound.size);
       }
     } else {

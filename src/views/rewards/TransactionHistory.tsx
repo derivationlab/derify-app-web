@@ -15,7 +15,7 @@ interface TransactionHistoryProps extends ModalProps {
 }
 
 const listTitleMap = {
-  "USDT":[
+  "BUSD":[
     "Rewards.Mining.History.Type",
     "Rewards.Mining.History.Amount",
     "Rewards.Mining.History.Balance",
@@ -100,7 +100,7 @@ const TransactionHistory: React.FC<TransactionHistoryProps> = props => {
   }, [trader, props.type,props.visible, pagenation.current]);
 
   const modalTitleMap = {
-    "USDT": <p>{$t("Rewards.Mining.History.PositionMining")}{$t("Rewards.Mining.Card.TransactionHistory")}</p>,
+    "BUSD": <p>{$t("Rewards.Mining.History.PositionMining")}{$t("Rewards.Mining.Card.TransactionHistory")}</p>,
     "eDRF": <p>eDRF&nbsp;{$t("Rewards.Staking.Card.TransactionHistory")}</p>,
     "bDRF": <p>bDRF&nbsp;{$t("Rewards.Bond.Card.TransactionHistory")}</p>,
   };

@@ -79,10 +79,10 @@ export declare type ContractState = {
 
 const state : ContractState = {
   pairs: [
-    {key: 'BTC', name: 'BTC / USDT', num: 0, percent: 0, enable: true, address: Token.BTC,longPmrRate: 0,shortPmrRate:0},
-    {key: 'ETH', name: 'ETH / USDT', num: 0, percent: 0, enable: true, address: Token.ETH,longPmrRate: 0,shortPmrRate:0},
-    {key: 'BNB', name: 'BNB / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0},
-    {key: 'UNI', name: 'UNI / USDT', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0}
+    {key: 'BTC', name: 'BTC / BUSD', num: 0, percent: 0, enable: true, address: Token.BTC,longPmrRate: 0,shortPmrRate:0},
+    {key: 'ETH', name: 'ETH / BUSD', num: 0, percent: 0, enable: true, address: Token.ETH,longPmrRate: 0,shortPmrRate:0},
+    {key: 'BNB', name: 'BNB / BUSD', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0},
+    {key: 'UNI', name: 'UNI / BUSD', num: 0, percent: 0, enable: false, address: '0xf3a6679b266899042276804930b3bfbaf807f15b',longPmrRate: 0,shortPmrRate:0}
   ],
   get curPair () {
     const pair = this.pairs.find(pair => pair.key == this.curPairKey)
