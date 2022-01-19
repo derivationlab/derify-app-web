@@ -2,21 +2,6 @@ import * as io from "@/utils/request";
 import * as configUtil from '../config'
 import {Pagenation} from "@/api/types";
 
-const serverEndPoint = configUtil.getCurrentServerEndPoint()
-
-const TRADE_LIST_URL = serverEndPoint + "/api/trade_records/"
-const FUND_LIST_URL = serverEndPoint + "/api/trader_balance/"
-//User bond bDRF turnover breakdown
-const TRADER_BOND_BALANCE_URL = serverEndPoint + "/api/trader_bond_balance/"
-//User holdings and mining revenue flow details
-const TRADER_PMR_BALANCE_URL = serverEndPoint + "/api/trader_pmr_balance/"
-//edrf balance
-const TRADER_EDRF_BALANCE_URL = serverEndPoint + "/api/trader_edrf_balance/"
-
-const POSITION_MININ_EVENT_URL = serverEndPoint + "/api/position_mining_events/"
-const TOKEN_PRICE_EVENT_URL = serverEndPoint + "/api/token_price_events/"
-const DATA_EVENT_URL = serverEndPoint + "/api/events_data/"
-
 const isNotCallEvent = false;
 /**
  *
@@ -194,7 +179,8 @@ export function createDataEvenet (callback){
 
   getEventData(callback);
 
-  const events = new EventSource(DATA_EVENT_URL);
+  const serverEndPoint = configUtil.getCurrentServerEndPoint();
+  const events = new EventSource(`${serverEndPoint}/api/events_data/`);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
@@ -230,8 +216,9 @@ export function createTokenMiningFeeEvenet (tokenAddr, callback){
     return null
   }
 
+  const serverEndPoint = configUtil.getCurrentServerEndPoint();
 
-  const events = new EventSource(POSITION_MININ_EVENT_URL + tokenAddr);
+  const events = new EventSource(`${serverEndPoint}/api/position_mining_events/${tokenAddr}`);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)
@@ -251,8 +238,9 @@ export function createTokenPriceChangeEvenet (tokenKey, callback){
   if(isNotCallEvent){
     return null
   }
+  const serverEndPoint = configUtil.getCurrentServerEndPoint();
 
-  const events = new EventSource(TOKEN_PRICE_EVENT_URL + tokenKey);
+  const events = new EventSource(`${serverEndPoint}/api/token_price_events/tokenKey`);
 
   events.onmessage = (event) => {
     const parsedData = JSON.parse(event.data)

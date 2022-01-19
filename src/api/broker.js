@@ -1,9 +1,7 @@
 import * as io from '@/utils/request'
 import * as configUtil from '../config'
 import {Pagenation} from "@/api/types";
-import {getCurChain, getCurrentServerEndPoint} from "../config";
-
-const serverEndPoint = configUtil.getCurrentServerEndPoint()
+import {getCurChain} from "@/config";
 
 /**
  * get trader's brokerId
