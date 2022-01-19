@@ -45,7 +45,7 @@ function DataPanel() {
   const curPercent = contractState.curPair.percent || 0
   const pcRate = contractState.contractData.positionChangeFeeRatio || 0
 
-  const [timeGap, setTimeGap] = useState<Partial<string>>("15m")
+  const [timeGap, setTimeGap] = useState<Partial<string>>("1h")
   const walletInfo = useSelector((state:RootStore) => state.user);
   const curPair = useSelector((state:RootStore) => state.contract.curPair);
 
@@ -212,7 +212,7 @@ function DataPanel() {
                 <Row justify="space-between" align="middle">
                   <Col className="currency">{token.name}</Col>
                   <Col>
-                    <div>{token.num}</div>
+                    <div>{amountFormt(token.num,2,false, "--", 0)}</div>
                     <div>
                       <span
                         className={classNames(

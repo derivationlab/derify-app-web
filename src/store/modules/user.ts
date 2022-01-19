@@ -23,12 +23,16 @@ export class ChainEnum {
   name:string;
   logo:string;
   disabled:boolean;
+  rpc:string;
+  explorer:string;
 
-  constructor(chainId:number, name:string, logo = Eth, disabled = true){
+  constructor(chainId:number, name:string, logo = Eth, disabled = true, rpcUrl= '', explorerUrl=''){
     this.chainId = chainId
     this.name = name
     this.logo = logo
     this.disabled = disabled
+    this.rpc = rpcUrl;
+    this.explorer = explorerUrl;
     ChainEnum.values.push(this)
   }
 
@@ -45,7 +49,7 @@ export class ChainEnum {
   }
 
   static get Rinkeby() {
-    return new ChainEnum(4, "Rinkeby", Eth, false)
+    return new ChainEnum(4, "Rinkeby", Eth, true)
   }
 
   static get Ropsten() {
@@ -54,6 +58,10 @@ export class ChainEnum {
 
   static get Morden() {
     return new ChainEnum(2, "Morden")
+  }
+
+  static get BSC() {
+    return new ChainEnum(0x61, "BSC testnet", Binance, false, 'https://data-seed-prebsc-1-s1.binance.org:8545/', 'https://testnet.bscscan.com/')
   }
 }
 
@@ -64,6 +72,7 @@ const networkMap:{[key:number]:ChainEnum} = {
   4: ChainEnum.Rinkeby,
   5: ChainEnum.Goerli,
   42: ChainEnum.Kovan,
+  0x61: ChainEnum.BSC,
   // 1337: "Geth private chains (default)",
 }
 
@@ -97,7 +106,7 @@ export class UserProcessStatus {
   }
 }
 
-export const mainChain = ChainEnum.Rinkeby
+export const mainChain = ChainEnum.BSC
 
 export type UserState = {
   selectedAddress?: string|null,
@@ -127,7 +136,7 @@ const state : UserState = {
   showWallet: false,
   isLogin: false,
   chainEnum: mainChain,
-  isEthum: false,
+  isEthum: true,
   networkVersion: "",
   isMetaMask: false,
   processStatus: UserProcessStatus.finished,
@@ -161,7 +170,7 @@ export async function getWallet() : Promise<UserState>{
 
 
   let wethereum = window.ethereum
-  const isEthum = mainChain.chainId === parseInt(wethereum.chainId)
+  const isEthum = true
 
   const chainId = parseInt(wethereum.chainId)
 
@@ -172,7 +181,7 @@ export async function getWallet() : Promise<UserState>{
 
 
 
-  const isLogin = wethereum.selectedAddress && isEthum && !isLogout();
+  const isLogin = wethereum.selectedAddress && isEthum && !isLogout() && !chainEnum.disabled;
   const trader = isLogin ? toChecksumAddress(wethereum.selectedAddress) : "";
 
   if(isLogin && trader){

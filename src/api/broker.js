@@ -1,6 +1,7 @@
 import * as io from '@/utils/request'
 import * as configUtil from '../config'
 import {Pagenation} from "@/api/types";
+import {getCurChain, getCurrentServerEndPoint} from "../config";
 
 const serverEndPoint = configUtil.getCurrentServerEndPoint()
 
@@ -95,7 +96,9 @@ export async function getBrokerByBrokerId(brokerId) {
  * @return {Promise<BrokerInfo|null>}
  */
 export async function getBrokerByTrader(trader) {
-  let localStr = localStorage.getItem("broker_info_by_addr");
+  const chainKey = getCurChain();
+  const cacheKey = chainKey + "_broker_info_by_addr"
+  let localStr = localStorage.getItem(cacheKey);
   let broker = null;
 
   if(localStr){
@@ -107,14 +110,14 @@ export async function getBrokerByTrader(trader) {
 
     if(broker && broker.broker !== trader){
       broker = null;
-      localStorage.removeItem("broker_info_by_addr");
+      localStorage.removeItem(cacheKey);
     }
   }
 
   if(!broker){
     const content = await io.get(`/api/broker_info_by_addr/${trader}`)
     if(content && content.data && content.data.length > 0) {
-      localStorage.setItem("broker_info_by_addr", JSON.stringify(content.data[0]));
+      localStorage.setItem(cacheKey, JSON.stringify(content.data[0]));
       return content.data[0]
     }
   }
@@ -159,7 +162,7 @@ export async function updateBroker(param) {
 export async function getBrokerTodayReward(trader, start=(new Date()).Format('yyyy-MM-ddT00:00:00'), end = (new Date()).Format('yyyy-MM-ddT23:59:59')) {
   const content = await io.get(`/api/broker_today_reward/${trader}/${start}/${end}`)
 
-  if(content && content.data) {
+  if(content && content.data && (typeof content.data) == 'number') {
     return content.data
   }
 

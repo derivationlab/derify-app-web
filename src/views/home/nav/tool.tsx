@@ -25,9 +25,9 @@ import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 const { Option } = Select;
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
-  { url: Eth, name: mainChain.name, chainEnum: mainChain },
+  { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
+  { url: Eth, name: ChainEnum.Rinkeby.name, chainEnum: ChainEnum.Rinkeby },
   { url: HECO, name: "HECO", chainEnum: ChainEnum.Kovan },
-  { url: Binance, name: "Binance", chainEnum: ChainEnum.Goerli},
   { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
 ];
 
@@ -75,32 +75,30 @@ function Tool() {
       return false
     }
 
-    const networkIsMain = newNetWork?.chainId === mainChain.chainId;
+    const networkIsMain = newNetWork?.chainId === chainEnum?.chainId;
 
-    if(!networkIsMain){
-      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
-      return false;
-    }
-
-    if(!isEthum) {
-      const ret = await switchNetwork(mainChain);
+    if(!networkIsMain) {
+      const ret = await switchNetwork(newNetWork);
 
       if(ret){
         setErrorMsg(undefined);
         return true;
       }
-      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: mainChain.name})
+      setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: chainEnum?.name})
       return false
     }
 
     setErrorMsg(undefined)
 
     return true
-  },[network,isEthum]);
+  },[network,chainEnum,isEthum]);
 
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
-    if (checkWallet(wallet) && await checkNetwork(network)) {
+    const networkCheckRes:boolean = await checkNetwork(network);
+    const walletCheckRes:boolean = await checkWallet(wallet);
+
+    if (networkCheckRes && walletCheckRes) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
         dispatch(userModel.actions.loginSuccess());
@@ -161,6 +159,44 @@ function Tool() {
       return true;
     } catch (error) {
       console.error(error);
+
+
+      if (error.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [
+              {
+                // chainId: string; // A 0x-prefixed hexadecimal string
+                // chainName: string;
+                // nativeCurrency: {
+                //   name: string;
+                //   symbol: string; // 2-6 characters long
+                //   decimals: 18;
+                // };
+                // rpcUrls: string[];
+                // blockExplorerUrls?: string[];
+                // iconUrls?: string[]; // Currently ignored.
+
+                chainId: '0x'+(item.chainId).toString(16),
+                rpcUrls: [item.rpc],
+                chainName: item.name,
+                blockExplorerUrls: [item.explorer],
+                nativeCurrency:{
+                  name:"BNB",
+                  symbol: "BNB",
+                  decimals: 18
+                }
+              },
+            ],
+          });
+
+          return true;
+        } catch (addError) {
+          console.error(addError);
+        }
+      }
+
       return false
     }
   }

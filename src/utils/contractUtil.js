@@ -1,7 +1,9 @@
 import Web3 from 'web3'
-import ABIData from './contract'
 import BigNumber from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
+import * as configUtil from '@/config'
+import { ChainEnum } from '@/store/modules/user'
+import { getABIData } from '@/config'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -171,13 +173,27 @@ export class OpenType {
 }
 
 export const Token = {
-  BTC: ABIData.DerifyDerivative.BTC.token,
-  ETH: ABIData.DerifyDerivative.ETH.token,
-  DUSD: ABIData.DUSD.address,
-  bDRF: ABIData.bDRF.address,
-  eDRF: ABIData.eDRF.address,
-  DRF: ABIData.DRF.address,
-  USDT: ABIData.DUSD.address
+  get BTC() {
+    return getABIData().DerifyDerivative.BTC.token;
+  },
+  get ETH() {
+    return getABIData().DerifyDerivative.ETH.token;
+  },
+  get DUSD() {
+    return getABIData().DUSD.address
+  },
+  get bDRF() {
+    return getABIData().bDRF.address;
+  },
+  get eDRF() {
+    return getABIData().eDRF.address;
+  },
+  get DRF() {
+    return getABIData().DRF.address;
+  },
+  get USDT() {
+    return getABIData().DUSD.address;
+  }
 }
 
 
@@ -221,11 +237,11 @@ export function toContractNum (number) {
   return Math.ceil(num)
 }
 
-export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
+export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_DOWN) {
   return numConvert(unit, -contractDecimals, bit, rounding)
 }
 
-export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_HALF_UP) {
+export function numConvert (unit, pow = -contractDecimals, bit = -1, rounding = BigNumber.ROUND_DOWN) {
   const number = new BigNumber(unit)
   if(bit < 0) {
     return number.shiftedBy(pow).toNumber()
@@ -277,6 +293,8 @@ export default class Contract {
       updateGasPrice(web3);
     }
 
+    const ABIData = getABIData();
+
     this.web3 = web3
     this.from = from
     this.broker = broker
@@ -300,6 +318,7 @@ export default class Contract {
    * @return
    */
   deposit (amount) {
+    const ABIData = getABIData();
 
     const web3 = this.web3
     const from = this.from
@@ -330,6 +349,7 @@ export default class Contract {
 
   balanceOf (trader, token) {
     return (async () => {
+      const ABIData = getABIData();
 
       let tokenAmount = 0
       let decimals = 18
@@ -357,14 +377,15 @@ export default class Contract {
    * @param token Current contract token address
    * @param side LONG，SHORT，HEDGE
    * @param openType 0-MarketOrder，1-LimitOrder
+   * @param quantityType 0-Size,1-Amount
    * @param size Open position volume (based on currency, precision is 8 digits)
    * @param price Opening price (precision is 8 digits)
    * @param leverage（precision is 8 digits）
    * @return {*}
    */
-  openPosition ({token, side, openType, size, price, leverage}) {
+  openPosition ({token, side, openType, quantityType, size, price, leverage}) {
     return this.DerifyExchange.methods
-      .openPosition(this.broker, token, side, openType, size, price, leverage)
+      .openPosition(this.broker, token, side, openType, quantityType, size, price, leverage)
       .send(cache)
   }
   /**
@@ -519,7 +540,7 @@ export default class Contract {
    * @return {Web3.eth.Contract}
    */
   __getDerifyDerivativeContract(token) {
-
+    const ABIData = getABIData();
     if(ABIData.DerifyDerivative.BTC.token === token){
       return this.DerifyDerivative.BTC
     }
@@ -656,10 +677,14 @@ export default class Contract {
    * @param token
    * @param size
    * @param price
+   * @return {Promise<number>}
    */
-  getTradingFee (token, size, price) {
-    return this.__getDerifyDerivativeContract(token).methods.getTradingFee(size, price).call()
+  async getTradingFee (token, size, price) {
+    const self = this;
+    const ratio = await self.__getDerifyDerivativeContract(token).methods.tradingFeeRatio().call()
+    return toContractUnit(fromContractUnit(ratio) * fromContractUnit(size) * fromContractUnit(price));
   }
+
   getCloseUpperBound ({token, trader, side}) {
     return this.DerifyExchange.methods.getCloseUpperBound(token, trader, side).call()
   }
@@ -677,7 +702,28 @@ export default class Contract {
       size,
       price,
       actionType)
-    return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(side, actionType, size, price, ratioSum).call()
+
+    //trading naked position cal
+    const longTotalSizeBefore = await this.__getDerifyDerivativeContract(token).methods.longTotalSize().call();
+    const shortTotalSizeBefore = await this.__getDerifyDerivativeContract(token).methods.shortTotalSize().call();
+
+    const diffBefore = Math.abs(longTotalSizeBefore) - Math.abs(shortTotalSizeBefore);
+    let amount = Math.abs(size);
+
+
+    if ((actionType === 0  && side === SideEnum.SHORT) || (actionType === 1 && side === SideEnum.LONG)) {
+      amount = -amount
+    }
+
+    if(side === SideEnum.HEDGE){
+      amount = 0;
+    }
+
+    let diffAfter = Math.abs(longTotalSizeBefore) + amount - Math.abs(shortTotalSizeBefore);
+
+    const nakedPositionDiff = diffAfter - diffBefore;
+    console.log(`nakedPositionDiff=${nakedPositionDiff}, ratioSum=${ratioSum}`);
+    return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(nakedPositionDiff, ratioSum).call()
   }
 
   /**
@@ -702,6 +748,9 @@ export default class Contract {
     return new Promise((resolve, reject) => {
       (async () => {
         try{
+
+          const ABIData = getABIData();
+
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
@@ -733,6 +782,8 @@ export default class Contract {
     return new Promise((resolve, reject) => {
       (async () => {
         try{
+          const ABIData = getABIData();
+
           let approveRet = false
 
           if(bondAccountType === BondAccountType.WalletAccount) {
@@ -838,7 +889,7 @@ export default class Contract {
   applyBroker(accountType,amount = toContractUnit(60000)) {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
-
+      const ABIData = getABIData();
       let approveRet = false;
       if(accountType === BondAccountType.WalletAccount) {
         approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
@@ -868,6 +919,7 @@ export default class Contract {
   burnEdrfExtendValidPeriod(accountType, amount) {
     const tokenContract = this.eDRF
     return new Promise(async (resolve, reject) => {
+      const ABIData = getABIData();
 
       let approveRet = false;
       if(accountType === BondAccountType.WalletAccount) {
@@ -923,6 +975,8 @@ export default class Contract {
   stakingDrf(amount) {
     const tokenContract = this.DRF
     return new Promise(async (resolve, reject) => {
+      const ABIData = getABIData();
+
       const approveRet = await this.__approve(tokenContract, ABIData.DerifyRewards, amount)
       if(approveRet){
         try{

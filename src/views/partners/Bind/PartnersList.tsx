@@ -42,11 +42,11 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
 
   useEffect(() => {
     setLoading(true);
-    getBrokerList(pagenation.current,pagenation.pageSize).then((pagenation) => {
+    getBrokerList(pagenation.current, pagenation.pageSize).then((pagenation) => {
       setIndex(undefined);
       setPagenation(pagenation);
     }).catch(e => console.error("getBrokerList error", e)).finally(() => setLoading(false));
-  },[pagenation.current,pagenation.pageSize])
+  },[pagenation.current, pagenation.pageSize]);
 
   return (
     <Spin spinning={loading}>
@@ -115,10 +115,12 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
             <Row justify="center">
               <Pagination onChange={(pageNum, pageSize) => {
                 pagenation.current = pageNum;
+
                 if(pageSize){
                   pagenation.pageSize = pageSize;
                 }
-                setPagenation(pagenation);
+
+                setPagenation(Object.assign({}, pagenation,{current: pageNum, pageSize}));
               }} defaultCurrent={pagenation.current} pageSize={pagenation.pageSize} total={pagenation.totalItems} showSizeChanger={false} />
             </Row>
           </Col>) : <></>
