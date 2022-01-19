@@ -69,8 +69,8 @@ export default {
         "DerifyDerivative": {
           "abi": DerifyDerivative,
           "BTC": {
-            "address": "0x08b0e34882d008576f430c8aF9474519cEd16Dcc",
-            "token": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+            "address": "0x40F8Af172E95B696B45A55943C02CB063367a2e9",
+            "token": "0xBD9d08D0469adb84189Fb062bd017187741eC656"
           },
           "ETH": {
             "address": "0xAF3fDcA9c2408F26D74F6508C0910b870Ea3A79b",
@@ -101,7 +101,7 @@ export default {
       "production": {
         "DerifyRewards": {
           "abi": DerifyRewards,
-          "address": "0xe24b9b8D8A4c55a6D8bbF8C1271cD183FaaCF4Bc"
+          "address": "0x6fc1Bd9124D69aaA6612aABFc81F514Bdd0cF467"
         },
         "DerifyDerivative": {
           "abi": DerifyDerivative,
@@ -116,7 +116,7 @@ export default {
         },
         "DerifyExchange": {
           "abi": DerifyExchange,
-          "address": "0xf9D5e699e4081FE4D112012898D93Ca7Ea28bD5a"
+          "address": "0x61Ead17C0085eBc61D4826fBe08FdafbF5D9834A"
         },
         "DUSD": {
           "abi": DUSD,
@@ -231,22 +231,22 @@ export default {
       "production": {
         "DerifyRewards": {
           "abi": DerifyRewards,
-          "address": "0x0cA0e7810d00A9268478aF0eC03C49bD37862D00"
+          "address": "0xc0e3dA3E33b94cC2d2fF4d203d2e0D2B5dab1549"
         },
         "DerifyDerivative": {
           "abi": DerifyDerivative,
           "BTC": {
-            "address": "0x7F4c1429a99b16df381430818F826a00Ae463578",
+            "address": "0xF992D738290a5ef18BfA5B6236F46DCf1005f07A",
             "token": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
           },
           "ETH": {
-            "address": "0xaC413A0B3ce02D8c9D13a697A14D8FB01cFD9A9e",
+            "address": "0x0eBbAa19EDD0206241DA19A09DD3725C2f974cC9",
             "token": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
           }
         },
         "DerifyExchange": {
           "abi": DerifyExchange,
-          "address": "0xaf6062D12eC27CEd55511D78597402E8fB1520BD"
+          "address": "0x889089b975E505530Da15b7AFF67C2f7d6eA18AE"
         },
         "DUSD": {
           "abi": DUSD,
