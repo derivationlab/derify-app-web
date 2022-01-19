@@ -1,11 +1,5 @@
 import * as io from "@/utils/request";
 
-import * as configUtil from '../config'
-
-const kdataEndPoint = configUtil.getCurrentServerEndPoint()
-
-const KDATA_API_URL = kdataEndPoint + '/api/klines'
-
 const timeGapArr = [
   {value: '1m', text: '1m', time: 60 * 1000},
   {value: '5m', text: '5m', time: 5 * 60 * 1000},
@@ -50,7 +44,7 @@ export async function getKLineData ({instId, after, before, bar = '15m', limit= 
     interval: bar,
     limit: limit
   }
-  const content = await io.get(`${KDATA_API_URL}/${param.token}/${param.interval}/${param.startTime}/${param.endTime}/${param.limit}`)
+  const content = await io.get(`/api/klines/${param.token}/${param.interval}/${param.startTime}/${param.endTime}/${param.limit}`)
 
   if(content) {
     return content.data;
