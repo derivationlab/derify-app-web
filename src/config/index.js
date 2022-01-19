@@ -15,10 +15,10 @@ export function getCurChain(){
   const curChain = ChainEnum.values.find((chain) => {
     return parseInt(window.ethereum.chainId, 16) === chain.chainId
   });
-  let chainKey = 'rinkeby';
+  let chainKey = 'bsc';
 
-  if(curChain && curChain.chainId === ChainEnum.BSC.chainId){
-    chainKey = 'bsc';
+  if(curChain && curChain.chainId === ChainEnum.Rinkeby.chainId){
+    chainKey = 'rinkeby';
   }
 
   return chainKey;
