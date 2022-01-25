@@ -343,7 +343,7 @@ function Operation() {
         </Row>
       </Col>
       <Col flex="100%">
-        <Slider value={sliderVal} onChange={(val) => onSliderChange(val)}/>
+        <Slider value={sliderVal} onChange={(val: any) => onSliderChange(val)}/>
       </Col>
       <WalletConnectButtonWrapper            type="primary"
                                              shape="round"
