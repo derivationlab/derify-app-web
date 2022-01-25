@@ -124,6 +124,7 @@ const Faucet: React.FC<FaucetProps> = props => {
 
 
   return (
+    <>
     <Row className="faucet-container main-block" gutter={[20,20]} justify={"center"}>
       <Col flex="100%" className="main-wrapper">
         <Row gutter={[20,20]} align={"middle"}  justify={"center"}>
@@ -143,24 +144,12 @@ const Faucet: React.FC<FaucetProps> = props => {
             <div
               dangerouslySetInnerHTML={{ __html: code }}
               style={{
-                display: showRecaptcha && !usdtClaimed ? "block" : "none",
+                display: !usdtClaimed ? "block" : "none",
               }}
             ></div>
-              <Button onClick={
-                () => {
-                  setShowRecaptcha(usdtClaimed)
-                }
-              }>
+              <Button onClick={onSendUSDT}>
                 {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
               </Button>
-
-            {
-              valid && (
-                <Button className={usdtClaimed ? 'disabled' :''} type={"primary"} onClick={onSendUSDT}>
-                  {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                </Button>
-              )
-            }
             </Spin>
           </Col>
         </Row>
@@ -185,6 +174,7 @@ const Faucet: React.FC<FaucetProps> = props => {
         </Row>
       </Col>
     </Row>
+    </>
   );
 };
 
