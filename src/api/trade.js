@@ -87,8 +87,8 @@ export async function getTraderBondBalance (trader, pageNum = 1, pageSize = 10) 
  * @param amount
  * @return {Promise<{code:number, msg:string}>}
  */
-export async function sendUSDT (trader, amount) {
-  const content =  await io.post(`/api/send_usdt`, {trader, amount});
+export async function sendUSDT (trader, amount, userToekn) {
+  const content =  await io.post(`/api/send_usdt`, {trader, amount, 'g-recaptcha-response': userToekn});
 
   return content;
 

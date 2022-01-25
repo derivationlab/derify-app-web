@@ -25,6 +25,7 @@ const Faucet: React.FC<FaucetProps> = props => {
   const [usdtClaimed,setUsdtClaimed] = useState(true);
 
   const [showRecaptcha, setShowRecaptcha] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("")
   const [valid, setValid] = useState(false);
 
   const [loading,setLoading] = useState(false);
@@ -47,6 +48,7 @@ const Faucet: React.FC<FaucetProps> = props => {
       setTraderInputValue(trader);
       isUSDTClaimed(trader).then((res) => {
         setUsdtClaimed(res);
+        setShowRecaptcha(!res);
       }).catch(e => {
         console.log('error', e);
       })
@@ -55,10 +57,8 @@ const Faucet: React.FC<FaucetProps> = props => {
 
   useEffect(() => {
       // @ts-ignore
-      window.recaptchaCallBack = () => {
-        setValid(true)
-        setShowRecaptcha(false)
-        onSendUSDT();
+      window.recaptchaCallBack = (res) => {
+        setRecaptchaToken(res)
       }
       return () => {
          // @ts-ignore
@@ -69,13 +69,18 @@ const Faucet: React.FC<FaucetProps> = props => {
   const $t = intl;
 
   const onSendUSDT = useCallback(() => {
+
+    if(!recaptchaToken){
+      return;
+    }
+
     if(usdtClaimed){
       DerifyTradeModal.failed({msg: formatMessage({id: 'Faucet.GetUSDTError'})});
       return;
     }
 
     setLoading(true);
-    sendUSDT(traderInputVal, defaultUSDTAmount).then((data) => {
+    sendUSDT(traderInputVal, defaultUSDTAmount, recaptchaToken).then((data) => {
 
       if(data.code === 0){
         setUsdtClaimed(true);
@@ -90,7 +95,7 @@ const Faucet: React.FC<FaucetProps> = props => {
     }).finally(() => {
       setLoading(false);
     })
-  },[traderInputVal,usdtClaimed]);
+  },[traderInputVal,usdtClaimed,recaptchaToken]);
 
   const addTestTokentoWallet = useCallback(async() => {
     const tokenAddress = Token.USDT;
@@ -138,18 +143,16 @@ const Faucet: React.FC<FaucetProps> = props => {
             <div
               dangerouslySetInnerHTML={{ __html: code }}
               style={{
-                display: showRecaptcha ? "block" : "none",
+                display: showRecaptcha && !usdtClaimed ? "block" : "none",
               }}
             ></div>
-            {
-              valid ? null :   <Button onClick={
+              <Button onClick={
                 () => {
-                  setShowRecaptcha(true)
+                  setShowRecaptcha(usdtClaimed)
                 }
-              }> 
-                   {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-               </Button>
-            }
+              }>
+                {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+              </Button>
 
             {
               valid && (
