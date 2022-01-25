@@ -15,11 +15,17 @@ import {ChainEnum} from "@/store/modules/user";
 
 interface FaucetProps extends RouteProps {}
 
+const code =
+  "<div class='g-recaptcha' data-callback='recaptchaCallBack' data-sitekey='6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd'></div>";
+
 const Faucet: React.FC<FaucetProps> = props => {
   const { history } = props;
   const {trader,chainEnum} = useSelector((state:RootStore) => state.user);
   const [traderInputVal,setTraderInputValue] = useState("");
   const [usdtClaimed,setUsdtClaimed] = useState(true);
+
+  const [showRecaptcha, setShowRecaptcha] = useState(false);
+  const [valid, setValid] = useState(false);
 
   const [loading,setLoading] = useState(false);
   const defaultUSDTAmount = 100000;
@@ -29,14 +35,10 @@ const Faucet: React.FC<FaucetProps> = props => {
   const {formatMessage} = useIntl();
 
   function intl<T>(id:string,values:T[] = []) {
-
     const intlValues:{[key:number]:T} = {}
-
     values.forEach((item, index) => {
       intlValues[index] = item
     })
-
-
     return formatMessage({id}, intlValues)
   }
 
@@ -50,6 +52,19 @@ const Faucet: React.FC<FaucetProps> = props => {
       })
     }
   }, [trader])
+
+  useEffect(() => {
+      // @ts-ignore
+      window.recaptchaCallBack = () => {
+        setValid(true)
+        setShowRecaptcha(false)
+        onSendUSDT();
+      }
+      return () => {
+         // @ts-ignore
+        window.recaptchaCallBack = null;
+      }
+  }, [])
 
   const $t = intl;
 
@@ -119,9 +134,30 @@ const Faucet: React.FC<FaucetProps> = props => {
         <Row justify={"center"}>
           <Col>
             <Spin spinning={loading}>
-              <Button className={usdtClaimed ? 'disabled' :''} type={"primary"} onClick={onSendUSDT}>
-                {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-              </Button>
+
+            <div
+              dangerouslySetInnerHTML={{ __html: code }}
+              style={{
+                display: showRecaptcha ? "block" : "none",
+              }}
+            ></div>
+            {
+              valid ? null :   <Button onClick={
+                () => {
+                  setShowRecaptcha(true)
+                }
+              }> 
+                   {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+               </Button>
+            }
+
+            {
+              valid && (
+                <Button className={usdtClaimed ? 'disabled' :''} type={"primary"} onClick={onSendUSDT}>
+                  {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+                </Button>
+              )
+            }
             </Spin>
           </Col>
         </Row>
