@@ -12,6 +12,7 @@ import ErrorMessage, {DerifyErrorNotice} from "@/components/ErrorMessage";
 import "./index.less"
 import {Token} from "@/utils/contractUtil";
 import {ChainEnum} from "@/store/modules/user";
+import Recaptcha from 'react-recaptcha'
 
 interface FaucetProps extends RouteProps {}
 
@@ -55,16 +56,9 @@ const Faucet: React.FC<FaucetProps> = props => {
     }
   }, [trader])
 
-  useEffect(() => {
-      // @ts-ignore
-      window.recaptchaCallBack = (res) => {
-        setRecaptchaToken(res)
-      }
-      return () => {
-         // @ts-ignore
-        window.recaptchaCallBack = null;
-      }
-  }, [])
+  const recaptchaCallBack = (res:string) => {
+    setRecaptchaToken(res)
+  }
 
   const $t = intl;
 
@@ -140,16 +134,26 @@ const Faucet: React.FC<FaucetProps> = props => {
         <Row justify={"center"}>
           <Col>
             <Spin spinning={loading}>
+              {usdtClaimed ? <></> : <Recaptcha
+                sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd"
+                render="explicit"
+                verifyCallback={(res) => recaptchaCallBack(res)}
+                expiredCallback={() => recaptchaCallBack("")}
+                onloadCallback={() => {}}
+              />}
 
-            <div
-              dangerouslySetInnerHTML={{ __html: code }}
-              style={{
-                display: !usdtClaimed ? "block" : "none",
-              }}
-            ></div>
-              <Button onClick={onSendUSDT}>
-                {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-              </Button>
+              {
+                usdtClaimed ? <Button type={'primary'} onClick={onSendUSDT} className={"disabled"}>
+                  {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+                </Button> : (
+                  recaptchaToken ? <Button type={'primary'} onClick={onSendUSDT}>
+                    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+                  </Button>:<Button type={'default'}>
+                    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+                  </Button>
+                )
+              }
+
             </Spin>
           </Col>
         </Row>
