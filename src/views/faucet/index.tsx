@@ -22,7 +22,7 @@ const Faucet: React.FC<FaucetProps> = props => {
   const { history } = props;
   const {trader,chainEnum} = useSelector((state:RootStore) => state.user);
   const [traderInputVal,setTraderInputValue] = useState("");
-  const [usdtClaimed,setUsdtClaimed] = useState(true);
+  const [usdtClaimed,setUsdtClaimed] = useState(false);
 
   const [showRecaptcha, setShowRecaptcha] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState("")
