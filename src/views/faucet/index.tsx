@@ -131,7 +131,7 @@ const Faucet: React.FC<FaucetProps> = props => {
         </Row>
       </Col>
       <Col flex="100%">
-        <Row justify={"center"}>
+        <Row gutter={[20,20]} align={"middle"}  justify={"center"} style={{flexDirection: "column"}}>
           <Col>
             <Spin spinning={loading}>
               {usdtClaimed ? <></> : <Recaptcha
@@ -141,7 +141,10 @@ const Faucet: React.FC<FaucetProps> = props => {
                 expiredCallback={() => recaptchaCallBack("")}
                 onloadCallback={() => {}}
               />}
-
+            </Spin>
+          </Col>
+          <Col>
+            <Spin spinning={loading}>
               {
                 usdtClaimed ? <Button type={'primary'} onClick={onSendUSDT} className={"disabled"}>
                   {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
@@ -153,7 +156,6 @@ const Faucet: React.FC<FaucetProps> = props => {
                   </Button>
                 )
               }
-
             </Spin>
           </Col>
         </Row>
