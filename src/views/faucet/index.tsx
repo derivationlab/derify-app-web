@@ -137,7 +137,7 @@ const Faucet: React.FC<FaucetProps> = props => {
               {usdtClaimed ? <></> : <Recaptcha
                 sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd"
                 render="explicit"
-                verifyCallback={(res) => recaptchaCallBack(res)}
+                verifyCallback={(res:string) => recaptchaCallBack(res)}
                 expiredCallback={() => recaptchaCallBack("")}
                 onloadCallback={() => {}}
               />}
