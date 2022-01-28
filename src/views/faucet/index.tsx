@@ -16,9 +16,6 @@ import Recaptcha from 'react-recaptcha'
 
 interface FaucetProps extends RouteProps {}
 
-const code =
-  "<div class='g-recaptcha' data-callback='recaptchaCallBack' data-sitekey='6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd'></div>";
-
 const Faucet: React.FC<FaucetProps> = props => {
   const { history } = props;
   const {trader,chainEnum} = useSelector((state:RootStore) => state.user);
@@ -145,17 +142,9 @@ const Faucet: React.FC<FaucetProps> = props => {
           </Col>
           <Col>
             <Spin spinning={loading}>
-              {
-                usdtClaimed ? <Button type={'primary'} onClick={onSendUSDT} className={"disabled"}>
-                  {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                </Button> : (
-                  recaptchaToken ? <Button type={'primary'} onClick={onSendUSDT}>
-                    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                  </Button>:<Button type={'default'}>
-                    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                  </Button>
-                )
-              }
+              <a href="https://form.jotform.com/220268814408052" target='_blank' className="alink">
+                {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
+              </a>
             </Spin>
           </Col>
         </Row>
