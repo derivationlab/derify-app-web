@@ -133,29 +133,34 @@ const Faucet: React.FC<FaucetProps> = props => {
       <Col flex="100%">
         <Row gutter={[20,20]} align={"middle"}  justify={"center"} style={{flexDirection: "column"}}>
           <Col>
-            <Spin spinning={loading}>
-              {usdtClaimed ? <></> : <Recaptcha
-                sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd"
-                render="explicit"
-                verifyCallback={(res) => recaptchaCallBack(res)}
-                expiredCallback={() => recaptchaCallBack("")}
-                onloadCallback={() => {}}
-              />}
-            </Spin>
+            {/*<Spin spinning={loading}>*/}
+            {/*  {usdtClaimed ? <></> : <Recaptcha*/}
+            {/*    sitekey="6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd"*/}
+            {/*    render="explicit"*/}
+            {/*    verifyCallback={(res) => recaptchaCallBack(res)}*/}
+            {/*    expiredCallback={() => recaptchaCallBack("")}*/}
+            {/*    onloadCallback={() => {}}*/}
+            {/*  />}*/}
+            {/*</Spin>*/}
           </Col>
           <Col>
             <Spin spinning={loading}>
-              {
-                usdtClaimed ? <Button type={'primary'} onClick={onSendUSDT} className={"disabled"}>
+              <a href={"https://form.jotform.com/220268814408052"} target={"_blank"}>
+                <Button type={'primary'}>
                   {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                </Button> : (
-                  recaptchaToken ? <Button type={'primary'} onClick={onSendUSDT}>
-                    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                  </Button>:<Button type={'default'}>
-                    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
-                  </Button>
-                )
-              }
+                </Button>
+              </a>
+              {/*{*/}
+              {/*  usdtClaimed ? <Button type={'primary'} onClick={onSendUSDT} className={"disabled"}>*/}
+              {/*    {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}*/}
+              {/*  </Button> : (*/}
+              {/*    recaptchaToken ? <Button type={'primary'} onClick={onSendUSDT}>*/}
+              {/*      {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}*/}
+              {/*    </Button>:<Button type={'default'}>*/}
+              {/*      {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}*/}
+              {/*    </Button>*/}
+              {/*  )*/}
+              {/*}*/}
             </Spin>
           </Col>
         </Row>
