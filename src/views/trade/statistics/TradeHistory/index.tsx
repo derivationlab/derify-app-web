@@ -16,6 +16,7 @@ import {fromContractUnit} from "@/utils/contractUtil";
 import {amountFormt, dateFormat} from "@/utils/utils";
 import {Pagenation} from "@/api/types";
 import contractModel from "@/store/modules/contract";
+import {getUSDTokenName} from "@/config";
 
 class OpTypeEnum {
   opType:number;
@@ -177,7 +178,7 @@ const TradeHistory: React.FC = () => {
           >
             {amountFormt(record.pnl_usdt,2,true,"--")}
           </div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -217,7 +218,7 @@ const TradeHistory: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className="main-white">{amountFormt(record.price,2,false,"--")}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -276,7 +277,7 @@ const TradeHistory: React.FC = () => {
       render: (_, record) => (
         <div>
           <div  className="main-white">{amountFormt(record.amount,2, false, '--')}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -305,7 +306,7 @@ const TradeHistory: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className="main-white">{amountFormt(-record.trading_fee, 2, false, '--')}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -334,7 +335,7 @@ const TradeHistory: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={classNames("main-white", )}>{amountFormt(-record.position_change_fee,2,false,"--")}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },

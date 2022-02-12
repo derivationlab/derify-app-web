@@ -12,6 +12,7 @@ import {amountFormt, dateFormat} from "@/utils/utils";
 import LongOrShort from "@/views/trade/LongOrShort";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import {getUSDTokenName} from "@/config";
 
 const dataSource = [
   {
@@ -280,7 +281,7 @@ function CurrentOrder() {
         <div>
           <div className="main-white">{amountFormt(record.orderType == OrderTypeEnum.LimitOrder ? record.price: record.stopPrice,2,false,"--",-8)}</div>
           <div>
-            USDT
+            {getUSDTokenName()}
           </div>
         </div>
       ),

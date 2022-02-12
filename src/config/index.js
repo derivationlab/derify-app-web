@@ -84,4 +84,13 @@ export function getABIData(){
   return getCurrentContractConfig(chainKey);
 }
 
+export function getShowVars(){
+  let chainKey = getCurChain();
+  return MulChainConfig[chainKey].showVar;
+}
+
+export function getUSDTokenName(){
+  return getShowVars().usdTokenName;
+}
+
 export default config

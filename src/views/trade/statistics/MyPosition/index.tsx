@@ -19,6 +19,7 @@ import {amountFormt, fck} from "@/utils/utils";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import "./index.less"
+import {getUSDTokenName} from "@/config";
 
 
 const MyPosition: React.FC = () => {
@@ -205,7 +206,7 @@ const MyPosition: React.FC = () => {
           >
             {amountFormt(record.unrealizedPnl, 2,true,"--", -8)}(<span>{amountFormt(record.returnRate, 2,true, "--", -6)}%</span>)
           </div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -263,7 +264,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={"main-white"}>{amountFormt(record.averagePrice,2,false,"--", -8)}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -292,7 +293,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={"main-white"}>{amountFormt(record.margin,2,false,"--",-8)}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },
@@ -350,7 +351,7 @@ const MyPosition: React.FC = () => {
       render: (_, record) => (
         <div>
           <div className={"main-white"}>{amountFormt(record.liquidatePrice, 2, false,"--",-8)}</div>
-          <div>USDT</div>
+          <div>{getUSDTokenName()}</div>
         </div>
       ),
     },

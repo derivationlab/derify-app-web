@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppModel, RootStore} from "@/store";
 import contractModel from "@/store/modules/contract"
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import {getUSDTokenName} from "@/config";
 
 
 interface TPAndSLModalProps extends ModalProps {
@@ -224,10 +225,10 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
             </Col>
             <Col>
               <div>
-                <span className="main-white">{fck(position?.averagePrice, -8,2)}</span>&nbsp;USDT
+                <span className="main-white">{fck(position?.averagePrice, -8,2)}</span>&nbsp;{getUSDTokenName()}
               </div>
               <div>
-                <span className="main-green">{fck(position?.spotPrice, -8,2)}</span>&nbsp;USDT
+                <span className="main-green">{fck(position?.spotPrice, -8,2)}</span>&nbsp;{getUSDTokenName()}
               </div>
             </Col>
           </Row>
@@ -235,7 +236,7 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
         <Col flex="100%" className="margin-b-max">
           <Row>{$t("Trade.MyPosition.SetStopPricePopup.TakeProfit")}</Row>
           <Row className="margin-b-m">
-            <Input size="large" addonAfter="USDT" onChange={({target:{value}}) => {
+            <Input size="large" addonAfter={getUSDTokenName()} onChange={({target:{value}}) => {
               onTakeProfitPriceChange(value)
             }} value={takeProfitPrice}/>
           </Row>
@@ -246,7 +247,7 @@ const TPAndSLModal: React.FC<TPAndSLModalProps> = props => {
         <Col flex="100%">
           <Row>{$t("Trade.MyPosition.SetStopPricePopup.StopLoss")}</Row>
           <Row className="margin-b-m">
-            <Input size="large" addonAfter="USDT"  onChange={({target:{value}}) => {
+            <Input size="large" addonAfter={getUSDTokenName()}  onChange={({target:{value}}) => {
               onStopLossPriceChange(value)
             }} value={stopLossPrice}/>
           </Row>

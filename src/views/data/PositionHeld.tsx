@@ -7,6 +7,7 @@ import {DataModel, RootStore} from "@/store";
 import {Token} from "@/utils/contractUtil";
 import generateDataEchartsOptions from "@/utils/data-chart";
 import {fck} from "@/utils/utils";
+import {getUSDTokenName} from "@/config";
 const color = ['#00C49A', '#EA446B']
 
 function PositionHeld() {
@@ -37,8 +38,8 @@ function PositionHeld() {
 
   const tokenOptions = [
     {label: $t('Data.Data.Trade.All'), value: 'all'},
-    {label: 'BTC/USDT', value: Token.BTC},
-    {label: 'ETH/USDT', value: Token.ETH},
+    {label: `BTC/${getUSDTokenName()}`, value: Token.BTC},
+    {label: `ETH/${getUSDTokenName()}`, value: Token.ETH},
   ];
 
   const onOptionChange = (value:string) => {
@@ -104,7 +105,7 @@ function PositionHeld() {
                 {formatMessage({ id: "Data.Data.Held.TotalLong" })}
               </div>
               <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                <span className="white-color">{fck(currentData?.long_position_amount,0,2)}</span> USDT
+                <span className="white-color">{fck(currentData?.long_position_amount,0,2)}</span> {getUSDTokenName()}
               </div>
             </Col>
             <Col flex="50%">
@@ -113,7 +114,7 @@ function PositionHeld() {
                 {formatMessage({ id: "Data.Data.Held.TotalShort" })}
               </div>
               <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                <span className="white-color">{fck(currentData?.short_position_amount,0,2)}</span> USDT
+                <span className="white-color">{fck(currentData?.short_position_amount,0,2)}</span> {getUSDTokenName()}
               </div>
             </Col>
           </Row>

@@ -8,6 +8,7 @@ import generateDataEchartsOptions from "@/utils/data-chart";
 import {DataModel} from "@/store";
 import {useDispatch} from "react-redux";
 import {fck} from "@/utils/utils";
+import {getUSDTokenName} from "@/config";
 const { Option } = Select;
 
 const color = ['#fae247', '#475FFA']
@@ -40,8 +41,8 @@ const TradingVolume: React.FC = () => {
 
   const tokenOptions = [
     {label: $t('Data.Data.Trade.All'), value: 'all'},
-    {label: 'BTC/USDT', value: Token.BTC},
-    {label: 'ETH/USDT', value: Token.ETH},
+    {label: `BTC/${getUSDTokenName()}`, value: Token.BTC},
+    {label: `ETH/${getUSDTokenName()}`, value: Token.ETH},
   ];
 
   const onOptionChange = (value:string) => {
@@ -116,7 +117,7 @@ const TradingVolume: React.FC = () => {
                 {formatMessage({ id: "Data.Data.Trade.TradingVolume" })}（24h）
               </div>
               <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                <span className="white-color">{fck(currentData?.trading_amount,0,2)}</span> USDT
+                <span className="white-color">{fck(currentData?.trading_amount,0,2)}</span> {getUSDTokenName()}
               </div>
             </Col>
             <Col flex="50%">
@@ -125,7 +126,7 @@ const TradingVolume: React.FC = () => {
                 {formatMessage({ id: "Data.Data.Trade.TradFeeEarning" })}（24h）
               </div>
               <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                <span className="white-color">{fck(currentData?.trading_fee,0,2)}</span> USDT
+                <span className="white-color">{fck(currentData?.trading_fee,0,2)}</span> {getUSDTokenName()}
               </div>
             </Col>
           </Row>

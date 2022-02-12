@@ -20,6 +20,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppModel, RootStore} from "@/store";
 import contractModel, {OpenUpperBound, TokenPair} from "@/store/modules/contract";
 import {amountFormt, fck} from "@/utils/utils";
+import {getUSDTokenName} from "@/config";
 
 const typeColor:{[key:number]:string} ={
   [SideEnum.LONG]:"main-green",
@@ -134,7 +135,7 @@ const ComModal: React.FC<ComModalProps> = props => {
       {
         key: "Trade.OpenPosition.OpenPopup.Price",
         val: isMarketOrder ? $t("Trade.OpenPosition.OpenPopup.Market") : openConfirmData.limitPrice,
-        suffix: isMarketOrder ? "" : "USDT",
+        suffix: isMarketOrder ? "" : `${getUSDTokenName()}`,
       },
       {
         key: "Trade.OpenPosition.OpenPopup.Type",
@@ -145,19 +146,19 @@ const ComModal: React.FC<ComModalProps> = props => {
       {
         key: "Trade.OpenPosition.OpenPopup.Amount",
         val: openConfirmData.size,
-        suffix: openConfirmData.unit === UnitTypeEnum.USDT ? "USDT": curPair.key,
+        suffix: openConfirmData.unit === UnitTypeEnum.USDT ? `${getUSDTokenName()}`: curPair.key,
       },
       {
         key: "Trade.OpenPosition.OpenPopup.PCF",
         classNames:[-pcf >0  ? "main-green" : "main-red"],
         val: amountFormt(-pcf,4, true, 0),
-        suffix: "USDT",
+        suffix: `${getUSDTokenName()}`,
       },
       {
         key: "Trade.OpenPosition.OpenPopup.TradFee",
         classNames:[],
         val: amountFormt(-tradeFee,4, true, 0),
-        suffix: "USDT",
+        suffix: `${getUSDTokenName()}`,
       },
     ];
 
@@ -188,7 +189,7 @@ const ComModal: React.FC<ComModalProps> = props => {
     if(unit === UnitTypeEnum.USDT){
       if (size > fromContractUnit(sysOpenUpperBound.size)) {
 
-        setErrorMsg(`${$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(sysOpenUpperBound.size, -8)} USDT`)
+        setErrorMsg(`${$t('Trade.OpenPosition.OpenPopup.LiqLimitMsg')} ${fck(sysOpenUpperBound.size, -8)} ${getUSDTokenName()}`)
         return fromContractUnit(sysOpenUpperBound.size);
       }
     } else {

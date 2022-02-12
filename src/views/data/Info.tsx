@@ -4,6 +4,7 @@ import { useIntl } from "react-intl";
 import {useDispatch} from "react-redux";
 import {DataModel} from "@/store";
 import {fck} from "@/utils/utils";
+import {getUSDTokenName} from "@/config";
 
 function Info() {
   const { formatMessage } = useIntl();
@@ -33,7 +34,7 @@ function Info() {
     },
     {
       pre: "",
-      aft: "(USDT)",
+      aft: `(${getUSDTokenName()})`,
       key: "Data.Data.Token.BuyBackFundBalance",
       val: fck(tokenData.drfBuyBack,0,2),
       type: "USDT",

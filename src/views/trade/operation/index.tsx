@@ -12,6 +12,7 @@ import {amountFormt, checkNumber, fck} from "@/utils/utils";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import {TransferOperateType} from "@/utils/types";
+import {getUSDTokenName} from "@/config";
 const { Option } = Select;
 
 
@@ -209,7 +210,7 @@ function Operation() {
 
   const selectAfter = (
     <Select value={token} className="select-after" onChange={(value) => onTokenChange(value)}>
-      <Option value={UnitTypeEnum.USDT}>USDT</Option>
+      <Option value={UnitTypeEnum.USDT}>{getUSDTokenName()}</Option>
       <Option value={UnitTypeEnum.CurPair}>{curPair.key}</Option>
     </Select>
   );
@@ -324,7 +325,7 @@ function Operation() {
                 <Row gutter={2} align={"middle"}>
                   <Col>
                     <FormattedMessage id="Trade.OpenPosition.OpenPage.Max" />
-                    ：{maxAmount} {token === UnitTypeEnum.USDT ? "USDT" : curPair.key}
+                    ：{maxAmount} {token === UnitTypeEnum.USDT ? `${getUSDTokenName()}` : curPair.key}
                   </Col>
                   <Col>
                     <Button type="link" onClick={() => setModalVisible(true)}>

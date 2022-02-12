@@ -18,6 +18,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import contractModel from "@/store/modules/contract"
 import {showTransfer} from "@/store/modules/app";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import {getUSDTokenName} from "@/config";
 
 
 
@@ -246,7 +247,7 @@ const Transfer: React.FC<TransferProps> = props => {
               <Row align="middle" justify="space-between">
                 <Col>
                   <FormattedMessage id="Trade.Account.Transfer.Max" />
-                  ：{maxAmount} USDT
+                  ：{maxAmount} {getUSDTokenName()}
                 </Col>
                 <Col>
                   <Button
