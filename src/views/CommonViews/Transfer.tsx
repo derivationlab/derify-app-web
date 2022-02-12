@@ -241,7 +241,7 @@ const Transfer: React.FC<TransferProps> = props => {
               <Input  readOnly={true}/>
             </Form.Item>
             <Form.Item label={<FormattedMessage id="Trade.Account.Transfer.Size"/>}>
-              <Input bordered={false} addonAfter="USDT" value={amount} onChange={onchange}/>
+              <Input bordered={false} addonAfter={getUSDTokenName()} value={amount} onChange={onchange}/>
             </Form.Item>
             <Form.Item>
               <Row align="middle" justify="space-between">

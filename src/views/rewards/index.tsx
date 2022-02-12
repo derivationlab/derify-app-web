@@ -115,7 +115,7 @@ function Rewards() {
                   <Statistic value={fck(pmrAccumulatedBalance, -8,2)} />
                 </Col>
                 <Col flex="100%" className="key-wrapper">
-                  <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> (USDT)
+                  <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> ({getUSDTokenName()})
                 </Col>
                 <Col>
                   <Button
