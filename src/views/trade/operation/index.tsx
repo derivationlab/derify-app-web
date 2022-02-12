@@ -202,7 +202,7 @@ function Operation() {
 
     const tokenSize = calculatePositionSize(size, token, traderOpenUpperBound,sliderVal);
 
-    const params:OpenConfirmData = {unit: token, openType, limitPrice:parseFloat(limitPrice), token: curPair, side, size: tokenSize,leverage};
+    const params:OpenConfirmData = {unit: token, openType, limitPrice:parseFloat(limitPrice), token: curPair, side, size: Number.parseFloat(size),leverage};
     setOpenConfirmData(params)
     setIsModalVisible(true)
   },[openType,size, limitPrice,curPair,leverage,traderOpenUpperBound])
