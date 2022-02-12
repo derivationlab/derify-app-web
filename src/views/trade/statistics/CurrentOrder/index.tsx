@@ -124,7 +124,7 @@ function CurrentOrder() {
       icon: null,
       content: (
         <div>
-          <p>
+          <p style={{textAlign:"center"}}>
             {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
           </p>
         </div>
