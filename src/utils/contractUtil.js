@@ -1,9 +1,7 @@
 import Web3 from 'web3'
 import BigNumber from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
-import * as configUtil from '@/config'
-import { ChainEnum } from '@/store/modules/user'
-import { getABIData } from '@/config'
+import {getABIData} from '@/config'
 
 window.BigNumber = BigNumber
 window.Web3 = Web3;
@@ -210,7 +208,7 @@ export function toShiftedHexString (number, decimals = 0) {
 }
 
 export function toShiftedString (number, decimals = 0, bit = 2) {
-  return (new BigNumber(number)).shiftedBy(decimals).toFixed(bit)
+  return (new BigNumber(number)).shiftedBy(decimals).toFixed(bit, BigNumber.ROUND_DOWN)
 }
 
 export function convertAmount2TokenSize(unit, amount, price) {
