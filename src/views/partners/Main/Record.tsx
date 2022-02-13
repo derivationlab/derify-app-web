@@ -8,6 +8,7 @@ import classNames from "classnames";
 import {useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {Pagenation} from "@/api/types";
+import {getUSDTokenName} from "@/config";
 const { TabPane } = Tabs;
 
 interface AcType {
@@ -124,7 +125,7 @@ function Record() {
         return (
           <div>
             <div className={classNames(data.amount > 0? "main-green":"main-red")}>{amountFormt(data.amount,2, true, '--')}</div>
-            <div>USDT</div>
+            <div>{getUSDTokenName()}</div>
           </div>
         );
       },
@@ -137,7 +138,7 @@ function Record() {
         return (
           <div>
             <div>{amountFormt(data.balance,2, false, '--')}</div>
-            <div>USDT</div>
+            <div>{getUSDTokenName()}</div>
           </div>
         );
       },

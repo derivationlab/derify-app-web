@@ -88,14 +88,19 @@ export async function getBrokerByBrokerId(brokerId) {
   return {}
 }
 
+
+function getBrokerByTraderCacheKey(){
+  const chainKey = getCurChain();
+  return chainKey + "_broker_info_by_addr"
+}
 /**
  * get broker info by trader address
  * @param trader
  * @return {Promise<BrokerInfo|null>}
  */
 export async function getBrokerByTrader(trader) {
-  const chainKey = getCurChain();
-  const cacheKey = chainKey + "_broker_info_by_addr"
+
+  const cacheKey = getBrokerByTraderCacheKey();
   let localStr = localStorage.getItem(cacheKey);
   let broker = null;
 
@@ -139,9 +144,8 @@ export async function updateBroker(param) {
   };
 
   const content =  await io.post(`/api/broker_info_updates`, data, config)
-
+  localStorage.removeItem(getBrokerByTraderCacheKey());
   if(content && content.msg) {
-    localStorage.removeItem("broker_info_by_addr");
     return {success: true, msg: content.msg, data: content.data}
   }else if(content && content.error){
     return {success: false, msg: content.error,data: undefined}

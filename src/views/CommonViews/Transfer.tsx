@@ -18,6 +18,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import contractModel from "@/store/modules/contract"
 import {showTransfer} from "@/store/modules/app";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import {getUSDTokenName} from "@/config";
 
 
 
@@ -240,13 +241,13 @@ const Transfer: React.FC<TransferProps> = props => {
               <Input  readOnly={true}/>
             </Form.Item>
             <Form.Item label={<FormattedMessage id="Trade.Account.Transfer.Size"/>}>
-              <Input bordered={false} addonAfter="USDT" value={amount} onChange={onchange}/>
+              <Input bordered={false} addonAfter={getUSDTokenName()} value={amount} onChange={onchange}/>
             </Form.Item>
             <Form.Item>
               <Row align="middle" justify="space-between">
                 <Col>
                   <FormattedMessage id="Trade.Account.Transfer.Max" />
-                  ：{maxAmount} USDT
+                  ：{maxAmount} {getUSDTokenName()}
                 </Col>
                 <Col>
                   <Button

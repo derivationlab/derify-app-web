@@ -12,6 +12,7 @@ import {amountFormt, dateFormat} from "@/utils/utils";
 import LongOrShort from "@/views/trade/LongOrShort";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import {getUSDTokenName} from "@/config";
 
 const dataSource = [
   {
@@ -80,7 +81,10 @@ function CurrentOrder() {
       return
     }
 
-    setShowLoading(true);
+    if(dataSource.length < 1){
+      setShowLoading(true);
+    }
+
     const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
 
     loadPositionDataAction(dispatch).then((rows) => {
@@ -124,7 +128,7 @@ function CurrentOrder() {
       icon: null,
       content: (
         <div>
-          <p>
+          <p style={{textAlign:"center"}}>
             {$t("Trade.CurrentOrder.CancelOrderPopup.CloseAllOrderInfo")}
           </p>
         </div>
@@ -161,13 +165,13 @@ function CurrentOrder() {
       icon: null,
       content: (
         <div>
-          <p>
+          <p style={{textAlign: "center"}}>
             {$t("Trade.CurrentOrder.CancelOrderPopup.CancelOneOrderInfo")}
           </p>
         </div>
       ),
       okText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
-      cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Confirm"),
+      cancelText: $t("Trade.CurrentOrder.CancelOrderPopup.Cancel"),
       onOk: () => {
         const trader = walletInfo.selectedAddress;
         if(!trader) {
@@ -280,7 +284,7 @@ function CurrentOrder() {
         <div>
           <div className="main-white">{amountFormt(record.orderType == OrderTypeEnum.LimitOrder ? record.price: record.stopPrice,2,false,"--",-8)}</div>
           <div>
-            USDT
+            {getUSDTokenName()}
           </div>
         </div>
       ),

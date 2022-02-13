@@ -13,6 +13,7 @@ import {fck} from "@/utils/utils";
 import { Link } from "react-router-dom";
 import Withdraw from "@/views/partners/Main/Account/Withdraw";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import {getUSDTokenName} from "@/config";
 
 function Account() {
 
@@ -44,7 +45,7 @@ function Account() {
     <Row className="main-block account-container">
       <Col flex="50%">
         <Row>
-          <Col className="margin-b-l">{$t("Broker.Broker.Account.AccBalance")}(USDT)</Col>
+          <Col className="margin-b-l">{$t("Broker.Broker.Account.AccBalance")}({getUSDTokenName()})</Col>
           <Col className="large margin-b-l">
             <div className="main-color number">{fck(broker.rewardBalance, -8,2)}</div>
           </Col>
@@ -58,13 +59,13 @@ function Account() {
           <Col flex="100%">
             <Row className="income-wrapper">
               <Col>
-                <div>{$t("Broker.Broker.Account.DailyEarning")} (USDT)</div>
+                <div>{$t("Broker.Broker.Account.DailyEarning")} ({getUSDTokenName()})</div>
                 <div>
                   <Statistic value={fck(broker.todayReward, -8,2)} />
                 </div>
               </Col>
               <Col>
-                <div>{$t("Broker.Broker.Account.AccumulatedEarning")} (USDT)</div>
+                <div>{$t("Broker.Broker.Account.AccumulatedEarning")} ({getUSDTokenName()})</div>
                 <div>
                   <Statistic value={fck(broker.accumulatedReward, -8,2)} />
                 </div>

@@ -1,5 +1,5 @@
 import Web3 from 'web3'
-import BigNumber from 'bignumber.js'
+import BigNumber, { RoundingMode } from 'bignumber.js'
 import {TraderAccount, TraderVariable} from "@/utils/types";
 import * as configUtil from '@/config'
 import { ChainEnum } from '@/store/modules/user'
@@ -206,11 +206,11 @@ export function toContractUnit (number) {
 }
 
 export function toShiftedHexString (number, decimals = 0) {
-  return "0x" + (new BigNumber(number)).shiftedBy(decimals).toString(16)
+  return "0x" + (new BigNumber(number)).shiftedBy(decimals).integerValue(BigNumber.ROUND_DOWN).toString(16)
 }
 
 export function toShiftedString (number, decimals = 0, bit = 2) {
-  return (new BigNumber(number)).shiftedBy(decimals).toFixed(bit)
+  return (new BigNumber(number)).shiftedBy(decimals).toFixed(bit, BigNumber.ROUND_DOWN)
 }
 
 export function convertAmount2TokenSize(unit, amount, price) {
@@ -234,7 +234,7 @@ export function toHexString (number) {
 
 export function toContractNum (number) {
   const num = (new BigNumber(number)).shiftedBy(contractDecimals).toNumber()
-  return Math.ceil(num)
+  return Math.floor(num)
 }
 
 export function fromContractUnit(unit, bit = -1, rounding = BigNumber.ROUND_DOWN) {
@@ -255,7 +255,7 @@ export function stringFromContractUnit (unit, bit = 2) {
 }
 
 export function convertTokenNumToContractNum (amount, tokenDecimals) {
-  return (new BigNumber(amount)).shiftedBy(tokenDecimals).toNumber()
+  return (new BigNumber(amount)).shiftedBy(tokenDecimals).integerValue(BigNumber.ROUND_DOWN).toNumber()
 }
 
 
@@ -269,7 +269,7 @@ async function updateGasPrice(web3){
     //lastCacheTime = currentTime;
     web3.eth.getGasPrice().then((gasPrice) => {
       if(gasPrice) {
-        cache.gasPrice = Math.ceil(parseInt(gasPrice) * 1.5).toString();
+        cache.gasPrice = Math.floor(parseInt(gasPrice) * 1.5).toString();
       }
     });
   }

@@ -23,6 +23,9 @@ export default {
       "debug": "https://test-web.derify.exchange",
       "production": "https://derify.exchange"
     },
+    "showVar":{
+      "usdTokenName": "USDT"
+    },
     "contract": {
       "development": {
         "DerifyRewards": {
@@ -152,6 +155,9 @@ export default {
       "development": "https://test-web.derify.exchange",
       "debug": "https://test-web.derify.exchange",
       "production": "https://derify.exchange"
+    },
+    "showVar":{
+      "usdTokenName": "BUSD"
     },
     "contract": {
       "development": {

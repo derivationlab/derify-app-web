@@ -15,6 +15,7 @@ import {Dispatch} from "redux";
 import {useDispatch, useSelector} from "react-redux";
 import {showTransfer,showFundsDetail} from "@/store/modules/app";
 import {ContractModel, RootStore, UserModel} from "@/store";
+import {getUSDTokenName} from "@/config";
 const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
   account,
   blance,
@@ -79,7 +80,7 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           >
             <Statistic value={fck(accountData.balance, -8, 2)} />
           </Col>
-          <Col>USDT</Col>
+          <Col>{getUSDTokenName()}</Col>
           {/*<Col*/}
           {/*  className="main-green"*/}
           {/*  style={{*/}
@@ -100,13 +101,13 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.MarginBalance"/></div>
             <div>
-              <Statistic value={fck(accountData?.marginBalance, -8, 2)}/>USDT
+              <Statistic value={fck(accountData?.marginBalance, -8, 2)}/>{getUSDTokenName()}
             </div>
           </Col>
           <Col>
             <div><FormattedMessage id="Trade.Account.MarginAccount.Margin"/></div>
             <div>
-              <Statistic value={fck(accountData?.totalMargin, -8,2)} precision={2}/>USDT
+              <Statistic value={fck(accountData?.totalMargin, -8,2)} precision={2}/>{getUSDTokenName()}
             </div>
           </Col>
         </Row>

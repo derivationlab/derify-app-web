@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import { RouteProps } from "@/router/types";
 import {Switch, Route, Redirect, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {ContractModel, RootStore, UserModel} from "@/store/index";
+import {AppModel, ContractModel, RootStore, UserModel} from "@/store/index";
 import Nav from "./nav";
 import IntlPro from "@/locales/index";
 
@@ -58,6 +58,9 @@ const  RouteGuard: React.FC<HomeProps> = props => {
       datas.forEach((data) => {
         const updateAllPairPriceAction = ContractModel.actions.updateAllPairPrice(trader, data.token, data.price_change_rate, data.longPmrRate,data.shortPmrRate);
         updateAllPairPriceAction(dispatch);
+
+        const loadTradeStatusAction = AppModel.actions.updateTradeLoadStatus();
+        loadTradeStatusAction(dispatch);
       })
     });
   },[trader]);

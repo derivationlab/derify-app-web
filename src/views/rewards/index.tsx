@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {fck} from "@/utils/utils";
 import {RewardsType} from "@/store/modules/reward";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import {getUSDTokenName} from "@/config";
 
 
 function Rewards() {
@@ -68,7 +69,7 @@ function Rewards() {
                   <Statistic value={fck(pmrBalance, -8, 2)} />
                 </Col>
                 <Col flex="100%" className="main-white key-wrapper">
-                  <FormattedMessage id="Rewards.Mining.Card.PositionMining" />（USDT）
+                  <FormattedMessage id="Rewards.Mining.Card.PositionMining" />（{getUSDTokenName()}）
                 </Col>
 
                 <Col>
@@ -95,7 +96,7 @@ function Rewards() {
                   <Statistic value={fck(accountData.totalPositionAmount, -8, 2)} />
                 </Col>
                 <Col flex="100%" className="key-wrapper">
-                  <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> (USDT)
+                  <FormattedMessage id="Rewards.Mining.Card.PositionHeld" /> ({getUSDTokenName()})
                 </Col>
                 <Col>
                   <WalletConnectButtonWrapper type="primary">
@@ -114,7 +115,7 @@ function Rewards() {
                   <Statistic value={fck(pmrAccumulatedBalance, -8,2)} />
                 </Col>
                 <Col flex="100%" className="key-wrapper">
-                  <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> (USDT)
+                  <FormattedMessage id="Rewards.Mining.Card.AccumulatedReward" /> ({getUSDTokenName()})
                 </Col>
                 <Col>
                   <Button

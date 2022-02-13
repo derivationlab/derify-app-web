@@ -14,6 +14,7 @@ import {RadioChangeEvent} from "antd/es";
 import ErrorMessage from "@/components/ErrorMessage";
 import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import {getUSDTokenName} from "@/config";
 
 interface CloseModalProps extends ModalProps {
   position: PositionView|undefined;
@@ -188,7 +189,7 @@ const CloseModal: React.FC<CloseModalProps> = props => {
               <FormattedMessage id="Trade.MyPosition.ClosePositionPopup.AveragePrice" />
             </Col>
             <Col>
-              <span className="main-white">{fck(position?.averagePrice, -8, 2)}</span> USDT
+              <span className="main-white">{fck(position?.averagePrice, -8, 2)}</span> {getUSDTokenName()}
             </Col>
           </Row>
         </Col>
@@ -198,7 +199,7 @@ const CloseModal: React.FC<CloseModalProps> = props => {
               <FormattedMessage id="Trade.MyPosition.ClosePositionPopup.CurrentPrice" />
             </Col>
             <Col>
-              <span className="main-green"> {getPairByAddress(position?.token).num}</span> USDT
+              <span className="main-green"> {getPairByAddress(position?.token).num}</span> {getUSDTokenName()}
             </Col>
           </Row>
         </Col>

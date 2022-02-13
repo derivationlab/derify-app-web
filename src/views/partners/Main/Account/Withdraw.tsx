@@ -9,6 +9,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import {BrokerAccountInfo} from "@/store/modules/broker";
 import {fromContractUnit, toContractUnit} from "@/utils/contractUtil";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
+import {getUSDTokenName} from "@/config";
 
 const { Option } = Select;
 
@@ -101,11 +102,11 @@ const Withdraw: React.FC<WithdrawProps> = props => {
           <Row>{$t("Broker.Broker.WithdrawPopup.Amount")}</Row>
         </Col>
         <Col flex="100%" className="margin-b-m">
-          <Input size="large" addonAfter="USDT" value={amout} onChange={({target:{value}}) => checkAmount(value, broker)} />
+          <Input size="large" addonAfter={`${getUSDTokenName()}`} value={amout} onChange={({target:{value}}) => checkAmount(value, broker)} />
         </Col>
         <Col flex="100%">
           <Row justify="space-between" align="middle">
-            <Col>{$t("Broker.Broker.WithdrawPopup.Max")}：{fck(getMaxSize(broker),-8,4)} USDT</Col>
+            <Col>{$t("Broker.Broker.WithdrawPopup.Max")}：{fck(getMaxSize(broker),-8,4)} {getUSDTokenName()}</Col>
             <Col>
               <Button type="link" onClick={() => {
                 setAmount(fck(getMaxSize(broker),-8,4))

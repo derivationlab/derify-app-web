@@ -6,6 +6,7 @@ import {DataModel} from "@/store";
 import {useDispatch} from "react-redux";
 import generateDataEchartsOptions from "@/utils/data-chart";
 import {fck} from "@/utils/utils";
+import {getUSDTokenName} from "@/config";
 function SafePool() {
   const {formatMessage} = useIntl();
   const chartRef = useRef<any>(null);
@@ -46,7 +47,7 @@ function SafePool() {
           <Col className="title">{formatMessage({id:'Data.Data.Insurance.InsurancePool'})}</Col>
           <Col>
               <span>{formatMessage({id:'Data.Data.Insurance.InsurancePoolBalance'})}：</span>
-            <span className="yellow-text">{fck(currentData.insurance_pool,0,7)}</span> USDT
+            <span className="yellow-text">{fck(currentData.insurance_pool,0,7)}</span> {getUSDTokenName()}
           </Col>
         </Row>
       </Col>

@@ -71,6 +71,15 @@ const Menu: React.FC<MenuProps> = props => {
           </span>
         </Col>
       ))}
+      <Col key={menu.length}>
+          <a
+            href="https://form.jotform.com/220383773757061"
+            target={"_blank"}
+            className={classNames("menu-item")}
+          >
+            {formatMessage({ id: "Trade.navbar.Feedback" })}
+          </a>
+      </Col>
     </Row>
   );
 };
