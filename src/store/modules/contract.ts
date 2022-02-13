@@ -522,6 +522,7 @@ const actions = {
 
 
         commit({type:'contract/UPDATE_PAIRS', payload:[pair]});
+        commit({type:'contract/UPDATE_PAIRS', payload:[pair]});
       }
       const curPair = state.pairs.find(pair => pair.key === state.curPairKey)
       const currentTimestamp = (new Date()).getTime();

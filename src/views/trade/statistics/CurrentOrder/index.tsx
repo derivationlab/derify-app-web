@@ -81,7 +81,10 @@ function CurrentOrder() {
       return
     }
 
-    setShowLoading(true);
+    if(dataSource.length < 1){
+      setShowLoading(true);
+    }
+
     const loadPositionDataAction = contractModel.actions.loadPositionData(trader)
 
     loadPositionDataAction(dispatch).then((rows) => {

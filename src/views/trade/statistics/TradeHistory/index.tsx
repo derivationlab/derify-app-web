@@ -91,7 +91,10 @@ const TradeHistory: React.FC = () => {
       return
     }
 
-    setShowLoading(true)
+    if(pagenation.records.length < 1){
+      setShowLoading(true);
+    }
+
     getTradeList(trader, pagenation.current, pagenation.pageSize).then((pagenation:Pagenation) => {
       setPagenation(pagenation);
     }).catch(e => {
