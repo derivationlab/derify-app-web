@@ -2,26 +2,27 @@ import {
   createStore,
   applyMiddleware,
   compose,
-  combineReducers, Dispatch,
+  combineReducers,
+  Dispatch,
 } from "redux";
 
 import thunkMiddleware from "redux-thunk";
 import AppModel, { AppState } from "./modules/app";
 
-import UserModel,{UserState} from "./modules/user";
-import BrokerModel,{BrokerState} from "./modules/broker";
-import DataModel,{DataState} from "./modules/data";
-import RewardModel,{RewardState} from "./modules/reward";
+import UserModel, { UserState } from "./modules/user";
+import BrokerModel, { BrokerState } from "./modules/broker";
+import DataModel, { DataState } from "./modules/data";
+import RewardModel, { RewardState } from "./modules/reward";
 
-import ContractModel,{ContractState} from "@/store/modules/contract";
-import {getCurrentEnv} from "@/config";
+import ContractModel, { ContractState } from "@/store/modules/contract";
+import { getCurrentEnv } from "@/config";
 export interface RootStore {
-  app: AppState
-  user: UserState
-  contract: ContractState
-  broker: BrokerState,
-  data: DataState,
-  reward: RewardState
+  app: AppState;
+  user: UserState;
+  contract: ContractState;
+  broker: BrokerState;
+  data: DataState;
+  reward: RewardState;
 }
 
 const composeEnhancers =
@@ -38,12 +39,12 @@ if (getCurrentEnv() === "development") {
   middlewares.push(require("redux-logger").createLogger());
 }
 
-const rootStore  = {
+const rootStore = {
   app: AppModel.reducers,
   user: UserModel.reducers,
   contract: ContractModel.reducers,
   broker: BrokerModel.reducers,
-  reward: RewardModel.reducers
+  reward: RewardModel.reducers,
 };
 
 const store = createStore(
@@ -52,7 +53,12 @@ const store = createStore(
 );
 
 export {
-  AppModel,ContractModel,UserModel,BrokerModel,DataModel,RewardModel
-}
+  AppModel,
+  ContractModel,
+  UserModel,
+  BrokerModel,
+  DataModel,
+  RewardModel,
+};
 
 export default store;
