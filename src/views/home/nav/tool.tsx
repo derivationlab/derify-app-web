@@ -7,6 +7,7 @@ import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
+import WalletInstall from './WalletInstall';
 
 import Eth from "@/assets/images/Eth.png";
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
@@ -221,7 +222,7 @@ function Tool() {
         <Button type="primary"
                 danger
                 shape="round"
-                block><a href={"https://docs.derify.finance/tutorial/connect-wallet"} target={"_blank"}><FormattedMessage id="Trade.navbar.Guide" /></a> </Button>
+                block><a href={"https://docs.derify.finance/tutorial/connect-wallet"} target={"_blank"} rel="noreferrer"><FormattedMessage id="Trade.navbar.Guide" /></a> </Button>
       </Col>
       <Col style={{ marginRight: "10px" }}>
         {isLogin ? (
@@ -283,50 +284,52 @@ function Tool() {
           dispatch(userModel.actions.showWallet(false));
         }}
       >
-        <Row>
-          {errorMsg?.id ? <Col flex="100%" style={{ marginBottom: "10px" }}>
-            <ErrorMessage msg={<FormattedMessage id={errorMsg?.id} values={{0:errorMsg?.value}}/>} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>
-          </Col>:''}
-          <Col style={{ marginBottom: "10px" }}>
-            <FormattedMessage id="Trade.Wallet.ChooseNetwork" />
-          </Col>
+        <WalletInstall>
+          <Row>
+            {errorMsg?.id ? <Col flex="100%" style={{ marginBottom: "10px" }}>
+              <ErrorMessage msg={<FormattedMessage id={errorMsg?.id} values={{0:errorMsg?.value}}/>} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>
+            </Col>:''}
+            <Col style={{ marginBottom: "10px" }}>
+              <FormattedMessage id="Trade.Wallet.ChooseNetwork" />
+            </Col>
 
-          <Col flex="100%">
-            <Row className="network-list" justify="space-between">
-              {networkList.map((item, i) => (
+            <Col flex="100%">
+              <Row className="network-list" justify="space-between">
+                {networkList.map((item, i) => (
+                  <Col
+                    className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
+                    onClick={() => onChangeNetwork(item.chainEnum)}
+                    key={i}
+                  >
+                    <IconFont size={18} type="icon-Group-" />
+                    <img src={item.url} alt="" />
+                    <div>{item.name}</div>
+                  </Col>
+                ))}
+              </Row>
+            </Col>
+            <Col style={{ margin: "40px 0 10px" }}>
+              <FormattedMessage id="Trade.Wallet.ChooseWallet" />
+            </Col>
+            <Col flex="100%">
+              <Row className="wallet-list">
                 <Col
-                  className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
-                  onClick={() => onChangeNetwork(item.chainEnum)}
-                  key={i}
+                  className={classNames({ active: wallet === WalletEnum.MetaMask })}
+                  onClick={() => onChangeWallet(WalletEnum.MetaMask)}
                 >
                   <IconFont size={18} type="icon-Group-" />
-                  <img src={item.url} alt="" />
-                  <div>{item.name}</div>
+                  <img src={Wallet} alt="" />
+                  <div>Metamask</div>
                 </Col>
-              ))}
-            </Row>
-          </Col>
-          <Col style={{ margin: "40px 0 10px" }}>
-            <FormattedMessage id="Trade.Wallet.ChooseWallet" />
-          </Col>
-          <Col flex="100%">
-            <Row className="wallet-list">
-              <Col
-                className={classNames({ active: wallet === WalletEnum.MetaMask })}
-                onClick={() => onChangeWallet(WalletEnum.MetaMask)}
-              >
-                <IconFont size={18} type="icon-Group-" />
-                <img src={Wallet} alt="" />
-                <div>Metamask</div>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row gutter={[20,20]} justify={"center"}>
-          <Col>
-            <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(network, wallet)}>{$t('global.Confirm')}</Button>
-          </Col>
-        </Row>
+              </Row>
+            </Col>
+          </Row>
+          <Row gutter={[20,20]} justify={"center"}>
+            <Col>
+              <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(network, wallet)}>{$t('global.Confirm')}</Button>
+            </Col>
+          </Row>
+        </WalletInstall>
       </Modal>
       <Transfer
         visible={transferShow}

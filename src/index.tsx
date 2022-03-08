@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { message } from "antd";
 
 import "./index.css";
-import App from "./App";
+import App from './App';
 import reportWebVitals from "./reportWebVitals";
 
 message.config({
