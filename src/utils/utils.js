@@ -30,7 +30,7 @@ export function dfv(num, defaultValue) {
   return num ? num : defaultValue
 }
 
-export function amountFormt(num, bit = 4, showPositive = false, zeroDefault = '', shiftNum = 0) {
+export function amountFormt(num, bit = 4, showPositive = false, zeroDefault = null, shiftNum = 0) {
 
   if (!num && zeroDefault !== '') {
     return zeroDefault
