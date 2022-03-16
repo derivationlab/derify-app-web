@@ -8213,6 +8213,11 @@ loglevel@^1.6.8:
   resolved "https://registry.npm.taobao.org/loglevel/download/loglevel-1.7.1.tgz?cache=0&sync_timestamp=1606314074355&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Floglevel%2Fdownload%2Floglevel-1.7.1.tgz"
   integrity "sha1-AF/eL15uRwaPk1/yhXPhJe9y8Zc= sha512-Hesni4s5UkWkwCGJMQGAh71PaLUmKFM60dHvq0zi/vDhhrzuk+4GgNbTXJ12YYQJn6ZKBDNIjYcuQGKudvqrIw=="
 
+logrocket@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/logrocket/-/logrocket-2.2.0.tgz#fbcaa11eb6ca55b44bd40cc677bf92af2c75aa72"
+  integrity sha512-YYZqYj4UjC9h992+yNt5E+h1bXCKyVjTa1UlbgK/onhLfNV/78tRqw9Ti7XBcwqOgaFsD2xrDDl+emZH36ch8g==
+
 loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.2.0, loose-envify@^1.3.1, loose-envify@^1.4.0:
   version "1.4.0"
   resolved "https://registry.npm.taobao.org/loose-envify/download/loose-envify-1.4.0.tgz"
