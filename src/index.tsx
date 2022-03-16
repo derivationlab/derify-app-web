@@ -7,6 +7,9 @@ import "./index.css";
 import App from './App';
 import reportWebVitals from "./reportWebVitals";
 
+import LogRocket from 'logrocket';
+LogRocket.init('5vthie/derifyexchange');
+
 message.config({
   top: 80,
 });
