@@ -1,7 +1,7 @@
 import createKeccakHash from "keccak";
 import { numConvert } from '@/utils/contractUtil'
 /* eslint-disable */
-export function dateFormat  (date, fmt) {
+export function dateFormat(date, fmt) {
   var o = {
     'M+': date.getMonth() + 1, // month
     'd+': date.getDate(), // day
@@ -17,7 +17,7 @@ export function dateFormat  (date, fmt) {
   return fmt
 }
 
-export function fck (num, pow = 8, bit = 2) {
+export function fck(num, pow = 8, bit = 2) {
   if (/^-?\d+\.?\d*$/.test(`${num}`)) {
     let val = parseFloat(num)
     val *= Math.pow(10, pow)
@@ -26,30 +26,30 @@ export function fck (num, pow = 8, bit = 2) {
   return num
 }
 
-export function dfv (num, defaultValue) {
+export function dfv(num, defaultValue) {
   return num ? num : defaultValue
 }
 
-export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = null, shiftNum = 0) {
+export function amountFormt(num, bit = 4, showPositive = false, zeroDefault = '', shiftNum = 0) {
 
-  if(!num && zeroDefault !== null){
+  if (!num && zeroDefault !== '') {
     return zeroDefault
   }
 
   if (/^-?\d+\.?\d*$/.test(`${num}`)) {
     let val = parseFloat(num)
 
-    if(val === 0 && zeroDefault !== null) {
+    if (val === 0 && zeroDefault !== null) {
       return zeroDefault
     }
 
     val *= Math.pow(10, shiftNum)
 
-    if(showPositive && val > 0) {
-      return "+" +  (bit >=0 ? numConvert(val,0, bit) : Number(val).toString());
+    if (showPositive && val > 0) {
+      return "+" + (bit >= 0 ? numConvert(val, 0, bit) : Number(val).toString());
     }
 
-    return bit >=0 ? numConvert(val,0, bit) : Number(val).toString();
+    return bit >= 0 ? numConvert(val, 0, bit) : Number(val).toString();
   }
 
   return num
@@ -63,11 +63,11 @@ export function amountFormt (num, bit = 4, showPositive = false, zeroDefault = n
  * @param allowMin {boolean}
  * @returns {{success: boolean, value: string|null}}
  */
-export function checkNumber(value, maxNum= Infinity, minNum = 0, allowMin = false){
-  if(/^(\d+(.\d*)?)?$/.test(value)){
+export function checkNumber(value, maxNum = Infinity, minNum = 0, allowMin = false) {
+  if (/^(\d+(.\d*)?)?$/.test(value)) {
     let size = parseFloat(value)
 
-    if(size > maxNum){
+    if (size > maxNum) {
       value = maxNum.toString()
     }
 
@@ -75,44 +75,44 @@ export function checkNumber(value, maxNum= Infinity, minNum = 0, allowMin = fals
     //   value = minNum.toString();
     // }
 
-    const retValue = value.replace(/[^0-9.]/g,'')
+    const retValue = value.replace(/[^0-9.]/g, '')
 
 
-    if(size <= minNum) {
-      return {success: size === minNum && allowMin, value: retValue}
-    }else{
-      return {success: true, value: retValue}
+    if (size <= minNum) {
+      return { success: size === minNum && allowMin, value: retValue }
+    } else {
+      return { success: true, value: retValue }
     }
   }
 
-  return {success: true, value: null}
+  return { success: true, value: null }
 }
 
-export function mergeNonNull(obj1, obj2){
+export function mergeNonNull(obj1, obj2) {
   const resultObj = Object.assign({}, obj1);
   const source = Object.assign({}, obj2);
 
-  if(resultObj === undefined || resultObj === null){
+  if (resultObj === undefined || resultObj === null) {
     return source;
   }
 
-  for(let name in source){
-    if(source[name] !== null && source[name] !== undefined){
-      if(Object.keys(source[name]).length > 0 && typeof source[name] === "object"){
+  for (let name in source) {
+    if (source[name] !== null && source[name] !== undefined) {
+      if (Object.keys(source[name]).length > 0 && typeof source[name] === "object") {
         resultObj[name] = mergeNonNull(resultObj[name], source[name]);
-      }else{
+      } else {
         resultObj[name] = source[name];
       }
 
-      console.log(resultObj,source[name])
+      console.log(resultObj, source[name])
     }
   }
 
   return resultObj;
 }
 
-export function toChecksumAddress (address) {
-  if(!address){
+export function toChecksumAddress(address) {
+  if (!address) {
     return address
   }
 
@@ -133,7 +133,7 @@ export function toChecksumAddress (address) {
 
 
 export function countLength(str) {
-  if(!str){
+  if (!str) {
     return 0;
   }
 
@@ -142,7 +142,7 @@ export function countLength(str) {
     var c = str.charCodeAt(i);
     // Shift_JIS: 0x0 ～ 0x80, 0xa0 , 0xa1 ～ 0xdf , 0xfd ～ 0xff
     // Unicode : 0x0 ～ 0x80, 0xf8f0, 0xff61 ～ 0xff9f, 0xf8f1 ～ 0xf8f3
-    if ( (c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
+    if ((c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
       r += 1;
     } else {
       r += 2;
@@ -151,8 +151,8 @@ export function countLength(str) {
   return r;
 }
 
-export function cutLength(str, length){
-  if(!str){
+export function cutLength(str, length) {
+  if (!str) {
     return "";
   }
 
@@ -161,14 +161,14 @@ export function cutLength(str, length){
     var c = str.charCodeAt(i);
     // Shift_JIS: 0x0 ～ 0x80, 0xa0 , 0xa1 ～ 0xdf , 0xfd ～ 0xff
     // Unicode : 0x0 ～ 0x80, 0xf8f0, 0xff61 ～ 0xff9f, 0xf8f1 ～ 0xf8f3
-    if ( (c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
+    if ((c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
       r += 1;
     } else {
       r += 2;
     }
 
-    if(r > length){
-      return str.substr(0,i);
+    if (r > length) {
+      return str.substr(0, i);
     }
   }
 
