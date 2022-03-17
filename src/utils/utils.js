@@ -30,9 +30,34 @@ export function dfv(num, defaultValue) {
   return num ? num : defaultValue
 }
 
-export function amountFormt(num, bit = 4, showPositive = false, zeroDefault = null, shiftNum = 0) {
+export function amountFormtNumberDefault(num, bit = 4, showPositive = false, zeroDefault = 0, shiftNum = 0) {
 
-  if (!num && zeroDefault !== '') {
+  if (!num) {
+    return zeroDefault
+  }
+
+  if (/^-?\d+\.?\d*$/.test(`${num}`)) {
+    let val = parseFloat(num)
+
+    if (val === 0 && zeroDefault !== null) {
+      return zeroDefault
+    }
+
+    val *= Math.pow(10, shiftNum)
+
+    if (showPositive && val > 0) {
+      return "+" + (bit >= 0 ? numConvert(val, 0, bit) : Number(val).toString());
+    }
+
+    return bit >= 0 ? numConvert(val, 0, bit) : Number(val).toString();
+  }
+
+  return num
+}
+
+export function amountFormt(num, bit = 4, showPositive = false, zeroDefault = '--', shiftNum = 0) {
+
+  if (!num) {
     return zeroDefault
   }
 

@@ -8,7 +8,7 @@ import {fromContractUnit, numConvert, OpenType, SideEnum, toContractUnit, UnitTy
 import {useDispatch, useSelector} from "react-redux";
 import contractModel, {TokenPair, OpenUpperBound} from "@/store/modules/contract";
 import {ContractModel, RootStore} from "@/store";
-import {amountFormt, checkNumber, fck} from "@/utils/utils";
+import {amountFormtNumberDefault, checkNumber, fck} from "@/utils/utils";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import {TransferOperateType} from "@/utils/types";
@@ -176,7 +176,7 @@ function Operation() {
     const maxSize = getMaxSize(traderOpenUpperBound, unit);
     let newSize = 0;
     if(maxSize > 0){
-      newSize =  amountFormt(sliderValue / 100.0 * maxSize, 4, false, 0, 0);
+      newSize =  amountFormtNumberDefault(sliderValue / 100.0 * maxSize, 4, false, 0, 0);
     }
 
     return newSize

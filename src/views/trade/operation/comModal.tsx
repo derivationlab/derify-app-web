@@ -19,7 +19,7 @@ import {OpenConfirmData} from "@/views/trade/operation/index";
 import {useDispatch, useSelector} from "react-redux";
 import {AppModel, RootStore} from "@/store";
 import contractModel, {OpenUpperBound, TokenPair} from "@/store/modules/contract";
-import {amountFormt, fck} from "@/utils/utils";
+import {amountFormtNumberDefault, fck} from "@/utils/utils";
 import {getUSDTokenName} from "@/config";
 
 const typeColor:{[key:number]:string} ={
@@ -151,13 +151,13 @@ const ComModal: React.FC<ComModalProps> = props => {
       {
         key: "Trade.OpenPosition.OpenPopup.PCF",
         classNames:[-pcf >0  ? "main-green" : "main-red"],
-        val: amountFormt(-pcf,4, true, 0),
+        val: amountFormtNumberDefault(-pcf,4, true, 0),
         suffix: `${getUSDTokenName()}`,
       },
       {
         key: "Trade.OpenPosition.OpenPopup.TradFee",
         classNames:[],
-        val: amountFormt(-tradeFee,4, true, 0),
+        val: amountFormtNumberDefault(-tradeFee,4, true, 0),
         suffix: `${getUSDTokenName()}`,
       },
     ];
