@@ -34,12 +34,11 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
 
 function Tool() {
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
   const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
-  const [account, setAccount] = useState<Partial<string>>();
-  const [blance, setBlance] = useState<Partial<string>>();
+  const [account] = useState<Partial<string>>();
+  const [blance] = useState<Partial<string>>();
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
 
   const {selectedAddress, isLogin, isEthum, showWallet, chainEnum, isMetaMask} = useSelector((state : RootStore) => state.user)
@@ -50,7 +49,7 @@ function Tool() {
 
   const handelChangeIntl = useCallback((val: string) => {
     dispatch(changeLang(val));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkWallet = useCallback((newWallet ) => {
 
@@ -68,7 +67,7 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[wallet,isMetaMask])
+  },[wallet,isMetaMask]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkNetwork = useCallback(async (newNetWork) => {
 
@@ -92,7 +91,7 @@ function Tool() {
     setErrorMsg(undefined)
 
     return true
-  },[network,chainEnum,isEthum]);
+  },[network,chainEnum,isEthum]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
@@ -105,11 +104,11 @@ function Tool() {
         dispatch(userModel.actions.loginSuccess());
       }).catch(e => console.error('loginWalletAction failed', e));
     }
-  }, [wallet, network, checkNetwork, checkWallet]);
+  }, [wallet, network, checkNetwork, checkWallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     dispatch(userModel.actions.loadWallet());
-  }, [selectedAddress]);
+  }, [selectedAddress]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
 
@@ -141,14 +140,14 @@ function Tool() {
         dispatch(userModel.actions.loadWallet())
       }
     }, 3000);
-  }, [isLogin]);
+  }, [isLogin]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
     if(!item || item.disabled) {
       return;
     }
     setNetwork(item);
-  }, [checkLogin, wallet]);
+  }, [checkLogin, wallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const switchNetwork = async (item:ChainEnum) => {
     try {
@@ -160,7 +159,6 @@ function Tool() {
       return true;
     } catch (error) {
       console.error(error);
-
 
       if (error.code === 4902 || error.code === -32603) {
         try {
@@ -206,7 +204,7 @@ function Tool() {
 
   const onChangeWallet = useCallback((val) => {
     setWallet(val);
-  }, [checkLogin]);
+  }, [checkLogin]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const {formatMessage} = useIntl()
 
