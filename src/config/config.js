@@ -14,8 +14,8 @@ const data = {
       "production": "https://api.derify.exchange/eth"
     },
     "kdata": {
-      "development": "https://test-api.derify.exchange",
-      "debug": "https://test-api.derify.exchange",
+      "development": "https://dev-api.derify.exchange",
+      "debug": "https://dev-api.derify.exchange",
       "production": "https://api.derify.exchange"
     },
     "webroot": {
@@ -142,13 +142,13 @@ const data = {
   },
   "bsc": {
     "server": {
-      "development": "https://test-api.derify.exchange/bsc",
-      "debug": "https://test-api.derify.exchange/bsc",
+      "development": "https://dev-api.derify.exchange/bsc",
+      "debug": "https://dev-api.derify.exchange/bsc",
       "production": "https://api.derify.exchange/bsc"
     },
     "kdata": {
-      "development": "https://test-api.derify.exchange",
-      "debug": "https://test-api.derify.exchange",
+      "development": "https://dev-api.derify.exchange",
+      "debug": "https://dev-api.derify.exchange",
       "production": "https://api.derify.exchange"
     },
     "webroot": {
