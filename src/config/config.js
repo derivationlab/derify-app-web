@@ -142,8 +142,8 @@ const data = {
   },
   "bsc": {
     "server": {
-      "development": "https://dev-api.derify.exchange/bsc",
-      "debug": "https://dev-api.derify.exchange/bsc",
+      "development": "https://dev-bsctestnet-api.derify.exchange",
+      "debug": "https://dev-bsctestnet-api.derify.exchange",
       "production": "https://api.derify.exchange/bsc"
     },
     "kdata": {
