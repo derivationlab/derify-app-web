@@ -6,6 +6,7 @@ export interface BorderButton {
   className?: string;
   click: () => void;
   icon?: any;
+  fill?: boolean;
 }
 
 export default function BorderButton({
@@ -13,6 +14,7 @@ export default function BorderButton({
   className,
   click,
   text,
+  fill,
 }: BorderButton) {
   return (
     <div className={`border-btn-wrapper ${className || ""}`} onClick={click}>
@@ -20,6 +22,7 @@ export default function BorderButton({
         className="border-btn"
         style={{
           textAlign: icon ? "inherit" : "center",
+          background: fill ? 'inherit' : '#fff'
         }}
       >
         {icon && (
@@ -27,7 +30,7 @@ export default function BorderButton({
             <img src={icon} />
           </div>
         )}
-        <span>{text}</span>
+        {fill ? <div className="text">{text}</div> : <span>{text}</span>}
       </div>
     </div>
   );

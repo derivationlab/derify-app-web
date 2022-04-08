@@ -17,7 +17,7 @@
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      border-radius: 8px;
+      border-radius: 100%;
       margin-left:10px;
       margin-right:10px;
       width: 14px;
@@ -28,11 +28,15 @@
         height: 10px;
       }
     }
-    span {
+    > span {
       background-image: linear-gradient(90deg, #ec6989, #e7446b);
       background-clip: text;
       -webkit-background-clip: text;
       color: transparent;
+    }
+    .text {
+      color: #fff;
+      display: inline-block;
     }
   }
 }

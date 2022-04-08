@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Button, Col, Image, Modal, Popover, Row, Select, Space} from "antd";
+import {Button, Col, Modal, Popover, Row, Select} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 
@@ -11,6 +11,9 @@ import WalletInstall from './WalletInstall';
 
 import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";
+import ETH1 from "@/assets/images/eth1.png";
+import Polygon from "@/assets/images/polygon.png";
+import Avalanche from "@/assets/images/avalanche.png";
 import MenuOther from '@/assets/images/menu-others.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
@@ -37,6 +40,8 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
 
 function Tool() {
 
+  const [line, setLine] = useState<string>('BSC');
+  const [showLineList, setShowLineList] = useState<boolean>(true);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
   const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
@@ -234,15 +239,13 @@ function Tool() {
             </Button>
           </Popover>
         ) : (
-          <Button
-            type="primary"
-            onClick={() => {
+
+          <BorderButton fill={true} 
+            className='con-btn'
+            text={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
+            click={() => {
               dispatch(userModel.actions.showWallet());
-            }}
-            shape="round"
-          >
-            <FormattedMessage id="Trade.navbar.ConnectWallet" />
-          </Button>
+            }} />
         )}
       </Col>
 
@@ -254,10 +257,43 @@ function Tool() {
 
       <Col className="change-line">
         <BorderButton 
-        className='change-line-btn'
-        icon={BSC} text='BSC' click={() => {
-          console.log(111)
-        }}/>
+          className='change-line-btn'
+          icon={BSC} text={line} click={() => {
+            setShowLineList(true);
+          }}/>
+         {showLineList && (
+          <div className="change-line-list">
+            <div className="title">Select a network</div>
+            <BorderButton 
+              className={`select-btn ${line === 'BSC' ? '' : 'select-normal'}`}
+              fill={true}
+              icon={BSC} text='BNB Chain' click={() => {
+                setLine('BSC')
+                setShowLineList(false)
+              }}/>
+            <BorderButton 
+              className={`select-btn select-btn-polygon ${line === 'POL' ? '' : 'select-normal'}`}
+              fill={true}
+              icon={Polygon} text='Polygon' click={() => {
+                 setLine('POL')
+                 setShowLineList(false)
+              }}/>
+            <BorderButton 
+              className={`select-btn select-btn-avalanche ${line === 'AVA' ? '' : 'select-normal'}`}
+              fill={true}
+              icon={Avalanche} text='Avalanche' click={() => {
+                setLine('AVA')
+                setShowLineList(false)
+              }}/>
+             <BorderButton 
+              className={`select-btn select-btn-eth ${line === 'ETH' ? '' : 'select-normal'}`}
+              fill={true}
+              icon={ETH1} text='Etherum' click={() => {
+                setLine('ETH')
+                setShowLineList(false)
+              }}/>
+          </div>
+        )}
       </Col>
       
    

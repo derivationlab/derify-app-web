@@ -13,13 +13,22 @@
       width: 100%;
     }
   }
-
+  .menus {
+    flex: 1;
+    height: 32px;
+    > .menu {
+      height: 32px;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+  }
   .menu {
     &-item {
-      padding-right: 20px;
-      font-weight: 700;
+      padding-right: 48px;
       cursor: pointer;
       color: #222;
+      font-size: 20px;
       &.active {
         color: #222;
       }
@@ -35,13 +44,20 @@
     .connect-btn {
       width: 140px;
       margin-right: 16px;
-      button{
+      button {
         width: 100%;
-        background: linear-gradient(90deg, #EC6989 0%, #E7446B 100%);
+        background: linear-gradient(90deg, #ec6989 0%, #e7446b 100%);
         border-radius: 16px;
         color: #fff;
         font-size: 16px;
       }
+      connect-btn1 {
+        width: 140px;
+      }
+    }
+
+    .con-btn {
+      width: 140px;
     }
 
     .add-token {
@@ -50,6 +66,81 @@
 
     .change-line {
       margin-right: 16px;
+      position: relative;
+    }
+
+    .change-line-list {
+      width: 240px;
+      height: 308px;
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: #ffffff;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+      .title {
+        color: #222;
+        font-size: 18px;
+        height: 32px;
+        line-height: 32px;
+        margin-bottom: 24px;
+      }
+      .select-btn {
+        width: 192px;
+        height: 48px;
+        border-radius: 24px;
+        > div {
+          border-radius: 22px;
+          font-size: 18px;
+          line-height: 44px;
+          text-align: left !important;
+          .icon {
+            width: 22px;
+            border: 2px solid #fff;
+            height: 22px;
+            border-radius: 100%;
+            border-radius: 100%;
+            margin-right: 12px;
+            margin-left: 12px;
+          }
+        }
+      }
+      .border-btn-wrapper {
+        margin-bottom: 4px;
+      }
+
+      .select-normal {
+        background: #fff;
+        .text {
+          color: #222;
+        }
+        &:hover {
+          background: #F6F6F6;
+        }
+
+      }
+
+      .select-btn-polygon {
+        .icon {
+          background-color: #7950dd;
+        }
+      }
+      .select-btn-avalanche {
+        .icon {
+          background-color: #e84142;
+        }
+      }
+      .select-btn-eth {
+        .icon {
+          background-color: #627EEA;
+          img {
+            width: 8px;
+            height: 12px;
+          }
+        }
+      }
     }
 
     .change-line-btn {
