@@ -1,11 +1,17 @@
 .nav {
   height: 80px;
-  background: @main-block;
+  background: @new-theme-color;
   font-size: 16px;
-  padding: 0 120px;
+  padding: 0;
 
   .logo {
-    padding-right: 100px;
+    width: 291px;
+    height: 40px;
+    padding-left: 24px;
+    padding-right: 24px;
+    img {
+      width: 100%;
+    }
   }
 
   .menu {
@@ -13,20 +19,53 @@
       padding-right: 20px;
       font-weight: 700;
       cursor: pointer;
-
+      color: #222;
       &.active {
-        color: @main-yellow;
-
+        color: #222;
       }
     }
-    a{
+    a {
       color: inherit;
     }
   }
 
   .tool {
-    margin: 0 12px;
-    .ant-select-selector{
+    padding: 0 24px;
+
+    .connect-btn {
+      width: 140px;
+      margin-right: 16px;
+      button{
+        width: 100%;
+        background: linear-gradient(90deg, #EC6989 0%, #E7446B 100%);
+        border-radius: 16px;
+        color: #fff;
+        font-size: 16px;
+      }
+    }
+
+    .add-token {
+      margin-right: 15px;
+    }
+
+    .change-line {
+      margin-right: 16px;
+    }
+
+    .change-line-btn {
+      width: 78px;
+    }
+
+    .menu-other {
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+      img {
+        width: 100%;
+      }
+    }
+
+    .ant-select-selector {
       border: none;
       border-radius: 0;
       border-bottom: 1px solid @main-border-color;
@@ -41,7 +80,6 @@
       border-radius: 50%;
       line-height: 40px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      ;
     }
 
     .account-wrapper {
@@ -55,21 +93,19 @@
         white-space: nowrap;
       }
 
-      .ant-image{
+      .ant-image {
         position: relative;
         left: -5px;
         width: 20px;
       }
-      .balance{
+      .balance {
         color: @primary-color;
       }
-
-
     }
 
     .network-list,
     .wallet-list {
-      >.ant-col {
+      > .ant-col {
         position: relative;
         padding-top: 10px;
         border: 1px solid rgba(255, 255, 255, 0.15);
@@ -90,7 +126,7 @@
           display: none;
         }
 
-        &.disabled{
+        &.disabled {
           opacity: 0.6;
         }
 
@@ -103,7 +139,6 @@
           }
         }
       }
-
     }
   }
 }

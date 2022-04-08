@@ -1,26 +1,28 @@
-import React from 'react';
-import { Row, Col } from 'antd';
-import Menu from './menu';
-import Tool from './tool';
-import './index.less'
-import Icon from '@/assets/images/logo.png';
+import React from "react";
+import { Row, Col } from "antd";
+import Menu from "./menu";
+import Tool from "./tool";
+import Icon from "@/assets/images/logo.png";
+import "./index.less";
 
-const NavBar: React.FC<any> = props => {
+const NavBar: React.FC<any> = () => {
   return (
-    <Row align={'middle'} justify="space-between" className="nav">
+    <Row align={"middle"} justify="space-between" className="nav">
       <Col>
         <Row>
-          <a href="https://derify.finance/" target="_blank"><img height={48}  className="logo" src={Icon} alt="" /></a>
-          <Menu />
+          <a href="https://derify.finance/" target="_blank" className="logo">
+            <img src={Icon} alt="logo" />
+          </a>
         </Row>
       </Col>
-      <Col >
+      <Col className="menus">
+        <Menu />
+      </Col>
+      <Col>
         <Tool />
       </Col>
     </Row>
+  );
+};
 
-  )
-}
-
-
-export default NavBar
+export default NavBar;

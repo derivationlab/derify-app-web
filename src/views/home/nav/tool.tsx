@@ -10,6 +10,8 @@ import Account from "./Account";
 import WalletInstall from './WalletInstall';
 
 import Eth from "@/assets/images/Eth.png";
+import BSC from "@/assets/images/bnb1.png";
+import MenuOther from '@/assets/images/menu-others.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
 import Solana from "@/assets/images/Solana.png";
@@ -22,6 +24,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 import Transfer from "@/views/CommonViews/Transfer";
 import FundsDetails from "@/views/home/nav/Account/FundsDetail";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
+import BorderButton from "@/components/buttons/borderButton";
 
 const { Option } = Select;
 
@@ -216,13 +219,7 @@ function Tool() {
 
   return (
     <Row align={"middle"} className="tool">
-      <Col style={{ marginRight: "10px" }}>
-        <Button type="primary"
-                danger
-                shape="round"
-                block><a href={"https://docs.derify.finance/tutorial/connect-wallet"} target={"_blank"} rel="noreferrer"><FormattedMessage id="Trade.navbar.Guide" /></a> </Button>
-      </Col>
-      <Col style={{ marginRight: "10px" }}>
+      <Col className="connect-btn">
         {isLogin ? (
           <Popover
             content={<Account {...{ account: account, blance: blance }} />}
@@ -231,7 +228,6 @@ function Tool() {
             <Button
               className="account-wrapper"
               shape="round"
-              icon={<Image preview={false} src={chainEnum?.logo}/>}
               type="primary"
             >
               <TextOverflowView text={selectedAddress||''} showPos={ShowPosEnum.mid} len={10}/>
@@ -244,34 +240,31 @@ function Tool() {
               dispatch(userModel.actions.showWallet());
             }}
             shape="round"
-            icon={
-              <IconFont
-                size={14}
-                type="icon-link"
-                style={{ marginRight: "10px" }}
-              />
-            }
           >
             <FormattedMessage id="Trade.navbar.ConnectWallet" />
           </Button>
         )}
       </Col>
 
-      <Col>
-        <Select value={locale} onChange={handelChangeIntl}>
-          <Option value="en">
-            <Space>
-              <img src={EnIcon} alt="" /><span>English</span>
-            </Space>
-          </Option>
-          <Option value="zh-CN">
-            <Space>
-              <img src={ZhIcon} alt="" />
-              <span>简体中文</span>
-            </Space>
-          </Option>
-        </Select>
+      <Col className="add-token">
+        <BorderButton text='Add Token' click={() => {
+          console.log(111)
+        }}/>
       </Col>
+
+      <Col className="change-line">
+        <BorderButton 
+        className='change-line-btn'
+        icon={BSC} text='BSC' click={() => {
+          console.log(111)
+        }}/>
+      </Col>
+      
+   
+      <Col className="menu-other">
+        <img src={MenuOther} />
+      </Col>
+
       <Modal
         title={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
         footer={null}
