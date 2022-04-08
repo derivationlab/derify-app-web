@@ -6,14 +6,14 @@ import bDRF from '../utils/contract/bDRF'
 import DRF from '../utils/contract/DRF'
 import eDRF from '../utils/contract/eDRF'
 
-export default {
+const data = {
   "rinkeby": {
     "server": {
-      "development": "https://test-api.derify.exchange/eth",
-      "debug": "https://test-api.derify.exchange/eth",
+      "development": "https://dev-api.derify.exchange/eth",
+      "debug": "https://dev-api.derify.exchange/eth",
       "production": "https://api.derify.exchange/eth"
     },
-    "kdata":{
+    "kdata": {
       "development": "https://test-api.derify.exchange",
       "debug": "https://test-api.derify.exchange",
       "production": "https://api.derify.exchange"
@@ -23,7 +23,7 @@ export default {
       "debug": "https://test-web.derify.exchange",
       "production": "https://derify.exchange"
     },
-    "showVar":{
+    "showVar": {
       "usdTokenName": "USDT"
     },
     "contract": {
@@ -146,7 +146,7 @@ export default {
       "debug": "https://test-api.derify.exchange/bsc",
       "production": "https://api.derify.exchange/bsc"
     },
-    "kdata":{
+    "kdata": {
       "development": "https://test-api.derify.exchange",
       "debug": "https://test-api.derify.exchange",
       "production": "https://api.derify.exchange"
@@ -156,7 +156,7 @@ export default {
       "debug": "https://test-web.derify.exchange",
       "production": "https://derify.exchange"
     },
-    "showVar":{
+    "showVar": {
       "usdTokenName": "BUSD"
     },
     "contract": {
@@ -274,3 +274,5 @@ export default {
     }
   }
 }
+
+export default data
