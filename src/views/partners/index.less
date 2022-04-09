@@ -1,26 +1,21 @@
-.main>.partners {
+.main > .partners {
   &-page {
-    min-height: calc(100vh - 138px);
-
+    background: #f7f7f7;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .title {
       font-size: 18px;
-      font-weight: 700;
-      color: @main-white
+      color: @main-white;
     }
-
-
-
-
     .large {
       font-size: 48px;
     }
-
-
     .opended {
       &-container {
         .info {
           &-container {
-
             padding: 20px 0px;
             background: #140b32;
 
@@ -30,7 +25,6 @@
               font-weight: 700;
             }
           }
-
         }
 
         .account {
@@ -42,7 +36,6 @@
                 font-size: 48px;
                 font-weight: 700;
               }
-
             }
 
             .ant-btn {
@@ -51,34 +44,29 @@
               border-radius: 24px;
             }
 
-            >.ant-col {
-              >.ant-row {
+            > .ant-col {
+              > .ant-row {
                 flex-direction: column;
                 align-items: center;
               }
 
               &:last-child {
-                >.ant-row {
+                > .ant-row {
                   border-left: 1px solid @main-border-color;
-
                 }
-
-
               }
             }
 
             .explain {
               padding: 0 10px;
-
-              >div {
+              > div {
                 text-indent: 22px;
               }
             }
 
             .income-wrapper {
-              >.ant-col {
+              > .ant-col {
                 padding: 0 60px;
-
                 &:last-child {
                   border-left: 1px solid @main-border-color;
                 }
@@ -86,11 +74,8 @@
             }
           }
         }
-
-
       }
     }
-
 
     .not-opened {
       &-container {
@@ -102,7 +87,7 @@
           margin-right: 4px;
         }
 
-        >.ant-col:first-child {
+        > .ant-col:first-child {
           width: 300px;
           height: 200px;
           margin-top: 60px;
@@ -113,7 +98,7 @@
           display: inline-flex;
           align-items: flex-end;
           justify-content: center;
-          background: url('~@/assets/images/Frame.png') no-repeat center center;
+          background: url("~@/assets/images/Frame.png") no-repeat center center;
         }
 
         .column-flex {
@@ -123,27 +108,28 @@
           text-align: center;
         }
       }
-
     }
-
 
     .bind {
       &-partners-container {
         .title {
-          font-size: 18px;
-          font-weight: 700;
-          color: @main-white
+          font-size: 40px;
+          color: #222;
+          width: 100%;
+          text-align: center;
+        }
+        .sub-title {
+          font-size: 26px;
+          width: 100%;
+          text-align: center;
         }
 
         .ant-tabs {
-          min-height: 100px;
-
+          margin-bottom: 36px;
           .ant-tabs-nav {
             margin-bottom: 0;
-
             .ant-tabs-nav-wrap {
               display: none;
-
             }
           }
 
@@ -168,13 +154,11 @@
                 top: 2px;
                 right: 1px;
                 display: none;
-
               }
             }
           }
         }
       }
     }
-
   }
 }

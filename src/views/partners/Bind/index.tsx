@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {Row, Col, Button, Space, Input, Tabs, message, Spin} from "antd";
+import {Row, Col, Button, Input, Tabs, Spin} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { bindPartners } from "@/store/modules/app";
 import PartnersList, { Partners } from "./PartnersList";
@@ -10,6 +10,8 @@ import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
 import {Dispatch} from "redux";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import BorderButton from "@/components/buttons/borderButton";
+import "./index.less";
 
 interface BindProps extends RouteProps {}
 const { TabPane } = Tabs;
@@ -89,20 +91,22 @@ const Bind: React.FC<BindProps> = props => {
   const {isLogin} = useSelector((state:RootStore) => state.user);
   return (
     <Row className="bind-partners-container main-block">
-      <Col className="title margin-b-l">{intl('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')}</Col>
+      <div className="h1">
+        You need a broker first, Please input your broker code.
+      </div>
+      <div className="h3">
+       You can get code from your broker.
+      </div>
       <Col flex="100%" className="main-wrapper">
         {!isLogin ? <></> : <Tabs activeKey={tabsIndex} className="margin-b-l">
           <TabPane tab="" key="1">
             <Row align="middle">
-              <Space size={24}>
-                <Col className="main-white">{intl('Trade.BrokerBind.BrokerCodes.BrokerCode')}</Col>
-                <Col>
-                  <Input placeholder="" onChange={(e) => {
+               <Col>
+                  <Input type='password' className="broker-input" onChange={(e) => {
                     const {value} = e.target
                     setBrokerId(value)
-                  }} size="large"/>
+                  }}  />
                 </Col>
-              </Space>
             </Row>
           </TabPane>
           <TabPane tab="" key="2">
@@ -112,27 +116,23 @@ const Bind: React.FC<BindProps> = props => {
           </TabPane>
         </Tabs>
         }
-        <Row>
-          <Col flex="100%">
-            <Row>
-              <WalletConnectButtonWrapper type="primary">
-                <Space size={24}>
-                  <Col>
-                    <Spin spinning={loading}>
-                      <Button type="primary" onClick={() => doBindBroker(brokerId)}>
-                        {intl("Trade.BrokerBind.BrokerCodes.Submit")}
-                      </Button>
-                    </Spin>
-                  </Col>
-                  <Col>
-                    <Button type="link" onClick={tabsChange}>
-                      {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
-                    </Button>
-                  </Col>
-                </Space>
-              </WalletConnectButtonWrapper>
-            </Row>
-          </Col>
+        <Row className="broker-btns">
+          <WalletConnectButtonWrapper type="primary">
+              <Col>
+                <Spin spinning={loading}>
+                  <Button type="primary" className="broker-submit" onClick={() => doBindBroker(brokerId)}>
+                    {intl("Trade.BrokerBind.BrokerCodes.Submit")}
+                  </Button>
+                </Spin>
+              </Col>
+              <Col>
+                <BorderButton  
+                  click={tabsChange} 
+                  className="broker-toggle"
+                  text=  {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
+                />
+              </Col>
+          </WalletConnectButtonWrapper>
         </Row>
       </Col>
       <Col flex="100%"></Col>
