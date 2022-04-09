@@ -1,14 +1,11 @@
-import React, {useEffect} from 'react';
-import { Row, Col } from 'antd'
-
-import './index.less'
-
+import React from 'react';
+import { Row, Col } from 'antd';
 import Operation from './operation';
 import DataPanel from './dataPanel';
 import Statistics from './statistics';
-import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
-function Trade() {
+import './index.less'
 
+function Trade() {
   return (
     <div className="trade-page">
       <Row gutter={24}  wrap={false}>

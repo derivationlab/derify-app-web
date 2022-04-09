@@ -1,33 +1,25 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Row, Col, Button, Space, Input, Tabs, message, Spin, Statistic} from "antd";
+import {Row, Col, Button, Input, Spin, Statistic} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { RouteProps } from "@/router/types";
 import {useIntl} from "react-intl";
 import {RootStore} from "@/store";
-import {Dispatch} from "redux";
 import Link from "antd/lib/typography/Link";
 import {isUSDTClaimed, sendUSDT} from "@/api/trade";
 import {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
-import ErrorMessage, {DerifyErrorNotice} from "@/components/ErrorMessage";
 import "./index.less"
 import {Token} from "@/utils/contractUtil";
 import {ChainEnum} from "@/store/modules/user";
-import Recaptcha from 'react-recaptcha'
 
 interface FaucetProps extends RouteProps {}
 
-const code =
-  "<div class='g-recaptcha' data-callback='recaptchaCallBack' data-sitekey='6Lev3DIeAAAAAD5fDP3f12cMzgmPfu9qZaOMdQYd'></div>";
-
 const Faucet: React.FC<FaucetProps> = props => {
-  const { history } = props;
   const {trader,chainEnum} = useSelector((state:RootStore) => state.user);
   const [traderInputVal,setTraderInputValue] = useState("");
   const [usdtClaimed,setUsdtClaimed] = useState(false);
 
   const [showRecaptcha, setShowRecaptcha] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState("")
-  const [valid, setValid] = useState(false);
 
   const [loading,setLoading] = useState(false);
   const defaultUSDTAmount = 100000;
