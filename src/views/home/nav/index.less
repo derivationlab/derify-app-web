@@ -60,8 +60,47 @@
       width: 140px;
     }
 
+    .modal {
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background: #ffffff;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+      border-radius: 24px;
+      padding: 24px;
+      text-align: center;
+      width: 240px;
+    }
+
     .add-token {
       margin-right: 15px;
+      position: relative;
+    }
+    .add-token-list {
+      .modal();
+      height: 378px;
+      width: 364px;
+      color: #222;
+      .token {
+        width: 100%;
+        height: 48px;
+        line-height: 48px;
+        text-align: left;
+        padding-left: 24px;
+        border-radius: 24px;
+        margin-bottom: 4px;
+        &:hover {
+          background-color: #f6f6f6;
+          color: #E7446B;
+        }
+      }
+      .hr {
+        background-color: #e7e7e7;
+        height: 2px;
+        margin: 12px 24px;
+        width: auto;
+      }
+
     }
 
     .change-line {
@@ -85,18 +124,6 @@
           width: 6px;
         }
       }
-    }
-
-    .modal {
-      position: absolute;
-      right: 0;
-      top: 40px;
-      background: #ffffff;
-      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
-      border-radius: 24px;
-      padding: 24px;
-      text-align: center;
-      width: 240px;
     }
 
     .change-line-list {
@@ -200,6 +227,7 @@
           background-color: #F6F6F6;
         }
       }
+
       .lang-list {
         .modal();
         height: 148px;

@@ -48,12 +48,14 @@ const theme: any = 'light';
 function Tool() {
 
   const dispatch = useDispatch();
+  const [showAddTokenList, setShowAddTokenList] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showLangs, setShowLangs] = useState<boolean>(false);
   const [showTheme, setShowTheme] = useState<boolean>(false);
   const [line, setLine] = useState<string>('BSC');
   const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
+  console.log(locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
   const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
   const [account] = useState<Partial<string>>();
@@ -254,15 +256,28 @@ function Tool() {
 
       <Col className="add-token">
         <BorderButton text='Add Token' click={() => {
-          console.log(111)
+          setShowAddTokenList(!showAddTokenList);
         }}/>
+        {
+          showAddTokenList && (
+            <div className="add-token-list">
+              <div className="token">Add DRF Token to wallet</div>
+              <div className="token">Add eDRF Token to wallet</div>
+              <div className="token">Add bDRF Token to wallet</div>
+              <div className="hr" />
+              <div className="token">Buy DRF Token at pancakeswap</div>
+              <div className="token">Buy eDRF Token at pancakeswap</div>
+              <div className="token">Buy bDRF Token at pancakeswap</div>
+            </div>
+          )
+        }
       </Col>
 
       <Col className="change-line">
         <BorderButton 
           className={`change-line-btn change-line-btn-${line.toLocaleLowerCase()}`}
           icon={icons[line]} text={line} click={() => {
-            setShowLineList(true);
+            setShowLineList(!showLineList);
           }}/>
          {
          // this is the toggle chain list
@@ -300,7 +315,7 @@ function Tool() {
                 setShowSettings(false);
               }}>
                 <span>Language</span>
-                <span>English &gt;</span>
+                <span>{locale === 'en' ? 'English' : '简体中文'} &gt;</span>
               </div>
               <div className="item" onClick={() => {
                 setShowTheme(true);
@@ -325,15 +340,19 @@ function Tool() {
         {
           showLangs && (
             <div className="lang-list">
-               <div className={lang === 'en' ? 'lang-active':'lang'} onClick={() => {
+               <div className={locale === 'en' ? 'lang-active':'lang'} onClick={() => {
+                 handelChangeIntl('en');
                  setShowLangs(false)
                }}>
                  English
                </div>
-               <div className={lang === 'zh' ? 'lang-active':'lang'} onClick={
-                 () => setShowLangs(false)
+               <div className={locale === 'zh-CN' ? 'lang-active':'lang'} onClick={
+                 () => {
+                  handelChangeIntl('zh-CN');
+                  setShowLangs(false);
+                 }
                }>
-                 简历中文
+                 简体中文
                </div>
             </div>
           )
