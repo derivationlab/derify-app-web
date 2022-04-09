@@ -26,8 +26,12 @@ export function contract(account, broker = '') {
                 })();
               }
               return ret;
-            } catch (e) {
-              console.error('exception.contract.' + propKey + ',args=' + JSON.stringify(args) + ',trader=' + contractObj.from + ",error=", e);
+            } catch (error) {
+              console.error({
+                propKey,
+                args,
+                error,
+              });
               return {};
             }
           }

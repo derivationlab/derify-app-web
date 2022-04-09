@@ -1,5 +1,6 @@
 import update from "react-addons-update";
 import { createReducer } from "redux-create-reducer";
+import LogRocket from "logrocket";
 
 import * as web3Utils from "@/utils/web3Utils";
 import { Token } from "@/utils/contractUtil";
@@ -350,7 +351,9 @@ const actions = {
       const walletInfo = await getWallet();
       walletInfo.showWallet = undefined;
       updateTraderAccess(walletInfo.selectedAddress);
-
+      if (walletInfo.selectedAddress) {
+        LogRocket.identify(walletInfo.selectedAddress);
+      }
       commit({
         type: "user/updateState",
         payload: mergeNonNull({}, walletInfo),

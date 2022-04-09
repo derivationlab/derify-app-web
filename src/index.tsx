@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 
 import { message } from "antd";
@@ -9,7 +8,7 @@ import reportWebVitals from "./reportWebVitals";
 
 import LogRocket from 'logrocket';
 
-const release = process.env.VERCEL_GIT_COMMIT_SHA || 'local'
+const release = process.env.REACT_APP_VERCEL_GIT_COMMIT_SHA || 'local'
 LogRocket.init('5vthie/derifyexchange', {
   release
 });
