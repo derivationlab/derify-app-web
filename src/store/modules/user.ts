@@ -351,8 +351,9 @@ const actions = {
       const walletInfo = await getWallet();
       walletInfo.showWallet = undefined;
       updateTraderAccess(walletInfo.selectedAddress);
-      console.log("====> walletInfo :", walletInfo);
-      LogRocket.identify(walletInfo.selectedAddress, walletInfo);
+      if (walletInfo.selectedAddress) {
+        LogRocket.identify(walletInfo.selectedAddress);
+      }
       commit({
         type: "user/updateState",
         payload: mergeNonNull({}, walletInfo),
