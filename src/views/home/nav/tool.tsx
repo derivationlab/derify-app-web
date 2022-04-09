@@ -7,6 +7,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
 import WalletInstall from './WalletInstall';
+import WalletModal from '../walletModal'
 
 import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";
@@ -48,6 +49,7 @@ const theme: any = 'light';
 function Tool() {
 
   const dispatch = useDispatch();
+  const [showWalletModal, setShowWalletModal] = useState<boolean>(false);
   const [showAddTokenList, setShowAddTokenList] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showLangs, setShowLangs] = useState<boolean>(false);
@@ -55,7 +57,6 @@ function Tool() {
   const [line, setLine] = useState<string>('BSC');
   const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
-  console.log(locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
   const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
   const [account] = useState<Partial<string>>();
@@ -64,10 +65,6 @@ function Tool() {
 
   const {selectedAddress, isLogin, isEthum, showWallet, chainEnum, isMetaMask} = useSelector((state : RootStore) => state.user)
   const {transferShow, operateType, fundsDetailShow} = useSelector((state : RootStore) => state.app);
-
-  const handelChangeIntl = useCallback((val: string) => {
-    dispatch(changeLang(val));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkWallet = useCallback((newWallet ) => {
     if(!newWallet){
@@ -249,10 +246,18 @@ function Tool() {
             className='con-btn'
             text={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
             click={() => {
-              dispatch(userModel.actions.showWallet());
+              setShowWalletModal(true);
+              // todo
+              // dispatch(userModel.actions.showWallet());
             }} />
         )}
       </Col>
+
+      {
+        showWalletModal &&  <WalletModal close={() => {
+          setShowWalletModal(false)
+        }}/>
+      }
 
       <Col className="add-token">
         <BorderButton text='Add Token' click={() => {
@@ -341,14 +346,14 @@ function Tool() {
           showLangs && (
             <div className="lang-list">
                <div className={locale === 'en' ? 'lang-active':'lang'} onClick={() => {
-                 handelChangeIntl('en');
+                 dispatch(changeLang('en'))
                  setShowLangs(false)
                }}>
                  English
                </div>
                <div className={locale === 'zh-CN' ? 'lang-active':'lang'} onClick={
                  () => {
-                  handelChangeIntl('zh-CN');
+                  dispatch(changeLang('zh-CN'));
                   setShowLangs(false);
                  }
                }>
