@@ -3,7 +3,6 @@
   background: @new-theme-color;
   font-size: 16px;
   padding: 0;
-
   .logo {
     width: 291px;
     height: 40px;
@@ -92,7 +91,7 @@
         margin-bottom: 4px;
         &:hover {
           background-color: #f6f6f6;
-          color: #E7446B;
+          color: #e7446b;
         }
       }
       .hr {
@@ -101,7 +100,6 @@
         margin: 12px 24px;
         width: auto;
       }
-
     }
 
     .change-line {
@@ -119,7 +117,7 @@
       }
       .change-line-btn-eth {
         .icon {
-          background-color: #627EEA;
+          background-color: #627eea;
         }
         img {
           width: 6px;
@@ -167,9 +165,8 @@
           color: #222;
         }
         &:hover {
-          background: #F6F6F6;
+          background: #f6f6f6;
         }
-
       }
 
       .select-btn-pol {
@@ -184,7 +181,7 @@
       }
       .select-btn-eth {
         .icon {
-          background-color: #627EEA;
+          background-color: #627eea;
           img {
             width: 8px;
             height: 12px;
@@ -225,14 +222,15 @@
         justify-content: space-between;
         cursor: pointer;
         &:hover {
-          background-color: #F6F6F6;
+          background-color: #f6f6f6;
         }
       }
 
       .lang-list {
         .modal();
         height: 148px;
-        .lang, .lang-active {
+        .lang,
+        .lang-active {
           width: 100%;
           height: 48px;
           margin-bottom: 4px;
@@ -245,11 +243,11 @@
         }
         .lang {
           &:hover {
-            background-color: #F6F6F6;
+            background-color: #f6f6f6;
           }
         }
         .lang-active {
-          background: #E7446B;
+          background: #e7446b;
           color: #fff;
         }
       }
@@ -330,5 +328,19 @@
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 1320px) {
+  .nav {
+    .logo {
+      width: 271px;
+      img {
+        width: 100%;
+      }
+    }
+  }
+  .menus .menu-item {
+    padding-right: 30px;
   }
 }

@@ -91,6 +91,8 @@ const Bind: React.FC<BindProps> = props => {
     setPartners(val);
   };
   const {isLogin} = useSelector((state:RootStore) => state.user);
+
+  const brokerInfo = {};
   return (
     <Row className="bind-partners-container main-block">
       <div className="h1">
@@ -99,7 +101,13 @@ const Bind: React.FC<BindProps> = props => {
       <div className="h3">
        You can get code from your broker.
       </div>
-      <BindConfirmModal />
+      {
+        showModal && <BindConfirmModal 
+        data={brokerInfo}
+        close={() => {
+          setShowModal(false)
+        }} />
+      }
       <Col flex="100%" className="main-wrapper">
         {!isLogin ? <></> : <Tabs activeKey={tabsIndex} className="margin-b-l">
           <TabPane tab="" key="1">
