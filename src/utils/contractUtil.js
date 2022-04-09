@@ -1175,7 +1175,7 @@ export default class Contract {
       token: token,
       side: side,
       spotPrice: position.spotPrice,
-      size: position.size,
+      size: position.size.toString(),
       leverage: Math.max(position.leverage, 1),
       averagePrice: position.averagePrice
     }

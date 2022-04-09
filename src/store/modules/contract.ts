@@ -382,7 +382,7 @@ const actions = {
         side,
         openType,
         quantityType,
-        size,
+        size: size.toString(),
         price,
         leverage,
       };
