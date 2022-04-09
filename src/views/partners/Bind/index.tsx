@@ -11,6 +11,7 @@ import {Dispatch} from "redux";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import BorderButton from "@/components/buttons/borderButton";
+import BindConfirmModal from '../bindConfirmModal'
 import "./index.less";
 
 interface BindProps extends RouteProps {}
@@ -24,6 +25,7 @@ const Bind: React.FC<BindProps> = props => {
   const [partners, setPartners] = useState<Partial<Partners>>();
   const [brokerId, setBrokerId] = useState<Partial<string>>();
   const[loading, setLoading] = useState(false);
+  const[showModal, setShowModal] = useState(false);
 
   const {formatMessage} = useIntl()
 
@@ -97,6 +99,7 @@ const Bind: React.FC<BindProps> = props => {
       <div className="h3">
        You can get code from your broker.
       </div>
+      <BindConfirmModal />
       <Col flex="100%" className="main-wrapper">
         {!isLogin ? <></> : <Tabs activeKey={tabsIndex} className="margin-b-l">
           <TabPane tab="" key="1">
@@ -135,7 +138,6 @@ const Bind: React.FC<BindProps> = props => {
           </WalletConnectButtonWrapper>
         </Row>
       </Col>
-      <Col flex="100%"></Col>
     </Row>
   );
 };
