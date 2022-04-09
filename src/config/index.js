@@ -42,7 +42,6 @@ export function getCurrentServerEndPoint(chain) {
   if (!chain) {
     chain = getCurChain();
   }
-  console.log(`====> MulChainConfig[chain].server[currentEnv] :`, MulChainConfig[chain].server[currentEnv])
   return MulChainConfig[chain].server[currentEnv]
 }
 
