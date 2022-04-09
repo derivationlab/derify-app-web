@@ -8,7 +8,12 @@ import App from './App';
 import reportWebVitals from "./reportWebVitals";
 
 import LogRocket from 'logrocket';
-LogRocket.init('5vthie/derifyexchange');
+
+const release = process.env.VERCEL_GIT_COMMIT_SHA || 'local'
+LogRocket.init('5vthie/derifyexchange', {
+  release
+});
+console.log('release', release);
 
 message.config({
   top: 80,

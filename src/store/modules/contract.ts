@@ -675,7 +675,6 @@ const actions = {
         priceChangeListener.length > 0 &&
         lastPriceChangeTime - currentTimestamp > 1000
       ) {
-        console.log("price change listener");
         lastPriceChangeTime = currentTimestamp;
         priceChangeListener.forEach(listener =>
           listener.callback(listener.commit)

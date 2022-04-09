@@ -722,7 +722,6 @@ export default class Contract {
     let diffAfter = Math.abs(longTotalSizeBefore) + amount - Math.abs(shortTotalSizeBefore);
 
     const nakedPositionDiff = diffAfter - diffBefore;
-    console.log(`nakedPositionDiff=${nakedPositionDiff}, ratioSum=${ratioSum}`);
     return await this.__getDerifyDerivativeContract(token).methods.getPositionChangeFee(nakedPositionDiff, ratioSum).call()
   }
 
