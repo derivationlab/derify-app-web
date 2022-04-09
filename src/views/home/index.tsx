@@ -5,13 +5,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppModel, ContractModel, RootStore, UserModel} from "@/store/index";
 import Nav from "./nav";
 import IntlPro from "@/locales/index";
-
 import "./index.less";
 import {bindBroker} from "@/api/broker";
-import Trade from "@/views/trade";
-import {ReactComponent} from "*.svg";
-import {useAsync} from "react-use";
-import Bind from "@/views/partners/Bind";
 import {createDataEvenet, updateTraderAccess} from "@/api/trade";
 import {TokenPair} from "@/store/modules/contract";
 import {getRootPath} from "@/views/home/nav/menu";

@@ -1,8 +1,7 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Button, Col, Modal, Popover, Row, Select} from "antd";
+import {Button, Col, Modal, Popover, Row} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
-
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
 import IconFont from "@/components/IconFont";
@@ -15,6 +14,7 @@ import ETH1 from "@/assets/images/eth1.png";
 import Polygon from "@/assets/images/polygon.png";
 import Avalanche from "@/assets/images/avalanche.png";
 import MenuOther from '@/assets/images/menu-others.png';
+import MenuOtherActive from '@/assets/images/menu-others-active.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
 import Solana from "@/assets/images/Solana.png";
@@ -29,7 +29,11 @@ import FundsDetails from "@/views/home/nav/Account/FundsDetail";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import BorderButton from "@/components/buttons/borderButton";
 
-const { Option } = Select;
+const icons: any = {}
+icons['BSC'] = BSC;
+icons['POL'] = Polygon;
+icons['AVA'] = Avalanche;
+icons['ETH'] = ETH1;
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
@@ -38,10 +42,17 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
 ];
 
+const lang: any = 'en';
+const theme: any = 'light';
+
 function Tool() {
 
+  const dispatch = useDispatch();
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [showLangs, setShowLangs] = useState<boolean>(false);
+  const [showTheme, setShowTheme] = useState<boolean>(false);
   const [line, setLine] = useState<string>('BSC');
-  const [showLineList, setShowLineList] = useState<boolean>(true);
+  const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
   const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
@@ -50,9 +61,6 @@ function Tool() {
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
 
   const {selectedAddress, isLogin, isEthum, showWallet, chainEnum, isMetaMask} = useSelector((state : RootStore) => state.user)
-
-  const dispatch = useDispatch();
-
   const {transferShow, operateType, fundsDetailShow} = useSelector((state : RootStore) => state.app);
 
   const handelChangeIntl = useCallback((val: string) => {
@@ -60,20 +68,15 @@ function Tool() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkWallet = useCallback((newWallet ) => {
-
     if(!newWallet){
       return false
     }
-
     const walletIsMetaMask = newWallet === WalletEnum.MetaMask && isMetaMask;
-
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
       return false
     }
-
     setErrorMsg(undefined)
-
     return true
   },[wallet,isMetaMask]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -257,49 +260,104 @@ function Tool() {
 
       <Col className="change-line">
         <BorderButton 
-          className='change-line-btn'
-          icon={BSC} text={line} click={() => {
+          className={`change-line-btn change-line-btn-${line.toLocaleLowerCase()}`}
+          icon={icons[line]} text={line} click={() => {
             setShowLineList(true);
           }}/>
-         {showLineList && (
+         {
+         // this is the toggle chain list
+         showLineList && (
           <div className="change-line-list">
             <div className="title">Select a network</div>
-            <BorderButton 
-              className={`select-btn ${line === 'BSC' ? '' : 'select-normal'}`}
-              fill={true}
-              icon={BSC} text='BNB Chain' click={() => {
-                setLine('BSC')
-                setShowLineList(false)
-              }}/>
-            <BorderButton 
-              className={`select-btn select-btn-polygon ${line === 'POL' ? '' : 'select-normal'}`}
-              fill={true}
-              icon={Polygon} text='Polygon' click={() => {
-                 setLine('POL')
-                 setShowLineList(false)
-              }}/>
-            <BorderButton 
-              className={`select-btn select-btn-avalanche ${line === 'AVA' ? '' : 'select-normal'}`}
-              fill={true}
-              icon={Avalanche} text='Avalanche' click={() => {
-                setLine('AVA')
-                setShowLineList(false)
-              }}/>
-             <BorderButton 
-              className={`select-btn select-btn-eth ${line === 'ETH' ? '' : 'select-normal'}`}
-              fill={true}
-              icon={ETH1} text='Etherum' click={() => {
-                setLine('ETH')
-                setShowLineList(false)
-              }}/>
+            {
+              [['BSC', 'BNB Chain'],['POL', 'Polygon'], ['AVA', 'Avalanche'], ['ETH', 'Etherum'] ].map(item =>  
+                <BorderButton key={item[0]} className={`select-btn select-btn-${item[0].toLocaleLowerCase()} ${line === item[0] ? '' : 'select-normal'}`}
+                  fill={true}
+                  icon={icons[item[0]]} text={item[1]} click={() => {
+                    setLine(item[0])
+                    setShowLineList(false)
+                  }}/>
+              )
+            }
           </div>
         )}
       </Col>
       
-   
       <Col className="menu-other">
-        <img src={MenuOther} />
+        <img src={(showSettings || showLangs || showTheme) ? MenuOtherActive : MenuOther } onClick={
+          () => {
+            if(showTheme || showLangs){
+              return false;
+            }
+            setShowSettings(true);
+          }
+        }/>
+        {
+          showSettings &&  (
+            <div className="setting-list">
+              <div className="item" onClick={() => {
+                setShowLangs(true);
+                setShowSettings(false);
+              }}>
+                <span>Language</span>
+                <span>English &gt;</span>
+              </div>
+              <div className="item" onClick={() => {
+                setShowTheme(true);
+                setShowSettings(false);
+              }}>
+                <span>Theme</span>
+                <span>light &gt;</span>
+              </div>
+              <div className="item">
+                <span>Feedback</span>
+              </div>
+              <a className="item" href="https://docs.derify.finance/" target='_blank'>
+                <span>Docs</span>
+              </a>
+              <a className="item" href="https://docs.derify.finance/whitepaper/introduction" target='_blank'>
+                <span>Whitepaper</span>
+              </a>
+            </div>
+          )
+        }
+
+        {
+          showLangs && (
+            <div className="lang-list">
+               <div className={lang === 'en' ? 'lang-active':'lang'} onClick={() => {
+                 setShowLangs(false)
+               }}>
+                 English
+               </div>
+               <div className={lang === 'zh' ? 'lang-active':'lang'} onClick={
+                 () => setShowLangs(false)
+               }>
+                 简历中文
+               </div>
+            </div>
+          )
+        }
+
+      {
+          showTheme && (
+            <div className="lang-list">
+               <div className={theme === 'light' ? 'lang-active':'lang'} onClick={() => {
+                 setShowTheme(false)
+               }}>
+                 Light
+               </div>
+               <div className={theme === 'dark' ? 'lang-active':'lang'} onClick={
+                 () => setShowTheme(false)
+               }>
+                 Dark
+               </div>
+            </div>
+          )
+        }
+
       </Col>
+
 
       <Modal
         title={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
