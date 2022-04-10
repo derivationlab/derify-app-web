@@ -21,11 +21,11 @@ const Bind: React.FC<BindProps> = props => {
   const { history } = props;
   const walletInfo = useSelector((state:RootStore) => state.user);
   const dispatch = useDispatch();
-  const [tabsIndex, setTabsIndex] = useState("1");
   const [partners, setPartners] = useState<Partial<Partners>>();
   const [brokerId, setBrokerId] = useState<Partial<string>>();
   const[loading, setLoading] = useState(false);
   const[showModal, setShowModal] = useState(false);
+  const[showBrokerList, setShowBrokerList] = useState(false);
 
   const {formatMessage} = useIntl()
 
@@ -63,10 +63,8 @@ const Bind: React.FC<BindProps> = props => {
 
 
     const trader = walletInfo.selectedAddress;
-
     try{
       const data = await bindBroker({trader, brokerId});
-
       if(data.success) {
       dispatch({type: "user/updateState", payload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
         history.push("/trade")
@@ -79,20 +77,30 @@ const Bind: React.FC<BindProps> = props => {
     }finally {
       setLoading(true);
     }
-
   },[walletInfo]);
 
-  const tabsChange = () => {
-    setTabsIndex(val => {
-      return val === "1" ? "2" : "1";
-    });
-  };
-  const setPartnersCb = (val: Partners) => {
-    setPartners(val);
-  };
   const {isLogin} = useSelector((state:RootStore) => state.user);
 
   const brokerInfo = {};
+
+  if(showBrokerList){
+    return (
+      <Row className="bind-brokers-list main-block">
+        <div className="broker-title">
+          Select a broker
+          <div className="broker-title-back" onClick={() => {
+            setShowBrokerList(false);
+          }}>
+            &lt;&nbsp;&nbsp;I want to input my broker code ...
+          </div>
+        </div>
+        <PartnersList onSelectBroker={(item) => {
+          setBrokerId(item.id);
+        }}/>
+      </Row>
+    )
+  }
+
   return (
     <Row className="bind-partners-container main-block">
       <div className="h1">
@@ -102,14 +110,14 @@ const Bind: React.FC<BindProps> = props => {
        You can get code from your broker.
       </div>
       {
-        showModal && <BindConfirmModal 
+        showModal && <BindConfirmModal
         data={brokerInfo}
         close={() => {
           setShowModal(false)
         }} />
       }
       <Col flex="100%" className="main-wrapper">
-        {!isLogin ? <></> : <Tabs activeKey={tabsIndex} className="margin-b-l">
+        {!isLogin ? <></> : <Tabs activeKey={"1"} className="margin-b-l">
           <TabPane tab="" key="1">
             <Row align="middle">
                <Col>
@@ -119,11 +127,6 @@ const Bind: React.FC<BindProps> = props => {
                   }}  />
                 </Col>
             </Row>
-          </TabPane>
-          <TabPane tab="" key="2">
-            <PartnersList onSelectBroker={(item) => {
-              setBrokerId(item.id);
-            }}/>
           </TabPane>
         </Tabs>
         }
@@ -137,10 +140,12 @@ const Bind: React.FC<BindProps> = props => {
                 </Spin>
               </Col>
               <Col>
-                <BorderButton  
-                  click={tabsChange} 
+                <BorderButton
+                  click={() => {
+                    setShowBrokerList(true);
+                  }}
                   className="broker-toggle"
-                  text=  {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
+                  text={ intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
                 />
               </Col>
           </WalletConnectButtonWrapper>

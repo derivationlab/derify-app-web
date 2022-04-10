@@ -16,8 +16,8 @@ export default function Broker({ data, className }: BrokerProps) {
   return (
     <div className={`broker-info ${className || ""}`}>
       <div className="avatar">
-        {data.avatar ? (
-          <img src={data.avatar} alt="" />
+        {data.logo ? (
+          <img src={data.logo} alt="" />
         ) : (
           <div className="default">
             <img src={Deri} alt="" />
@@ -25,8 +25,8 @@ export default function Broker({ data, className }: BrokerProps) {
         )}
       </div>
       <div className="infos">
-        <div className="h2">Broker's Display Name</div>
-        <div className="h3">@brokername</div>
+        <div className="h2">{data.name}</div>
+        <div className="h3">@{data.id}</div>
         <div className="icons">
           <div className="link">
             <img src={tg} alt="" className="img1" />

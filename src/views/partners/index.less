@@ -1,10 +1,14 @@
 .main > .partners {
   &-page {
+    margin: 48px auto;
+    width: calc(100% - 528px);
+    border-radius: 48px;
     background: #f7f7f7;
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: calc(100vh - 128px);
     .title {
       font-size: 18px;
       color: @main-white;
@@ -159,6 +163,42 @@
           }
         }
       }
+    }
+  }
+}
+
+@media screen and (max-width: 1600px) {
+  .main > .partners-page {
+    width: calc(100% - 328px);
+    .partners-list-wrapper .broker-detail .detail {
+      margin-left: 60px;
+    }
+  }
+}
+
+@media screen and (max-width: 1450px) {
+  .main > .partners-page {
+    width: calc(100% - 280px);
+    .partners-list-wrapper .broker-detail {
+      .detail {
+        margin-left: 60px;
+      }
+      .operate {
+        width: 200px;
+      }
+      .add-btn {
+        width: 200px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1320px) {
+  .main > .partners-page {
+    width: calc(100% - 160px);
+    .partners-list-wrapper .broker-detail .detail {
+      margin-left: 40px;
+      margin-right: 40px;
     }
   }
 }
