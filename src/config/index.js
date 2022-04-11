@@ -5,7 +5,6 @@ import MetaMaskOnboarding from "@metamask/onboarding";
 const nodeEnv = process.env.REACT_APP_NODE_ENV ? process.env.REACT_APP_NODE_ENV : process.env.NODE_ENV;
 const currentEnv = "production,development,debug".indexOf(nodeEnv) > -1 ? nodeEnv : "production"
 window.currentEnv = currentEnv;
-console.log(`currentEnv ${currentEnv}`)
 const config = {
   currentEnv: currentEnv,
   debug: !isCurrentProduction()
@@ -42,7 +41,6 @@ export function getCurrentServerEndPoint(chain) {
   if (!chain) {
     chain = getCurChain();
   }
-  console.log(`====> MulChainConfig[chain].server[currentEnv] :`, MulChainConfig[chain].server[currentEnv])
   return MulChainConfig[chain].server[currentEnv]
 }
 

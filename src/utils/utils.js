@@ -129,7 +129,6 @@ export function mergeNonNull(obj1, obj2) {
         resultObj[name] = source[name];
       }
 
-      console.log(resultObj, source[name])
     }
   }
 

@@ -35,9 +35,9 @@ const composeEnhancers =
 
 const middlewares = [thunkMiddleware];
 
-if (getCurrentEnv() === "development") {
-  middlewares.push(require("redux-logger").createLogger());
-}
+// if (getCurrentEnv() === "development") {
+//   middlewares.push(require("redux-logger").createLogger());
+// }
 
 const rootStore = {
   app: AppModel.reducers,
