@@ -8,6 +8,7 @@ import IconFont from "@/components/IconFont";
 import Account from "./Account";
 import WalletInstall from './WalletInstall';
 import WalletModal from '../walletModal'
+import AccountModal from '../accountModal'
 
 import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";
@@ -49,6 +50,7 @@ const theme: any = 'light';
 function Tool() {
 
   const dispatch = useDispatch();
+  const [showAccountModal, setshowAccountModal] = useState<boolean>(false);
   const [showWalletModal, setShowWalletModal] = useState<boolean>(false);
   const [showAddTokenList, setShowAddTokenList] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
@@ -230,7 +232,7 @@ function Tool() {
         {isLogin ? (
           <Popover
             content={<Account {...{ account: account, blance: blance }} />}
-            trigger="hover"
+            trigger="click"
           >
             <Button
               className="account-wrapper"
@@ -252,6 +254,12 @@ function Tool() {
             }} />
         )}
       </Col>
+
+      {
+        showAccountModal && <AccountModal close={() => {
+          setshowAccountModal(false)
+        }} />
+      }
 
       {
         showWalletModal &&  <WalletModal close={() => {
