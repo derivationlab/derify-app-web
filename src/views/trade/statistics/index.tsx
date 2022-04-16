@@ -1,9 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from "react";
 import {FormattedMessage, useIntl} from "react-intl";
-
 import { Row, Col, Tabs } from "antd";
-
 import MyPosition from "./MyPosition";
 import CurrentOrder from "./CurrentOrder";
 import TradeHistory from "@/views/trade/statistics/TradeHistory";

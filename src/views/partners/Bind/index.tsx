@@ -25,7 +25,7 @@ const Bind: React.FC<BindProps> = props => {
   const [brokerId, setBrokerId] = useState<Partial<string>>();
   const[loading, setLoading] = useState(false);
   const[showModal, setShowModal] = useState(false);
-  const[showBrokerList, setShowBrokerList] = useState(true);
+  const[showBrokerList, setShowBrokerList] = useState(false);
 
   const {formatMessage} = useIntl()
 
@@ -80,7 +80,6 @@ const Bind: React.FC<BindProps> = props => {
   },[walletInfo]);
 
   const {isLogin} = useSelector((state:RootStore) => state.user);
-
   const brokerInfo = {};
 
   if(showBrokerList){

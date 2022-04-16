@@ -1,6 +1,10 @@
-.main>.trade {
+.main > .trade {
   &-page {
-
+    .side-wrapper {
+      width: 400px;
+      padding-right: 24px;
+      margin-left: 48px;
+    }
     .data-panel {
       font-size: 12px;
       font-family: OPPOSans, OPPOSans-Bold;
@@ -17,7 +21,6 @@
           margin-top: 10px;
 
           .ant-radio-button-wrapper {
-
             padding: 0;
             margin: 0 15px;
             background-color: rgba(39, 35, 84, 1);
@@ -48,12 +51,12 @@
         }
 
         .trade-data {
-          >.ant-col {
+          > .ant-col {
             .ant-statistic-content {
               font-size: 30px;
               font-weight: 700;
             }
-            .ant-statistic-content-value-decimal{
+            .ant-statistic-content-value-decimal {
               font-size: 20px;
               font-weight: 700;
             }
@@ -62,18 +65,17 @@
               color: #000;
               margin-top: 20px;
 
-              >span {
+              > span {
                 border-radius: 8px;
                 padding: 0 2px;
                 margin-left: 6px;
-                &.green{
+                &.green {
                   background: @main-green;
                 }
-                &.red{
+                &.red {
                   background: @main-red;
                 }
               }
-
             }
           }
 
@@ -81,7 +83,7 @@
         }
 
         .currency-list-wrapper {
-          >.ant-col {
+          > .ant-col {
             &.active {
               border-color: @primary-color;
 
@@ -90,9 +92,8 @@
               }
             }
 
-
-            &.diable{
-              opacity: .2;
+            &.diable {
+              opacity: 0.2;
             }
 
             cursor: pointer;
@@ -103,8 +104,7 @@
             border: 1px solid @main-border-color;
             color: @main-white;
 
-            >.ant-row {
-
+            > .ant-row {
               height: 100%;
 
               .currency {
@@ -113,15 +113,285 @@
               }
             }
           }
-
         }
       }
-
     }
 
     .operation {
       &-container {
         min-height: 520px;
+        background: linear-gradient(135deg, #f2fbff 0%, #fff4f7 100%);
+        border-radius: 48px;
+        color: #222;
+        width: 376px;
+        padding: 12px;
+        .data-block {
+          border-radius: 36px;
+          margin-bottom: 36px;
+          padding-top: 36px;
+          padding-left: 36px;
+          padding-right: 36px;
+          height: 292px;
+          width: 100%;
+          background: #fff;
+          .t {
+            height: 20px;
+            line-height: 20px;
+            font-size: 16px;
+            img {
+              width: 12px;
+              height: 12px;
+            }
+          }
+          .num1 {
+            margin-top: 16px;
+            height: 26px;
+            line-height: 26px;
+          }
+          .t1 {
+            margin-top: 36px;
+          }
+          .big-num {
+            font-size: 32px;
+            font-weight: bold;
+          }
+          .small-num {
+            font-size: 18px;
+            font-weight: bold;
+          }
+          .unit {
+            font-size: 18px;
+          }
+          .btns {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 36px;
+          }
+          .deposit,
+          .withdaw {
+            width: 128px;
+            height: 32px;
+            border-radius: 16px;
+            .border-btn {
+              border-radius: 22px;
+              line-height: 28px;
+              font-size: 16px;
+            }
+          }
+        }
+        .select-col {
+          padding-left: 26px;
+          padding-right: 26px;
+        }
+
+        .select-label {
+          color: #222;
+          font-size: 14px;
+          height: 16px;
+          line-height: 16px;
+          margin-bottom: 8px;
+          text-indent: 20px;
+        }
+        .ant-select,
+        .ant-select-selector {
+          height: 44px;
+        }
+
+        .ant-select-arrow {
+          color: #222;
+        }
+
+        .select-type .ant-select-selector {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          border-right: 2px solid #e7e7e7;
+        }
+        .select-lev .ant-select-selector {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+
+        .ant-select-selector {
+          background: #fff;
+          font-size: 18px;
+          color: #222;
+          font-weight: bold;
+          padding-left: 22px;
+          line-height: 44px;
+        }
+
+        .select-price {
+          padding-left: 24px;
+          padding-right: 24px;
+          margin-top: 26px;
+        }
+
+        .select-price-txt {
+          padding-left: 20px;
+        }
+
+        .derify-input {
+          input {
+            background: #fff;
+            color: #222;
+          }
+        }
+
+        button.select-price-btn {
+          color: #e7e7e7 !important;
+          background: #f6f6f6 !important;
+          border: 2px solid #e7e7e7 !important;
+        }
+
+        .volumes {
+          display: flex;
+          flex-direction: row;
+          padding-left: 26px;
+          margin-top: 24px;
+          .vol {
+            width: 180px;
+          }
+          .vol-input {
+            width: 180px;
+            height: 44px;
+            background: #ffffff;
+            border-radius: 22px 0px 0px 22px;
+            border: 2px solid #e7e7e7;
+            font-size: 18px;
+            color: #222;
+            padding-left: 22px;
+          }
+          .tag {
+            display: block;
+            line-height: 16px;
+            height: 16px;
+            font-size: 14px;
+            margin-bottom: 10px;
+          }
+          .tag1 {
+            padding-left: 20px;
+          }
+          .tag2 {
+            color: #888;
+            font-size: 12px;
+          }
+          .ant-select {
+            width: 100%;
+          }
+          .ant-select-selection-item {
+            line-height: 42px;
+          }
+          .ant-select-selector {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border: 2px solid #e7e7e7;
+          }
+        }
+
+        .percents {
+          margin-top: 12px;
+          height: 28px;
+          width: 100%;
+          margin-left: 24px;
+          margin-right: 24px;
+          border-radius: 14px;
+          border: 2px solid #e7e7e7;
+          background-color: #fff;
+          display: flex;
+          flex-direction: row;
+          .per {
+            flex: 1;
+            color: #888888;
+            font-size: 12px;
+            text-align: center;
+            line-height: 24px;
+            border-right: 2px solid #e7e7e7;
+            cursor: pointer;
+          }
+          .last {
+            border-right-width: 0;
+          }
+        }
+
+        .btn-group {
+          margin-top: 36px;
+          width: 100%;
+          height: 48px;
+          padding-left: 24px;
+          padding-right: 24px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          .btn {
+            width: 146px;
+            background: linear-gradient(90deg, #ff7171 0%, #f64242 100%);
+            border-radius: 24px;
+            padding-left: 24px;
+            padding-right: 24px;
+            cursor: pointer;
+            color: #fff;
+            position: relative;
+          }
+          .long {
+            background: linear-gradient(90deg, #52eaa1 0%, #11be6b 100%);
+          }
+          .type {
+            font-weight: 600;
+            font-size: 18px;
+            position: relative;
+            height: 24px;
+            line-height: 24px;
+            top: 12px;
+          }
+          .num,
+          .t {
+            position: absolute;
+            top: 10px;
+            font-size: 12px;
+            height: 14px;
+            line-height: 14px;
+            font-weight: 600;
+            right: 24px;
+          }
+          .t {
+            top: 24px;
+            font-weight: normal;
+          }
+        }
+
+        .btn2 {
+          width: 100%;
+          height: 48px;
+          border: 2px solid #42a3ff;
+          box-sizing: border-box;
+          border-radius: 24px;
+          text-align: center;
+          line-height: 48px;
+          margin-left: 24px;
+          margin-right: 24px;
+          margin-top: 24px;
+          color: #42a3ff;
+          font-size: 18px;
+          font-weight: 600;
+          position: relative;
+          margin-bottom: 36px;
+          cursor: pointer;
+          .num,
+          .t {
+            position: absolute;
+            top: 10px;
+            font-size: 12px;
+            height: 14px;
+            line-height: 14px;
+            font-weight: 600;
+            right: 24px;
+          }
+          .t {
+            top: 24px;
+            font-weight: normal;
+          }
+        }
 
         .special-btn {
           background: linear-gradient(180deg, #00c49a, #00a672 100%);
@@ -134,12 +404,12 @@
         .ant-btn[disabled]:focus,
         .ant-btn[disabled]:active {
           background: rgba(255, 255, 255, 0.15);
-          color: rgba(255, 255, 255, 0.30);
+          color: rgba(255, 255, 255, 0.3);
           text-align: center;
           border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .derify-input{
+        .derify-input {
           .ant-input {
             border-radius: 23px;
           }
@@ -158,8 +428,6 @@
           }
         }
 
-
-
         .error-wrapper {
           color: @main-red;
           border: 1px solid @main-red;
@@ -167,9 +435,8 @@
           text-align: center;
           padding: 8px;
           margin-bottom: 24px;
-          background: rgba(234, 68, 107, 0.10);
+          background: rgba(234, 68, 107, 0.1);
         }
-
       }
     }
 
@@ -182,18 +449,17 @@
           font-weight: 500;
         }
 
-        .derify-trade-tab{
+        .derify-trade-tab {
           position: relative;
         }
 
-        .derify-trade-all-btn{
+        .derify-trade-all-btn {
           position: absolute;
           right: 10px;
           top: 10px;
         }
 
         .close-modal {
-
           .ant-radio-group {
             display: flex;
 
@@ -203,5 +469,4 @@
       }
     }
   }
-
 }

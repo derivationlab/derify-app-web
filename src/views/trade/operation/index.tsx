@@ -13,6 +13,8 @@ import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import {TransferOperateType} from "@/utils/types";
 import {getUSDTokenName} from "@/config";
+import notice from "@/assets/images/notice.png";
+import Button1 from "@/components/buttons/borderButton";
 const { Option } = Select;
 
 
@@ -217,8 +219,6 @@ function Operation() {
 
   useEffect(() => {
     updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
-
-
     const trader = walletInfo.trader;
     if(!trader){
       return;
@@ -254,11 +254,54 @@ function Operation() {
 
   }, [walletInfo,openType, curPair, leverage, limitPrice, token]);
 
+  function changeUnit(val: any){
+    console.log(val)
+  }
+
   return (
     <Row className="main-block operation-container">
-      <Col flex="100%">
-        <Row wrap={false} gutter={12}>
-          <Col flex="230px">
+      <div className="data-block">
+           <div className="t">
+            Margin Balance <img src={notice} alt="" />
+          </div>
+          <div className="num1">
+            <span className="big-num">891,234</span>
+            <span className="small-num">.23</span>
+            <span className="unit">USDT</span>
+          </div>
+          <div className="t t1">
+            Avaliable Margin Balance <img src={notice} alt="" />
+          </div>
+          <div className="num1">
+            <span className="big-num">891,234</span>
+            <span className="small-num">.23</span>
+            <span className="unit">USDT</span>
+          </div>
+          <div className="btns">
+            <Button1
+              click={() => {
+                console.log(1);
+              }}
+              fill={true}
+              className="deposit"
+              text="Deposit"
+            />
+            <Button1
+              click={() => {
+                console.log(1);
+              }}
+              className="withdaw"
+              text="Withdaw"
+            />
+          </div>
+      </div>
+      
+      <Col flex="100%" className="select-col">
+        <Row wrap={false}>
+          <Col flex="180px" className="select-type">
+            <div className="select-label">
+              Price Type
+            </div>
             <Select
               defaultValue={OpenType.MarketOrder}
               size={"large"}
@@ -273,7 +316,10 @@ function Operation() {
               </Option>
             </Select>
           </Col>
-          <Col flex="auto">
+          <Col flex="auto" className="select-lev">
+            <div className="select-label">
+              Leverage
+            </div>
             <Select
               value={leverage}
               size={"large"}
@@ -289,15 +335,16 @@ function Operation() {
           </Col>
         </Row>
       </Col>
-      <Col flex="100%">
+
+      <Col flex="100%" className="select-price">
         <Row gutter={[0, 10]}>
-          <Col flex="100%">
+          <Col flex="100%" className="select-price-txt">
             <FormattedMessage id="Trade.OpenPosition.OpenPage.Price" />
           </Col>
-
             {openType === OpenType.MarketOrder ?
               (<Col flex="100%">
                   <Button
+                    className="select-price-btn"
                     disabled
                     shape="round"
                     style={{ width: "100%" }}
@@ -311,80 +358,52 @@ function Operation() {
               (<Col flex="100%" className="derify-input">
                 <Input size="large" value={limitPrice} onChange={({target:{value}}) => onLimitPriceChange(value)} />
               </Col>)}
+        </Row>
+      </Col>
 
-        </Row>
-      </Col>
-      <Col flex="100%">
-        <Row gutter={[0, 10]}>
-          <Col flex="100%">
-            <Row justify={"space-between"} align={"middle"}>
-              <Col>
-                <FormattedMessage id="Trade.OpenPosition.OpenPage.Amount" />
-              </Col>
-              <Col>
-                <Row gutter={2} align={"middle"}>
-                  <Col>
-                    <FormattedMessage id="Trade.OpenPosition.OpenPage.Max" />
-                    ：{maxAmount} {token === UnitTypeEnum.USDT ? `${getUSDTokenName()}` : curPair.key}
-                  </Col>
-                  <Col>
-                    <Button type="link" onClick={() => setModalVisible(true)}>
-                      <FormattedMessage id="Trade.OpenPosition.OpenPage.Transfer" />
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-          <Col flex="100%" className="select-input">
-            <Input size="large" addonAfter={selectAfter} value={size} onChange={({target:{value}}) => {
-              onSizeChange(value)
-            }}/>
-          </Col>
-        </Row>
-      </Col>
-      <Col flex="100%">
-        <Slider value={sliderVal} onChange={(val: any) => onSliderChange(val)}/>
-      </Col>
-      <WalletConnectButtonWrapper            type="primary"
-                                             shape="round"
-                                             block
-                                             size="large">
-        <Col flex="100%">
-          <Button
-            className="special-btn"
-            shape="round"
-            block
-            size="large"
-            onClick={() => doOpenPositionConfirm(SideEnum.LONG)}
-          >
-            <FormattedMessage id="Trade.OpenPosition.OpenPage.BuyLong" />
-          </Button>
-        </Col>
-        <Col flex="100%">
-          <Button
-            type="primary"
-            danger
-            shape="round"
-            block
-            size="large"
-            onClick={() => doOpenPositionConfirm(SideEnum.SHORT)}
-          >
-            <FormattedMessage id="Trade.OpenPosition.OpenPage.SellShort" />
-          </Button>
-        </Col>
-        <Col flex="100%">
-          <Button
-            type="primary"
-            shape="round"
-            block
-            size="large"
-            onClick={() => doOpenPositionConfirm(SideEnum.HEDGE)}
-          >
-            <FormattedMessage id="Trade.OpenPosition.OpenPage.TwoWay" />
-          </Button>
-        </Col>
-      </WalletConnectButtonWrapper>
+       <div className="volumes">
+          <div className="vol">
+            <span className="tag tag1">Volume</span>
+            <input type="text" className="vol-input"/>
+          </div>
+          <div className="unit">
+            <span className="tag tag2">max:123.45M <span>usdt</span></span>
+            <Select onChange={changeUnit} className="sel-unit">
+              <Option value="jack">Jack</Option>
+              <Option value="lucy">Lucy</Option>
+            </Select>
+          </div>
+      </div>      
+
+      <div className="percents">
+        <div className="per">25%</div>
+        <div className="per">50%</div>
+        <div className="per">75%</div>
+        <div className="per last">100%</div>
+      </div>
+
+      <div className="btn-group">
+        <div className="btn long">
+          <div className="type">long</div>
+          <div className="num"> 12.34%</div>
+          <div className="t">APY</div>
+        </div>
+        <div className="btn">
+          <div className="type">short</div>
+          <div className="num"> 12.34%</div>
+          <div className="t">APY</div>
+        </div>
+      </div>
+
+      <div className="btn2">
+          2-Way
+          <div className="num"> 12.34%</div>
+          <div className="t">APY</div>
+      </div>
+
+     
+
+   
 
       <ComModal
         visible={isModalVisible}
