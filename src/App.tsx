@@ -6,7 +6,6 @@ import routes from "@/router";
 import store from "./store";
 import {createDataEvenet} from "@/api/trade";
 
-
 Date.prototype.Format = function (fmt) {
   var o:{[index: string]:number|string} = {
     'M+': this.getMonth() + 1, // month

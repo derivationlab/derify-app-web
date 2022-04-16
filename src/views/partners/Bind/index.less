@@ -1,0 +1,118 @@
+.bind-partners-container {
+  background: #f7f7f7;
+  color: #222;
+  display: block;
+
+  > .h1 {
+    text-align: center;
+    color: #222;
+    font-size: 40px;
+    height: 40px;
+    line-height: 40px;
+  }
+
+  > .h3 {
+    text-align: center;
+    color: #222;
+    font-size: 26px;
+    height: 20px;
+    line-height: 20px;
+    margin-top: 36px;
+    margin-bottom: 48px;
+  }
+
+  .broker-input {
+    width: 601px;
+    text-align: center;
+    background: #fff;
+    border: 2px solid #e7e7e7;
+    height: 48px;
+    border-radius: 24px;
+    font-size: 36px;
+    color: #e7e7e7;
+  }
+
+  .ant-tabs-content-holder .ant-row.ant-row-middle {
+    justify-content: center;
+  }
+
+  .broker-btns {
+    display: flex;
+    justify-content: center;
+  }
+
+  .broker-submit {
+    width: 288px;
+    height: 48px;
+    border-radius: 24px;
+    background: @new-linear;
+    color: #fff;
+    font-size: 18px;
+    margin-right: 25px;
+  }
+
+  .broker-toggle {
+    width: 288px;
+    height: 48px;
+    border-radius: 24px;
+
+    .border-btn {
+      border-radius: 22px;
+      line-height: 44px;
+    }
+  }
+}
+
+.bind-brokers-list {
+  background: transparent;
+  width: 100%;
+  padding: 0 48px;
+
+  .broker-title {
+    height: 120px;
+    line-height: 120px;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: #222;
+    position: relative;
+  }
+  .broker-title-back {
+    position: absolute;
+    left: 30px;
+    font-size: 18px;
+    height: 24px;
+    line-height: 24px;
+    top: 48px;
+    cursor: pointer;
+    color: #E7446B;
+  }
+  .ant-spin-nested-loading {
+    width:100%;
+  }
+
+}
+
+
+
+@media screen and (max-width: 1440px) {
+  .bind-partners-container {
+    > .h1 {
+      height: auto;
+    }
+  }
+}
+
+@media screen and (max-width: 1320px) {
+  .bind-partners-container {
+    > .h1 {
+      font-size: 33px;
+    }
+
+    > .h3 {
+      font-size: 23px;
+      margin-top: 28px;
+      margin-bottom: 40px;
+    }
+  }
+}

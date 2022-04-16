@@ -3,7 +3,6 @@ import {Row, Col, Select, Badge, Spin} from "antd";
 import CommonCharts from "@/components/charts";
 import { useIntl } from "react-intl";
 import {Token} from "@/utils/contractUtil";
-import {getHistoryTradingData} from "@/api/data";
 import generateDataEchartsOptions from "@/utils/data-chart";
 import {DataModel} from "@/store";
 import {useDispatch} from "react-redux";

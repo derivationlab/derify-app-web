@@ -1,19 +1,13 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { RouteProps } from "@/router/types";
-import {Switch, Route, Redirect, useLocation} from "react-router-dom";
+import {Switch, Redirect, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {AppModel, ContractModel, RootStore, UserModel} from "@/store/index";
 import Nav from "./nav";
 import IntlPro from "@/locales/index";
-
 import "./index.less";
 import {bindBroker} from "@/api/broker";
-import Trade from "@/views/trade";
-import {ReactComponent} from "*.svg";
-import {useAsync} from "react-use";
-import Bind from "@/views/partners/Bind";
-import {createDataEvenet, updateTraderAccess} from "@/api/trade";
-import {TokenPair} from "@/store/modules/contract";
+import {createDataEvenet} from "@/api/trade";
 import {getRootPath} from "@/views/home/nav/menu";
 
 interface HomeProps extends RouteProps {}
@@ -27,14 +21,10 @@ const  RouteGuard: React.FC<HomeProps> = props => {
   const dispatch = useDispatch();
   const {routes} = props;
   const location = useLocation();
-
-  const curPair = useSelector<RootStore, TokenPair>(state => state.contract.curPair);
   let {trader,selectedAddress,hasBroker,slefBrokerId} = useSelector((state:RootStore) => state.user);
-  const {pathname} = location;
   const [RoutNode, setRoutNode] = useState(<></>);
   const [,rootPath, pathBrokerId] = location.pathname.split("/");
   const menuPath = getRootPath(location.pathname);
-
 
   let routeConfig = routes.find(
     (item) => {

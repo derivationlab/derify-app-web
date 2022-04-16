@@ -1,0 +1,42 @@
+.border-btn-wrapper {
+  width: 109px;
+  background: @new-linear;
+  height: 32px;
+  padding: 2px;
+  border-radius: 16px;
+  cursor: pointer;
+  .border-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 14px;
+    background-color: #fff;
+    text-align: center;
+    line-height: 28px;
+    font-size: 16px;
+    .icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 100%;
+      margin-left:10px;
+      margin-right:10px;
+      width: 14px;
+      height: 14px;
+      background-color: #f0b90b;
+      img {
+        width: 10px;
+        height: 10px;
+      }
+    }
+    > span {
+      background-image: @new-linear;
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .text {
+      color: #fff;
+      display: inline-block;
+    }
+  }
+}

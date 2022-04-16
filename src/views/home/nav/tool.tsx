@@ -1,15 +1,21 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Button, Col, Image, Modal, Popover, Row, Select, Space} from "antd";
+import {Button, Col, Modal, Popover, Row} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
-
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
 import IconFont from "@/components/IconFont";
 import Account from "./Account";
 import WalletInstall from './WalletInstall';
+import WalletModal from '../walletModal'
 
 import Eth from "@/assets/images/Eth.png";
+import BSC from "@/assets/images/bnb1.png";
+import ETH1 from "@/assets/images/eth1.png";
+import Polygon from "@/assets/images/polygon.png";
+import Avalanche from "@/assets/images/avalanche.png";
+import MenuOther from '@/assets/images/menu-others.png';
+import MenuOtherActive from '@/assets/images/menu-others-active.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
 import Solana from "@/assets/images/Solana.png";
@@ -22,8 +28,13 @@ import ErrorMessage from "@/components/ErrorMessage";
 import Transfer from "@/views/CommonViews/Transfer";
 import FundsDetails from "@/views/home/nav/Account/FundsDetail";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
+import BorderButton from "@/components/buttons/borderButton";
 
-const { Option } = Select;
+const icons: any = {}
+icons['BSC'] = BSC;
+icons['POL'] = Polygon;
+icons['AVA'] = Avalanche;
+icons['ETH'] = ETH1;
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
@@ -32,8 +43,19 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
 ];
 
+const lang: any = 'en';
+const theme: any = 'light';
+
 function Tool() {
 
+  const dispatch = useDispatch();
+  const [showWalletModal, setShowWalletModal] = useState<boolean>(false);
+  const [showAddTokenList, setShowAddTokenList] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [showLangs, setShowLangs] = useState<boolean>(false);
+  const [showTheme, setShowTheme] = useState<boolean>(false);
+  const [line, setLine] = useState<string>('BSC');
+  const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
   const [wallet, setWallet] = useState<string>(WalletEnum.MetaMask);
@@ -42,30 +64,18 @@ function Tool() {
   const [errorMsg, setErrorMsg] = useState<Partial<{id:string,value?:string}|undefined>>();
 
   const {selectedAddress, isLogin, isEthum, showWallet, chainEnum, isMetaMask} = useSelector((state : RootStore) => state.user)
-
-  const dispatch = useDispatch();
-
   const {transferShow, operateType, fundsDetailShow} = useSelector((state : RootStore) => state.app);
 
-  const handelChangeIntl = useCallback((val: string) => {
-    dispatch(changeLang(val));
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const checkWallet = useCallback((newWallet ) => {
-
     if(!newWallet){
       return false
     }
-
     const walletIsMetaMask = newWallet === WalletEnum.MetaMask && isMetaMask;
-
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
       return false
     }
-
     setErrorMsg(undefined)
-
     return true
   },[wallet,isMetaMask]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -216,13 +226,7 @@ function Tool() {
 
   return (
     <Row align={"middle"} className="tool">
-      <Col style={{ marginRight: "10px" }}>
-        <Button type="primary"
-                danger
-                shape="round"
-                block><a href={"https://docs.derify.finance/tutorial/connect-wallet"} target={"_blank"} rel="noreferrer"><FormattedMessage id="Trade.navbar.Guide" /></a> </Button>
-      </Col>
-      <Col style={{ marginRight: "10px" }}>
+      <Col className="connect-btn">
         {isLogin ? (
           <Popover
             content={<Account {...{ account: account, blance: blance }} />}
@@ -231,47 +235,154 @@ function Tool() {
             <Button
               className="account-wrapper"
               shape="round"
-              icon={<Image preview={false} src={chainEnum?.logo}/>}
               type="primary"
             >
               <TextOverflowView text={selectedAddress||''} showPos={ShowPosEnum.mid} len={10}/>
             </Button>
           </Popover>
         ) : (
-          <Button
-            type="primary"
-            onClick={() => {
-              dispatch(userModel.actions.showWallet());
-            }}
-            shape="round"
-            icon={
-              <IconFont
-                size={14}
-                type="icon-link"
-                style={{ marginRight: "10px" }}
-              />
-            }
-          >
-            <FormattedMessage id="Trade.navbar.ConnectWallet" />
-          </Button>
+
+          <BorderButton fill={true} 
+            className='con-btn'
+            text={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
+            click={() => {
+              setShowWalletModal(true);
+              // todo
+              // dispatch(userModel.actions.showWallet());
+            }} />
         )}
       </Col>
 
-      <Col>
-        <Select value={locale} onChange={handelChangeIntl}>
-          <Option value="en">
-            <Space>
-              <img src={EnIcon} alt="" /><span>English</span>
-            </Space>
-          </Option>
-          <Option value="zh-CN">
-            <Space>
-              <img src={ZhIcon} alt="" />
-              <span>简体中文</span>
-            </Space>
-          </Option>
-        </Select>
+      {
+        showWalletModal &&  <WalletModal close={() => {
+          setShowWalletModal(false)
+        }}/>
+      }
+
+      <Col className="add-token">
+        <BorderButton text='Add Token' click={() => {
+          setShowAddTokenList(!showAddTokenList);
+        }}/>
+        {
+          showAddTokenList && (
+            <div className="add-token-list">
+              <div className="token">Add DRF Token to wallet</div>
+              <div className="token">Add eDRF Token to wallet</div>
+              <div className="token">Add bDRF Token to wallet</div>
+              <div className="hr" />
+              <div className="token">Buy DRF Token at pancakeswap</div>
+              <div className="token">Buy eDRF Token at pancakeswap</div>
+              <div className="token">Buy bDRF Token at pancakeswap</div>
+            </div>
+          )
+        }
       </Col>
+
+      <Col className="change-line">
+        <BorderButton 
+          className={`change-line-btn change-line-btn-${line.toLocaleLowerCase()}`}
+          icon={icons[line]} text={line} click={() => {
+            setShowLineList(!showLineList);
+          }}/>
+         {
+         // this is the toggle chain list
+         showLineList && (
+          <div className="change-line-list">
+            <div className="title">Select a network</div>
+            {
+              [['BSC', 'BNB Chain'],['POL', 'Polygon'], ['AVA', 'Avalanche'], ['ETH', 'Etherum'] ].map(item =>  
+                <BorderButton key={item[0]} className={`select-btn select-btn-${item[0].toLocaleLowerCase()} ${line === item[0] ? '' : 'select-normal'}`}
+                  fill={true}
+                  icon={icons[item[0]]} text={item[1]} click={() => {
+                    setLine(item[0])
+                    setShowLineList(false)
+                  }}/>
+              )
+            }
+          </div>
+        )}
+      </Col>
+      
+      <Col className="menu-other">
+        <img src={(showSettings || showLangs || showTheme) ? MenuOtherActive : MenuOther } onClick={
+          () => {
+            if(showTheme || showLangs){
+              return false;
+            }
+            setShowSettings(true);
+          }
+        }/>
+        {
+          showSettings &&  (
+            <div className="setting-list">
+              <div className="item" onClick={() => {
+                setShowLangs(true);
+                setShowSettings(false);
+              }}>
+                <span>Language</span>
+                <span>{locale === 'en' ? 'English' : '简体中文'} &gt;</span>
+              </div>
+              <div className="item" onClick={() => {
+                setShowTheme(true);
+                setShowSettings(false);
+              }}>
+                <span>Theme</span>
+                <span>light &gt;</span>
+              </div>
+              <div className="item">
+                <span>Feedback</span>
+              </div>
+              <a className="item" href="https://docs.derify.finance/" target='_blank'>
+                <span>Docs</span>
+              </a>
+              <a className="item" href="https://docs.derify.finance/whitepaper/introduction" target='_blank'>
+                <span>Whitepaper</span>
+              </a>
+            </div>
+          )
+        }
+
+        {
+          showLangs && (
+            <div className="lang-list">
+               <div className={locale === 'en' ? 'lang-active':'lang'} onClick={() => {
+                 dispatch(changeLang('en'))
+                 setShowLangs(false)
+               }}>
+                 English
+               </div>
+               <div className={locale === 'zh-CN' ? 'lang-active':'lang'} onClick={
+                 () => {
+                  dispatch(changeLang('zh-CN'));
+                  setShowLangs(false);
+                 }
+               }>
+                 简体中文
+               </div>
+            </div>
+          )
+        }
+
+      {
+          showTheme && (
+            <div className="lang-list">
+               <div className={theme === 'light' ? 'lang-active':'lang'} onClick={() => {
+                 setShowTheme(false)
+               }}>
+                 Light
+               </div>
+               <div className={theme === 'dark' ? 'lang-active':'lang'} onClick={
+                 () => setShowTheme(false)
+               }>
+                 Dark
+               </div>
+            </div>
+          )
+        }
+
+      </Col>
+
+
       <Modal
         title={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
         footer={null}

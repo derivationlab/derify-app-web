@@ -32,6 +32,8 @@ module.exports = {
               "@strong-text": "rgba(255, 255, 255, 85)",
               "@support-text": "rgba(255, 255, 255, 45)",
               "@disable-text": "rgba(255, 255, 255, 30)",
+              "@new-theme-color": '#fff',
+              "@new-linear": 'linear-gradient(90deg, #ec6989 0%, #e7446b 100%);',
             },
             javascriptEnabled: true,
           },

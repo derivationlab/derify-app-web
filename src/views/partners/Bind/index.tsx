@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {Row, Col, Button, Space, Input, Tabs, message, Spin} from "antd";
+import {Row, Col, Button, Input, Tabs, Spin} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { bindPartners } from "@/store/modules/app";
 import PartnersList, { Partners } from "./PartnersList";
@@ -10,6 +10,9 @@ import {bindBroker, getBrokerByBrokerId} from "@/api/broker";
 import {Dispatch} from "redux";
 import {DerifyErrorNotice} from "@/components/ErrorMessage";
 import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
+import BorderButton from "@/components/buttons/borderButton";
+import BindConfirmModal from '../bindConfirmModal'
+import "./index.less";
 
 interface BindProps extends RouteProps {}
 const { TabPane } = Tabs;
@@ -18,10 +21,11 @@ const Bind: React.FC<BindProps> = props => {
   const { history } = props;
   const walletInfo = useSelector((state:RootStore) => state.user);
   const dispatch = useDispatch();
-  const [tabsIndex, setTabsIndex] = useState("1");
   const [partners, setPartners] = useState<Partial<Partners>>();
   const [brokerId, setBrokerId] = useState<Partial<string>>();
   const[loading, setLoading] = useState(false);
+  const[showModal, setShowModal] = useState(false);
+  const[showBrokerList, setShowBrokerList] = useState(false);
 
   const {formatMessage} = useIntl()
 
@@ -59,10 +63,8 @@ const Bind: React.FC<BindProps> = props => {
 
 
     const trader = walletInfo.selectedAddress;
-
     try{
       const data = await bindBroker({trader, brokerId});
-
       if(data.success) {
       dispatch({type: "user/updateState", payload:{hasBroker: true,traderBroker: brokerInfoRes, brokerId: brokerInfoRes.broker}})
         history.push("/trade")
@@ -75,67 +77,80 @@ const Bind: React.FC<BindProps> = props => {
     }finally {
       setLoading(true);
     }
-
   },[walletInfo]);
 
-  const tabsChange = () => {
-    setTabsIndex(val => {
-      return val === "1" ? "2" : "1";
-    });
-  };
-  const setPartnersCb = (val: Partners) => {
-    setPartners(val);
-  };
   const {isLogin} = useSelector((state:RootStore) => state.user);
+
+  const brokerInfo = {};
+
+  if(showBrokerList){
+    return (
+      <Row className="bind-brokers-list main-block">
+        <div className="broker-title">
+          Select a broker
+          <div className="broker-title-back" onClick={() => {
+            setShowBrokerList(false);
+          }}>
+            &lt;&nbsp;&nbsp;I want to input my broker code ...
+          </div>
+        </div>
+        <PartnersList onSelectBroker={(item) => {
+          setBrokerId(item.id);
+        }}/>
+      </Row>
+    )
+  }
+
   return (
     <Row className="bind-partners-container main-block">
-      <Col className="title margin-b-l">{intl('Trade.BrokerBind.BrokerCodes.BindBrokerPrivilege')}</Col>
+      <div className="h1">
+        You need a broker first, Please input your broker code.
+      </div>
+      <div className="h3">
+       You can get code from your broker.
+      </div>
+      {
+        showModal && <BindConfirmModal
+        data={brokerInfo}
+        close={() => {
+          setShowModal(false)
+        }} />
+      }
       <Col flex="100%" className="main-wrapper">
-        {!isLogin ? <></> : <Tabs activeKey={tabsIndex} className="margin-b-l">
+        {!isLogin ? <></> : <Tabs activeKey={"1"} className="margin-b-l">
           <TabPane tab="" key="1">
             <Row align="middle">
-              <Space size={24}>
-                <Col className="main-white">{intl('Trade.BrokerBind.BrokerCodes.BrokerCode')}</Col>
-                <Col>
-                  <Input placeholder="" onChange={(e) => {
+               <Col>
+                  <Input type='password' className="broker-input" onChange={(e) => {
                     const {value} = e.target
                     setBrokerId(value)
-                  }} size="large"/>
+                  }}  />
                 </Col>
-              </Space>
             </Row>
-          </TabPane>
-          <TabPane tab="" key="2">
-            <PartnersList onSelectBroker={(item) => {
-              setBrokerId(item.id);
-            }}/>
           </TabPane>
         </Tabs>
         }
-        <Row>
-          <Col flex="100%">
-            <Row>
-              <WalletConnectButtonWrapper type="primary">
-                <Space size={24}>
-                  <Col>
-                    <Spin spinning={loading}>
-                      <Button type="primary" onClick={() => doBindBroker(brokerId)}>
-                        {intl("Trade.BrokerBind.BrokerCodes.Submit")}
-                      </Button>
-                    </Spin>
-                  </Col>
-                  <Col>
-                    <Button type="link" onClick={tabsChange}>
-                      {tabsIndex === "2" ? intl("Trade.BrokerBind.BrokerBind.HaveBrokerCode") : intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
-                    </Button>
-                  </Col>
-                </Space>
-              </WalletConnectButtonWrapper>
-            </Row>
-          </Col>
+        <Row className="broker-btns">
+          <WalletConnectButtonWrapper type="primary">
+              <Col>
+                <Spin spinning={loading}>
+                  <Button type="primary" className="broker-submit" onClick={() => doBindBroker(brokerId)}>
+                    {intl("Trade.BrokerBind.BrokerCodes.Submit")}
+                  </Button>
+                </Spin>
+              </Col>
+              <Col>
+                <BorderButton
+                  click={() => {
+                    setShowBrokerList(true);
+                  }}
+                  className="broker-toggle"
+                  text={ intl("Trade.BrokerBind.BrokerCodes.NoBrokerCode")}
+                />
+              </Col>
+          </WalletConnectButtonWrapper>
         </Row>
       </Col>
-      <Col flex="100%"></Col>
     </Row>
   );
 };

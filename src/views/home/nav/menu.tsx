@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Row, Col } from "antd";
 import classNames from "classnames";
 import { useIntl } from "react-intl";
-import { _findIndex } from "@/utils/loash";
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootStore} from "@/store";
