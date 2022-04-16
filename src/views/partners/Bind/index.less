@@ -85,15 +85,46 @@
     line-height: 24px;
     top: 48px;
     cursor: pointer;
-    color: #E7446B;
+    color: #e7446b;
   }
   .ant-spin-nested-loading {
-    width:100%;
+    width: 100%;
   }
-
+  .ant-pagination {
+    font-size: 18px;
+    li {
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      border-radius: 24px;
+      background: #fff;
+      border: 2px solid #e7e7e7;
+      a {
+        color: #888;
+      }
+    }
+    .ant-pagination-item-active {
+      background-color: #e7446b;
+      a {
+        color: #fff;
+      }
+    }
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      button {
+        background-color: #fff;
+        border-radius: 24px;
+        color: #888;
+      }
+    }
+    .ant-pagination-disabled {
+      button {
+        background-color: #f6f6f6;
+        color: #e7e7e7;
+      }
+    }
+  }
 }
-
-
 
 @media screen and (max-width: 1440px) {
   .bind-partners-container {

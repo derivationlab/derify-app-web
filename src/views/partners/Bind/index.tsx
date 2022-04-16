@@ -1,5 +1,5 @@
 import React, {useCallback, useState} from "react";
-import {Row, Col, Button, Input, Tabs, Spin} from "antd";
+import {Row, Col, Button, Select, Input, Tabs, Spin} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import { bindPartners } from "@/store/modules/app";
 import PartnersList, { Partners } from "./PartnersList";
@@ -25,7 +25,7 @@ const Bind: React.FC<BindProps> = props => {
   const [brokerId, setBrokerId] = useState<Partial<string>>();
   const[loading, setLoading] = useState(false);
   const[showModal, setShowModal] = useState(false);
-  const[showBrokerList, setShowBrokerList] = useState(false);
+  const[showBrokerList, setShowBrokerList] = useState(true);
 
   const {formatMessage} = useIntl()
 
