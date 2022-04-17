@@ -1,15 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
-import { Row, Col, Tabs } from "antd";
-import MyPosition from "./MyPosition";
-import { TradePosition, TradeOrder, Empty } from "@/components/trade";
-import CurrentOrder from "./CurrentOrder";
-import TradeHistory from "@/views/trade/statistics/TradeHistory";
+import { Row, Col } from "antd";
+import {
+  TradePosition,
+  TradeOrder,
+  TradeHistory,
+  Empty,
+} from "@/components/trade";
+// import MyPosition from "./MyPosition";
+// import CurrentOrder from "./CurrentOrder";
+// import TradeHistory from "@/views/trade/statistics/TradeHistory";
 import close2 from "@/assets/images/close2.png";
 
 function Statistics() {
-  const [index, setIndex] = useState<number>(2);
+  const [index, setIndex] = useState<number>(3);
   const { formatMessage } = useIntl();
   function intl(id: string) {
     return formatMessage({ id });
@@ -75,6 +80,9 @@ function Statistics() {
 
         {index === 3 && (
           <div className="history-list">
+            <TradeHistory />
+            <TradeHistory />
+            <TradeHistory />
             <TradeHistory />
           </div>
         )}
