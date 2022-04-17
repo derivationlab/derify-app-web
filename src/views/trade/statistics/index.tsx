@@ -3,23 +3,17 @@ import React, { useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Row, Col, Tabs } from "antd";
 import MyPosition from "./MyPosition";
-import { TradePosition } from "@/components/trade";
+import { TradePosition, TradeOrder, Empty } from "@/components/trade";
 import CurrentOrder from "./CurrentOrder";
 import TradeHistory from "@/views/trade/statistics/TradeHistory";
-const { TabPane } = Tabs;
+import close2 from "@/assets/images/close2.png";
 
 function Statistics() {
-  const [index, setIndex] = useState<number>(1);
-  function callback(key: any) {
-    console.log(key);
-  }
-
+  const [index, setIndex] = useState<number>(2);
   const { formatMessage } = useIntl();
-
   function intl(id: string) {
     return formatMessage({ id });
   }
-
   const $t = intl;
 
   function tabChange(e: any) {
@@ -61,12 +55,21 @@ function Statistics() {
             <TradePosition />
             <TradePosition />
             <TradePosition />
+            <div className="close-all">
+              <div className="btn">
+                <span>CLOSE ALL</span>
+                <img src={close2} alt="" />
+              </div>
+            </div>
           </div>
         )}
 
         {index === 2 && (
           <div className="order-list">
-            <CurrentOrder />
+            <TradeOrder />
+            <TradeOrder />
+            <TradeOrder />
+            <TradeOrder />
           </div>
         )}
 

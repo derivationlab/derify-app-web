@@ -16,7 +16,7 @@ export class TradePosition extends React.Component<
     this.state = {};
   }
 
-  public render() {
+  render() {
     return (
       <div className="trade-item trade-postion-item">
         <div className="header">
@@ -55,6 +55,49 @@ export class TradePosition extends React.Component<
   }
 }
 
+export interface ITradeOrderProps {}
+
+export interface ITradeOrderState {}
+
+export class TradeOrder extends React.Component<
+  ITradeOrderProps,
+  ITradeOrderState
+> {
+  constructor(props: ITradeOrderProps) {
+    super(props);
+
+    this.state = {};
+  }
+
+  render() {
+    return (
+      <div className="trade-item trade-order-item">
+        <div className="header">
+          <span className="title">BTC-USDT</span>
+          <span className="type">
+            Long
+            <span className="type-inner">10x</span>
+          </span>
+          <span className="close red">
+            close
+            <img src={close} alt="" />
+          </span>
+        </div>
+        <div className="row row1">
+          <div className="data">
+            <Notice text="Type" />
+            <div className="line num red">open</div>
+            <div className="line">Limit Price</div>
+          </div>
+          <Item title="Volume" num="2.34 / 23124.32 " u="BTC / USDT" />
+          <Item title="Price" num="-12313.23 " />
+          <Item title="Time" num="2022-12-31 23:59:59" u="1 minute ago" />
+        </div>
+      </div>
+    );
+  }
+}
+
 function Notice(props: { text: string }) {
   return (
     <div className="line line-notice">
@@ -71,13 +114,22 @@ function Item({
 }: {
   title: string;
   num: any;
-  u?: boolean;
+  u?: boolean | string;
 }) {
   return (
     <div className="data">
       <Notice text={title} />
       <div className="line num">{num}</div>
-      {u && <div className="line">USDT</div>}
+      {u === true && <div className="line">USDT</div>}
+      {typeof u === "string" && <div className="line">{u}</div>}
+    </div>
+  );
+}
+
+export function Empty() {
+  return (
+    <div className="trade-empty">
+      <span>No record</span>
     </div>
   );
 }
