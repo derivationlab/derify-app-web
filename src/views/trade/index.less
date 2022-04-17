@@ -1,5 +1,8 @@
 .main > .trade {
   &-page {
+    .trade-wrapper {
+      padding-left: 24px;
+    }
     .side-wrapper {
       width: 400px;
       padding-right: 24px;
@@ -440,14 +443,54 @@
       }
     }
 
+    .statistic-wrapper {
+      .tabs {
+        width: 968px;
+        height: 48px;
+        line-height: 48px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        color: #222;
+        font-size: 18px;
+        .tab {
+          cursor: pointer;
+          position: relative;
+        }
+        .bot {
+          position: absolute;
+          width: 100%;
+          height: 12px;
+          bottom: -12px;
+          left: 0;
+          background: #e7446b;
+          border-radius: 6px;
+        }
+        .tab1,
+        .tab2 {
+          margin-right: 52px;
+        }
+        .tab-active {
+          color: #e7446b;
+        }
+      }
+      .pos-list {
+        width: 100%;
+      }
+      .order-list {
+        width: 100%;
+      }
+      .history-list {
+        width: 100%;
+      }
+    }
+
     .statistics {
       &-container {
-        margin-top: 20px;
-
-        .ant-tabs-tab {
-          font-size: 18px;
-          font-weight: 500;
-        }
+        width: 968px;
+        background: #f6f6f6;
+        padding: 12px;
+        border-radius: 48px;
 
         .derify-trade-tab {
           position: relative;

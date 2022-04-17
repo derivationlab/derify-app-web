@@ -1,41 +1,82 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React from "react";
-import {FormattedMessage, useIntl} from "react-intl";
+import React, { useState } from "react";
+import { FormattedMessage, useIntl } from "react-intl";
 import { Row, Col, Tabs } from "antd";
 import MyPosition from "./MyPosition";
+import { TradePosition } from "@/components/trade";
 import CurrentOrder from "./CurrentOrder";
 import TradeHistory from "@/views/trade/statistics/TradeHistory";
 const { TabPane } = Tabs;
 
 function Statistics() {
+  const [index, setIndex] = useState<number>(1);
   function callback(key: any) {
     console.log(key);
   }
 
-  const {formatMessage} = useIntl()
+  const { formatMessage } = useIntl();
 
-  function intl(id:string) {
-    return formatMessage({id})
+  function intl(id: string) {
+    return formatMessage({ id });
   }
 
-  const $t = intl
+  const $t = intl;
+
+  function tabChange(e: any) {
+    let a = e.target.id;
+    if (a) {
+      let index = a.slice(a.length - 1);
+      setIndex(+index);
+    }
+  }
 
   return (
-    <Row className="main-block statistics-container">
-      <Col flex="100%">
-        <Tabs defaultActiveKey="1" onChange={callback} className="derify-trade-tab">
-          <TabPane tab={<FormattedMessage id="Trade.MyPosition.List.MyPosition" />} key="1">
-            <MyPosition />
-          </TabPane>
-          <TabPane tab={<FormattedMessage id="Trade.CurrentOrder.List.CurrentOrder" />} key="2">
-            <CurrentOrder/>
-          </TabPane>
-          <TabPane tab={<FormattedMessage id="Trade.TradeHistory.List.TradeHistory" />} key="3">
-            <TradeHistory/>
-          </TabPane>
-        </Tabs>
-      </Col>
-    </Row>
+    <div className="statistic-wrapper">
+      <div className="tabs" onClick={tabChange}>
+        <div
+          className={`tab tab1 ${index === 1 ? "tab-active" : ""}`}
+          id="tab1"
+        >
+          My Position
+          {index === 1 && <div className="bot" />}
+        </div>
+        <div
+          className={`tab tab2 ${index === 2 ? "tab-active" : ""}`}
+          id="tab2"
+        >
+          My Order
+          {index === 2 && <div className="bot" />}
+        </div>
+        <div
+          className={`tab tab3 ${index === 3 ? "tab-active" : ""}`}
+          id="tab3"
+        >
+          Trade History
+          {index === 3 && <div className="bot" />}
+        </div>
+      </div>
+      <Row className="main-block statistics-container">
+        {index === 1 && (
+          <div className="pos-list">
+            <TradePosition />
+            <TradePosition />
+            <TradePosition />
+          </div>
+        )}
+
+        {index === 2 && (
+          <div className="order-list">
+            <CurrentOrder />
+          </div>
+        )}
+
+        {index === 3 && (
+          <div className="history-list">
+            <TradeHistory />
+          </div>
+        )}
+      </Row>
+    </div>
   );
 }
 

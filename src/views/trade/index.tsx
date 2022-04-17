@@ -9,18 +9,14 @@ function Trade() {
   return (
     <div className="trade-page">
       <Row wrap={false}>
-        <Col flex="auto">
+        <Col flex="auto" className="trade-wrapper">
           <DataPanel />
         </Col>
         <Col className="side-wrapper">
           <Operation />
         </Col>
       </Row>
-      <Row>
-        <Col flex="100%">
-          <Statistics />
-        </Col>
-      </Row>
+      <Statistics />
     </div>
   );
 }
