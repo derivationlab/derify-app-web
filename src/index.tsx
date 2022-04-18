@@ -9,10 +9,12 @@ import reportWebVitals from "./reportWebVitals";
 import LogRocket from 'logrocket';
 
 const release = process.env.REACT_APP_VERCEL_GIT_COMMIT_SHA || 'local'
+const env = process.env.REACT_APP_VERCEL_ENV
 LogRocket.init('5vthie/derifyexchange', {
   release
 });
 console.log('release', release);
+console.log('env', env);
 
 message.config({
   top: 80,
