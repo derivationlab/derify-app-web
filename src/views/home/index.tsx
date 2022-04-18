@@ -15,6 +15,7 @@ import Bind from "@/views/partners/Bind";
 import {createDataEvenet, updateTraderAccess} from "@/api/trade";
 import {TokenPair} from "@/store/modules/contract";
 import {getRootPath} from "@/views/home/nav/menu";
+import Data from "../data";
 
 interface HomeProps extends RouteProps {}
 const brokerBindPath = "/bind";
@@ -55,6 +56,7 @@ const  RouteGuard: React.FC<HomeProps> = props => {
     }
 
     dataEventSource = createDataEvenet(datas => {
+      dispatch({ type: "user/updateState", payload: { tradeDataTick: Date.now() } });
       datas.forEach((data) => {
         const updateAllPairPriceAction = ContractModel.actions.updateAllPairPrice(trader, data.token, data.price_change_rate, data.longPmrRate,data.shortPmrRate);
         updateAllPairPriceAction(dispatch);

@@ -140,7 +140,6 @@ function Operation() {
   },[openType,curPair.num,leverage]);
 
   const updateMaxAmount = useCallback((openType,limitPrice,leverage) => {
-
     const trader = walletInfo.selectedAddress;
 
     if(!trader){
@@ -169,7 +168,7 @@ function Operation() {
       console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
 
-  }, [walletInfo.selectedAddress,leverage,curPair, openType, token]);
+  }, [walletInfo.tradeDataTick, walletInfo.selectedAddress,leverage,curPair, openType, token]);
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
 
