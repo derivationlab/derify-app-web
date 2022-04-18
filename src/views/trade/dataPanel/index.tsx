@@ -75,6 +75,7 @@ function DataPanel() {
     }
 
     const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
+
       loadHomeData();
     });
 
@@ -118,7 +119,7 @@ function DataPanel() {
                           {intl("Trade.OpenPosition.Hint.PCFRate")}
                         </Col>
                         <Col>
-                          {$t("Trade.OpenPosition.Hint.PCFRateDetail",{link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/position-change-fee">{chunks}</a>})}
+                          {$t("Trade.OpenPosition.Hint.PCFRateDetail",{link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/position-change-fee" rel="noreferrer">{chunks}</a>})}
                         </Col>
                       </Row>
                     }
@@ -145,7 +146,7 @@ function DataPanel() {
                           { $t('Trade.OpenPosition.Hint.PositionMiningAPY') }
                         </Col>
                         <Col>
-                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail', {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/position-mining">{chunks}</a>}) }
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail', {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/position-mining" rel="noreferrer">{chunks}</a>}) }
                         </Col>
                       </Row>
                     }

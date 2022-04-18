@@ -85,7 +85,7 @@ const MyPosition: React.FC = () => {
       console.error(`loadPositionDataAction exception: ${e}`)
     }).finally(() => setShowLoading(false))
 
-  }, [walletInfo])
+  }, [walletInfo.tradeDataTick])
 
   useEffect(() => {
     loadMyPositionData()
