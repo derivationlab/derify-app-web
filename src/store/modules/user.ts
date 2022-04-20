@@ -129,6 +129,7 @@ export class UserProcessStatus {
 export const mainChain = ChainEnum.BSC;
 
 export type UserState = {
+  tradeDataTick?: number;
   selectedAddress?: string | null;
   showWallet?: boolean;
   trader: string;
@@ -149,6 +150,7 @@ export type UserState = {
 export type WalletInfo = {};
 
 const state: UserState = {
+  tradeDataTick: Date.now(),
   selectedAddress: "",
   trader: "",
   showWallet: false,
