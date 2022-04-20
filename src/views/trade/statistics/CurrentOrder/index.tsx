@@ -108,7 +108,7 @@ function CurrentOrder() {
       console.error(`loadPositionDataAction exception: ${e}`)
     }).finally(() => setShowLoading(false))
 
-  }, [walletInfo]);
+  }, [walletInfo.tradeDataTick]);
 
   useEffect(() => {
     const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
