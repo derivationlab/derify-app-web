@@ -1,38 +1,38 @@
 import { getKLineData } from '../api/kdata'
-import {numConvert, Token} from '@/utils/contractUtil'
+import { numConvert, Token } from '@/utils/contractUtil'
 
-export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm')]
-                                       , values = [[0,0,0,0]], curPrice = 0
-                                       , bar = '15m'}) {
+export function buildEchartsOptions({ categoryData = [(new Date()).Format('hh:mm')]
+  , values = [[0, 0, 0, 0]], curPrice = 0
+  , bar = '15m' }) {
 
   let min = values[0][3]
   let max = values[0][2]
-  if(values.length > 0){
+  if (values.length > 0) {
     values[values.length - 1][1] = curPrice;
   }
 
   values.forEach(item => {
-    if(item[3] > 0){
+    if (item[3] > 0) {
       min = min === 0 ? item[3] : Math.min(item[3], min)
     }
 
-    if(item[2] > 0){
+    if (item[2] > 0) {
       max = Math.max(item[2], max)
     }
 
   })
   curPrice = numConvert(curPrice, 0, 2)
-  if(curPrice > 0) {
+  if (curPrice > 0) {
     max = Math.max(curPrice, max)
     min = Math.min(curPrice, min)
   }
 
-  max = max + (max - min)/10
-  min = min - (max - min)/10
+  max = max + (max - min) / 10
+  min = min - (max - min) / 10
 
 
   const distance = 10
-  const rightOffset = ((curPrice+"").length) * 7
+  const rightOffset = ((curPrice + "").length) * 7
 
   return {
     darkMode: true,
@@ -52,7 +52,13 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
       right: rightOffset,
       bottom: '10%'
     },
-    dataZoom: [],
+    dataZoom: [
+      {
+        type: 'inside',
+        start: 50,
+        end: 100
+      },
+    ],
     xAxis: {
       type: 'category',
       data: categoryData,
@@ -83,7 +89,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
       },
       splitLine: {
         show: true,
-        lineStyle:{
+        lineStyle: {
           color: ['rgba(255,255,255, 0.1)'],
           width: 1
         }
@@ -107,13 +113,13 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
           data: [
             [
               {
-                name: curPrice+'',
+                name: curPrice + '',
                 coord: [0, curPrice],
                 symbolSize: 10,
                 label: {
                   show: categoryData.length > 1,
                   color: '#fff',
-                  backgroundColor:'#EA446B',
+                  backgroundColor: '#EA446B',
                   position: 'end',
                   distance: distance
                 },
@@ -124,7 +130,7 @@ export function buildEchartsOptions ({categoryData = [(new Date()).Format('hh:mm
                 }
               },
               {
-                name: curPrice+'',
+                name: curPrice + '',
                 coord: [categoryData.length - 1, curPrice],
                 symbolSize: 10,
                 label: {
@@ -153,9 +159,9 @@ function getTokenInstIdByToken(token) {
   return Token[token]
 }
 
-export default async function getEchartsOptions({token, bar, after, before, limit, curPrice}) {
-  const data = await getKLineData({instId: getTokenInstIdByToken(token), bar, after, before, limit})
-  return buildEchartsOptions({...splitData(data, bar), curPrice, bar})
+export default async function getEchartsOptions({ token, bar, after, before, limit, curPrice }) {
+  const data = await getKLineData({ instId: getTokenInstIdByToken(token), bar, after, before, limit })
+  return buildEchartsOptions({ ...splitData(data, bar), curPrice, bar })
 }
 
 const barDateFmtMap = {
@@ -169,11 +175,11 @@ const barDateFmtMap = {
   '1W': 'MM-dd',
   '1M': 'yyyy-MM'
 }
-function splitData (rawData, bar) {
+function splitData(rawData, bar) {
   const categoryData = []
   const values = []
 
-  rawData.sort((o1, o2) =>{
+  rawData.sort((o1, o2) => {
     return parseInt(o1[0]) - parseInt(o2[0]);
   });
 
@@ -185,7 +191,7 @@ function splitData (rawData, bar) {
     //[open, close, highest, lowest]
 
     let open = rawData[i][0];
-    if(i > 0 && rawData[i - 1][3] > 0) {
+    if (i > 0 && rawData[i - 1][3] > 0) {
       open = rawData[i - 1][3];
     }
 
@@ -197,7 +203,7 @@ function splitData (rawData, bar) {
     let highest = Math.max(open, close, rawData[i][1], rawData[i][2]);
     let lowest = Math.min(open, close, rawData[i][1], rawData[i][2]);
 
-    values.push([open,close,rawData[i][1],rawData[i][2]])
+    values.push([open, close, rawData[i][1], rawData[i][2]])
   }
 
 

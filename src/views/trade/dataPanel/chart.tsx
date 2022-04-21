@@ -43,7 +43,8 @@ const Chart: React.FC<ChartModalProps> = props => {
       }).catch((e) => {
         console.log(e)
     })
-  }, [chartRef]);
+  }, []);
+
 
   const updateCandleLine = useCallback(() => {
 
@@ -70,30 +71,29 @@ const Chart: React.FC<ChartModalProps> = props => {
   },[token,bar,after,before,limit,curPrice])
 
   const onWheel = (e:WheelEvent) => {
-    e.stopPropagation();
+    // e.stopPropagation();
+    // if(!limit){
+    //   limit = (35).toString();
+    // }
 
-    if(!limit){
-      limit = (35).toString();
-    }
+    // if(e.deltaY > 1){
 
-    if(e.deltaY > 1){
+    //   if(parseInt(limit) > 300){
+    //     return;
+    //   }
 
-      if(parseInt(limit) > 300){
-        return;
-      }
+    //   limit = (parseInt(limit) + 1).toString();
+    // }else if(e.deltaY < -1){
+    //   if(parseInt(limit) < 10){
+    //     return;
+    //   }
 
-      limit = (parseInt(limit) + 1).toString();
-    }else if(e.deltaY < -1){
-      if(parseInt(limit) < 10){
-        return;
-      }
+    //   limit = (parseInt(limit) -1 ).toString();
+    // }else{
+    //   return;
+    // }
 
-      limit = (parseInt(limit) -1 ).toString();
-    }else{
-      return;
-    }
-
-    updateChartKlineData(token,bar,after,before,limit,curPrice);
+    // updateChartKlineData(token,bar,after,before,limit,curPrice);
   }
 
   let dragStartEvent:MouseEvent|null = null;

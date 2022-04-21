@@ -3,8 +3,6 @@ import { useWindowSize, useDebounce } from "react-use";
 import * as echarts from "echarts/core";
 import { CandlestickChart, LineChart } from "echarts/charts";
 
-import ContractModel from "@/store/modules/contract"
-
 import {
   ToolboxComponent,
   TitleComponent,
@@ -15,8 +13,6 @@ import {
 } from "echarts/components";
 
 import { CanvasRenderer } from "echarts/renderers";
-import {ModalProps} from "antd/es/modal";
-import {EChartsType} from "echarts/types/dist/shared";
 
 echarts.use([
   TitleComponent,
@@ -72,7 +68,7 @@ const CommonCharts: React.FC<CommonChartsProps> = forwardRef((props,ref) => {
       );
     }
 
-    if(options){
+    if (options) {
       chartInstance.setOption(options);
     }
 
