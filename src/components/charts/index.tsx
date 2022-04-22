@@ -71,8 +71,6 @@ const CommonCharts: React.FC<CommonChartsProps> = forwardRef((props,ref) => {
     if (options) {
       chartInstance.setOption(options);
     }
-
-
   };
 
   useEffect(() => {
