@@ -70,9 +70,17 @@ const Chart: React.FC<ChartModalProps> = props => {
     updateChartKlineData(token,bar,after,before,limit,curPrice);
   },[token,bar,after,before,limit,curPrice])
 
-  const onWheel = (e: WheelEvent) => {
-//     console.log(e, limit);
 
+  const [updateTicket, setUpdateTicket] = React.useState(Date.now());
+  useDebounce(
+    () => {
+      updateChartKlineData(token,bar,after,before,limit,curPrice);
+    },
+    2000,
+    [updateTicket]
+  );
+
+  const onWheel = (e: WheelEvent) => {
     // e.stopPropagation();
     if(!limit){
       limit = (35).toString();
@@ -94,10 +102,8 @@ const Chart: React.FC<ChartModalProps> = props => {
     }else{
       return;
     }
-
-    updateChartKlineData(token,bar,after,before,limit,curPrice);
+    setUpdateTicket(Date.now())
   }
-
 
   let dragStartEvent:MouseEvent|null = null;
   const onMouseDown = (e:MouseEvent) => {
