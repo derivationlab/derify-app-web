@@ -33,7 +33,6 @@ export function buildEchartsOptions({ categoryData = [(new Date()).Format('hh:mm
 
   const distance = 10
   const rightOffset = ((curPrice + "").length) * 7
-
   return {
     darkMode: true,
     tooltip: {
@@ -41,6 +40,9 @@ export function buildEchartsOptions({ categoryData = [(new Date()).Format('hh:mm
       trigger: 'axis',
       axisPointer: {
         type: 'cross'
+      },
+      formatter: function (param) {
+        console.log(`====> param :`, param)
       }
     },
     legend: {
@@ -56,7 +58,8 @@ export function buildEchartsOptions({ categoryData = [(new Date()).Format('hh:mm
       {
         type: 'inside',
         start: 50,
-        end: 100
+        end: 100,
+        filterMode: 'none'
       },
     ],
     xAxis: {
@@ -111,38 +114,39 @@ export function buildEchartsOptions({ categoryData = [(new Date()).Format('hh:mm
           symbol: ['none', 'none'],
           show: categoryData.length > 1,
           data: [
-            [
-              {
-                name: curPrice + '',
-                coord: [0, curPrice],
-                symbolSize: 10,
-                label: {
-                  show: categoryData.length > 1,
-                  color: '#fff',
-                  backgroundColor: '#EA446B',
-                  position: 'end',
-                  distance: distance
-                },
-                emphasis: {
-                  label: {
-                    show: false
-                  }
-                }
-              },
-              {
-                name: curPrice + '',
-                coord: [categoryData.length - 1, curPrice],
-                symbolSize: 10,
-                label: {
-                  show: false
-                },
-                emphasis: {
-                  label: {
-                    show: false
-                  }
-                }
-              }
-            ]
+            { name: '', yAxis: curPrice },
+            // [
+            //   {
+            //     name: curPrice + '',
+            //     coord: [0, curPrice],
+            //     symbolSize: 10,
+            //     label: {
+            //       show: categoryData.length > 1,
+            //       color: '#fff',
+            //       backgroundColor: '#EA446B',
+            //       position: 'end',
+            //       distance: distance
+            //     },
+            //     emphasis: {
+            //       label: {
+            //         show: false
+            //       }
+            //     }
+            //   },
+            //   {
+            //     name: curPrice + '',
+            //     coord: [categoryData.length - 1, curPrice],
+            //     symbolSize: 10,
+            //     label: {
+            //       show: false
+            //     },
+            //     emphasis: {
+            //       label: {
+            //         show: false
+            //       }
+            //     }
+            //   }
+            // ]
           ]
         }
       }
@@ -200,8 +204,8 @@ function splitData(rawData, bar) {
     //   close = rawData[i + 1][0];
     // }
 
-    let highest = Math.max(open, close, rawData[i][1], rawData[i][2]);
-    let lowest = Math.min(open, close, rawData[i][1], rawData[i][2]);
+    // let highest = Math.max(open, close, rawData[i][1], rawData[i][2]);
+    // let lowest = Math.min(open, close, rawData[i][1], rawData[i][2]);
 
     values.push([open, close, rawData[i][1], rawData[i][2]])
   }

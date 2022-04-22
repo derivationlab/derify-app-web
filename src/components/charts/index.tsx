@@ -66,6 +66,7 @@ const CommonCharts: React.FC<CommonChartsProps> = forwardRef((props,ref) => {
       chartInstance = echarts.init(
         chartDom.current as unknown as HTMLDivElement
       );
+
     }
 
     if (options) {
