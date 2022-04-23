@@ -15,6 +15,7 @@ import {TransferOperateType} from "@/utils/types";
 import {getUSDTokenName} from "@/config";
 import notice from "@/assets/images/notice.png";
 import Button1 from "@/components/buttons/borderButton";
+import Percent from "@/components/percent";
 import ModalCancelOrder from '../modal/cancelOrder'
 import ModalClosePostion from '../modal/closePosition'
 const { Option } = Select;
@@ -380,20 +381,19 @@ function Operation() {
           </div>
       </div>      
 
-      <div className="percents">
-        <div className="per">25%</div>
-        <div className="per">50%</div>
-        <div className="per">75%</div>
-        <div className="per last">100%</div>
-      </div>
+      <Percent />
 
       <div className="btn-group">
-        <div className="btn long">
+        <div className="btn long" onClick={() => {
+          setCloseType('allOrder');
+        }}>
           <div className="type">long</div>
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
         </div>
-        <div className="btn">
+        <div className="btn" onClick={() => {
+          setShowClosePosition(true)
+        }}>
           <div className="type">short</div>
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
@@ -421,9 +421,16 @@ function Operation() {
 
       {
         showClosePosition &&
-        <ModalClosePostion  close={() => {
-          setShowClosePosition(false);
-        }}  />
+        <ModalClosePostion  
+          operate="select"
+          type={"Short"} 
+          confirm={() => {
+            setShowClosePosition(false);
+          }}
+          close={() => {
+            setShowClosePosition(false);
+          }} 
+          />
       }
 
       <ComModal
