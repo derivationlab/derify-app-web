@@ -18,8 +18,8 @@ import Button1 from "@/components/buttons/borderButton";
 import Percent from "@/components/percent";
 import ModalCancelOrder from '../modal/cancelOrder'
 import ModalClosePostion from '../modal/closePosition'
+import ModalWallet from '../modal/wallet'
 const { Option } = Select;
-
 
 export declare type OpenConfirmData = {
   openType: OpenType,
@@ -32,10 +32,10 @@ export declare type OpenConfirmData = {
 }
 
 function Operation() {
-
   const dispatch = useDispatch();
   const [closeType, setCloseType] = useState<'' | 'order' | 'allOrder' | 'allPosition'>('');
-  const [showClosePosition, setShowClosePosition] = useState(true);
+  const [walletType, setWalletType] = useState<'' | 'withdraw' | 'deposit'>('');
+  const [showPositionModal, setShowPositionModal] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -286,7 +286,7 @@ function Operation() {
           <div className="btns">
             <Button1
               click={() => {
-                console.log(1);
+                setWalletType('deposit')
               }}
               fill={true}
               className="deposit"
@@ -294,7 +294,7 @@ function Operation() {
             />
             <Button1
               click={() => {
-                console.log(1);
+                setWalletType('withdraw')
               }}
               className="withdaw"
               text="Withdaw"
@@ -392,7 +392,7 @@ function Operation() {
           <div className="t">APY</div>
         </div>
         <div className="btn" onClick={() => {
-          setShowClosePosition(true)
+          setShowPositionModal(true)
         }}>
           <div className="type">short</div>
           <div className="num"> 12.34%</div>
@@ -405,6 +405,18 @@ function Operation() {
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
       </div>
+
+      {
+        walletType &&  <ModalWallet 
+          confirm={() => {
+            console.log('confirm')
+          }}
+          address="address"
+          type={walletType} 
+          close={() => {
+           setWalletType('')
+          }} />
+      }
 
       {
         // modal - cancal order 
@@ -420,17 +432,18 @@ function Operation() {
       }
 
       {
-        showClosePosition &&
-        <ModalClosePostion  
-          operate="select"
-          type={"Short"} 
-          confirm={() => {
-            setShowClosePosition(false);
-          }}
-          close={() => {
-            setShowClosePosition(false);
-          }} 
-          />
+        showPositionModal &&
+          <ModalClosePostion  
+            operate=""
+            title="Open Position"
+            type={"2-Way"} 
+            confirm={() => {
+              setShowPositionModal(false);
+            }}
+            close={() => {
+              setShowPositionModal(false);
+            }} 
+            />
       }
 
       <ComModal

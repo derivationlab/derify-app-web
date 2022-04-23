@@ -10,8 +10,9 @@ import "./index.less";
 export interface ClosePositionProps {
   close: () => void;
   confirm: () => void;
-  type: "Short" | "Long";
+  type: "Short" | "Long" | "2-Way";
   operate: "select" | "";
+  title?: string;
 }
 
 export interface ClosePositionState {
@@ -39,7 +40,9 @@ export default class ClosePositionModal extends React.Component<
     return (
       <Modal className="close-position-modal">
         <div className="title">
-          Close Position
+          {
+            this.props.title || 'Close Position'
+          }
           <img src={close} alt="" onClick={this.props.close} />
         </div>
 
@@ -85,20 +88,34 @@ export default class ClosePositionModal extends React.Component<
                   <span>12.34% </span> APY.
                 </div>
               </div>
-              <div className="num">
-                <span className="big-num">22222</span>
-                <span className="small-num">.23</span>
-                <div className="p">Limit Price</div>
+
+              {this.props.type === "2-Way" ? (
+                <div className="num">Market Price </div>
+              ) : (
+                <div className="num">
+                  <span className="big-num">22222</span>
+                  <span className="small-num">.23</span>
+                  <div className="p">Limit Price</div>
+                </div>
+              )}
+            </div>
+
+            <div className="item item0 item2">
+              <span className="left">Volume</span>
+              <div className="rights">
+                <div className="l">
+                  <Type t={"Long"} />
+                  <span className="n">12.23</span>
+                  <span className="t">BTC</span>
+                </div>
+                <div className="l">
+                  <Type t={"Short"} />
+                  <span className="n">12.23</span>
+                  <span className="t">BTC</span>
+                </div>
               </div>
             </div>
 
-            <div className="item item0">
-              <span>Volume</span>
-              <div>
-                <span className="n">12.23</span>
-                <span className="t">BTC</span>
-              </div>
-            </div>
             <div className="item">
               <span>PCF</span>
               <div>

@@ -28,14 +28,18 @@ const Input: React.FunctionComponent<InputProps> = ({
       {label && <div className="label">{label}</div>}
       <div className="round-input">
         <input type="text" value={value} onChange={onChange} />
-        <div className="extra">
-          <span className="name">{unit}</span>
-          {btnName && (
-            <span className="operate" onClick={btnClick}>
+        {btnName ? (
+          <div className="extras">
+            <span className="unit">{unit}</span>
+            <span className="btn" onClick={btnClick}>
               {btnName}
             </span>
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="extra">
+            <span className="name">{unit}</span>
+          </div>
+        )}
       </div>
     </div>
   );
