@@ -15,6 +15,7 @@ import {TransferOperateType} from "@/utils/types";
 import {getUSDTokenName} from "@/config";
 import notice from "@/assets/images/notice.png";
 import Button1 from "@/components/buttons/borderButton";
+import ModalCancelOrder from '../modal/cancelOrder'
 const { Option } = Select;
 
 
@@ -31,6 +32,8 @@ export declare type OpenConfirmData = {
 function Operation() {
 
   const dispatch = useDispatch();
+  const [closeType, setCloseType] = useState<'' | 'order' | 'allOrder' | 'allPosition'>('allPosition');
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [openType, setOpenType] = useState<OpenType>(OpenType.MarketOrder);
@@ -401,9 +404,18 @@ function Operation() {
           <div className="t">APY</div>
       </div>
 
-     
-
-   
+      {
+        // modal - cancal order 
+        closeType && <ModalCancelOrder 
+          type={closeType}
+          confirm={() => {
+            setCloseType('')
+          }}
+          close={() => {
+            setCloseType('')
+          }}
+        />
+      }
 
       <ComModal
         visible={isModalVisible}
@@ -413,6 +425,7 @@ function Operation() {
           setIsModalVisible(false);
         }}
       />
+
       <Transfers operateType={TransferOperateType.deposit} closeModal={() => setModalVisible(false)} visible={modalVisible}  onCancel={()=>setModalVisible(false)}/>
 
     </Row>
