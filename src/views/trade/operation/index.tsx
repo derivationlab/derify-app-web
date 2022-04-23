@@ -16,6 +16,7 @@ import {getUSDTokenName} from "@/config";
 import notice from "@/assets/images/notice.png";
 import Button1 from "@/components/buttons/borderButton";
 import ModalCancelOrder from '../modal/cancelOrder'
+import ModalClosePostion from '../modal/closePosition'
 const { Option } = Select;
 
 
@@ -32,7 +33,8 @@ export declare type OpenConfirmData = {
 function Operation() {
 
   const dispatch = useDispatch();
-  const [closeType, setCloseType] = useState<'' | 'order' | 'allOrder' | 'allPosition'>('allPosition');
+  const [closeType, setCloseType] = useState<'' | 'order' | 'allOrder' | 'allPosition'>('');
+  const [showClosePosition, setShowClosePosition] = useState(true);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -415,6 +417,13 @@ function Operation() {
             setCloseType('')
           }}
         />
+      }
+
+      {
+        showClosePosition &&
+        <ModalClosePostion  close={() => {
+          setShowClosePosition(false);
+        }}  />
       }
 
       <ComModal

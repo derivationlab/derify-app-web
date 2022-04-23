@@ -2,6 +2,7 @@ import * as React from "react";
 import close from "@/assets/images/close1.png";
 import notice from "@/assets/images/notice.png";
 import edit from "@/assets/images/edit1.png";
+import Type from "../type";
 import "./index.less";
 
 export interface ITradePosProps {}
@@ -22,10 +23,7 @@ export class TradePosition extends React.Component<
       <div className="trade-item trade-postion-item">
         <div className="header">
           <span className="title">BTC-USDT</span>
-          <span className="type">
-            Long
-            <span className="type-inner">10x</span>
-          </span>
+          <Type t="Long" c={10} />
           <span className="close red">
             close
             <img src={close} alt="" />
@@ -87,10 +85,7 @@ export class TradeOrder extends React.Component<
       <div className="trade-item trade-order-item">
         <div className="header">
           <span className="title">BTC-USDT</span>
-          <span className="type">
-            Long
-            <span className="type-inner">10x</span>
-          </span>
+          <Type t="Long" c={10} />
           <span className="close red">
             close
             <img src={close} alt="" />
@@ -129,10 +124,7 @@ export class TradeHistory extends React.Component<
       <div className="trade-item trade-history-item">
         <div className="header">
           <span className="title">BTC-USDT</span>
-          <span className="type">
-            Long
-            <span className="type-inner">10x</span>
-          </span>
+          <Type t="Long" c={10} />
           <span className="close red">
             close
             <img src={close} alt="" />
@@ -153,7 +145,7 @@ export class TradeHistory extends React.Component<
           <Item title="Volume (Base)" num="4513.12" u="BTC" />
           <Item title="Volume (Quoted)" num="23124.32" />
           <Item title="Price" num="212313.23 " />
-          <Item title="Time" num="2022-12-31 23:59:59" u="1 minute ago"/>
+          <Item title="Time" num="2022-12-31 23:59:59" u="1 minute ago" />
         </div>
       </div>
     );
