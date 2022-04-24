@@ -1,5 +1,5 @@
-@import '~antd/dist/antd.less';
-@import './assets/styles/reset.less';
+@import "~antd/dist/antd.less";
+@import "./assets/styles/reset.less";
 
 //common class
 .main-block {
@@ -14,21 +14,21 @@
 }
 
 .main-red {
-  color: @main-red
+  color: @main-red;
 }
 
 .main-green {
-  color: @main-green
+  color: @main-green;
 }
 
 .main-white {
   color: @main-white;
 }
-.ant-modal-body{
+.ant-modal-body {
   padding-top: 0;
   font-size: 12px;
 }
-.ant-spin-blur::after{
+.ant-spin-blur::after {
   opacity: 0;
 }
 
@@ -37,8 +37,8 @@
   s: 8px;
   m: 12px;
   l: 24px;
-  max:48px;
-}
+  max: 48px;
+};
 
 each(@margin, {
     .margin-b-@{key} {
@@ -48,22 +48,30 @@ each(@margin, {
 
 );
 
-
-
-
-
-
 //other
 .derify-pointer {
   cursor: pointer;
 }
 
-.derify-link{
+.derify-link {
   border-bottom: 1px solid @primary-color;
-  color:  @primary-color;
+  color: @primary-color;
   cursor: pointer;
 }
 
 .broker-connect-btn {
   width: 140px !important;
+}
+
+.global-tooltip-light {
+  .ant-tooltip-inner {
+    background: #fff;
+    color: #222;
+    box-shadow: 0px 0px 12px rgb(0 0 0 / 25%);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .ant-tooltip-arrow-content::before {
+    background: #fff;
+  }
 }

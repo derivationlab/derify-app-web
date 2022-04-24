@@ -1,7 +1,6 @@
 import * as React from "react";
-import close from "@/assets/images/close.png";
 import Button from "@/components/buttons/borderButton";
-import Modal from "@/components/modal";
+import { ModalWithTitle } from "@/components/modal";
 import Type from "@/components/type";
 import Input from "@/components/input";
 import Percent from "@/components/percent";
@@ -38,14 +37,11 @@ export default class ClosePositionModal extends React.Component<
 
   render() {
     return (
-      <Modal className="close-position-modal">
-        <div className="title">
-          {
-            this.props.title || 'Close Position'
-          }
-          <img src={close} alt="" onClick={this.props.close} />
-        </div>
-
+      <ModalWithTitle
+        title={this.props.title || "Close Position"}
+        close={this.props.close}
+        className="close-position-modal"
+      >
         {this.props.operate === "select" && (
           <div className="list">
             <div className="card">
@@ -132,13 +128,14 @@ export default class ClosePositionModal extends React.Component<
             </div>
           </div>
         )}
+
         <Button
           text="Confirm"
           click={this.props.confirm}
           fill={true}
           className="close-position-btn"
         />
-      </Modal>
+      </ModalWithTitle>
     );
   }
 }

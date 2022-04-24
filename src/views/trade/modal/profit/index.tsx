@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import closeImg from "@/assets/images/close.png";
 import Button from "@/components/buttons/borderButton";
-import Modal from "@/components/modal";
+import { ModalWithTitle } from "@/components/modal";
 import Input from "@/components/input";
 import Type from "@/components/type";
 import "./index.less";
@@ -14,13 +13,9 @@ interface IProfitModalProps {
 export default function ProfitModal({ close, confirm }: IProfitModalProps) {
   const [value, setValue] = useState("");
   const [value1, setValue1] = useState("");
-  return (
-    <Modal className="trade-profit-modal">
-      <div className="title">
-        Take Profit / Stop Loss
-        <img src={closeImg} alt="" onClick={close} />
-      </div>
 
+  return (
+    <ModalWithTitle className="trade-profit-modal" close={close} title={'Take Profit / Stop Loss'}>
       <div className="list">
         <div className="card">
           <div className="t">
@@ -67,6 +62,6 @@ export default function ProfitModal({ close, confirm }: IProfitModalProps) {
         fill={true}
         className="trade-profit-btn"
       />
-    </Modal>
+    </ModalWithTitle>
   );
 }

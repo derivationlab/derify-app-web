@@ -1,6 +1,5 @@
 import * as React from "react";
-import Modal from "@/components/modal";
-import close from "@/assets/images/close.png";
+import Modal, { ModalWithTitle } from "@/components/modal";
 import Button1 from "@/components/buttons/borderButton";
 import "./index.less";
 
@@ -38,11 +37,11 @@ export default class CancelOrder extends React.Component<
   render() {
     const { confirm, type } = this.props;
     return (
-      <Modal className="trade-cancal-order">
-        <div className="title">
-          {dataMap[type].title}
-          <img src={close} alt="" onClick={this.props.close} />
-        </div>
+      <ModalWithTitle
+        className="trade-cancal-order"
+        title={dataMap[type].title}
+        close={this.props.close}
+      >
         <div className="text">{dataMap[type].content}</div>
         <div className="btn">
           <Button1
@@ -52,7 +51,7 @@ export default class CancelOrder extends React.Component<
             className="cancal-order-btn"
           />
         </div>
-      </Modal>
+      </ModalWithTitle>
     );
   }
 }

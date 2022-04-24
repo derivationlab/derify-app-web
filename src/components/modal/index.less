@@ -9,12 +9,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  .content {
+  > .content {
     height: 740px;
     width: 472px;
     border-radius: 48px;
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
     background: #fff;
     color: #222;
+  }
+  .title {
+    text-align: center;
+    height: 104px;
+    line-height: 104px;
+    width: 100%;
+    font-size: 18px;
+    position: relative;
+    img {
+      position: absolute;
+      width: 32px;
+      top: 36px;
+      right: 36px;
+      cursor: pointer;
+    }
   }
 }

@@ -1,6 +1,6 @@
 import * as React from "react";
+import Notice1 from '../notice'
 import close from "@/assets/images/close1.png";
-import notice from "@/assets/images/notice.png";
 import edit from "@/assets/images/edit1.png";
 import Type from "../type";
 import "./index.less";
@@ -156,7 +156,7 @@ function Notice(props: { text: string }) {
   return (
     <div className="line line-notice">
       <span>{props.text}</span>
-      <img src={notice} alt="" className="notice" />
+      <Notice1 title={props.text}/>
     </div>
   );
 }

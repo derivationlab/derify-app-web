@@ -361,7 +361,9 @@ function Operation() {
         </div>
       </div>
 
-      <div className="btn2">
+      <div className="btn2" onClick={() => {
+        setShowProfitModal(true)
+      }}> 
           2-Way
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
