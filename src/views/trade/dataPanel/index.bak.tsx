@@ -99,6 +99,7 @@ function DataPanel() {
   return (
     <Row className="main-block data-panel-container">
       <Col className="list">
+
         <div className={`types ${showList ? 'types-active' : ''}`} onClick={() => {
           // setIsModalVisible(true);
           setShowList(!showList)
@@ -143,6 +144,81 @@ function DataPanel() {
             13.57% <span>Long</span> / 56.78% <span>Short</span> 
           </div>
         </div>
+      <Col
+        flex="100%"
+        className="derify-pointer"
+        onClick={() => {
+          setIsModalVisible(true);
+        }}
+      >
+        <span>{curTokenPair.name}</span>
+        <RightOutlined />
+      </Col>
+      <Col flex="100%">
+        <Row justify={"space-between"} align="bottom">
+          <Col>
+            <Row className="trade-data">
+              <Col><Statistic className={curTokenPair.percent
+              < 0 ? 'main-red' : 'main-green'} value={fck(curTokenPair.num,0,2)}/></Col>
+              <Col>
+                <span className={curTokenPair.percent
+                < 0 ? 'red' : 'green'}>{amountFormt(curTokenPair.percent, 2,true, "--",0)}%</span>
+              </Col>
+            </Row>
+          </Col>
+          <Col className="text-right">
+            <Row>
+              <Col flex="100%">
+                <Space size={4}>
+                  <Popover
+                    placement="bottom"
+                    content={
+                      <Row>
+                        <Col className="title" flex="100%">
+                          {intl("Trade.OpenPosition.Hint.PCFRate")}
+                        </Col>
+                        <Col>
+                          {$t("Trade.OpenPosition.Hint.PCFRateDetail",{link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/position-change-fee" rel="noreferrer">{chunks}</a>})}
+                        </Col>
+                      </Row>
+                    }
+                    trigger="hover"
+                  >
+                    <FormattedMessage id="Trade.OpenPosition.Kline.PCFRate" />:
+                    <span className={pcRate < 0 ? "main-red" :"main-green"}> {amountFormt(pcRate, 4,true,"0",-6)}%</span>
+                    <IconFont type="icon-wenhao" />
+                  </Popover>
+                </Space>
+              </Col>
+              <Col flex="100%">
+                <Space size={4}>
+                  {intl("Trade.OpenPosition.Kline.PMAPY")}:
+                  <span>
+                    <span className="main-green">{$t('Trade.OpenPosition.Kline.Long')}</span> {amountFormt(curTokenPair.longPmrRate,2,false,"--", 0)}%/
+                    <span className="main-red">{$t('Trade.OpenPosition.Kline.Short')}</span> {amountFormt(curTokenPair.shortPmrRate,2,false,"--", 0)}%
+                  </span>
+                  <Popover
+                    placement="bottom"
+                    content={
+                      <Row>
+                        <Col className="title" flex="100%">
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPY') }
+                        </Col>
+                        <Col>
+                          { $t('Trade.OpenPosition.Hint.PositionMiningAPYDetail', {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/position-mining" rel="noreferrer">{chunks}</a>}) }
+                        </Col>
+                      </Row>
+                    }
+                    trigger="hover"
+                  >
+                    <IconFont type="icon-wenhao" />
+                  </Popover>
+                </Space>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+>>>>>>> main
       </Col>
 
 

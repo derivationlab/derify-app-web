@@ -85,7 +85,7 @@ const MyPosition: React.FC = () => {
       console.error(`loadPositionDataAction exception: ${e}`)
     }).finally(() => setShowLoading(false))
 
-  }, [walletInfo])
+  }, [walletInfo.tradeDataTick])
 
   useEffect(() => {
     loadMyPositionData()
@@ -309,7 +309,7 @@ const MyPosition: React.FC = () => {
               <Col className="title" flex="100%">
                 {formatMessage({ id: "Trade.MyPosition.Hint.Risk" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.RiskDetail", {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">{chunks}</a>})}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.RiskDetail", {link: (chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation" rel="noreferrer">{chunks}</a>})}</Col>
             </Row>
           }
           trigger="hover"
@@ -338,7 +338,7 @@ const MyPosition: React.FC = () => {
               <Col className="title" flex="100%">
                 {formatMessage({ id: "Trade.MyPosition.Hint.LiquidationPrice" })}
               </Col>
-              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail", {link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation">{chunks}</a>})}</Col>
+              <Col>{$t("Trade.MyPosition.Hint.LiquidationPriceDetail", {link:(chunks:string) => <a target="_blank" href="https://docs.derify.finance/whitepaper/mechanism/risk-control/automatic-reduction-and-mandatory-liquidation" rel="noreferrer">{chunks}</a>})}</Col>
             </Row>
           }
           trigger="hover"
@@ -393,7 +393,7 @@ const MyPosition: React.FC = () => {
           setModalVisible(true)
           setClickedTPSLPostion(record)
         }}>
-          <Col className="derify-pointer my-position-tp-sl-icon">
+          <Col className="my-position-tp-sl-icon derify-pointer">
             <IconFont type="icon-shangxiaqiehuan" />
           </Col>
           <Col>

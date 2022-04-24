@@ -155,7 +155,7 @@ function Operation() {
       console.error("getTraderOpenUpperBoundAction",e);
     }).finally(()=>{});
 
-  }, [walletInfo.selectedAddress,leverage,curPair, openType, token]);
+  }, [walletInfo.tradeDataTick, walletInfo.selectedAddress,leverage,curPair, openType, token]);
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
     const maxSize = getMaxSize(traderOpenUpperBound, unit);

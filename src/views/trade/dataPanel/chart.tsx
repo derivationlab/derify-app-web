@@ -19,9 +19,9 @@ export const timeOptions: Array<{ label: string; value: string, time: number }> 
 interface ChartModalProps extends ModalProps {
   token: string;
   bar: string;
-  after?: string;
-  before?: string;
-  limit?: string;
+  // after?: string;
+  // before?: string;
+  // limit?: string;
   curPrice: string|number
   closeModal?:()=>void
 }
@@ -31,17 +31,23 @@ const Chart: React.FC<ChartModalProps> = props => {
   const chartRef = useRef<any>()
   const chartContainer = useRef<any>()
 
-  let {token,bar,after,before,limit,curPrice} = props;
+  let { token, bar, curPrice } = props;
+  const [limit, setLimit] = useState(35)
+  const nowStr =  (new Date()).getTime()
+  const [after, setAfter] = useState(nowStr)
+  const timeGap = timeOptions.find((item) => item.value === bar) || timeOptions[0] ;
 
-  const updateChartKlineData = useCallback((token,bar,after,before,limit,curPrice) => {
+  const beforeStr = (after - timeGap.time * (limit || 1))
+  const [before, setBefore] = useState(beforeStr)
 
+  const updateChartKlineData = (token: string, bar: string, after: number, before: number, limit: number, curPrice: string | number) => {
     getEchartsOptions({token,bar,after,before,limit,curPrice})
       .then(chartRefoptions => {
         chartRef.current.setCharOptions(chartRefoptions)
       }).catch((e) => {
         console.log(e)
     })
-  }, [chartRef]);
+  }
 
   const updateCandleLine = useCallback(() => {
 
@@ -61,42 +67,36 @@ const Chart: React.FC<ChartModalProps> = props => {
     keyLineChartTime = setInterval(updateCandleLine, 15000);
   },[token,bar,after,before,limit,curPrice,updateCandleLine]);
 
+  useDebounce(
+    () => {
+      updateChartKlineData(token,bar,after,before,limit,curPrice);
+    },
+    500,
+    [token,bar,after,before,limit,curPrice]
+  );
 
 
-  useEffect(() => {
-    updateChartKlineData(token,bar,after,before,limit,curPrice);
-  },[token,bar,after,before,limit,curPrice])
-
-  const onWheel = (e:WheelEvent) => {
-    e.stopPropagation();
-
-    if(!limit){
-      limit = (35).toString();
-    }
-
+  const onWheel = (e: WheelEvent) => {
     if(e.deltaY > 1){
-
-      if(parseInt(limit) > 300){
+      if(limit > 300){
         return;
       }
 
-      limit = (parseInt(limit) + 1).toString();
+      setLimit(limit + 1)
+      setBefore(after - timeGap.time * (limit || 1))
     }else if(e.deltaY < -1){
-      if(parseInt(limit) < 10){
+      if(limit < 10){
         return;
       }
 
-      limit = (parseInt(limit) -1 ).toString();
+      setLimit(limit -1)
     }else{
       return;
     }
-
-    updateChartKlineData(token,bar,after,before,limit,curPrice);
   }
 
   let dragStartEvent:MouseEvent|null = null;
   const onMouseDown = (e:MouseEvent) => {
-
     if(e.buttons > 1){
       return;
     }
@@ -105,14 +105,10 @@ const Chart: React.FC<ChartModalProps> = props => {
   }
   const chartEle:HTMLDivElement = chartContainer.current;
 
-  const onMouseMove = (e:MouseEvent) => {
+  const onMouseMove = (e: MouseEvent) => {
     if(dragStartEvent == null){
       return;
     }
-    if(!limit){
-      limit = (35).toString();
-    }
-
     const deltaX = e.pageX - dragStartEvent.pageX;
 
     if(deltaX < 10){
@@ -126,27 +122,35 @@ const Chart: React.FC<ChartModalProps> = props => {
       return;
     }
 
-    let afterTimestamp = after ? parseInt(after) : (new Date()).getTime();
+    let afterTimestamp = after ? after : (new Date()).getTime();
 
-    afterTimestamp = afterTimestamp - Math.ceil(deltaX / chartEle.clientWidth * parseInt(limit) * timeOption.time);
+    afterTimestamp = afterTimestamp - Math.ceil(deltaX / chartEle.clientWidth * limit * timeOption.time);
 
-    after = afterTimestamp.toString();
+    setAfter(afterTimestamp)
 
-    updateChartKlineData(token,bar,after,before,limit,curPrice);
+    // updateChartKlineData(token,bar,after,before,limit,curPrice);
     dragStartEvent = e;
   }
 
-  const onMouseUp = (e:MouseEvent) => {
-    dragStartEvent = null;
+  const onMouseUp = (e: MouseEvent) => {
+    // dragStartEvent = null
+    const endX = e.pageX
+    const startX = dragStartEvent?.pageX || endX
+    const deltaX = endX - startX
+    if (deltaX <= 10) return;
+
+    const deltaTime = Math.ceil(deltaX / chartEle.clientWidth * limit * timeGap.time);
+    setBefore(before - deltaTime);
+    setAfter(after - deltaTime);
   }
 
-
   return (
-    <div className="charts-container" ref={chartContainer} onWheelCapture={onWheel}
-         onMouseUp={onMouseUp}
-         onMouseMove={onMouseMove}
-         onMouseDown={onMouseDown}>
-      <CommonCharts height={380} ref={chartRef}/>
+    <div className="charts-container" ref={chartContainer}
+        onWheelCapture={onWheel}
+        onMouseUp={onMouseUp}
+        onMouseDown={onMouseDown}
+    >
+      <CommonCharts height={380} ref={chartRef} />
     </div>);
 };
 export default Chart;
