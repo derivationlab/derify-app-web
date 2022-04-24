@@ -1,0 +1,126 @@
+.trade-item {
+  padding-left: 36px;
+  padding-right: 36px;
+  width: 944px;
+  height: 262px;
+  background: #fff;
+  border-radius: 36px;
+  margin-bottom: 12px;
+  .red {
+    color: #f64242;
+  }
+  .green {
+    color: #11be6b;
+  }
+  .header {
+    height: 80px;
+    color: #222222;
+    padding-top: 36px;
+    position: relative;
+  }
+  .title {
+    display: inline-block;
+    width: auto;
+    height: 20px;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 20px;
+    margin-right: 8px;
+  }
+  .close {
+    position: absolute;
+    right: 0;
+    top: 36px;
+    width: 80px;
+    font-size: 18px;
+    cursor: pointer;
+    img {
+      width: 20px;
+      margin-left: 4px;
+    }
+  }
+  .type {
+    display: inline-block;
+    width: 81px;
+    height: 20px;
+    background: linear-gradient(90deg, #52eaa1 0%, #11be6b 100%);
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 20px;
+    padding-left: 10px;
+    position: relative;
+    color: #fff;
+  }
+  .type-inner {
+    text-align: center;
+    width: 36px;
+    height: 16px;
+    line-height: 16px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background-color: #fff;
+    border-radius: 8px;
+    color: #11be6b;
+  }
+  .hr {
+    width: 100%;
+    height: 0px;
+    border-top: 2px dashed #e7e7e7;
+    margin: 12.5px 0;
+  }
+  .row {
+    display: flex;
+    flex-direction: row;
+    height: 60px;
+    color: #222;
+    .per {
+      font-family: sans-serif;
+    }
+    .edit {
+      height: 20px;
+      line-height: 20px;
+      display: inline-block;
+      font-size: 12px;
+      color: #e7446b;
+      cursor: pointer;
+      img {
+        width: 10px;
+        margin-left: 2px;
+      }
+    }
+    .data {
+      flex: 1;
+      font-size: 12px;
+      > div {
+        height: 20px;
+        line-height: 20px;
+      }
+      img {
+        width: 12px;
+        margin-left: 4px;
+      }
+      .num {
+        font-size: 16px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.trade-empty {
+  width: 100%;
+  height: 262px;
+  border-radius: 36px;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  color: #888;
+}
+
+.trade-order-item {
+  height: 176px;
+}

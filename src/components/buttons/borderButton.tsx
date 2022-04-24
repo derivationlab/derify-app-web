@@ -22,7 +22,7 @@ export default function BorderButton({
         className="border-btn"
         style={{
           textAlign: icon ? "inherit" : "center",
-          background: fill ? 'inherit' : '#fff'
+          background: fill ? "inherit" : "#fff",
         }}
       >
         {icon && (

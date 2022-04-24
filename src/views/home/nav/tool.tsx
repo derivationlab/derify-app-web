@@ -230,18 +230,17 @@ function Tool() {
     <Row align={"middle"} className="tool">
       <Col className="connect-btn">
         {isLogin ? (
-          <Popover
-            content={<Account {...{ account: account, blance: blance }} />}
-            trigger="click"
-          >
             <Button
+              onClick={() => {
+                //  <Account {...{ account: account, blance: blance }} />
+                setshowAccountModal(true);
+              }}
               className="account-wrapper"
               shape="round"
               type="primary"
             >
               <TextOverflowView text={selectedAddress||''} showPos={ShowPosEnum.mid} len={10}/>
             </Button>
-          </Popover>
         ) : (
 
           <BorderButton fill={true} 
