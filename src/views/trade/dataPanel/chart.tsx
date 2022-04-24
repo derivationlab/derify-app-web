@@ -1,7 +1,5 @@
 import React, {EventHandler, forwardRef, MouseEvent, useCallback, useEffect, useRef, useState, WheelEvent} from 'react';
-
 import CommonCharts from '@/components/charts';
-
 import getEchartsOptions, {buildEchartsOptions} from "@/utils/kline";
 import {ModalProps} from "antd/es/modal";
 import {useLocation} from "react-router-dom";

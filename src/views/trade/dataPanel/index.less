@@ -1,0 +1,211 @@
+.data-panel-container {
+  background: #f6f6f6;
+  border-radius: 48px;
+  padding: 12px;
+  .list {
+    height: 72px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+  .item {
+    height: 72px;
+    padding-top: 12px;
+    padding-left: 24px;
+    padding-right: 24px;
+    color: #222;
+    position: relative;
+    .t {
+      height: 20px;
+      line-height: 20px;
+      font-size: 16px;
+      img {
+        width: 12px;
+        margin-left: 4px;
+      }
+    }
+    .val {
+      font-size: 18px;
+      height: 26px;
+      line-height: 26px;
+      font-weight: 800;
+      margin-top: 2px;
+      span {
+        font-size: 12px;
+      }
+    }
+    .vl {
+      width: 2px;
+      height: 60px;
+      background: #fff;
+      right: 0;
+      top: 6px;
+      position: absolute;
+      border-radius: 1px;
+    }
+  }
+  .item0 {
+    margin-left: 12px;
+  }
+
+  .types {
+    width: fit-content;
+    height: 72px;
+    background: #fff;
+    border-radius: 36px;
+    padding-top: 12px;
+    padding-left: 36px;
+    padding-right: 36px;
+    position: relative;
+    border: 2px solid #fff;
+    cursor: pointer;
+    .t {
+      font-size: 18px;
+      color: #222;
+      display: flex;
+      height: 20px;
+      line-height: 20px;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .t img {
+      width: 12px;
+      height: 12px;
+      user-select: none;
+    }
+    .data {
+      height: 26px;
+      line-height: 26px;
+      margin-top: 2px;
+      color: #222;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      .num {
+        font-weight: 800;
+        font-size: 26px;
+      }
+      .num1 {
+        font-weight: 800;
+        font-size: 16px;
+        margin-right: 12px;
+        height: 16px;
+        line-height: 16px;
+      }
+      .per {
+        background: linear-gradient(90deg, #52eaa1 0%, #11be6b 100%);
+        border-radius: 10px;
+        display: inline-block;
+        font-size: 12px;
+        padding: 0 10px;
+        color: #fff;
+        height: 20px;
+        line-height: 20px;
+      }
+    }
+  }
+  .types-active {
+    border: 2px solid #e7446b;
+    .t,
+    .num,
+    .num1 {
+      color: #e7446b !important;
+    }
+  }
+  .types-list-wrapper {
+    position: relative;
+    width: 100%;
+    height: 0;
+  }
+  .types-list {
+    position: absolute;
+    width: 660px;
+    height: 312px;
+    background: #fff;
+    left: 0;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 36px;
+    z-index: 100;
+    top: 12px;
+    padding: 24px;
+    .search {
+      padding-left: 24px;
+      border: 2px solid #e7e7e7;
+      height: 48px;
+      box-sizing: border-box;
+      border-radius: 24px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      overflow: hidden;
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        img {
+          width: 20px;
+        }
+      }
+      input {
+        flex: 1;
+        border: none;
+        outline: none;
+        color: #222;
+      }
+    }
+    .lists {
+      margin-top: 12px;
+    }
+    .item {
+      height: 48px;
+      margin-bottom: 2px;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 16px;
+      &:hover {
+        background: #F7F7F7;
+      }
+      .t {
+        width: 140px;
+      }
+      .p {
+        width: 180px;
+        font-weight: bold;
+      }
+      .tag {
+        width: 102px;
+        font-size: 12px;
+        
+        span {
+          height: 20px;
+          line-height: 20px;
+          color: #fff;
+          background: linear-gradient(90deg, #52eaa1 0%, #11be6b 100%);
+          border-radius: 10px;
+          display: inline-block;
+          padding: 0 10px;
+        }
+        .red {
+          background: linear-gradient(90deg, #FF7171 0%, #F64242 100%);
+        }
+      }
+
+      .per {
+        flex: 1;
+        font-size: 16px;
+        text-align: right;
+        .n {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  .chart-wrapper {
+    background: #fff;
+    border-radius: 36px;
+    margin-top: 12px;
+  }
+}

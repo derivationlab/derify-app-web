@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
-import { Row, Col, Select, Button, Slider, Input } from "antd";
+import { Row, Col, Select, Button, Input } from "antd";
 import {FormattedMessage, useIntl} from "react-intl";
-
 import Transfers from "@/views/CommonViews/Transfer";
 import ComModal from "./comModal";
 import {fromContractUnit, numConvert, OpenType, SideEnum, toContractUnit, UnitTypeEnum} from "@/utils/contractUtil";
@@ -19,6 +18,7 @@ import Percent from "@/components/percent";
 import ModalCancelOrder from '../modal/cancelOrder'
 import ModalClosePostion from '../modal/closePosition'
 import ModalWallet from '../modal/wallet'
+import ModalProfit from '../modal/profit'
 const { Option } = Select;
 
 export declare type OpenConfirmData = {
@@ -36,6 +36,7 @@ function Operation() {
   const [closeType, setCloseType] = useState<'' | 'order' | 'allOrder' | 'allPosition'>('');
   const [walletType, setWalletType] = useState<'' | 'withdraw' | 'deposit'>('');
   const [showPositionModal, setShowPositionModal] = useState(false);
+  const [showProfitModal, setShowProfitModal] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -50,13 +51,10 @@ function Operation() {
   const [sliderVal, setSliderVal] = useState<number>(0);
   const [token, setToken] = useState<number>(UnitTypeEnum.USDT);
   const [openConfirmData, setOpenConfirmData] = useState<OpenConfirmData>();
-
   const getMaxSize = useCallback((traderOpenUpperBound:OpenUpperBound, token:number) => {
     return contractModel.actions.getOpenUpperBoundMaxSize(traderOpenUpperBound, token);
   }, [isModalVisible, token]);
-
   const walletInfo = useSelector((state:RootStore) => state.user);
-
   const {formatMessage} = useIntl()
 
   function intl(id:string) {
@@ -72,19 +70,15 @@ function Operation() {
     }else{
       DerifyErrorNotice.error(null);
     }
-
     if(checkNumRet.value !== null){
       setLimitPrice(checkNumRet.value)
     }
-
     updateMaxAmount(openType,checkNumRet.value,leverage)
-
   }, [limitPrice]);
 
 
   const resetMax = useCallback((maxSize:number) =>{
     const checkNumRet = checkNumber(size, maxSize)
-
     if(checkNumRet.value !== null){
       setSize(checkNumRet.value);
       const sizeNum = parseFloat(checkNumRet.value);
@@ -93,21 +87,18 @@ function Operation() {
       }else{
         setSliderVal(0);
       }
-
     }
   }, [traderOpenUpperBound, token]);
 
 
   const onSizeChange = useCallback((value:string) => {
     const maxSize = token === UnitTypeEnum.Percent ? 100 : getMaxSize(traderOpenUpperBound, token);
-
     const checkNumRet = checkNumber(value, maxSize)
     if(!checkNumRet.success){
       DerifyErrorNotice.error($t("global.NumberError"));
     }else{
       DerifyErrorNotice.error(null);
     }
-
     if(checkNumRet.value !== null){
       setSize(checkNumRet.value);
       const sizeNum = parseFloat(checkNumRet.value);
@@ -124,12 +115,6 @@ function Operation() {
     setLeverage(value);
     updateMaxAmount(openType,limitPrice,value);
   }, [limitPrice,openType]);
-
-  const onSliderChange = useCallback((value:number) => {
-    const tokenSize = calculatePositionSize(size, token, traderOpenUpperBound,value);
-    setSliderVal(value);
-    setSize(tokenSize.toString());
-  }, [traderOpenUpperBound, token, size]);
 
   const onTokenChange = useCallback((token) => {
     setToken(token);
@@ -148,16 +133,11 @@ function Operation() {
   },[openType,curPair.num,leverage]);
 
   const updateMaxAmount = useCallback((openType,limitPrice,leverage) => {
-
     const trader = walletInfo.selectedAddress;
-
     if(!trader){
       return
     }
-
     const price = openType === OpenType.MarketOrder ? curPair.num : limitPrice;
-
-
     const params = {
       trader,
       openType,
@@ -165,9 +145,7 @@ function Operation() {
       leverage:toContractUnit(leverage),
       token: curPair.address
     };
-
     const getTraderOpenUpperBoundAction = contractModel.actions.getTraderOpenUpperBound(params);
-
     const tokenNew = token;
     getTraderOpenUpperBoundAction(dispatch).then((data)=>{
       setTraderOpenUpperBound(data);
@@ -180,25 +158,20 @@ function Operation() {
   }, [walletInfo.selectedAddress,leverage,curPair, openType, token]);
 
   const calculatePositionSize = useCallback((size:string,unit:number, traderOpenUpperBound:OpenUpperBound, sliderValue:number) => {
-
     const maxSize = getMaxSize(traderOpenUpperBound, unit);
     let newSize = 0;
     if(maxSize > 0){
       newSize =  amountFormtNumberDefault(sliderValue / 100.0 * maxSize, 4, false, 0, 0);
     }
-
     return newSize
-
   }, []);
 
   const doOpenPositionConfirm = useCallback((side:number) => {
-
     let checkNumRet = checkNumber(size, getMaxSize(traderOpenUpperBound, token))
     if(!checkNumRet.success || !size){
       DerifyErrorNotice.error($t("global.NumberError"));
       return;
     }
-
     if(openType === OpenType.LimitOrder){
       checkNumRet = checkNumber(limitPrice)
       if(!checkNumRet.success || !limitPrice){
@@ -206,11 +179,8 @@ function Operation() {
         return;
       }
     }
-
     DerifyErrorNotice.error(null);
-
     const tokenSize = calculatePositionSize(size, token, traderOpenUpperBound,sliderVal);
-
     const params:OpenConfirmData = {unit: token, openType, limitPrice:parseFloat(limitPrice), token: curPair, side, size: Number.parseFloat(size),leverage};
     setOpenConfirmData(params)
     setIsModalVisible(true)
@@ -229,35 +199,26 @@ function Operation() {
     if(!trader){
       return;
     }
-
     const onWithdrawAction = ContractModel.actions.onWithDraw(trader, () => {
       console.log('onWithdrawAction,updateMaxAmount');
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     });
-
     onWithdrawAction(dispatch);
-
     const onDepositAction = ContractModel.actions.onDeposit(trader, () => {
       console.log(`onDepositAction,updateMaxAmount,${token}`);
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     });
-
     onDepositAction(dispatch);
-
     const onOpenPositionAction = ContractModel.actions.onOpenPosition(trader, () => {
       console.log(`onOpenPositionAction,updateMaxAmount, ${token}`);
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     })
-
     onOpenPositionAction(dispatch);
-
     const onClosePositionAction = ContractModel.actions.onClosePosition(trader, () => {
       console.log(`onClosePositionAction,updateMaxAmount, ${token}`);
       updateMaxAmount(openType, openType == OpenType.MarketOrder ? curPair.num : limitPrice, leverage)
     })
-
     onClosePositionAction(dispatch);
-
   }, [walletInfo,openType, curPair, leverage, limitPrice, token]);
 
   function changeUnit(val: any){
@@ -405,6 +366,17 @@ function Operation() {
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
       </div>
+
+      {
+        showProfitModal && <ModalProfit 
+          close={() => {
+            setShowProfitModal(false)
+          }}
+          confirm={() => {
+            setShowProfitModal(false)
+          }}
+        />
+      }
 
       {
         walletType &&  <ModalWallet 
