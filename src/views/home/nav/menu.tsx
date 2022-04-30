@@ -10,8 +10,8 @@ interface MenuProps extends RouteComponentProps {}
 const menu: Array<{ path:string,key:string }> = [
   {path: "trade", key: "Trade.navbar.Trade"},
   {path: "reward", key: "Trade.navbar.Rewards"},
-  {path: "broker", key: "Trade.navbar.Broker"},
   {path: "data", key: "Trade.navbar.Data"},
+  {path: "broker", key: "Trade.navbar.Broker"},
   {path: "faucet", key: "Faucet.Faucet"},
 ];
 
