@@ -1,6 +1,7 @@
 import * as React from "react";
 import notice from "@/assets/images/notice.png";
 import Button from "@/components/buttons/borderButton";
+import Notice from "@/components/notice";
 import Modal from "./modal";
 import "./main.less";
 
@@ -282,7 +283,7 @@ function Title({ t1, t2 }: { t1: string; t2: string }) {
     <div className="title">
       <span className="t">
         {t1}
-        <img src={notice} alt="" />
+        <Notice title={t1} />
       </span>
       <span className="desc">{t2}</span>
     </div>

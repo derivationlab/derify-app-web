@@ -109,7 +109,7 @@ const TradingVolume: React.FC = () => {
 
       <Spin spinning={loading}>
         <Row className="main-block trading-volume-container">
-          <Col flex="100%">
+          <Col className="chart-out-wrapper">
             <Row>
               <Col flex="50%">
                 <div>
@@ -118,7 +118,7 @@ const TradingVolume: React.FC = () => {
                   （24h）
                 </div>
                 <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                  <span className="white-color">
+                  <span>
                     {fck(currentData?.trading_amount, 0, 2)}
                   </span>{" "}
                   {getUSDTokenName()}
@@ -131,7 +131,7 @@ const TradingVolume: React.FC = () => {
                   （24h）
                 </div>
                 <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                  <span className="white-color">
+                  <span>
                     {fck(currentData?.trading_fee, 0, 2)}
                   </span>{" "}
                   {getUSDTokenName()}
@@ -139,7 +139,7 @@ const TradingVolume: React.FC = () => {
               </Col>
             </Row>
           </Col>
-          <Col flex="100%">
+          <Col className="chart-out-wrapper">
             <CommonCharts ref={chartRef} height={330} />
           </Col>
         </Row>

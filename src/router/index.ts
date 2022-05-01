@@ -31,7 +31,7 @@ const routes: Array<any> = [
             component: Trade,
           },
           {
-            path: "/data",
+            path: "/dashboard",
             exact: false,
             component: Data,
           },
