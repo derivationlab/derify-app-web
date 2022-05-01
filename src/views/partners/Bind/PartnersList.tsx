@@ -44,13 +44,14 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
     setLoading(false);
   }, []);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   getBrokerList(pagenation.current, pagenation.pageSize).then((pagenation) => {
-  //     setIndex(undefined);
-  //     setPagenation(pagenation);
-  //   }).catch(e => console.error("getBrokerList error", e)).finally(() => setLoading(false));
-  // },[pagenation.current, pagenation.pageSize]);
+  useEffect(() => {
+    setLoading(true);
+    getBrokerList(pagenation.current, pagenation.pageSize).then((pagenation) => {
+      console.log(pagenation)
+      setIndex(undefined);
+      setPagenation(pagenation);
+    }).catch(e => console.error("getBrokerList error", e)).finally(() => setLoading(false));
+  },[pagenation.current, pagenation.pageSize]);
 
   function handleChange1(value: any) {
     console.log(`selected ${value}`);

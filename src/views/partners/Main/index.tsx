@@ -7,6 +7,7 @@ import Account from "./Account";
 import NotOpened from "./NotOpened";
 import {useDispatch, useSelector} from "react-redux";
 import {BrokerModel, RootStore} from "@/store";
+import NotBroker from "./NotBroker";
 
 function Main() {
   const dispatch = useDispatch();
@@ -16,18 +17,14 @@ function Main() {
     (state: RootStore) => state.broker.isBroker
   );
   const reloadBrokerDataStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.broker);
-
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() =>{
-
     if(!trader){
       setLoading(false);
       return
     }
-
     const getBrokerAction = BrokerModel.actions.getTraderBrokerInfo(trader);
-
     getBrokerAction(dispatch).then((data) => {
       setLoading(false);
     }).catch(e=>{
@@ -42,23 +39,26 @@ function Main() {
   }, []);
 
   return (
-    <Spin spinning={loading}>
-      {loading ? "" : ( isLogin && isBroker ? (
-        <Row className="opended-container" gutter={[0, 20]}>
-          <Col flex="100%">
-            <Info showEditModal={showEditModal}/>
-          </Col>
-          <Col flex="100%">
-            <Account />
-          </Col>
-          <Col flex="100%">
-            <Record />
-          </Col>
-        </Row>
-      ) : (
-        <NotOpened onOK={onApplyBrokerSuccess}/>
-      ))}
-    </Spin>
+    <div className="broker-wrapper">
+      <Spin spinning={loading}>
+        {loading ? "" : ( isLogin && isBroker ? (
+          <Row className="opended-container" gutter={[0, 20]}>
+            <Col flex="100%">
+              <Info showEditModal={showEditModal}/>
+            </Col>
+            <Col flex="100%">
+              <Account />
+            </Col>
+            <Col flex="100%">
+              <Record />
+            </Col>
+          </Row>
+        ) : (
+          // <NotOpened onOK={onApplyBrokerSuccess}/>
+          <NotBroker />
+        ))}
+      </Spin>
+    </div>
   );
 }
 
