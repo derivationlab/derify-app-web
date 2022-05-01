@@ -4,7 +4,7 @@ import ErrorPage from "@/views/error";
 
 import Trade from "@/views/trade";
 import Data from "@/views/data";
-import Rewards from "@/views/rewards";
+import Earn from "@/views/earn/main";
 import Partners from "@/views/partners";
 import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
@@ -31,14 +31,14 @@ const routes: Array<any> = [
             component: Trade,
           },
           {
-            path: "/data",
+            path: "/dashboard",
             exact: false,
             component: Data,
           },
           {
-            path: "/reward",
+            path: "/earn",
             exact: false,
-            component: Rewards,
+            component: Earn,
           },
           {
             path: "/broker",

@@ -3,7 +3,7 @@ import { Row, Col, Button, Statistic } from "antd";
 import IconFont from "@/components/IconFont";
 
 import Deposit from "./Deposit";
-import OperateCom from "../../../rewards/OperateCom";
+import OperateCom from "../../../earn/OperateCom";
 
 import {BrokerModel, RootStore} from "@/store";
 import {useDispatch, useSelector} from "react-redux";

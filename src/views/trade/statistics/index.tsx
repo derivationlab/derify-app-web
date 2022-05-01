@@ -1,13 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import { Row, Col } from "antd";
-import {
-  TradePosition,
-  TradeOrder,
-  TradeHistory,
-  Empty,
-} from "@/components/trade";
+import { useIntl } from "react-intl";
+import { Row } from "antd";
+import { TradePosition, TradeOrder, TradeHistory } from "@/components/trade";
 // import MyPosition from "./MyPosition";
 // import CurrentOrder from "./CurrentOrder";
 // import TradeHistory from "@/views/trade/statistics/TradeHistory";

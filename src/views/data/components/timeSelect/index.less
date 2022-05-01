@@ -1,0 +1,71 @@
+.time-select {
+  width: 108px;
+  height: 49px;
+  font-size: 18px;
+  .select {
+    width: 108px;
+    height: 48px;
+    border: 2px solid #e7e7e7;
+    border-radius: 24px;
+    line-height: 48px;
+    padding-left: 24px;
+    cursor: pointer;
+    .open-icon {
+      display: none;
+    }
+    .close-icon {
+      display: inline-block;
+    }
+  }
+  .select.active {
+    border-color: #e7446b;
+    color: #e7446b;
+    .close-icon {
+      display: none;
+    }
+    .open-icon {
+      display: inline-block;
+    }
+  }
+  .val {
+    width: 36px;
+    display: inline-block;
+    margin-right: 12px;
+  }
+  .list {
+    height: 1px;
+    position: relative;
+  }
+  img {
+    width: 10px;
+  }
+  .options {
+    position: absolute;
+    border-radius: 24px;
+    width: 108px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+    top: 22px;
+    background: #fff;
+    padding: 24px 12px;
+  }
+  .option {
+    border-radius: 24px;
+    margin-bottom: 4px;
+    height: 48px;
+    text-align: center;
+    line-height: 48px;
+    cursor: pointer;
+    &:hover {
+      background: #e7e7e7;
+      color: #e7446b;
+    }
+  }
+  .option:last-child {
+    margin-bottom: 0;
+  }
+  .option.selected {
+    background: #e7446b !important;
+    color: #fff !important;
+  }
+}
