@@ -1,0 +1,359 @@
+.not-a-broker {
+  width: 468px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 48px;
+  color: #222;
+  .main-panel {
+    background: #f7f7f7;
+    border-radius: 48px;
+    height: 488px;
+    width: 100%;
+  }
+  .apply {
+    height: 24px;
+    line-height: 24px;
+    margin-top: 24px;
+    text-align: center;
+    text-decoration-line: underline;
+    color: #e7446b;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 18px;
+  }
+  .desc {
+    padding: 0 48px;
+    font-size: 12px;
+    line-height: 16px;
+    color: #222;
+    height: 136px;
+    overflow: hidden;
+    margin-top: -24px;
+  }
+  .data {
+    width: 444px;
+    height: 170px;
+    background: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 36px;
+    margin-top: 12px;
+    position: relative;
+    text-align: center;
+    .data1,
+    .data2 {
+      position: absolute;
+      width: 221px;
+      height: 100%;
+      top: 0;
+      padding-top: 36px;
+    }
+    .data1 {
+      left: 0;
+    }
+    .data2 {
+      right: 0;
+    }
+    .line1 {
+      font-weight: 600;
+      font-size: 16px;
+      height: 20px;
+      line-height: 20px;
+      margin-bottom: 16px;
+    }
+    .num {
+      font-weight: 800;
+      font-size: 32px;
+      height: 26px;
+      line-height: 26px;
+    }
+    .unit {
+      font-weight: 300;
+      font-size: 14px;
+      height: 20px;
+      line-height: 20px;
+      margin-top: 16px;
+    }
+    .vr {
+      width: 2px;
+      height: 98px;
+      background: #f7f7f7;
+      position: absolute;
+      top: 36px;
+      left: 221px;
+    }
+  }
+}
+
+.not-a-broker-wrapper {
+  background: #f6f6f6;
+  border-radius: 48px;
+  width: 1392px;
+  min-height: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 48px;
+}
+
+.not-a-broker-burn {
+  .not-a-broker-wrapper();
+  padding: 0 48px;
+  color: #222;
+  padding-bottom: 36px;
+  .t {
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    img {
+      width: 20px;
+      margin-left: 6px;
+      height: 20px;
+    }
+  }
+  .data {
+    height: 238px;
+    background: #fff;
+    border-radius: 36px;
+    padding: 36px 48px 0 48px;
+  }
+  .t1 {
+    font-weight: 400;
+    font-size: 18px;
+    height: 20px;
+    line-height: 20px;
+  }
+  .num {
+    height: 40px;
+    margin-top: 16px;
+    font-weight: 800;
+    font-size: 40px;
+    line-height: 40px;
+    color: #e7446b;
+    .unit {
+      font-size: 26px;
+      margin-left: 8px;
+      color: #222;
+    }
+  }
+  .hr {
+    border-top: 2px dashed #e7e7e7;
+    width: 100%;
+    height: 0;
+    margin: 24px 0;
+  }
+  .wallet,
+  .addr {
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+  }
+  .addr {
+    color: #888888;
+  }
+  .btns {
+    margin-top: 36px;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .btn1,
+    .btn2 {
+      height: 48px;
+      width: 186px;
+      border-radius: 24px;
+      .border-btn {
+        border-radius: 22px;
+        line-height: 44px;
+      }
+    }
+    .btn1 {
+      margin-right: 36px;
+    }
+  }
+}
+
+.not-a-broker-register {
+  .not-a-broker-wrapper();
+  color: #222;
+  padding-bottom: 36px;
+  > .t {
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+  .input-wrapper {
+    padding-left: 72px;
+    display: flex;
+    flex-direction: row;
+    height: 48px;
+    margin-bottom: 24px;
+    label {
+      width: 136px;
+      height: 48px;
+      line-height: 48px;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    input {
+      width: 600px;
+      background: #fff;
+      border: 2px solid #e7e7e7;
+      box-sizing: border-box;
+      border-radius: 24px;
+      font-size: 18px;
+      text-indent: 10px;
+      color: #222;
+    }
+    .desc {
+      margin-left: 36px;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 20px;
+      span {
+        display: block;
+        height: 20px;
+        line-height: 20px;
+      }
+    }
+    .note {
+      color: #e7446b;
+    }
+  }
+  .input-wrapper-upload {
+    height: 120px;
+    .upload {
+      background: #ffffff;
+      border: 2px dashed #e7e7e7;
+      box-sizing: border-box;
+      border-radius: 24px;
+      width: 120px;
+      height: 120px;
+    }
+  }
+  .input-wrapper-langs {
+    height: 64px;
+    margin-top: 38px;
+    .line {
+      display: flex;
+      height: 20px;
+      line-height: 20px;
+    }
+    .line1 {
+      margin-bottom: 24px;
+    }
+    .deri-checkbox {
+      width: 130px;
+    }
+    label {
+      height: 20px;
+      line-height: 20px;
+    }
+  }
+  .input-wrapper-c {
+    align-items: center;
+    margin-bottom: 8px;
+    .icon {
+      border: 1px solid #e7446b;
+      box-sizing: border-box;
+      border-radius: 4px;
+      margin-left: 20px;
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 11px;
+      }
+    }
+    input {
+      width: 461px;
+    }
+    .name {
+      width: 87px;
+    }
+  }
+  .input-wrapper-a {
+    height: 208px;
+    margin-top: 24px;
+    textarea {
+      width: 600px;
+      background: #fff;
+      border: 2px solid #e7e7e7;
+      box-sizing: border-box;
+      border-radius: 24px;
+      color: #222;
+    }
+  }
+  .btns {
+    margin-top: 36px;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    .btn1,
+    .btn2 {
+      height: 48px;
+      width: 186px;
+      border-radius: 24px;
+      .border-btn {
+        border-radius: 22px;
+        line-height: 44px;
+      }
+    }
+    .btn1 {
+      margin-right: 36px;
+    }
+  }
+}
+
+.not-a-broker-success {
+  background: #f6f6f6;
+  border-radius: 48px;
+  width: 1392px;
+  min-height: 200px;
+  height: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 48px;
+  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .line1 {
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 40px;
+    margin-bottom: 36px;
+    text-align: center;
+  }
+  .line2 {
+    font-weight: 300;
+    font-size: 26px;
+    line-height: 20px;
+    margin-bottom: 48px;
+    text-align: center;
+  }
+  .line3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .btn1 {
+    width: 194px;
+    height: 48px;
+    border-radius: 24px;
+    .border-btn {
+      border-radius: 22px;
+      line-height: 44px;
+    }
+  }
+}

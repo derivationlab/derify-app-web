@@ -18,26 +18,21 @@ const Partners: React.FC<PartnersProps> = props => {
     (state: RootStore) => state.user
   );
 
+  if (!hasBroker) {
+    return <Bind {...props} />;
+  }
+
   return (
-    <div className="partners-page">
-      <Switch>
-        {hasBroker ? (
-          routes.map((route, i) => (
-            <Route
-              path={route.path}
-              exact={route.exact}
-              key={i}
-              render={props => (
-                <route.component {...props} routes={route.routes} />
-              )}
-            />
-          ))
-        ) : (
-          <Bind {...props} />
-        )}
-        {/*<Redirect from="/broker" to="/broker-main" />*/}
-      </Switch>
-    </div>
+    <Switch>
+      {routes.map((route, i) => (
+        <Route
+          path={route.path}
+          exact={route.exact}
+          key={i}
+          render={props => <route.component {...props} routes={route.routes} />}
+        />
+      ))}
+    </Switch>
   );
 };
 

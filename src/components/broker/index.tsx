@@ -1,8 +1,8 @@
 import * as React from "react";
 import Deri from "@/assets/images/deri.png";
 import tg from "@/assets/images/social/tg.png";
-import social from "@/assets/images/social/social.png";
-import social2 from "@/assets/images/social/social2.png";
+import discord from "@/assets/images/social/discord.png";
+import reddit from "@/assets/images/social/reddit.png";
 import twitter from "@/assets/images/social/twitter.png";
 import wechat from "@/assets/images/social/wechat.png";
 import "./index.less";
@@ -32,13 +32,13 @@ export default function Broker({ data, className }: BrokerProps) {
             <img src={tg} alt="" className="img1" />
           </div>
           <div className="link">
-            <img src={social} alt="" className="img2" />
+            <img src={discord} alt="" className="img2" />
           </div>
           <div className="link">
             <img src={twitter} alt="" className="img1" />
           </div>
           <div className="link">
-            <img src={social2} alt="" className="img2" />
+            <img src={reddit} alt="" className="img2" />
           </div>
           <div className="link">
             <img src={wechat} alt="" className="img3" />

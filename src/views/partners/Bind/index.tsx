@@ -101,6 +101,7 @@ const Bind: React.FC<BindProps> = props => {
   }
 
   return (
+  <div className="partners-page">
     <Row className="bind-partners-container main-block">
       <div className="h1">
         You need a broker first, Please input your broker code.
@@ -151,6 +152,7 @@ const Bind: React.FC<BindProps> = props => {
         </Row>
       </Col>
     </Row>
+  </div>
   );
 };
 

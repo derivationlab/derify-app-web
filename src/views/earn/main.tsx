@@ -145,7 +145,7 @@ export default class Earn extends React.Component<IEarnProps, IEarnState> {
                 fill={true}
                 text="Claim All"
                 click={() => {
-                  console.log(111);
+                  this.showModal("Stake DRF");
                 }}
               />
             </div>
