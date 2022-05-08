@@ -1,5 +1,9 @@
 import * as React from "react";
+import { Pagination } from "antd";
 import Deri from "@/assets/images/deri.png";
+import Share from "@/assets/images/share.png";
+import Share1 from "@/assets/images/share1.png";
+import { history, trans, trader } from "./mock";
 
 export interface IRecordsProps {}
 
@@ -15,43 +19,6 @@ const pageData = [
   ["Trader", "Last Transaction", "Last Transaction Time", "Registration Time"],
 ];
 
-const history: any = [];
-const trans: any = [];
-const trader: any = [];
-for (let i = 0; i < 10; i++) {
-  history.push({
-    type: "income",
-    from: "txid 0x00000000000000000000000000000000",
-    amount: "+123.45",
-    unit: "usdt",
-    balance: "98765.43",
-    time: "2022-12-31 23:59:59",
-  });
-  trans.push({
-    id: "0x00000000000000000000000000000000",
-    by: "0x00000000000000000000000000000001",
-    type: "open",
-    value: "-1234.56 ( -12.34% )",
-    time: "2022-12-31 23:59:59",
-    unit: "usdt",
-  });
-  trader.push({
-    id: "0x00000000000000000000000000000000",
-    avatar: "",
-    lastTransaction: "0x00000000000000000000000000000000",
-    lastTransactionTime: "2022-07-09",
-    registrationTime: "2022-07-09",
-  });
-}
-
-trader.unshift({
-  id: "0x00000000000000000000000000000000",
-  avatar: "",
-  lastTransaction: "0x00000000000000000000000000000000",
-  lastTransactionTime: "",
-  registrationTime: "2022-07-09",
-});
-
 export default class Records extends React.Component<
   IRecordsProps,
   IRecordsState
@@ -59,8 +26,8 @@ export default class Records extends React.Component<
   constructor(props: IRecordsProps) {
     super(props);
     this.state = {
-      tab: 2,
-      data: trader,
+      tab: 0,
+      data: history,
     };
   }
 
@@ -141,6 +108,8 @@ export default class Records extends React.Component<
             <div className="empty-data">No record</div>
           )}
         </div>
+        <div className="hline"></div>
+        <Pagination defaultCurrent={1} total={50} />
       </div>
     );
   }
@@ -151,7 +120,9 @@ function Record0({ item }: { item: any }) {
     <div className="record">
       <div className="field">
         <span className="line1">{item.type}</span>
-        <span className="line2">{item.from}</span>
+        <span className="line2">
+          {item.from} <img style={{ width: "20px" }} src={Share} alt="" />{" "}
+        </span>
       </div>
       <div className="field">
         <span className="line1">{item.amount}</span>
@@ -173,12 +144,27 @@ function Record1({ item }: { item: any }) {
   return (
     <div className="record">
       <div className="field">
-        <span className="line1">{item.id}</span>
-        <span className="line2">{item.by}</span>
+        <span className="line1">
+          {item.id} <img src={Share1} alt="" style={{ width: "21px" }} />
+        </span>
+        <span className="line2">
+          {item.by} <img src={Share} alt="" style={{ width: "21px" }} />
+        </span>
       </div>
       <div className="field">
-        <span className="line1">{item.type}</span>
-        <span className="line2">market price</span>
+        <span
+          className="line1"
+          style={{
+            color: item.type
+              ? item.type.toLocaleLowerCase() === "open"
+                ? "#11BE6B"
+                : "#F64242"
+              : "#222",
+          }}
+        >
+          {item.type ? item.type.toLocaleUpperCase() : "-"}
+        </span>
+        <span className="line2">{item.operateType}</span>
       </div>
       <div className="field">
         <span className="line1">{item.value}</span>
@@ -204,9 +190,13 @@ function Record2({ item }: { item: any }) {
           </span>
         )}
         <span style={{ marginLeft: "8px" }}>{item.id}</span>
+        <img src={Share1} alt="" style={{ width: "21px" }} />
       </div>
       <div className="field">
-        <span>{item.lastTransaction}</span>
+        <span>
+          {item.lastTransaction}
+          <img src={Share1} alt="" style={{ width: "21px" }} />
+        </span>
       </div>
       <div
         className="field"

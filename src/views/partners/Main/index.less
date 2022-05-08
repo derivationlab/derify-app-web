@@ -1,9 +1,14 @@
 .broker-wrapper {
+  padding-bottom: 84px;
   .broker-tab-list {
     width: 1392px;
     margin-left: auto;
     margin-right: auto;
     color: #222;
+    .ant-pagination {
+      margin-top: 36px;
+      text-align: center;
+    }
   }
   .tabs {
     height: 48px;
@@ -119,12 +124,16 @@
     .line2 {
       font-weight: 400;
       font-size: 10px;
+      height: 20px;
       line-height: 20px;
       color: #888;
       display: block;
     }
   }
-  .default {
+  .line1-type {
+    font-size: 14px;
+  }
+  .field .default {
     width: 40px;
     height: 40px;
     display: inline-block;
@@ -143,6 +152,224 @@
       width: 18px;
     }
   }
-  .field21 {
+  .hline {
+    width: 100%;
+    height: 12px;
+    border-radius: 6px;
+    background: #f7f7f7;
+  }
+
+  .ant-pagination {
+    font-size: 18px;
+    li {
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      border-radius: 24px;
+      background: #fff;
+      border: 2px solid #e7e7e7;
+      a {
+        color: #888;
+      }
+    }
+    .ant-pagination-item-active {
+      background-color: #e7446b;
+      a {
+        color: #fff;
+      }
+    }
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      button {
+        background-color: #fff;
+        border-radius: 24px;
+        color: #888;
+      }
+    }
+    .ant-pagination-disabled {
+      button {
+        background-color: #f6f6f6;
+        color: #e7e7e7;
+      }
+    }
+  }
+}
+
+.broker-info-part {
+  width: 1392px;
+  margin-left: auto;
+  margin-right: auto;
+  color: #222;
+  height: 414px;
+  display: flex;
+  flex-direction: row;
+  > .data {
+    width: 876px;
+    height: 100%;
+    margin-right: 48px;
+    background: #f7f7f7;
+    border-radius: 48px;
+    padding: 12px;
+    .balance {
+      height: 208px;
+      background: #fff;
+      border-radius: 36px;
+      padding-top: 48px;
+      padding-left: 48px;
+      color: #222;
+      position: relative;
+      .claim-btn {
+        width: 160px;
+        height: 48px;
+        position: absolute;
+        top: 48px;
+        right: 48px;
+        border-radius: 24px;
+        .border-btn {
+          border-radius: 22px;
+          line-height: 44px;
+        }
+      }
+      .t {
+        font-weight: 400;
+        font-size: 18px;
+        height: 20px;
+        line-height: 20px;
+      }
+      .t1 {
+        font-weight: 800;
+        font-size: 40px;
+        height: 40px;
+        line-height: 40px;
+        margin-top: 16px;
+      }
+      .small-num {
+        font-size: 22px;
+      }
+      .unit {
+        font-weight: 300;
+        font-size: 26px;
+        margin-left: 8px;
+      }
+      .t2 {
+        font-size: 14px;
+        height: 20px;
+        line-height: 20px;
+        margin-top: 16px;
+      }
+      .b {
+        font-weight: bold;
+      }
+    }
+    .cards {
+      height: 170px;
+      width: 100%;
+      margin-top: 12px;
+      display: flex;
+      flex-direction: row;
+      .d {
+        flex: 1;
+        padding-top: 36px;
+        text-align: center;
+      }
+      .t {
+        font-weight: 600;
+        font-size: 16px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+      }
+      .t1 {
+        font-weight: 800;
+        font-size: 32px;
+        line-height: 26px;
+        margin-top: 16px;
+      }
+      .t2 {
+        font-size: 14px;
+        line-height: 20px;
+        margin-top: 16px;
+      }
+      .t3 {
+        color: #e7446b;
+        img {
+          width: 20px;
+          margin-left: 4px;
+        }
+      }
+      .b {
+        font-weight: bold;
+      }
+    }
+  }
+  > .info-detail {
+    width: 468px;
+    background: #f7f7f7;
+    border-radius: 48px;
+  }
+  .desc {
+    height: 56px;
+    padding: 0 36px;
+    margin-top: -24px;
+  }
+  .card {
+    height: 170px;
+    background: #fff;
+    border-radius: 36px;
+    margin-top: 18px;
+    padding-top: 36px;
+    padding-left: 48px;
+    width: 444px;
+    margin-left: 12px;
+    position: relative;
+    .t {
+      font-size: 16px;
+      height: 20px;
+      line-height: 20px;
+      img {
+        width: 12px;
+        margin-left: 4px;
+      }
+    }
+    .days {
+      margin-top: 16px;
+      font-weight: 800;
+      font-size: 32px;
+      height: 26px;
+      line-height: 26px;
+      .d {
+        font-weight: 300;
+        font-size: 14px;
+        line-height: 14px;
+        margin-left: 8px;
+      }
+    }
+    .expire {
+      font-size: 14px;
+      height: 20px;
+      line-height: 20px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding-right: 48px;
+      .d {
+        font-weight: bold;
+      }
+      .link {
+        color: #e7446b;
+      }
+      img {
+        width: 20px;
+        margin-left: 4px;
+        cursor: pointer;
+      }
+    }
+    .card-btn {
+      position: absolute;
+      right: 48px;
+      top: 36px;
+      width: 90px;
+    }
   }
 }
