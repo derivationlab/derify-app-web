@@ -31,38 +31,29 @@ function getUpdateType(type:string|number) {
 function Record() {
   const {formatMessage} = useIntl();
   const trader = useSelector<RootStore,string>(state => state.user.trader)
-
   const [sping, setSping] = useState<boolean>(true);
   const [traderPagenation,setTraderPagenation] = useState<Pagenation>(new Pagenation());
   const [rewardPagenation,setRewardPagenation] = useState<Pagenation>(new Pagenation());
 
-
   function intl<T>(id:string,values:T[] = []) {
-
     const intlValues:{[key:number]:T} = {}
-
     values.forEach((item, index) => {
       intlValues[index] = item
     })
-
-
     return formatMessage({id}, intlValues)
   }
 
   const $t = intl;
 
   const fetchBrokerRewardHistory = useCallback(() => {
-
     if(!trader){
       setSping(false)
       return;
     }
-
     setSping(true);
     getBrokerRewardHistory(trader,rewardPagenation.current,10).then((pagenation)=>{
       setRewardPagenation(pagenation);
     }).finally(() => setSping(false));
-
   },[trader,rewardPagenation.current,rewardPagenation.pageSize]);
 
   const fetchBrokerTraders = useCallback(() => {
@@ -70,12 +61,10 @@ function Record() {
       setSping(false)
       return;
     }
-
     setSping(true);
     getbrokerBindTraders(trader,traderPagenation.current,traderPagenation.pageSize).then((pagenation)=>{
       setTraderPagenation(pagenation);
     }).finally(() => setSping(false));
-
   },[trader,traderPagenation.current,traderPagenation.pageSize]);
 
   const onTraderPageChange = useCallback((pageNum, pageSize) => {
