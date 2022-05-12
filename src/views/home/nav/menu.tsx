@@ -73,7 +73,7 @@ const Menu: React.FC<MenuProps> = props => {
       ))}
       <Col key={menu.length}>
           <a
-            href="https://forms.gle/8sfeqHKQufFyjwAo6"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSelBo6du-kioL3kTWgMqCOtiwNZvw7D7kF82SSm3l314Ot9xA/viewform"
             target={"_blank"}
             className={classNames("menu-item")}
           >
