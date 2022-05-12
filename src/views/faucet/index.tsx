@@ -145,7 +145,7 @@ const Faucet: React.FC<FaucetProps> = props => {
           </Col>
           <Col>
             <Spin spinning={loading}>
-              <a href={"https://form.jotform.com/220268814408052"} target={"_blank"}>
+              <a href={"https://forms.gle/dsMgQErBKUUNbnz36"} target={"_blank"}>
                 <Button type={'primary'}>
                   {$t("Faucet.GetUSDT", [<Statistic prefix={" "} suffix={" "} style={{display: "inline-block"}} valueStyle={{color:"none"}} value={defaultUSDTAmount}/>])}
                 </Button>
