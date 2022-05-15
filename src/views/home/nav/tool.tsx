@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import MetaMaskOnboarding from '@metamask/onboarding';
-import {Button, Col, Row} from "antd";
+import {Button, Col, Row, message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
@@ -205,6 +205,34 @@ function Tool() {
     console.log(onboarding);
   }, []);
 
+  async function addDRF() {
+    const tokenAddress = '0x89C1Af791d7B4cf046Dca8Fa10a41Dd2298A6a3F';
+    const tokenSymbol = 'DRF';
+    const tokenDecimals = 18;
+    const tokenImage = 'https://bsctestnet-prod-api.derify.exchange:8084/1650023741739-logo.png';
+    try {
+      const wasAdded = await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+      if (wasAdded) {
+        message.success("added success")
+      } else {
+        message.error("added failed, please try later");
+      }
+    } catch (error) {
+       message.error("added failed, please try later");
+    }
+  }
+
   return (
     <Row align={"middle"} className="tool">
       <Col className="connect-btn">
@@ -276,7 +304,7 @@ function Tool() {
           {
             showAddTokenList && (
               <div className="add-token-list">
-                <div className="token">Add DRF Token to wallet</div>
+                <div className="token" onClick={addDRF}>Add DRF Token to wallet</div>
                 <div className="token">Add eDRF Token to wallet</div>
                 <div className="token">Add bDRF Token to wallet</div>
                 <div className="hr" />
