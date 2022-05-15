@@ -12,20 +12,21 @@ import Modal from "@/components/modal";
 
 export interface WalletModalProps {
   close: () => void;
+  click: any;
+  installed: boolean;
 }
 
-export interface WalletModalState {}
+export interface WalletModalState {
+}
 
-export default class WalletModal extends React.Component<
-  WalletModalProps,
-  WalletModalState
-> {
+export default class WalletModal extends React.Component<WalletModalProps,
+  WalletModalState> {
   constructor(props: WalletModalProps) {
     super(props);
     this.state = {};
   }
 
-  public render() {
+  render() {
     return (
       <Modal className="wallet-modal">
         <div className="title">
@@ -37,10 +38,16 @@ export default class WalletModal extends React.Component<
           to Derivation Labs' <a href="#">Terms of Service.</a>
         </div>
         <div className="list">
-          <div className="wallet">
-            <img src={Wallet1} alt="" />
-            <span>MetaMask</span>
-          </div>
+          {
+            this.props.installed ? <div className="wallet" onClick={this.props.click}>
+              <img src={Wallet1} alt="" />
+              <span>MetaMask</span>
+            </div> : <a className="wallet" href="https://metamask.io/" target="_blank">
+              <img src={Wallet1} alt="" />
+              <span>MetaMask</span>
+            </a>
+          }
+
           <div className="wallet">
             <img src={Wallet2} alt="" />
             <span>WalletConnect</span>

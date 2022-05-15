@@ -18,6 +18,10 @@ const Partners: React.FC<PartnersProps> = props => {
     (state: RootStore) => state.user
   );
 
+  if(!isLogin){
+    return null;
+  }
+
   if (!hasBroker) {
     return <Bind {...props} />;
   }

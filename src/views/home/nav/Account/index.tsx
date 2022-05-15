@@ -81,19 +81,6 @@ const Account: React.FC<Partial<{ account: string; blance: string }>> = ({
             <Statistic value={fck(accountData.balance, -8, 2)} />
           </Col>
           <Col>{getUSDTokenName()}</Col>
-          {/*<Col*/}
-          {/*  className="main-green"*/}
-          {/*  style={{*/}
-          {/*    background: "rgba(0,196,154,1)",*/}
-          {/*    color: "#000",*/}
-          {/*    borderRadius: "12px",*/}
-          {/*    padding: "0px 1px",*/}
-          {/*    marginLeft: "10px",*/}
-          {/*  }}*/}
-          {/*>*/}
-          {/*  <Statistic value={} {amountFormt(0, 2, true, "--", -6)}%*/}
-          {/*</Col>*/}
-          {/* </Space> */}
         </Row>
       </Col>
       <Col flex="100%" className="margin-b-max">
