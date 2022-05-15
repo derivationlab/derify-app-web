@@ -5,10 +5,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {AppModel, ContractModel, RootStore, UserModel} from "@/store/index";
 import Nav from "./nav";
 import IntlPro from "@/locales/index";
-import "./index.less";
 import {bindBroker} from "@/api/broker";
 import {createDataEvenet} from "@/api/trade";
 import {getRootPath} from "@/views/home/nav/menu";
+import "./index.less";
 import Data from "../data";
 
 interface HomeProps extends RouteProps {}
@@ -36,7 +36,6 @@ const  RouteGuard: React.FC<HomeProps> = props => {
   if(!routeConfig) {
     routeConfig = routes[0];
   }
-
 
   useEffect(() => {
     if(dataEventSource){
