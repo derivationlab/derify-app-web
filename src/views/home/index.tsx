@@ -129,16 +129,14 @@ const  RouteGuard: React.FC<HomeProps> = props => {
 
 const Home: React.FC<HomeProps> = props => {
   return (
-    <>
       <IntlPro>
-        <Nav></Nav>
+        <Nav />
         <div className="main">
           <Switch>
             <RouteGuard {...props}/>
           </Switch>
         </div>
       </IntlPro>
-    </>
   );
 };
 

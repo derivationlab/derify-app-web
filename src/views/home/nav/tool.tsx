@@ -5,9 +5,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
-import Account from "./Account";
-import WalletModal from '../walletModal'
-import AccountModal from '../accountModal'
+
+
+// images
 import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";
 import ETH1 from "@/assets/images/eth1.png";
@@ -18,10 +18,15 @@ import MenuOtherActive from '@/assets/images/menu-others-active.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
 import Solana from "@/assets/images/Solana.png";
+
 import userModel, {ChainEnum, mainChain, WalletEnum} from "@/store/modules/user";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import BorderButton from "@/components/buttons/borderButton";
+
+// modals
+import WalletListModal from '../walletListModal'
 import WalletOperateModal from "../../trade/modal/wallet"
+import AccountModal from '../walletAccountModal'
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
@@ -206,8 +211,6 @@ function Tool() {
         {isLogin ? (
             <Button
               onClick={() => {
-                console.log(blance, account)
-                //  <Account {...{ account: account, blance: blance }} />
                 setshowAccountModal(true);
               }}
               className="account-wrapper"
@@ -255,7 +258,7 @@ function Tool() {
 
       {
         // the wallet list include metamask
-        showWalletModal &&  <WalletModal
+        showWalletModal &&  <WalletListModal
           close={() => {
             setShowWalletModal(false)
           }}
