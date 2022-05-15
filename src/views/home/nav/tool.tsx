@@ -18,18 +18,10 @@ import MenuOtherActive from '@/assets/images/menu-others-active.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
 import Solana from "@/assets/images/Solana.png";
-import Wallet from "@/assets/images/Metamask.png";
 import userModel, {ChainEnum, mainChain, WalletEnum} from "@/store/modules/user";
-import Transfer from "@/views/CommonViews/Transfer";
-import FundsDetails from "@/views/home/nav/Account/FundsDetail";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import BorderButton from "@/components/buttons/borderButton";
-
-const icons: any = {}
-icons['BSC'] = BSC;
-icons['POL'] = Polygon;
-icons['AVA'] = Avalanche;
-icons['ETH'] = ETH1;
+import WalletOperateModal from "../../trade/modal/wallet"
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
@@ -43,20 +35,30 @@ const theme: any = 'light';
 
 const netWorks =  [
   ['BSC', 'BNB Chain'],
-  // ['POL', 'Polygon'],
+  //  ['POL', 'Polygon'],
   //  ['AVA', 'Avalanche'],
   //  ['ETH', 'Etherum']
 ];
+
+const icons: any = {}
+icons['BSC'] = BSC;
+icons['POL'] = Polygon;
+icons['AVA'] = Avalanche;
+icons['ETH'] = ETH1;
 
 function Tool() {
 
   const dispatch = useDispatch();
   const [showAccountModal, setshowAccountModal] = useState<boolean>(false);
   const [showWalletModal, setShowWalletModal] = useState<boolean>(false);
+  const [showOperateModal, setShowOperatetModal] = useState<boolean>(false);
   const [showAddTokenList, setShowAddTokenList] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showLangs, setShowLangs] = useState<boolean>(false);
   const [showTheme, setShowTheme] = useState<boolean>(false);
+  const [modalAddr, setModalAddr] = useState<string>("");
+  const [modalType, setModalType] = useState<"deposit" | "withdraw">("withdraw");
+
   const [line, setLine] = useState<string>('BSC');
   const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
@@ -70,9 +72,6 @@ function Tool() {
   const {transferShow, operateType, fundsDetailShow} = useSelector((state : RootStore) => state.app);
 
   const checkWallet = useCallback((newWallet ) => {
-    if(!newWallet){
-      return false
-    }
     const walletIsMetaMask = newWallet === WalletEnum.MetaMask && isMetaMask;
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
@@ -83,9 +82,6 @@ function Tool() {
   },[wallet,isMetaMask]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkNetwork = useCallback(async (newNetWork) => {
-    if(!newNetWork){
-      return false
-    }
     const networkIsMain = newNetWork?.chainId === chainEnum?.chainId;
     if(!networkIsMain) {
       const ret = await switchNetwork(newNetWork);
@@ -99,7 +95,6 @@ function Tool() {
     setErrorMsg(undefined)
     return true
   },[network,chainEnum,isEthum]); // eslint-disable-line react-hooks/exhaustive-deps
-
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
     const networkCheckRes:boolean = await checkNetwork(network);
@@ -135,19 +130,7 @@ function Tool() {
         once: true,
       });
     }
-    setTimeout(() =>     {
-      if(!isLogin){
-        dispatch(userModel.actions.loadWallet())
-      }
-    }, 3000);
   }, [isLogin]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
-    if(!item || item.disabled) {
-      return;
-    }
-    setNetwork(item);
-  }, [checkLogin, wallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const switchNetwork = async (item:ChainEnum) => {
     try {
@@ -210,12 +193,11 @@ function Tool() {
   const $t = intl;
 
   let onboarding: any = React.useRef();
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (!onboarding.current) {
       onboarding.current = new MetaMaskOnboarding();
-      console.log(onboarding)
     }
+    console.log(onboarding);
   }, []);
 
   return (
@@ -224,6 +206,7 @@ function Tool() {
         {isLogin ? (
             <Button
               onClick={() => {
+                console.log(blance, account)
                 //  <Account {...{ account: account, blance: blance }} />
                 setshowAccountModal(true);
               }}
@@ -235,21 +218,39 @@ function Tool() {
             </Button>
         ) : (
 
-          <BorderButton fill={true}
+          <BorderButton
+            fill={true}
             className='con-btn'
             text={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
             click={() => {
               setShowWalletModal(true);
-              // todo
               // dispatch(userModel.actions.showWallet());
             }} />
         )}
       </Col>
 
       {
-        showAccountModal && <AccountModal close={() => {
-          setshowAccountModal(false)
-        }} />
+        // the account modal
+        showAccountModal && <AccountModal
+          close={() => {
+            setshowAccountModal(false)
+          }}
+          setType={setModalType}
+          setAddr={setModalAddr}
+          show={setShowOperatetModal}
+        />
+      }
+
+      {
+        showOperateModal &&  <WalletOperateModal
+          close={() => {
+            setShowOperatetModal(false);
+          }}
+          address={modalAddr}
+          confirm={() => {
+            setShowOperatetModal(false);
+          }}
+         type={modalType}/>
       }
 
       {
@@ -388,18 +389,6 @@ function Tool() {
         }
 
       </Col>
-
-      <Transfer
-        visible={transferShow}
-        closeModal={() => dispatch(showTransfer(false, operateType))}
-        operateType={operateType}
-        onCancel={() => dispatch(showTransfer(false, operateType))}
-      />
-
-      <FundsDetails
-        visible={fundsDetailShow}
-        onCancel={() => dispatch(showFundsDetail(false))}
-      />
     </Row>
   );
 }
