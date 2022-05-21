@@ -108,7 +108,7 @@
       }
 
       .per-red {
-        background: linear-gradient(90deg, #EC6989 0%, #E7446B 100%);
+        background: linear-gradient(90deg, #ec6989 0%, #e7446b 100%);
       }
     }
   }
@@ -164,9 +164,9 @@
       }
     }
     .search-active {
-      border-color: #E7446B;
+      border-color: #e7446b;
       input {
-        color: #E7446B !important;
+        color: #e7446b !important;
       }
     }
     .lists {
@@ -180,6 +180,7 @@
       flex-direction: row;
       align-items: center;
       font-size: 16px;
+      cursor: pointer;
       &:hover {
         background: #f7f7f7;
       }
@@ -217,6 +218,10 @@
         }
       }
     }
+    .item-disabled {
+      background: #ccc !important;
+      cursor: not-allowed;
+    }
   }
   .chart-wrapper {
     background: #fff;
@@ -253,8 +258,8 @@
       }
     }
     .time-select-active {
-      border-color: #E7446B;
-      color: #E7446B;
+      border-color: #e7446b;
+      color: #e7446b;
     }
     .time-select-list {
       position: absolute;
