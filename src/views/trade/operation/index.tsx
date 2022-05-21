@@ -33,30 +33,33 @@ export declare type OpenConfirmData = {
 
 function Operation() {
   const dispatch = useDispatch();
+
   const [closeType, setCloseType] = useState<'' | 'order' | 'allOrder' | 'allPosition'>('');
   const [walletType, setWalletType] = useState<'' | 'withdraw' | 'deposit'>('');
   const [showPositionModal, setShowPositionModal] = useState(false);
   const [showProfitModal, setShowProfitModal] = useState(false);
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [openType, setOpenType] = useState<OpenType>(OpenType.MarketOrder);
   const [leverage, setLeverage] = useState<number>(10);
 
   const curPair = useSelector<RootStore, TokenPair>(state => state.contract.curPair);
+  const { accountData } = useSelector((state: RootStore) => state.contract);
   const [limitPrice, setLimitPrice] = useState<string>(curPair.num.toFixed(2));
+  const walletInfo = useSelector((state:RootStore) => state.user);
+
   const [size, setSize] = useState<string>("");
   const [maxAmount, setMaxAmount] = useState<number>(0);
   const [traderOpenUpperBound, setTraderOpenUpperBound] = useState<{amount:number|string,size:number|string}>({amount:0,size:0})
   const [sliderVal, setSliderVal] = useState<number>(0);
   const [token, setToken] = useState<number>(UnitTypeEnum.USDT);
   const [openConfirmData, setOpenConfirmData] = useState<OpenConfirmData>();
+
   const getMaxSize = useCallback((traderOpenUpperBound:OpenUpperBound, token:number) => {
     return contractModel.actions.getOpenUpperBoundMaxSize(traderOpenUpperBound, token);
   }, [isModalVisible, token]);
-  const walletInfo = useSelector((state:RootStore) => state.user);
-  const {formatMessage} = useIntl()
 
+  const {formatMessage} = useIntl()
   function intl(id:string) {
     return formatMessage({id})
   }
@@ -225,6 +228,11 @@ function Operation() {
     console.log(val)
   }
 
+  const num1 = fck(accountData?.marginBalance, -8, 2);
+  const num1Data = num1.split(".");
+  const num2 = fck(accountData?.totalMargin, -8, 2);
+  const num2Data = num2.split(".");
+
   return (
     <Row className="main-block operation-container">
       <div className="data-block">
@@ -232,17 +240,17 @@ function Operation() {
             Margin Balance <img src={notice} alt="" />
           </div>
           <div className="num1">
-            <span className="big-num">891,234</span>
-            <span className="small-num">.23</span>
-            <span className="unit">USDT</span>
+            <span className="big-num">{num1Data[0]}</span>
+            <span className="small-num">.{num1Data[1]}</span>
+            <span className="unit">{getUSDTokenName()}</span>
           </div>
           <div className="t t1">
             Avaliable Margin Balance <img src={notice} alt="" />
           </div>
           <div className="num1">
-            <span className="big-num">891,234</span>
-            <span className="small-num">.23</span>
-            <span className="unit">USDT</span>
+            <span className="big-num">{num2Data[0]}</span>
+            <span className="small-num">.{num2Data[1]}</span>
+            <span className="unit">{getUSDTokenName()}</span>
           </div>
           <div className="btns">
             <Button1
@@ -385,7 +393,7 @@ function Operation() {
           confirm={() => {
             console.log('confirm')
           }}
-          address="address"
+          address={walletInfo.selectedAddress || ''}
           type={walletType} 
           close={() => {
            setWalletType('')
