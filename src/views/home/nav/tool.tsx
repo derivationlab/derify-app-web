@@ -6,7 +6,6 @@ import {RootStore} from "@/store";
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
 
-
 // images
 import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";

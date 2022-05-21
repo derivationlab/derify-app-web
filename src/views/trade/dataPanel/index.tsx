@@ -49,7 +49,6 @@ const context:Context = {
 }
 
 function DataPanel() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [showList, setShowList] = useState(false);
   const [time, setTime] = useState<any>('5m');
   const [showTimeList, setShowTimeList] = useState(false);
@@ -60,9 +59,9 @@ function DataPanel() {
   function intl<T>(id:string,values:{[key:string]:T} = {}) {
     return formatMessage({id}, values)
   }
-
   const $t = intl;
   const contractState = useSelector<RootStore,ContractState>(state => state.contract)
+  // the token pairs selectable 
   const tokenPairs = useSelector<RootStore,TokenPair[]>(state => state.contract.pairs)
   const curTokenPair = useSelector<RootStore,TokenPair>(state => state.contract.curPair)
   const curPrice = contractState.curPair.num||0
@@ -80,7 +79,6 @@ function DataPanel() {
     dispatch(action)
   }, [walletInfo,curTokenPair])
 
-
   useEffect(() => {
     loadHomeData()
   },[loadHomeData]);
@@ -90,28 +88,32 @@ function DataPanel() {
       return;
     }
     const priceChangeAction = contractModel.actions.onPriceChange(walletInfo.trader, () => {
-
       loadHomeData();
     });
     priceChangeAction(dispatch);
   }, [walletInfo]);
 
+  // current token price array
+  const curTokenPairVal = fck(curTokenPair.num, 0, 2).split(".")
+  
+
+  console.log(tokenPairs)
+
   return (
     <Row className="main-block data-panel-container">
       <Col className="list">
-        <div className={`types ${showList ? 'types-active' : ''}`} onClick={() => {
-          // setIsModalVisible(true);
-          setShowList(!showList)
-        }}>
-            <div className="t">
-              <span>{curTokenPair.name}</span>
-              <img src={showList ? arrow1 : arrow} alt="" />
-            </div>
-            <div className="data">
-              <span className="num">56789</span>
-              <span className="num1">.12</span>
-              <span className="per">+123.45%</span>
-            </div>
+        <div className={`types ${showList ? 'types-active' : ''}`} onClick={() => {  setShowList(!showList) }}>
+          <div className="t">
+            <span>{curTokenPair.name}</span>
+            <img src={showList ? arrow1 : arrow} alt="" />
+          </div>
+          <div className="data">
+            <span className="num">{curTokenPairVal[0]}</span>
+            <span className="num1">{curTokenPairVal[1]}</span>
+            <span className={`per ${curTokenPair.percent > 0 ? 'per-green' : 'per-red'}`}>
+              {amountFormt(curTokenPair.percent, 2, true, '--', 0)} %
+              </span>
+          </div>
         </div>
         <div className="item item0">
           <div className="t">
@@ -123,6 +125,7 @@ function DataPanel() {
           </div>
           <div className="vl" />
         </div>
+        
         <div className="item">
           <div className="t">
             <span>PCF Rate</span>
@@ -144,8 +147,6 @@ function DataPanel() {
           </div>
         </div>
       </Col>
-
-
 
       <div className="types-list-wrapper">
         {
@@ -215,58 +216,8 @@ function DataPanel() {
           }
         </div>
         }
-
-
         <Chart token={curPair.key} curPrice={curPrice} bar={timeGap}/>
       </Col>
-
-      <Modal
-        title={$t('Trade.OpenPosition.Market.Market')}
-        footer={null}
-        getContainer={false}
-        focusTriggerAfterClose={false}
-        visible={isModalVisible}
-        onCancel={() => {
-          setIsModalVisible(false);
-        }}
-      >
-        <Row className="currency-list-wrapper">
-          {
-            tokenPairs.map((token, index) => {
-              const classCurNames = []
-              if(curTokenPair.key === token.key){
-                classCurNames.push("active")
-              }
-              if(!token.enable){
-                classCurNames.push("diable")
-              }
-              return (
-                <Col flex="100%" className={classCurNames.join(" ")} key={index}
-                onClick={() => {
-                  if(token.enable){
-                    dispatch(contractModel.actions.updateCurTokenPair(token))
-                  }
-                  setIsModalVisible(false)
-                }}
-                >
-                <Row justify="space-between" align="middle">
-                  <Col className="currency">{token.name}</Col>
-                  <Col>
-                    <div>{amountFormt(token.num,2,false, "--", 0)}</div>
-                    <div>
-                      <span
-                        className={classNames(
-                          (token.percent||0) > 0 ? "main-green" : "main-red "
-                        )}
-                      >{amountFormt(token.percent,2,true,"--",0)}%</span>
-                    </div>
-                  </Col>
-                </Row>
-              </Col>)
-            })
-          }
-        </Row>
-      </Modal>
     </Row>
   );
 }
