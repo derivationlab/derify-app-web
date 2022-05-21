@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import IconFont from "@/components/IconFont";
-import { Row, Col, Modal, Tooltip } from "antd";
+import { Row, Col, Tooltip } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import Chart, { timeOptions } from "./chart";
 import { FormattedMessage, useIntl } from "react-intl";
-import classNames from "classnames";
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, {
   ContractState,
@@ -23,19 +22,11 @@ import arrow from "@/assets/images/arrowd.png";
 import arrow1 from "@/assets/images/arrow1.png";
 import search from "@/assets/images/search.png";
 import search1 from "@/assets/images/search1.png";
-import { timeList } from "./config";
+import { TimeList } from "./config";
 import "./index.less";
-
-declare type Context = {
-  tokenMiningRateEvent: EventSource | null;
-};
-const context: Context = {
-  tokenMiningRateEvent: null,
-};
 
 function DataPanel() {
   const [showList, setShowList] = useState(false);
-  const [time, setTime] = useState<any>("5m");
   const [showTimeList, setShowTimeList] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -95,8 +86,6 @@ function DataPanel() {
   // current token price array
   const curTokenPairVal = fck(curTokenPair.num, 0, 2).split(".");
 
-  console.log(tokenPairs);
-
   return (
     <Row className="main-block data-panel-container">
       <Col className="list">
@@ -136,7 +125,7 @@ function DataPanel() {
             <span>PCF Rate</span>
             <Notice title="PCF Rate" />
           </div>
-          <div className="val">-1.23</div>
+          <div className="val">{amountFormt(pcRate, 4, true, "0", -6)}</div>
           <div className="vl" />
         </div>
 
@@ -146,7 +135,10 @@ function DataPanel() {
             <Notice title="Position Mining APY." />
           </div>
           <div className="val">
-            13.57% <span>Long</span> / 56.78% <span>Short</span>
+            {amountFormt(curTokenPair.longPmrRate, 2, false, "--", 0)}%
+            <span>Long</span> /{" "}
+            {amountFormt(curTokenPair.shortPmrRate, 2, false, "--", 0)}%
+            <span>Short</span>
           </div>
         </div>
       </Col>
@@ -207,7 +199,7 @@ function DataPanel() {
         <div
           className={`time-select ${showTimeList ? "time-select-active" : ""}`}
         >
-          <span className="time">{time}</span>
+          <span className="time">{timeGap}</span>
           <span
             className="arrow"
             onClick={() => {
@@ -219,21 +211,22 @@ function DataPanel() {
         </div>
         {showTimeList && (
           <div className="time-select-list">
-            {timeList.map((val, index) => {
-              console.log(val);
+            {TimeList.map((val: any, index) => {
               if (val === "hr") {
                 return <div className="hr" key={index}></div>;
               } else {
                 return (
                   <div
-                    className={`time ${time === val[0] ? "time-active" : ""} `}
-                    key={val[0]}
+                    className={`time ${
+                      timeGap === val.value ? "time-active" : ""
+                    } `}
+                    key={val.label}
                     onClick={() => {
-                      setTime(val[0]);
+                      setTimeGap(val.value);
                       setShowTimeList(!showTimeList);
                     }}
                   >
-                    {val[0]}
+                    {val.value}
                   </div>
                 );
               }
