@@ -1,7 +1,6 @@
 import update from "react-addons-update";
 import { createReducer } from "redux-create-reducer";
 import LogRocket from "logrocket";
-
 import * as web3Utils from "@/utils/web3Utils";
 import { Token } from "@/utils/contractUtil";
 import {
@@ -11,7 +10,6 @@ import {
   getBrokerIdByTrader,
 } from "@/api/broker";
 // import {BIND_PARTNERS, CHANGE_LANG} from "@/store/modules/app/types";
-
 import Eth from "@/assets/images/Eth.png";
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
@@ -258,9 +256,7 @@ export function setHasBroker(trader: string, hasBroker: boolean) {
       selfBrokerId: string
     }>}
  */
-export async function getBrokerBindInfo(
-  curTrader: string
-): Promise<{
+export async function getBrokerBindInfo(curTrader: string): Promise<{
   trader: string;
   hasBroker: boolean;
   bindBrokerAddr: string;
@@ -374,10 +370,8 @@ const actions = {
   loginSuccess() {
     return async (commit: Dispatch) => {
       setLogout(false);
-
       getWallet()
         .then(data => {
-          console.log("====> data :", data);
           commit({
             type: "user/updateState",
             payload: { ...data, showWallet: false },

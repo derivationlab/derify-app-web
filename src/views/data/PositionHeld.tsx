@@ -46,9 +46,7 @@ function PositionHeld() {
     loadHeldDataAction(dispatch)
       .then(data => {
         setCurrentData(data.current);
-
         const xaxis: string[] = [];
-
         const longSeries: { stack: string; data: number[] } = {
           stack: "long",
           data: [],

@@ -3,7 +3,7 @@ import IconFont from "@/components/IconFont";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Title, Value, CenterData } from "./index.component";
 import Button from "@/components/buttons/borderButton";
-import { RewardModel, RootStore } from "@/store";
+import { RewardModel, RootStore, DataModel } from "@/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fck } from "@/utils/utils";
 import { RewardsType } from "@/store/modules/reward";
@@ -34,8 +34,14 @@ export default function MainData(props: Props) {
     loadEarningDataAction(dispatch);
   }, [trader, reloadRewardDataStatus]);
 
-  const totalPosValue = fck(accountData.totalPositionAmount, -8, 2);
-  const totalPosValueArr = totalPosValue.split(".");
+
+  function numFormat(num: any) {
+    let value = fck(num, -8, 2);
+    return value.split(".");
+  }
+  const totalPosValueArr = numFormat(accountData.totalPositionAmount);
+  const claimableValueArr = numFormat(pmrBalance);
+  const accumlateValueArr = numFormat(pmrAccumulatedBalance);
 
   return (
     <div className="wrapper">
@@ -48,10 +54,14 @@ export default function MainData(props: Props) {
         <CenterData b="98" s=".34%(max)" />
         <div className="b2">
           <div className="t1">Claimable</div>
-          <Value unit="USDT" b="67456" s=".2" />
+          <Value
+            unit={getUSDTokenName()}
+            b={claimableValueArr[0]}
+            s={`.${claimableValueArr[1]}`}
+          />
           <Value unit="DRF" b="0" s=".0" />
           <div className="desc">
-            Total earned : <span className="v">9.87M</span> USDT and{" "}
+            Total earned : <span className="v">{accumlateValueArr.join(".")}</span> USDT and{" "}
             <span className="v">0.0</span> DRF
           </div>
           <Button
@@ -73,7 +83,7 @@ export default function MainData(props: Props) {
           />
           <div className="t2" />
           <div className="desc">
-            Total positions : <span className="v">0.00M</span> USDT
+            Total positions : <span className="v">--</span> USDT
           </div>
           <Button
             className="earn-btn"
