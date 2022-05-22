@@ -17,52 +17,61 @@ type Props = {
 
 export default function MainData(props: Props) {
   const dispatch = useDispatch();
+
   const trader = useSelector((state: RootStore) => state.user.selectedAddress);
-  const {
-    bondInfo,
-    wallet,
-    pmrBalance,
-    pmrAccumulatedBalance,
-    edrfInfo,
-    accountData,
-  } = useSelector((state: RootStore) => state.reward);
+  const { bondInfo, pmrBalance, pmrAccumulatedBalance, edrfInfo, accountData } =
+    useSelector((state: RootStore) => state.reward);
   const reloadRewardDataStatus = useSelector(
     (state: RootStore) => state.app.reloadDataStatus.reward
   );
+
   useEffect(() => {
     const loadEarningDataAction = RewardModel.actions.loadEarningData(trader);
     loadEarningDataAction(dispatch);
   }, [trader, reloadRewardDataStatus]);
 
-
-  function numFormat(num: any) {
-    let value = fck(num, -8, 2);
+  function numFormat(num: any, bit = -8) {
+    let value = fck(num, bit, 2);
     return value.split(".");
   }
+  const uName = getUSDTokenName();
+  // Position Mining data
   const totalPosValueArr = numFormat(accountData.totalPositionAmount);
   const claimableValueArr = numFormat(pmrBalance);
   const accumlateValueArr = numFormat(pmrAccumulatedBalance);
 
+  // DRF Pool data
+  const drfBalanceArr = numFormat(edrfInfo.drfBalance);
+  const edrfBalanceArr = numFormat(edrfInfo.edrfBalance);
+
+  // edrf pool data
+  const edrfAPYarr = numFormat(bondInfo.bondAnnualInterestRatio, -6);
+  const depositArr = numFormat(bondInfo.bondReturnBalance);
+  const bondBalanceArr = numFormat(bondInfo.bondBalance);
+
   return (
     <div className="wrapper">
+      {
+        // -----  Position Mining start ------
+      }
       <Title
         t1="Position Mining"
         t2="Open position to earn position mining rewards."
       />
-
       <div className="datas">
-        <CenterData b="98" s=".34%(max)" />
+        <CenterData b="**" s=".**%(max)" />
         <div className="b2">
           <div className="t1">Claimable</div>
           <Value
-            unit={getUSDTokenName()}
+            unit={uName}
             b={claimableValueArr[0]}
             s={`.${claimableValueArr[1]}`}
           />
-          <Value unit="DRF" b="0" s=".0" />
+          <Value unit="DRF" b="*" s=".*" />
           <div className="desc">
-            Total earned : <span className="v">{accumlateValueArr.join(".")}</span> USDT and{" "}
-            <span className="v">0.0</span> DRF
+            Total earned :{" "}
+            <span className="v">{accumlateValueArr.join(".")}</span> USDT and{" "}
+            <span className="v">*.*</span> DRF
           </div>
           <Button
             className="earn-btn"
@@ -73,17 +82,16 @@ export default function MainData(props: Props) {
             }}
           />
         </div>
-
         <div className="b2 b3">
           <div className="t1">Positions</div>
           <Value
-            unit={getUSDTokenName()}
+            unit={uName}
             b={totalPosValueArr[0]}
             s={"." + totalPosValueArr[1]}
           />
           <div className="t2" />
           <div className="desc">
-            Total positions : <span className="v">--</span> USDT
+            Total positions : <span className="v">**</span> USDT
           </div>
           <Button
             className="earn-btn"
@@ -93,6 +101,13 @@ export default function MainData(props: Props) {
           />
         </div>
       </div>
+      {
+        // -----  Position Mining end  -----
+      }
+
+      {
+        // -----  DRF Pool start ------
+      }
 
       <Title
         t1="DRF Pool"
@@ -100,13 +115,17 @@ export default function MainData(props: Props) {
       />
 
       <div className="datas">
-        <CenterData b="34" s=".34%" />
+        <CenterData b="**" s=".**%" />
         <div className="b2">
           <div className="t1">Claimable</div>
-          <Value unit="eDRF" b="67456" s=".2" />
+          <Value
+            unit="eDRF"
+            b={edrfBalanceArr[0]}
+            s={`.${edrfBalanceArr[1]}`}
+          />
           <div className="t2"></div>
           <div className="desc">
-            Total earned : <span className="v">987124867345.4</span>eDRF
+            Total earned : <span className="v">**.**</span>eDRF
           </div>
           <Button
             className="earn-btn"
@@ -120,10 +139,11 @@ export default function MainData(props: Props) {
 
         <div className="b2 b3">
           <div className="t1">Staked</div>
-          <Value unit="DRF" b="45" s=".1" />
+          <Value unit="DRF" b={drfBalanceArr[0]} s={`.${drfBalanceArr[1]}`} />
           <div className="t2" />
           <div className="desc">
-            Current pool size : <span className="v">81677.44</span> DRF
+            Current pool size :{" "}
+            <span className="v">{drfBalanceArr.join(".")}</span> DRF
           </div>
           <Button
             className="earn-btn"
@@ -143,19 +163,26 @@ export default function MainData(props: Props) {
         </div>
       </div>
 
+      {
+        // -----  DRF Pool end ------
+      }
+
+      {
+        // -----  bDRF Pool start ------
+      }
       <Title
         t1="bDRF Pool"
         t2="Deposit bDRF to earn stable interests, or exchange bDRF to stable coin."
       />
 
       <div className="datas">
-        <CenterData b="12" s=".34%" />
+        <CenterData b={edrfAPYarr[0]} s={`.${edrfAPYarr[1]}%`} />
         <div className="b2">
           <div className="t1">Intrests</div>
-          <Value unit="bDRF" b="1456" s=".2" />
+          <Value unit="bDRF" b={bondBalanceArr[0]} s={`.${bondBalanceArr[1]}`} />
           <div className="t2"></div>
           <div className="desc">
-            Exchangeable : <span className="v">0.334</span>bDRF
+            Exchangeable : <span className="v">**.*</span>bDRF
           </div>
           <Button
             className="earn-btn"
@@ -173,13 +200,12 @@ export default function MainData(props: Props) {
             }}
           />
         </div>
-
         <div className="b2 b3">
           <div className="t1">Deposited</div>
-          <Value unit="bDRF" b="4344565" s=".133" />
+          <Value unit="bDRF" b={depositArr[0]} s={`.${depositArr[1]}`} />
           <div className="t2" />
           <div className="desc">
-            Total deposited : <span className="v">87.44M</span> bDRF
+            Total deposited : <span className="v">**.*M</span> bDRF
           </div>
           <Button
             className="earn-btn"
@@ -198,6 +224,9 @@ export default function MainData(props: Props) {
           />
         </div>
       </div>
+      {
+        // -----  bDRF Pool end ------
+      }
     </div>
   );
 }
