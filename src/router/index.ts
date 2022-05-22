@@ -4,7 +4,7 @@ import ErrorPage from "@/views/error";
 
 import Trade from "@/views/trade";
 import Data from "@/views/data";
-import Earn from "@/views/earn/main";
+import Earn from "@/views/earn";
 import Partners from "@/views/partners";
 import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
