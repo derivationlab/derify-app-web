@@ -92,14 +92,17 @@ const TradingVolume: React.FC = () => {
     onOptionChange(tokenOptions[0].value);
   }, []);
 
+  const tradeVolume = fck(currentData?.trading_amount, 0, 2);
+
+
   return (
     <div className="trading-volume-wrapper trading-data-wrapper">
       <div className="head">
         <div className="t">
           <span>{formatMessage({ id: "Data.Data.Trade.TradingVolume" })}:</span>
-          <span className="big-num">123445</span>
-          <span className="small-num">.45</span>
-          <span className="unit">USDT</span>
+          <span className="big-num">{tradeVolume ? tradeVolume.split(".")[0] : 0}</span>
+          <span className="small-num">.{tradeVolume ? tradeVolume.split(".")[1] : 0}</span>
+          <span className="unit"> {getUSDTokenName()}</span>
         </div>
         <div className="opts">
           <TimeSelect onChange={setTime1} />
@@ -119,7 +122,7 @@ const TradingVolume: React.FC = () => {
                 </div>
                 <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
                   <span>
-                    {fck(currentData?.trading_amount, 0, 2)}
+                    {tradeVolume}
                   </span>{" "}
                   {getUSDTokenName()}
                 </div>
