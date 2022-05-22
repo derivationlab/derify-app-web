@@ -1,9 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Row, Col, Spin } from "antd";
-
-import Info from "./Info";
+import { Row, Spin } from "antd";
 import Record from "./records";
-import Account from "./Account";
 import NotOpened from "./NotOpened";
 import { useDispatch, useSelector } from "react-redux";
 import { BrokerModel, RootStore } from "@/store";
@@ -13,7 +10,6 @@ import "./index.less";
 
 function Main() {
   const dispatch = useDispatch();
-
   const { trader, isLogin } = useSelector((state: RootStore) => state.user);
   const isBroker: boolean | undefined = useSelector(
     (state: RootStore) => state.broker.isBroker
@@ -22,7 +18,6 @@ function Main() {
     (state: RootStore) => state.app.reloadDataStatus.broker
   );
   const [loading, setLoading] = useState<boolean>(true);
-
   useEffect(() => {
     if (!trader) {
       setLoading(false);

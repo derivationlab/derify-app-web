@@ -13,6 +13,7 @@ export interface BrokerProps {
 }
 
 export default function Broker({ data, className }: BrokerProps) {
+  console.log(data)
   return (
     <div className={`broker-info ${className || ""}`}>
       <div className="avatar">
