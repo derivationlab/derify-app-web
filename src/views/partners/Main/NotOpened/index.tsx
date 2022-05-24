@@ -119,7 +119,7 @@ const NotOpened:React.FC<NotOpenedProps> = (props)=>{
                   type="ghost"
                   size="large"
                 >
-                  <a href="https://form.jotform.com/213133802570042" target={"_blank"}>{$t("Broker.Apply.GetTestEDRF")}</a>
+                  <a href="https://docs.google.com/forms/d/e/1FAIpQLSfXtFTznW1COzNFebfNGjdRKfcNdG0zNjM7GXasajJOLA5v_A/viewform" target={"_blank"}>{$t("Broker.Apply.GetTestEDRF")}</a>
                 </Button>
               </Col>
             </Row>
