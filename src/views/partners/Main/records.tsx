@@ -1,57 +1,63 @@
 import * as React from "react";
+import { connect } from "react-redux";
+import moment from "moment";
 import { Pagination } from "antd";
 import Deri from "@/assets/images/deri.png";
 import Share from "@/assets/images/share.png";
+import { RootStore } from "@/store";
+import { getbrokerBindTraders, getBrokerRewardHistory } from "@/api/broker";
 import Share1 from "@/assets/images/share1.png";
-import { history, trans, trader } from "./mock";
+import { getUSDTokenName } from "@/config";
 
-export interface IRecordsProps {}
+interface IRecProps {
+  user: any;
+}
 
-export interface IRecordsState {
+interface IRecState {
   tab: number;
+  total: number;
+  current: number;
   data: Array<any>;
 }
 
 let tabs = ["History", "Transaction", "Trader"];
+const types = [
+  "Income",
+  "Withdraw",
+  "Exchange",
+  "Redeem",
+  "Deposit",
+  "Interest",
+];
+
 const pageData = [
   ["Type", "Amount", "Balance", "Time"],
   ["Transaction", "Type", "Realized PnL", "Time"],
   ["Trader", "Last Transaction", "Last Transaction Time", "Registration Time"],
 ];
 
-export default class Records extends React.Component<
-  IRecordsProps,
-  IRecordsState
-> {
-  constructor(props: IRecordsProps) {
+class Records extends React.Component<IRecProps, IRecState> {
+  constructor(props: IRecProps) {
     super(props);
     this.state = {
       tab: 0,
-      data: history,
+      current: 1,
+      total: 0,
+      data: [],
     };
   }
 
   tabChange(tab: number) {
     return () => {
+      //  transaction not done
+      if (tab === 1) {
+        return;
+      }
       this.setState(
         {
           tab,
         },
-        () => {
-          if (tab === 0) {
-            this.setState({
-              data: history,
-            });
-          } else if (tab === 1) {
-            this.setState({
-              data: trans,
-            });
-          } else {
-            this.setState({
-              data: trader,
-            });
-          }
-        }
+        this.getData
       );
     };
   }
@@ -81,8 +87,43 @@ export default class Records extends React.Component<
     );
   }
 
+  changePage = (page: number) => {
+    this.setState(
+      {
+        current: page,
+      },
+      this.getData
+    );
+  };
+
+  getData = () => {
+    const { current, tab } = this.state;
+    const { trader } = this.props.user;
+    if (tab === 0) {
+      getBrokerRewardHistory(trader, current, 10).then(r => {
+        console.log(r);
+        this.setState({
+          data: r.records,
+          total: r.totalItems,
+        });
+      });
+    } else {
+      getbrokerBindTraders(trader, current, 10).then(r => {
+        console.log(r);
+        this.setState({
+          data: r.records,
+          total: r.totalItems,
+        });
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.getData();
+  }
+
   render() {
-    const { tab, data } = this.state;
+    const { tab, data, current, total } = this.state;
     return (
       <div className="broker-tab-list">
         <div className="tabs">
@@ -109,32 +150,52 @@ export default class Records extends React.Component<
           )}
         </div>
         <div className="hline"></div>
-        <Pagination defaultCurrent={1} total={50} />
+        <Pagination
+          current={current}
+          total={total}
+          onChange={this.changePage}
+        />
       </div>
     );
   }
 }
 
+const mapStateToProps = (state: RootStore) => {
+  return {
+    user: state.user,
+  };
+};
+export default connect(mapStateToProps)(Records);
+
 function Record0({ item }: { item: any }) {
+  const unit = getUSDTokenName();
   return (
     <div className="record">
       <div className="field">
-        <span className="line1">{item.type}</span>
+        <span className="line1">
+          {typeof item.update_type === "number" ? types[item.update_type] : "-"}
+        </span>
         <span className="line2">
-          {item.from} <img style={{ width: "20px" }} src={Share} alt="" />{" "}
+          {item.trader} <img style={{ width: "20px" }} src={Share} alt="" />{" "}
         </span>
       </div>
       <div className="field">
         <span className="line1">{item.amount}</span>
-        <span className="line2">{item.unit}</span>
+        <span className="line2">{unit}</span>
       </div>
       <div className="field">
         <span className="line1">{item.balance}</span>
-        <span className="line2">{item.unit}</span>
+        <span className="line2">{unit}</span>
       </div>
       <div className="field">
-        <span className="line1">{item.time}</span>
-        <span className="line2">{"2s 前"}</span>
+        <span className="line1">
+          {item.event_time
+            ? moment(item.event_time).format("YYYY-MM-DD HH:mm:ss")
+            : "-"}
+        </span>
+        <span className="line2">
+          {item.event_time ? moment(item.event_time).fromNow() : ""}
+        </span>
       </div>
     </div>
   );
@@ -180,7 +241,7 @@ function Record1({ item }: { item: any }) {
 
 function Record2({ item }: { item: any }) {
   return (
-    <div className="record">
+    <div className="record record2">
       <div className="field field21">
         {item.avatar ? (
           <img src={item.avatar} alt="" />
@@ -189,12 +250,12 @@ function Record2({ item }: { item: any }) {
             <img src={Deri} alt="" />
           </span>
         )}
-        <span style={{ marginLeft: "8px" }}>{item.id}</span>
+        <span className="record-trader">{item.trader}</span>
         <img src={Share1} alt="" style={{ width: "21px" }} />
       </div>
       <div className="field">
         <span>
-          {item.lastTransaction}
+          {item.lastTransaction || "-"}
           <img src={Share1} alt="" style={{ width: "21px" }} />
         </span>
       </div>
@@ -204,10 +265,16 @@ function Record2({ item }: { item: any }) {
           paddingTop: item.lastTransactionTime ? "12px" : 0,
         }}
       >
-        {item.lastTransactionTime ? (
+        {item.lastTX_time ? (
           <>
-            <span className="line1">{item.lastTransactionTime}</span>
-            <span className="line2">{"2s 前"}</span>
+            <span className="line1">
+              {item.lastTX_time
+                ? moment(item.lastTX_time).format("YYYY-MM-DD HH:mm:ss")
+                : "-"}
+            </span>
+            <span className="line2">
+              {item.lastTX_time ? moment(item.lastTX_time).fromNow() : "-"}
+            </span>
           </>
         ) : (
           <span>No Tx.</span>
@@ -219,8 +286,14 @@ function Record2({ item }: { item: any }) {
           paddingTop: "12px",
         }}
       >
-        <span className="line1">{item.registrationTime}</span>
-        <span className="line2">{"2s 前"}</span>
+        <span className="line1">
+          {item.update_time
+            ? moment(item.update_time).format("YYYY-MM-DD HH:mm:ss")
+            : "-"}
+        </span>
+        <span className="line2">
+          {item.update_time ? moment(item.update_time).fromNow() : "-"}
+        </span>
       </div>
     </div>
   );

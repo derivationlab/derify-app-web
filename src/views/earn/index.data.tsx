@@ -19,6 +19,7 @@ export default function MainData(props: Props) {
   const dispatch = useDispatch();
 
   const trader = useSelector((state: RootStore) => state.user.selectedAddress);
+  console.log(22, trader);
   const { bondInfo, pmrBalance, pmrAccumulatedBalance, edrfInfo, accountData } =
     useSelector((state: RootStore) => state.reward);
   const reloadRewardDataStatus = useSelector(
@@ -26,7 +27,9 @@ export default function MainData(props: Props) {
   );
 
   useEffect(() => {
-    const loadEarningDataAction = RewardModel.actions.loadEarningData(trader);
+    const loadEarningDataAction = RewardModel.actions.loadEarningData(
+      trader as any
+    );
     loadEarningDataAction(dispatch);
   }, [trader, reloadRewardDataStatus]);
 
@@ -179,7 +182,11 @@ export default function MainData(props: Props) {
         <CenterData b={edrfAPYarr[0]} s={`.${edrfAPYarr[1]}%`} />
         <div className="b2">
           <div className="t1">Intrests</div>
-          <Value unit="bDRF" b={bondBalanceArr[0]} s={`.${bondBalanceArr[1]}`} />
+          <Value
+            unit="bDRF"
+            b={bondBalanceArr[0]}
+            s={`.${bondBalanceArr[1]}`}
+          />
           <div className="t2"></div>
           <div className="desc">
             Exchangeable : <span className="v">**.*</span>bDRF

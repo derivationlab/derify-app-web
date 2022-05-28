@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {
   EventHandler,
   forwardRef,
@@ -15,7 +16,7 @@ import { useLocation } from "react-router-dom";
 import { useDebounce } from "react-use";
 import { TimeList } from "./config";
 
-const timeOptions = TimeList;
+export const timeOptions = TimeList;
 
 interface ChartModalProps extends ModalProps {
   token: string;
