@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { RootStore } from "@/store";
@@ -90,9 +91,11 @@ function BrokerInfo() {
           <div className="d">
             <div className="t">Broker Rank</div>
             <div className="t1">#24</div>
-            <div className="t2 t3">
-              Rank List <img src={share1} alt="" />
-            </div>
+            <Link to="/broker-list">
+              <div className="t2 t3">
+                Rank List <img src={share1} alt="" />
+              </div>
+            </Link>
           </div>
         </div>
       </div>

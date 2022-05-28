@@ -8,6 +8,7 @@ import Earn from "@/views/earn";
 import Partners from "@/views/partners";
 import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
+import BrokerList from "@/views/partners/brokerList/index";
 import Faucet from "@/views/faucet";
 
 const routes: Array<any> = [
@@ -22,12 +23,12 @@ const routes: Array<any> = [
         routes: [
           {
             path: "/trade",
-            exact:false,
+            exact: false,
             component: Trade,
           },
           {
             path: "/broker/:id",
-            exact:true,
+            exact: true,
             component: Trade,
           },
           {
@@ -39,6 +40,11 @@ const routes: Array<any> = [
             path: "/earn",
             exact: false,
             component: Earn,
+          },
+          {
+            path: "/broker-list",
+            exact: true,
+            component: BrokerList,
           },
           {
             path: "/broker",
