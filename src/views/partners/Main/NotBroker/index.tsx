@@ -12,7 +12,7 @@ import "./index.less";
 
 export default function NotBroker(props: any) {
   const user = useSelector((state: RootStore) => state.user);
-  const [step, setStep] = useState(4);
+  const [step, setStep] = useState(1);
   if (step === 1) {
     return (
       <Step1
