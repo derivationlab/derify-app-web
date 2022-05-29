@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Row, Spin } from "antd";
 import Record from "./records";
-import NotOpened from "./NotOpened";
 import { useDispatch, useSelector } from "react-redux";
 import { BrokerModel, RootStore } from "@/store";
 import NotBroker from "./NotBroker";
 import BrokerInfo from "./brokerInfo";
 import "./index.less";
 
-function Main() {
+function Main(props: any) {
   const dispatch = useDispatch();
   const { trader, isLogin } = useSelector((state: RootStore) => state.user);
   const isBroker: boolean | undefined = useSelector(
@@ -48,7 +47,7 @@ function Main() {
             <Record />
           </Row>
         ) : (
-          <NotBroker />
+          <NotBroker {...props}/>
         )}
       </Spin>
     </div>

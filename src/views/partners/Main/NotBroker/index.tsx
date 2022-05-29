@@ -10,11 +10,9 @@ import Step3 from "./step3";
 import Step4 from "./step4";
 import "./index.less";
 
-export interface INotBrokerProps {}
-
-export default function NotBroker(props: INotBrokerProps) {
+export default function NotBroker(props: any) {
   const user = useSelector((state: RootStore) => state.user);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(4);
   if (step === 1) {
     return (
       <Step1
@@ -29,10 +27,10 @@ export default function NotBroker(props: INotBrokerProps) {
     return (
       <Step2
         cancel={() => {
-          console.log("cancel");
+          setStep(1);
         }}
         confirm={() => {
-          console.log("confirm");
+          setStep(3);
         }}
       />
     );
@@ -53,7 +51,7 @@ export default function NotBroker(props: INotBrokerProps) {
     return (
       <Step4
         confirm={() => {
-          console.log("confirm");
+          props.history.push("/trade");
         }}
       />
     );
