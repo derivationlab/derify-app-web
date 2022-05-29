@@ -1,4 +1,9 @@
+/**
+ * this page show the user has a broker but he is not a broker
+ */
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootStore } from "@/store";
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
@@ -8,10 +13,12 @@ import "./index.less";
 export interface INotBrokerProps {}
 
 export default function NotBroker(props: INotBrokerProps) {
-  const [step, setStep] = useState(4);
+  const user = useSelector((state: RootStore) => state.user);
+  const [step, setStep] = useState(1);
   if (step === 1) {
     return (
       <Step1
+        id={user.brokerId}
         join={() => {
           setStep(2);
         }}

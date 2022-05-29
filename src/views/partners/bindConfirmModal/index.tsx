@@ -5,15 +5,13 @@ import closeImg from "@/assets/images/close.png";
 import BorderButton from "@/components/buttons/borderButton";
 import "./index.less";
 
-export interface BindConfirmModalProps {
+interface Iprops {
   close: () => void;
+  ok: () => void;
   data: any;
 }
 
-export default function BindConfirmModal({
-  close,
-  data,
-}: BindConfirmModalProps) {
+export default function BindConfirmModal({ close, data, ok }: Iprops) {
   return (
     <Modal className="broker-confirm-modal">
       <div className="h1">
@@ -26,7 +24,7 @@ export default function BindConfirmModal({
         text="submit"
         fill={true}
         className="broker-bottom"
-        click={() => {}}
+        click={ok}
       />
     </Modal>
   );
