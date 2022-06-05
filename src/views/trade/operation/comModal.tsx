@@ -1,8 +1,8 @@
+// @ts-nocheck
 import React, {ReactNode, useCallback, useEffect, useState} from "react";
 import { Row, Col, Modal } from "antd";
 import { ModalProps } from "antd/es/modal";
 import {FormattedMessage, useIntl} from "react-intl";
-import { useToggle } from "react-use";
 import classNames from "classnames";
 import ModalTips, {DerifyTradeModal} from "@/views/CommonViews/ModalTips";
 import {FormatXMLElementFn, PrimitiveType} from "intl-messageformat";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { Row, Col, Select, Badge, Spin } from "antd";
 import CommonCharts from "@/components/charts";

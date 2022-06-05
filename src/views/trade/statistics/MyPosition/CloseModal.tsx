@@ -1,6 +1,6 @@
+// @ts-nocheck
 import React, {useCallback, useEffect, useState} from "react";
 import {FormattedMessage, useIntl} from "react-intl";
-
 import { Modal, Row, Col, Input, Radio } from "antd";
 import { ModalProps } from "antd/es/modal";
 import {useDispatch, useSelector} from "react-redux";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
 import { Row, Spin } from "antd";
 import Record from "./records";

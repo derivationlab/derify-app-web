@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
 import { Row, Col, Button, Input, Spin, Statistic } from "antd";
 import { useDispatch, useSelector } from "react-redux";

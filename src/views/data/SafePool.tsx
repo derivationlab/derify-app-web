@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { Row, Col } from "antd";
 import { useIntl } from "react-intl";

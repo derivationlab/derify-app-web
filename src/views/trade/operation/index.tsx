@@ -3,22 +3,11 @@ import { Row, Col, Select, Button, Input } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
 import Transfers from "@/views/CommonViews/Transfer";
 import ComModal from "./comModal";
-import {
-  fromContractUnit,
-  numConvert,
-  OpenType,
-  SideEnum,
-  toContractUnit,
-  UnitTypeEnum,
-} from "@/utils/contractUtil";
+import { OpenType, toContractUnit, UnitTypeEnum, } from "@/utils/contractUtil";
 import { useDispatch, useSelector } from "react-redux";
-import contractModel, {
-  TokenPair,
-  OpenUpperBound,
-} from "@/store/modules/contract";
+import contractModel, { TokenPair, OpenUpperBound, } from "@/store/modules/contract";
 import { ContractModel, RootStore } from "@/store";
 import { amountFormtNumberDefault, checkNumber, fck } from "@/utils/utils";
-import WalletConnectButtonWrapper from "@/views/CommonViews/ButtonWrapper";
 import { DerifyErrorNotice } from "@/components/ErrorMessage";
 import { TransferOperateType } from "@/utils/types";
 import { getUSDTokenName } from "@/config";
@@ -45,9 +34,15 @@ export declare type OpenConfirmData = {
 function Operation() {
   const dispatch = useDispatch();
 
-  const [closeType, setCloseType] = useState<
-    "" | "order" | "allOrder" | "allPosition"
-  >("");
+  // state from redux
+  const walletInfo = useSelector((state: RootStore) => state.user);
+  const curPair = useSelector<RootStore, TokenPair>(
+    state => state.contract.curPair,
+  );
+  const { accountData } = useSelector((state: RootStore) => state.contract);
+
+  // state local
+  const [closeType, setCloseType] = useState<"" | "order" | "allOrder" | "allPosition">("");
   const [walletType, setWalletType] = useState<"" | "withdraw" | "deposit">("");
   const [showPositionModal, setShowPositionModal] = useState(false);
   const [showProfitModal, setShowProfitModal] = useState(false);
@@ -55,14 +50,7 @@ function Operation() {
   const [modalVisible, setModalVisible] = useState(false);
   const [openType, setOpenType] = useState<OpenType>(OpenType.MarketOrder);
   const [leverage, setLeverage] = useState<number>(10);
-
-  const curPair = useSelector<RootStore, TokenPair>(
-    state => state.contract.curPair
-  );
-  const { accountData } = useSelector((state: RootStore) => state.contract);
   const [limitPrice, setLimitPrice] = useState<string>(curPair.num.toFixed(2));
-  const walletInfo = useSelector((state: RootStore) => state.user);
-
   const [size, setSize] = useState<string>("");
   const [maxAmount, setMaxAmount] = useState<number>(0);
   const [traderOpenUpperBound, setTraderOpenUpperBound] = useState<{
@@ -77,13 +65,14 @@ function Operation() {
     (traderOpenUpperBound: OpenUpperBound, token: number) => {
       return contractModel.actions.getOpenUpperBoundMaxSize(
         traderOpenUpperBound,
-        token
+        token,
       );
     },
-    [isModalVisible, token]
+    [isModalVisible, token],
   );
 
   const { formatMessage } = useIntl();
+
   function intl(id: string) {
     return formatMessage({ id });
   }
@@ -103,7 +92,7 @@ function Operation() {
       }
       updateMaxAmount(openType, checkNumRet.value, leverage);
     },
-    [limitPrice]
+    [limitPrice],
   );
 
   const resetMax = useCallback(
@@ -119,7 +108,7 @@ function Operation() {
         }
       }
     },
-    [traderOpenUpperBound, token]
+    [traderOpenUpperBound, token],
   );
 
   const onSizeChange = useCallback(
@@ -144,7 +133,7 @@ function Operation() {
         }
       }
     },
-    [traderOpenUpperBound, token]
+    [traderOpenUpperBound, token],
   );
 
   const onLeverageChange = useCallback(
@@ -152,7 +141,7 @@ function Operation() {
       setLeverage(value);
       updateMaxAmount(openType, limitPrice, value);
     },
-    [limitPrice, openType]
+    [limitPrice, openType],
   );
 
   const onTokenChange = useCallback(
@@ -161,7 +150,7 @@ function Operation() {
       resetMax(getMaxSize(traderOpenUpperBound, token));
       setMaxAmount(getMaxSize(traderOpenUpperBound, token));
     },
-    [traderOpenUpperBound]
+    [traderOpenUpperBound],
   );
 
   const onOpenTypeChange = useCallback(
@@ -173,7 +162,7 @@ function Operation() {
       }
       updateMaxAmount(val, price, leverage);
     },
-    [openType, curPair.num, leverage]
+    [openType, curPair.num, leverage],
   );
 
   const updateMaxAmount = useCallback(
@@ -203,7 +192,8 @@ function Operation() {
         .catch(e => {
           console.error("getTraderOpenUpperBoundAction", e);
         })
-        .finally(() => {});
+        .finally(() => {
+        });
     },
     [
       walletInfo.tradeDataTick,
@@ -212,7 +202,7 @@ function Operation() {
       curPair,
       openType,
       token,
-    ]
+    ],
   );
 
   const calculatePositionSize = useCallback(
@@ -220,7 +210,7 @@ function Operation() {
       size: string,
       unit: number,
       traderOpenUpperBound: OpenUpperBound,
-      sliderValue: number
+      sliderValue: number,
     ) => {
       const maxSize = getMaxSize(traderOpenUpperBound, unit);
       let newSize = 0;
@@ -230,19 +220,19 @@ function Operation() {
           4,
           false,
           0,
-          0
+          0,
         );
       }
       return newSize;
     },
-    []
+    [],
   );
 
   const doOpenPositionConfirm = useCallback(
     (side: number) => {
       let checkNumRet = checkNumber(
         size,
-        getMaxSize(traderOpenUpperBound, token)
+        getMaxSize(traderOpenUpperBound, token),
       );
       if (!checkNumRet.success || !size) {
         DerifyErrorNotice.error($t("global.NumberError"));
@@ -260,7 +250,7 @@ function Operation() {
         size,
         token,
         traderOpenUpperBound,
-        sliderVal
+        sliderVal,
       );
       const params: OpenConfirmData = {
         unit: token,
@@ -274,7 +264,7 @@ function Operation() {
       setOpenConfirmData(params);
       setIsModalVisible(true);
     },
-    [openType, size, limitPrice, curPair, leverage, traderOpenUpperBound]
+    [openType, size, limitPrice, curPair, leverage, traderOpenUpperBound],
   );
 
   const selectAfter = (
@@ -292,7 +282,7 @@ function Operation() {
     updateMaxAmount(
       openType,
       openType == OpenType.MarketOrder ? curPair.num : limitPrice,
-      leverage
+      leverage,
     );
     const trader = walletInfo.trader;
     if (!trader) {
@@ -303,7 +293,7 @@ function Operation() {
       updateMaxAmount(
         openType,
         openType == OpenType.MarketOrder ? curPair.num : limitPrice,
-        leverage
+        leverage,
       );
     });
     onWithdrawAction(dispatch);
@@ -312,7 +302,7 @@ function Operation() {
       updateMaxAmount(
         openType,
         openType == OpenType.MarketOrder ? curPair.num : limitPrice,
-        leverage
+        leverage,
       );
     });
     onDepositAction(dispatch);
@@ -323,9 +313,9 @@ function Operation() {
         updateMaxAmount(
           openType,
           openType == OpenType.MarketOrder ? curPair.num : limitPrice,
-          leverage
+          leverage,
         );
-      }
+      },
     );
     onOpenPositionAction(dispatch);
     const onClosePositionAction = ContractModel.actions.onClosePosition(
@@ -335,9 +325,9 @@ function Operation() {
         updateMaxAmount(
           openType,
           openType == OpenType.MarketOrder ? curPair.num : limitPrice,
-          leverage
+          leverage,
         );
-      }
+      },
     );
     onClosePositionAction(dispatch);
   }, [walletInfo, openType, curPair, leverage, limitPrice, token]);

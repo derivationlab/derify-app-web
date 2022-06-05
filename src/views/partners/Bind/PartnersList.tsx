@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { Row, Col, Select, Pagination, Spin, Popover } from "antd";
 import { BrokerInfo, getBrokerList } from "@/api/broker";

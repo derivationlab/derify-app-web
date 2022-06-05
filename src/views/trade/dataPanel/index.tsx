@@ -1,7 +1,6 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
-import IconFont from "@/components/IconFont";
-import { Row, Col, Tooltip } from "antd";
-import { RightOutlined } from "@ant-design/icons";
+import { Row, Col } from "antd";
 import Chart, { timeOptions } from "./chart";
 import { FormattedMessage, useIntl } from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
