@@ -2,8 +2,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Row, Col, Select, Button, Input } from "antd";
 import { useIntl } from "react-intl";
-import ComModal from "./comModal";
-import { OpenType, toContractUnit, UnitTypeEnum, } from "@/utils/contractUtil";
+import { OpenType, toContractUnit, SideEnum, UnitTypeEnum, } from "@/utils/contractUtil";
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, { TokenPair, OpenUpperBound, } from "@/store/modules/contract";
 import { ContractModel, RootStore } from "@/store";
@@ -33,6 +32,11 @@ export declare type OpenConfirmData = {
   leverage: number;
 };
 
+type boundData = {
+  amount: number | string;
+  size: number | string;
+}
+
 function Operation() {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -48,24 +52,21 @@ function Operation() {
   // state local
   const [closeType, setCloseType] = useState<"" | "order" | "allOrder" | "allPosition">("");
   const [walletType, setWalletType] = useState<"" | "withdraw" | "deposit">("");
+  const [type, setType] = useState<"Short" | "Long" | "2-Way">("Long");
   const [showPositionModal, setShowPositionModal] = useState(false);
   const [showProfitModal, setShowProfitModal] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [openType, setOpenType] = useState<OpenType>(type1);
   const [leverage, setLeverage] = useState<number>(10);
   const [limitPrice, setLimitPrice] = useState<string>(curPair.num.toFixed(2));
   const [size, setSize] = useState<string>("");
   const [maxAmount, setMaxAmount] = useState<number>(0);
-  const [traderOpenUpperBound, setTraderOpenUpperBound] = useState<{
-    amount: number | string;
-    size: number | string;
-  }>({ amount: 0, size: 0 });
+  const [traderOpenUpperBound, setTraderOpenUpperBound] = useState<boundData>({ amount: 0, size: 0 });
   const [token, setToken] = useState<number>(UnitTypeEnum.USDT);
   const [openConfirmData, setOpenConfirmData] = useState<OpenConfirmData>();
 
   const getMaxSize = useCallback((traderOpenUpperBound: OpenUpperBound, token: number) => {
     return contractModel.actions.getOpenUpperBoundMaxSize(traderOpenUpperBound, token,);
-  }, [isModalVisible, token],);
+  }, [showPositionModal, token],);
 
   const priceChange = (value: string) => {
     const checkNumRet = checkNumber(value);
@@ -74,23 +75,22 @@ function Operation() {
     updateMaxAmount(openType, checkNumRet.value, leverage);
   }
 
-  const resetMax = useCallback((maxSize: number) => {
-    const checkNumRet = checkNumber(size, maxSize);
-    if (checkNumRet.value !== null) {
+  const resetMax = useCallback((maxSize:number) =>{
+    const checkNumRet = checkNumber(size, maxSize)
+    if(checkNumRet.value !== null){
       setSize(checkNumRet.value);
-      const sizeNum = parseFloat(checkNumRet.value);
     }
-  }, [traderOpenUpperBound, token],);
+  }, [traderOpenUpperBound, token]);
 
-  const sizeChange = useCallback((value: string) => {
-      const maxSize = token === UnitTypeEnum.Percent ? 100 : getMaxSize(traderOpenUpperBound, token);
-      const checkNumRet = checkNumber(value, maxSize);
-      DerifyErrorNotice.error(checkNumRet.success ? null : $t("global.NumberError"))
-      if (checkNumRet.value !== null) {
-        setSize(checkNumRet.value);
-        const sizeNum = parseFloat(checkNumRet.value);
-      }
-    }, [traderOpenUpperBound, token],);
+  const sizeChange = useCallback((value:string) => {
+    const maxSize = token === UnitTypeEnum.Percent ? 100 : getMaxSize(traderOpenUpperBound, token);
+    const checkNumRet = checkNumber(value, maxSize)
+    DerifyErrorNotice.error(checkNumRet.success ? null : $t("global.NumberError"));
+    if(checkNumRet.value !== null){
+      setSize(checkNumRet.value);
+    }
+  },[traderOpenUpperBound,token])
+
 
   const levChange = (v: number) => {
     setLeverage(v);
@@ -126,8 +126,7 @@ function Operation() {
       }
       const price = openType === type1 ? curPair.num : limitPrice;
       const params = {
-        trader,
-        openType,
+        trader, openType,
         price: toContractUnit(price),
         leverage: toContractUnit(leverage),
         token: curPair.address,
@@ -135,13 +134,13 @@ function Operation() {
       const getTraderOpenUpperBoundAction = contractModel.actions.getTraderOpenUpperBound(params);
       const tokenNew = token;
       getTraderOpenUpperBoundAction(dispatch).then(data => {
-          setTraderOpenUpperBound(data);
-          setMaxAmount(getMaxSize(data, tokenNew));
-          resetMax(getMaxSize(data, tokenNew));
-        })
-        .catch(e => {
-          console.error("getTraderOpenUpperBoundAction", e);
-        })
+        setTraderOpenUpperBound(data);
+        setMaxAmount(getMaxSize(data, tokenNew));
+        resetMax(getMaxSize(data, tokenNew));
+      })
+      .catch(e => {
+        console.error("getTraderOpenUpperBoundAction", e);
+      })
     }, [walletInfo.tradeDataTick, walletInfo.selectedAddress, leverage, curPair, openType, token,],
   );
 
@@ -162,32 +161,33 @@ function Operation() {
     [],
   );
 
-  const doOpenPositionConfirm = useCallback((side: number) => {
-      let checkNumRet = checkNumber(size, getMaxSize(traderOpenUpperBound, token),);
-      if (!checkNumRet.success || !size) {
+  const openPositionConfirm = useCallback((side: number) => {
+    const t = ['Long', 'Short', '2-Way'];
+    setType(t[side]);
+    let checkNumRet = checkNumber(size, getMaxSize(traderOpenUpperBound, token),);
+    if (!checkNumRet.success || !size) {
+      return DerifyErrorNotice.error($t("global.NumberError"));
+    }
+    if (openType === OpenType.LimitOrder) {
+      checkNumRet = checkNumber(limitPrice);
+      if (!checkNumRet.success || !limitPrice) {
         return DerifyErrorNotice.error($t("global.NumberError"));
       }
-      if (openType === OpenType.LimitOrder) {
-        checkNumRet = checkNumber(limitPrice);
-        if (!checkNumRet.success || !limitPrice) {
-          return DerifyErrorNotice.error($t("global.NumberError"));
-        }
-      }
-      DerifyErrorNotice.error(null);
-      const params: OpenConfirmData = {
-        unit: token,
-        openType,
-        limitPrice: parseFloat(limitPrice),
-        token: curPair,
-        side,
-        size: Number.parseFloat(size),
-        leverage,
-      };
-      setOpenConfirmData(params);
-      setIsModalVisible(true);
-    },
-    [openType, size, limitPrice, curPair, leverage, traderOpenUpperBound],
-  );
+    }
+    DerifyErrorNotice.error(null);
+    const params: OpenConfirmData = {
+      unit: token,
+      openType,
+      limitPrice: parseFloat(limitPrice),
+      token: curPair,
+      side,
+      size: Number.parseFloat(size),
+      leverage,
+    };
+    console.log(params)
+    setOpenConfirmData(params);
+    setShowPositionModal(true)
+  }, [openType, size, limitPrice, curPair, leverage, traderOpenUpperBound]);
 
   useEffect(() => {
     updateMaxAmount(openType, openType === type1 ? curPair.num : limitPrice, leverage,);
@@ -252,7 +252,7 @@ function Operation() {
           <Button1
             click={() => {setWalletType("withdraw");}}
             className="withdaw"
-            text="Withdaw"
+            text="Withdraw"
           />
         </div>
       </div>
@@ -305,23 +305,40 @@ function Operation() {
       <Percent setValue={(e) => onSliderChange(e)} />
 
       <div className="btn-group">
-        <div className="btn long" onClick={() => {setCloseType("allOrder");}}>
+        <div className="btn long" onClick={() => {
+          openPositionConfirm(0)
+        }}>
           <div className="type">long</div>
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
         </div>
-        <div className="btn" onClick={() => {setShowPositionModal(true);}}>
+         <div className="btn" onClick={() => {
+           openPositionConfirm(1)
+          }}>
           <div className="type">short</div>
           <div className="num"> 12.34%</div>
           <div className="t">APY</div>
         </div>
       </div>
 
-      <div className="btn2" onClick={() => {setShowProfitModal(true);}}>
+      <div className="btn2" onClick={() => {
+        openPositionConfirm(2)
+      }}>
         2-Way
         <div className="num"> 12.34%</div>
         <div className="t">APY</div>
       </div>
+
+      {showPositionModal && (
+        <ModalClosePostion
+          operate=""
+          data={openConfirmData}
+          title="Open Position"
+          type={type}
+          confirm={() => {setShowPositionModal(false);}}
+          close={() => {setShowPositionModal(false);}}
+        />
+      )}
 
       {showProfitModal && (
         <ModalProfit
@@ -352,22 +369,6 @@ function Operation() {
         )
       }
 
-      {showPositionModal && (
-        <ModalClosePostion
-          operate=""
-          title="Open Position"
-          type={"2-Way"}
-          confirm={() => {setShowPositionModal(false);}}
-          close={() => {setShowPositionModal(false);}}
-        />
-      )}
-
-      <ComModal
-        visible={isModalVisible}
-        openConfirmData={openConfirmData}
-        closeModal={() => {setIsModalVisible(false);}}
-        onCancel={() => {setIsModalVisible(false);}}
-      />
     </Row>
   );
 }
