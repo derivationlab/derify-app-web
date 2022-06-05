@@ -1,0 +1,157 @@
+.broker-list.page-wrapper {
+  width: 1392px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 48px;
+  color: #222;
+  > .h1 {
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+    font-weight: 800;
+    font-size: 24px;
+  }
+  .hline {
+    background: #f7f7f7;
+    border-radius: 6.5px;
+    height: 12px;
+    width: 100%;
+  }
+  .table {
+    width: 100%;
+  }
+
+  .tb-header,
+  .tb-record {
+    height: 44px;
+    line-height: 44px;
+    > div {
+      padding-left: 36px;
+      display: inline-block;
+      font-weight: 600;
+      font-size: 16px;
+      color: #000;
+    }
+    .field1 {
+      width: 275px;
+    }
+    .field2 {
+      width: 250px;
+    }
+    .field3 {
+      width: 220px;
+    }
+    .field4 {
+      width: 250px;
+    }
+    .field5 {
+      width: 220px;
+    }
+    .field6 {
+      width: 177px;
+    }
+  }
+
+  .tb-record {
+    height: 64px;
+    line-height: 64px;
+    background: #f7f7f7;
+    border-radius: 36px;
+    display: flex;
+    flex-direction: row;
+    > div {
+      height: 64px;
+    }
+    .num {
+      font-size: 26px;
+      font-weight: bold;
+    }
+    .unit {
+      font-size: 16px;
+      font-weight: normal;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .default {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.8),
+          rgba(255, 255, 255, 0.8)
+        ),
+        #e7446b;
+      border-radius: 18px;
+      line-height: 36px;
+      text-align: center;
+      img {
+        width: 20px;
+      }
+    }
+
+    .field1 {
+      padding-left: 12px;
+      display: flex;
+      align-items: center;
+      .titles {
+        height: 40px;
+        margin-left: 8px;
+        flex: 1;
+        > div {
+          line-height: 20px;
+          height: 20px;
+          font-size: 14px;
+          color: #000;
+        }
+        .line2 {
+          color: #888;
+          font-size: 10px;
+        }
+      }
+    }
+  }
+
+  .ant-pagination {
+    text-align: center;
+    font-size: 18px;
+    margin: 36px 0;
+    li {
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      border-radius: 24px;
+      background: #fff;
+      border: 2px solid #e7e7e7;
+      a {
+        color: #888;
+      }
+    }
+    .ant-pagination-item-active {
+      background-color: #e7446b;
+      a {
+        color: #fff;
+      }
+    }
+    .ant-pagination-prev,
+    .ant-pagination-next {
+      button {
+        background-color: #fff;
+        border-radius: 24px;
+        color: #888;
+      }
+    }
+    .ant-pagination-disabled {
+      button {
+        background-color: #f6f6f6;
+        color: #e7e7e7;
+      }
+    }
+  }
+}

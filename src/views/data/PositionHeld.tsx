@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef, useState } from "react";
 import { useIntl } from "react-intl";
 import { Row, Col, Select, Badge, Spin } from "antd";
@@ -46,9 +47,7 @@ function PositionHeld() {
     loadHeldDataAction(dispatch)
       .then(data => {
         setCurrentData(data.current);
-
         const xaxis: string[] = [];
-
         const longSeries: { stack: string; data: number[] } = {
           stack: "long",
           data: [],
@@ -82,14 +81,23 @@ function PositionHeld() {
     onOptionChange(tokenOptions[0].value);
   }, []);
 
+  let total = "0.00";
+  if (currentData && currentData.long_position_amount !== undefined) {
+    total = fck(
+      currentData.long_position_amount + currentData.short_position_amount,
+      0,
+      2
+    );
+  }
+
   return (
     <div className="position-volume-wrapper trading-data-wrapper">
       <div className="head">
         <div className="t">
           <span>{formatMessage({ id: "Data.Data.Held.PositionVolume" })}:</span>
-          <span className="big-num">123445</span>
-          <span className="small-num">.45</span>
-          <span className="unit">USDT</span>
+          <span className="big-num">{total.split(".")[0]}</span>
+          <span className="small-num">.{total.split(".")[1]}</span>
+          <span className="unit">{getUSDTokenName()}</span>
         </div>
         <div className="opts">
           <TimeSelect onChange={setTime1} />
@@ -107,9 +115,7 @@ function PositionHeld() {
                   {formatMessage({ id: "Data.Data.Held.TotalLong" })}
                 </div>
                 <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                  <span>
-                    {fck(currentData?.long_position_amount, 0, 2)}
-                  </span>{" "}
+                  <span>{fck(currentData?.long_position_amount, 0, 2)}</span>{" "}
                   {getUSDTokenName()}
                 </div>
               </Col>
@@ -119,15 +125,13 @@ function PositionHeld() {
                   {formatMessage({ id: "Data.Data.Held.TotalShort" })}
                 </div>
                 <div style={{ margin: "4px 0", paddingLeft: "14px" }}>
-                  <span>
-                    {fck(currentData?.short_position_amount, 0, 2)}
-                  </span>{" "}
+                  <span>{fck(currentData?.short_position_amount, 0, 2)}</span>{" "}
                   {getUSDTokenName()}
                 </div>
               </Col>
             </Row>
           </Col>
-          <Col className='chart-out-wrapper'>
+          <Col className="chart-out-wrapper">
             <CommonCharts ref={chartRef} height={330} />
           </Col>
         </Row>

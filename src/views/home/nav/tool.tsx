@@ -1,15 +1,12 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Button, Col, Modal, Popover, Row} from "antd";
+import MetaMaskOnboarding from '@metamask/onboarding';
+import {Button, Col, Row, message} from "antd";
 import {useDispatch, useSelector} from "react-redux";
 import {RootStore} from "@/store";
 import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
-import IconFont from "@/components/IconFont";
-import Account from "./Account";
-import WalletInstall from './WalletInstall';
-import WalletModal from '../walletModal'
-import AccountModal from '../accountModal'
 
+// images
 import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";
 import ETH1 from "@/assets/images/eth1.png";
@@ -20,22 +17,15 @@ import MenuOtherActive from '@/assets/images/menu-others-active.png';
 import HECO from "@/assets/images/huobi-token-ht-logo.png";
 import Binance from "@/assets/images/binance-coin-bnb-logo.png";
 import Solana from "@/assets/images/Solana.png";
-import Wallet from "@/assets/images/Metamask.png";
-import EnIcon from "@/assets/images/en.png";
-import ZhIcon from "@/assets/images/zh.png";
-import classNames from "classnames";
+
 import userModel, {ChainEnum, mainChain, WalletEnum} from "@/store/modules/user";
-import ErrorMessage from "@/components/ErrorMessage";
-import Transfer from "@/views/CommonViews/Transfer";
-import FundsDetails from "@/views/home/nav/Account/FundsDetail";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import BorderButton from "@/components/buttons/borderButton";
 
-const icons: any = {}
-icons['BSC'] = BSC;
-icons['POL'] = Polygon;
-icons['AVA'] = Avalanche;
-icons['ETH'] = ETH1;
+// modals
+import WalletListModal from '../walletListModal'
+import WalletOperateModal from "../../trade/modal/wallet"
+import AccountModal from '../walletAccountModal'
 
 const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
   { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
@@ -47,15 +37,32 @@ const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
 const lang: any = 'en';
 const theme: any = 'light';
 
+const netWorks =  [
+  ['BSC', 'BNB Chain'],
+  //  ['POL', 'Polygon'],
+  //  ['AVA', 'Avalanche'],
+  //  ['ETH', 'Etherum']
+];
+
+const icons: any = {}
+icons['BSC'] = BSC;
+icons['POL'] = Polygon;
+icons['AVA'] = Avalanche;
+icons['ETH'] = ETH1;
+
 function Tool() {
 
   const dispatch = useDispatch();
   const [showAccountModal, setshowAccountModal] = useState<boolean>(false);
   const [showWalletModal, setShowWalletModal] = useState<boolean>(false);
+  const [showOperateModal, setShowOperatetModal] = useState<boolean>(false);
   const [showAddTokenList, setShowAddTokenList] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [showLangs, setShowLangs] = useState<boolean>(false);
   const [showTheme, setShowTheme] = useState<boolean>(false);
+  const [modalAddr, setModalAddr] = useState<string>("");
+  const [modalType, setModalType] = useState<"deposit" | "withdraw">("withdraw");
+
   const [line, setLine] = useState<string>('BSC');
   const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
@@ -69,9 +76,6 @@ function Tool() {
   const {transferShow, operateType, fundsDetailShow} = useSelector((state : RootStore) => state.app);
 
   const checkWallet = useCallback((newWallet ) => {
-    if(!newWallet){
-      return false
-    }
     const walletIsMetaMask = newWallet === WalletEnum.MetaMask && isMetaMask;
     if(!walletIsMetaMask) {
       setErrorMsg({id: 'Trade.Wallet.NoWalletErrorMsg', value: WalletEnum.MetaMask})
@@ -82,16 +86,9 @@ function Tool() {
   },[wallet,isMetaMask]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const checkNetwork = useCallback(async (newNetWork) => {
-
-    if(!newNetWork){
-      return false
-    }
-
     const networkIsMain = newNetWork?.chainId === chainEnum?.chainId;
-
     if(!networkIsMain) {
       const ret = await switchNetwork(newNetWork);
-
       if(ret){
         setErrorMsg(undefined);
         return true;
@@ -99,21 +96,18 @@ function Tool() {
       setErrorMsg({id: 'Trade.Wallet.MainChainUnmatch', value: chainEnum?.name})
       return false
     }
-
     setErrorMsg(undefined)
-
     return true
   },[network,chainEnum,isEthum]); // eslint-disable-line react-hooks/exhaustive-deps
-
 
   const checkLogin = useCallback(async (network:ChainEnum|undefined, wallet:WalletEnum|undefined) => {
     const networkCheckRes:boolean = await checkNetwork(network);
     const walletCheckRes:boolean = await checkWallet(wallet);
-
     if (networkCheckRes && walletCheckRes) {
       const loginWalletAction = userModel.actions.loginWallet();
       loginWalletAction(dispatch).then(() => {
         dispatch(userModel.actions.loginSuccess());
+        setShowWalletModal(false);
       }).catch(e => console.error('loginWalletAction failed', e));
     }
   }, [wallet, network, checkNetwork, checkWallet]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -123,43 +117,24 @@ function Tool() {
   }, [selectedAddress]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-
     if(isLogin){
       return;
     }
-
     window.onload = function () {
-
       if(!window.ethereum){
         return;
       }
-
       window.ethereum.on('accountsChanged', function () {
         dispatch(userModel.actions.loadWallet())
       })
-
       window.ethereum.on('chainChanged', function () {
         dispatch(userModel.actions.loadWallet())
       })
-
       window.addEventListener('ethereum#initialized', () => dispatch(userModel.actions.loadWallet()), {
         once: true,
       });
     }
-
-    setTimeout(() =>     {
-      if(!isLogin){
-        dispatch(userModel.actions.loadWallet())
-      }
-    }, 3000);
   }, [isLogin]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const onChangeNetwork = useCallback((item:ChainEnum|undefined) => {
-    if(!item || item.disabled) {
-      return;
-    }
-    setNetwork(item);
-  }, [checkLogin, wallet]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const switchNetwork = async (item:ChainEnum) => {
     try {
@@ -171,7 +146,6 @@ function Tool() {
       return true;
     } catch (error) {
       console.error(error);
-
       if (error.code === 4902 || error.code === -32603) {
         try {
           await window.ethereum.request({
@@ -201,18 +175,14 @@ function Tool() {
               },
             ],
           });
-
           return true;
         } catch (addError) {
           console.error(addError);
         }
       }
-
       return false
     }
   }
-
-
 
   const onChangeWallet = useCallback((val) => {
     setWallet(val);
@@ -226,13 +196,48 @@ function Tool() {
 
   const $t = intl;
 
+  let onboarding: any = React.useRef();
+  useEffect(() => {
+    if (!onboarding.current) {
+      onboarding.current = new MetaMaskOnboarding();
+    }
+    console.log(onboarding);
+  }, []);
+
+  async function addDRF() {
+    const tokenAddress = '0x89C1Af791d7B4cf046Dca8Fa10a41Dd2298A6a3F';
+    const tokenSymbol = 'DRF';
+    const tokenDecimals = 18;
+    const tokenImage = 'https://bsctestnet-prod-api.derify.exchange:8084/1650023741739-logo.png';
+    try {
+      const wasAdded = await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20', // Initially only supports ERC20, but eventually more!
+          options: {
+            address: tokenAddress, // The address that the token is at.
+            symbol: tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+            decimals: tokenDecimals, // The number of decimals in the token
+            image: tokenImage, // A string url of the token logo
+          },
+        },
+      });
+      if (wasAdded) {
+        message.success("added success")
+      } else {
+        message.error("added failed, please try later");
+      }
+    } catch (error) {
+       message.error("added failed, please try later");
+    }
+  }
+
   return (
     <Row align={"middle"} className="tool">
       <Col className="connect-btn">
         {isLogin ? (
             <Button
               onClick={() => {
-                //  <Account {...{ account: account, blance: blance }} />
                 setshowAccountModal(true);
               }}
               className="account-wrapper"
@@ -243,50 +248,76 @@ function Tool() {
             </Button>
         ) : (
 
-          <BorderButton fill={true} 
+          <BorderButton
+            fill={true}
             className='con-btn'
             text={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
             click={() => {
               setShowWalletModal(true);
-              // todo
               // dispatch(userModel.actions.showWallet());
             }} />
         )}
       </Col>
 
       {
-        showAccountModal && <AccountModal close={() => {
-          setshowAccountModal(false)
-        }} />
+        // the account modal
+        showAccountModal && <AccountModal
+          close={() => {
+            setshowAccountModal(false)
+          }}
+          setType={setModalType}
+          setAddr={setModalAddr}
+          show={setShowOperatetModal}
+        />
       }
 
       {
-        showWalletModal &&  <WalletModal close={() => {
-          setShowWalletModal(false)
-        }}/>
+        showOperateModal &&  <WalletOperateModal
+          close={() => {
+            setShowOperatetModal(false);
+          }}
+          address={modalAddr}
+          confirm={() => {
+            setShowOperatetModal(false);
+          }}
+         type={modalType}/>
       }
 
-      <Col className="add-token">
-        <BorderButton text='Add Token' click={() => {
-          setShowAddTokenList(!showAddTokenList);
-        }}/>
-        {
-          showAddTokenList && (
-            <div className="add-token-list">
-              <div className="token">Add DRF Token to wallet</div>
-              <div className="token">Add eDRF Token to wallet</div>
-              <div className="token">Add bDRF Token to wallet</div>
-              <div className="hr" />
-              <div className="token">Buy DRF Token at pancakeswap</div>
-              <div className="token">Buy eDRF Token at pancakeswap</div>
-              <div className="token">Buy bDRF Token at pancakeswap</div>
-            </div>
-          )
-        }
-      </Col>
+      {
+        // the wallet list include metamask
+        showWalletModal &&  <WalletListModal
+          close={() => {
+            setShowWalletModal(false)
+          }}
+          click={() => checkLogin(network, wallet)}
+          installed={MetaMaskOnboarding.isMetaMaskInstalled()}
+        />
+      }
+
+      {
+        // add-token button show if login
+        isLogin ?  <Col className="add-token">
+          <BorderButton text='Add Token' click={() => {
+            setShowAddTokenList(!showAddTokenList);
+          }}/>
+          {
+            showAddTokenList && (
+              <div className="add-token-list">
+                <div className="token" onClick={addDRF}>Add DRF Token to wallet</div>
+                <div className="token">Add eDRF Token to wallet</div>
+                <div className="token">Add bDRF Token to wallet</div>
+                <div className="hr" />
+                <div className="token">Buy DRF Token at pancakeswap</div>
+                <div className="token">Buy eDRF Token at pancakeswap</div>
+                <div className="token">Buy bDRF Token at pancakeswap</div>
+              </div>
+            )
+          }
+        </Col> : null
+      }
 
       <Col className="change-line">
-        <BorderButton 
+        <BorderButton
           className={`change-line-btn change-line-btn-${line.toLocaleLowerCase()}`}
           icon={icons[line]} text={line} click={() => {
             setShowLineList(!showLineList);
@@ -297,7 +328,7 @@ function Tool() {
           <div className="change-line-list">
             <div className="title">Select a network</div>
             {
-              [['BSC', 'BNB Chain'],['POL', 'Polygon'], ['AVA', 'Avalanche'], ['ETH', 'Etherum'] ].map(item =>  
+              netWorks.map(item =>
                 <BorderButton key={item[0]} className={`select-btn select-btn-${item[0].toLocaleLowerCase()} ${line === item[0] ? '' : 'select-normal'}`}
                   fill={true}
                   icon={icons[item[0]]} text={item[1]} click={() => {
@@ -309,7 +340,7 @@ function Tool() {
           </div>
         )}
       </Col>
-      
+
       <Col className="menu-other">
         <img src={(showSettings || showLangs || showTheme) ? MenuOtherActive : MenuOther } onClick={
           () => {
@@ -388,76 +419,6 @@ function Tool() {
         }
 
       </Col>
-
-
-      <Modal
-        title={<FormattedMessage id="Trade.navbar.ConnectWallet" />}
-        footer={null}
-        getContainer={false}
-        focusTriggerAfterClose={false}
-        visible={showWallet}
-        onCancel={() => {
-          dispatch(userModel.actions.showWallet(false));
-        }}
-      >
-        <WalletInstall>
-          <Row>
-            {errorMsg?.id ? <Col flex="100%" style={{ marginBottom: "10px" }}>
-              <ErrorMessage msg={<FormattedMessage id={errorMsg?.id} values={{0:errorMsg?.value}}/>} visible={!!errorMsg} onCancel={() => setErrorMsg(undefined)}/>
-            </Col>:''}
-            <Col style={{ marginBottom: "10px" }}>
-              <FormattedMessage id="Trade.Wallet.ChooseNetwork" />
-            </Col>
-
-            <Col flex="100%">
-              <Row className="network-list" justify="space-between">
-                {networkList.map((item, i) => (
-                  <Col
-                    className={classNames({ active: item.chainEnum?.chainId === network?.chainId, disabled: item.chainEnum?.disabled})}
-                    onClick={() => onChangeNetwork(item.chainEnum)}
-                    key={i}
-                  >
-                    <IconFont size={18} type="icon-Group-" />
-                    <img src={item.url} alt="" />
-                    <div>{item.name}</div>
-                  </Col>
-                ))}
-              </Row>
-            </Col>
-            <Col style={{ margin: "40px 0 10px" }}>
-              <FormattedMessage id="Trade.Wallet.ChooseWallet" />
-            </Col>
-            <Col flex="100%">
-              <Row className="wallet-list">
-                <Col
-                  className={classNames({ active: wallet === WalletEnum.MetaMask })}
-                  onClick={() => onChangeWallet(WalletEnum.MetaMask)}
-                >
-                  <IconFont size={18} type="icon-Group-" />
-                  <img src={Wallet} alt="" />
-                  <div>Metamask</div>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row gutter={[20,20]} justify={"center"}>
-            <Col>
-              <Button type={"primary"} disabled={!!errorMsg} onClick={() => checkLogin(network, wallet)}>{$t('global.Confirm')}</Button>
-            </Col>
-          </Row>
-        </WalletInstall>
-      </Modal>
-      <Transfer
-        visible={transferShow}
-        closeModal={() => dispatch(showTransfer(false, operateType))}
-        operateType={operateType}
-        onCancel={() => dispatch(showTransfer(false, operateType))}
-      />
-
-      <FundsDetails
-        visible={fundsDetailShow}
-        onCancel={() => dispatch(showFundsDetail(false))}
-      />
     </Row>
   );
 }

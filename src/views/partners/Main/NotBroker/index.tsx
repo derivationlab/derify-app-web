@@ -1,17 +1,22 @@
+/**
+ * this page show the user has a broker but he is not a broker
+ */
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootStore } from "@/store";
 import Step1 from "./step1";
 import Step2 from "./step2";
 import Step3 from "./step3";
 import Step4 from "./step4";
 import "./index.less";
 
-export interface INotBrokerProps {}
-
-export default function NotBroker(props: INotBrokerProps) {
-  const [step, setStep] = useState(4);
+export default function NotBroker(props: any) {
+  const user = useSelector((state: RootStore) => state.user);
+  const [step, setStep] = useState(1);
   if (step === 1) {
     return (
       <Step1
+        id={user.brokerId}
         join={() => {
           setStep(2);
         }}
@@ -22,10 +27,10 @@ export default function NotBroker(props: INotBrokerProps) {
     return (
       <Step2
         cancel={() => {
-          console.log("cancel");
+          setStep(1);
         }}
         confirm={() => {
-          console.log("confirm");
+          setStep(3);
         }}
       />
     );
@@ -46,7 +51,7 @@ export default function NotBroker(props: INotBrokerProps) {
     return (
       <Step4
         confirm={() => {
-          console.log("confirm");
+          props.history.push("/trade");
         }}
       />
     );

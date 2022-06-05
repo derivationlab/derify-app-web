@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {ReactNode, useEffect} from "react";
 import { ModalProps } from "antd/es/modal";
 import { Row, Col, Button,Modal } from "antd";
@@ -12,7 +13,6 @@ import IntlPro from "@/locales/index";
 import ReactDOM from "react-dom";
 import store from "@/store";
 import {Provider} from "react-redux";
-import {OperateType} from "@/views/earn/OperateCom";
 
 export declare type TradeMoalProps = {
   msg?:ReactNode,

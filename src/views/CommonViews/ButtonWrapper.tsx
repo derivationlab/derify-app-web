@@ -1,5 +1,5 @@
+// @ts-nocheck
 import React from "react";
-import {Button} from "antd";
 import './ModalTips.less';
 import {useIntl} from "react-intl";
 import {RootStore, UserModel} from "@/store";
@@ -24,13 +24,13 @@ const WalletConnectButtonWrapper : React.FC<ButtonWrapperProps> = ({children,...
   const $t = intl;
   return (
     <>
-      {isLogin 
-        ? children 
-        : <BorderButton 
+      {isLogin
+        ? children
+        : <BorderButton
             className="broker-connect-btn"
             fill={true}
-            {...props} 
-            click={() => dispatch(UserModel.actions.showWallet())} 
+            {...props}
+            click={() => dispatch(UserModel.actions.showWallet())}
             text={$t("Trade.Wallet.ConnectWallet")}
           />
       }

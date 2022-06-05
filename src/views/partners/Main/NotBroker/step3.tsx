@@ -1,5 +1,12 @@
 import React from "react";
 import { Input } from "antd";
+import {
+  BrokerInfo,
+  getBrokerByBrokerId,
+  getBrokerByTrader,
+  updateBroker,
+} from "@/api/broker";
+import ErrorMessage from "@/components/ErrorMessage";
 import CheckBox from "@/components/checkbox";
 import Button from "@/components/buttons/borderButton";
 import tg from "@/assets/images/social/tg2.png";
@@ -21,28 +28,77 @@ interface Step3State {
   russia: boolean;
   germany: boolean;
   france: boolean;
+  errorMsg: string;
+  broker: string;
+  name: string;
+  introduction: string;
 }
+
+const inital = {
+  en: true,
+  cn: false,
+  tw: false,
+  russia: false,
+  germany: false,
+  france: false,
+  errorMsg: "",
+  broker: "",
+  name: "",
+  introduction: "",
+};
+
+let logo: any = null;
 
 class Step3 extends React.Component<Step3Props, Step3State> {
   constructor(props: Step3Props) {
     super(props);
-    this.state = {
-      en: true,
-      cn: false,
-      tw: false,
-      russia: false,
-      germany: false,
-      france: false,
-    };
+    this.state = inital;
   }
 
+  fileChange = (e: any) => {
+    const files = e.target.files;
+    if (files.length) {
+      const file = files[0];
+      if (file.size > 2 * 1024 * 1024) {
+        this.setState({
+          errorMsg: "the file size can not bigger than 2 M",
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e: any) => {
+        logo = e.target.result;
+      };
+    }
+  };
+
   render() {
+    const { state } = this;
     return (
       <div className="not-a-broker-register">
+        <ErrorMessage
+          style={{ margin: "10px 0" }}
+          msg={state.errorMsg}
+          visible={!!state.errorMsg}
+          onCancel={() => {
+            this.setState({
+              errorMsg: "",
+            });
+          }}
+        />
         <div className="t">Register for broker</div>
         <div className="input-wrapper">
           <label>Account</label>
-          <Input placeholder="Account" />
+          <Input
+            placeholder="Account"
+            value={state.broker}
+            onChange={e =>
+              this.setState({
+                broker: e.target.value,
+              })
+            }
+          />
           <div className="desc">
             <span>Letters and numbers and "_" are accepted.</span>
             <span className="note">
@@ -52,15 +108,25 @@ class Step3 extends React.Component<Step3Props, Step3State> {
         </div>
         <div className="input-wrapper">
           <label>Name</label>
-          <Input placeholder="Name" />
+          <Input
+            placeholder="Name"
+            value={state.name}
+            onChange={e =>
+              this.setState({
+                name: e.target.value,
+              })
+            }
+          />
           <div className="desc">
             <span>Letters and numbers and "_" are accepted.</span>
           </div>
         </div>
 
         <div className="input-wrapper input-wrapper-upload">
-          <label>Address</label>
-          <div className="upload"></div>
+          <label>Logo</label>
+          <div className="upload">
+            <input type="file" onChange={this.fileChange} />
+          </div>
         </div>
 
         <div className="input-wrapper">
@@ -175,7 +241,15 @@ class Step3 extends React.Component<Step3Props, Step3State> {
 
         <div className="input-wrapper input-wrapper-a">
           <label>Introduction</label>
-          <TextArea rows={4} />
+          <TextArea
+            rows={4}
+            value={state.introduction}
+            onChange={e =>
+              this.setState({
+                introduction: e.target.value,
+              })
+            }
+          />
           <div className="desc">
             <span>Less than 500 characters.</span>
           </div>

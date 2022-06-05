@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
-
 import {Row, Col, Table, Button, Popover, Space, Modal} from "antd";
 import {FormattedMessage, useIntl} from "react-intl";
 import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";

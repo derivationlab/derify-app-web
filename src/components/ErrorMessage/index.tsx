@@ -32,10 +32,10 @@ const ErrorMessage: React.FC<ErrorMessageProps> = ({ msg, visible,style ,onCance
   }, [visible])
   return (
     <Row  style={style} className={classNames(["error-container", visible && "active"])}>
-      <Col>{msg}</Col>
       <Col onClick={onCancel}>
-        <IconFont type="icon-cuowu" size={18} className="derify-pointer" />
+        <IconFont type="icon-cuowu" size={18} className="derify-pointer derify-close-icon" />
       </Col>
+      <Col>{msg}</Col>
     </Row>
   );
 };

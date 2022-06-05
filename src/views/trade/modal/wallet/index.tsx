@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "@/components/buttons/borderButton";
-import Modal, {ModalWithTitle} from "@/components/modal";
+import { ModalWithTitle } from "@/components/modal";
 import Input from "@/components/input";
 import "./index.less";
 
@@ -19,7 +19,11 @@ export default function WalletModal({
 }: IWalletModalProps) {
   const [value, setValue] = useState("");
   return (
-    <ModalWithTitle className="trade-wallet-modal"  close={close} title={type === "deposit" ? "Deposit from Wallet" : "Withdraw to wallet"}>
+    <ModalWithTitle
+      className="trade-wallet-modal"
+      close={close}
+      title={type === "deposit" ? "Deposit from Wallet" : "Withdraw to wallet"}
+    >
       <div className="list">
         <div className="card">
           <div className="t">

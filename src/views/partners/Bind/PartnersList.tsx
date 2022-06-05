@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { Row, Col, Select, Pagination, Spin, Popover } from "antd";
 import { BrokerInfo, getBrokerList } from "@/api/broker";
@@ -40,7 +41,6 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
   const $t = intl;
 
   useEffect(() => {
-    setPagenation(data.data as any);
     setLoading(false);
   }, []);
 
@@ -79,7 +79,7 @@ const PartnersList: React.FC<PartnersListProps> = ({ onSelectBroker }) => {
       </div>
       <div className="partners-list-wrapper">
         {pagenation.records.map((item, i) => (
-          <div className="broker-detail">
+          <div className="broker-detail" key={item.id}>
             <Broker data={item} key={i} className="list-broker" />
             <div className="detail">{item.introduction}</div>
             <div className="operate">

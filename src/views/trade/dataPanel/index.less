@@ -94,7 +94,6 @@
         line-height: 16px;
       }
       .per {
-        background: linear-gradient(90deg, #52eaa1 0%, #11be6b 100%);
         border-radius: 10px;
         display: inline-block;
         font-size: 12px;
@@ -102,6 +101,14 @@
         color: #fff;
         height: 20px;
         line-height: 20px;
+      }
+
+      .per-green {
+        background: linear-gradient(90deg, #52eaa1 0%, #11be6b 100%);
+      }
+
+      .per-red {
+        background: linear-gradient(90deg, #ec6989 0%, #e7446b 100%);
       }
     }
   }
@@ -157,9 +164,9 @@
       }
     }
     .search-active {
-      border-color: #E7446B;
+      border-color: #e7446b;
       input {
-        color: #E7446B !important;
+        color: #e7446b !important;
       }
     }
     .lists {
@@ -173,6 +180,7 @@
       flex-direction: row;
       align-items: center;
       font-size: 16px;
+      cursor: pointer;
       &:hover {
         background: #f7f7f7;
       }
@@ -210,6 +218,10 @@
         }
       }
     }
+    .item-disabled {
+      background: #ccc !important;
+      cursor: not-allowed;
+    }
   }
   .chart-wrapper {
     background: #fff;
@@ -246,8 +258,8 @@
       }
     }
     .time-select-active {
-      border-color: #E7446B;
-      color: #E7446B;
+      border-color: #e7446b;
+      color: #e7446b;
     }
     .time-select-list {
       position: absolute;

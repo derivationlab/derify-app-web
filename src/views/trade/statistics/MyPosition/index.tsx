@@ -1,14 +1,12 @@
+// @ts-nocheck
 import React, {useCallback, useEffect, useState} from "react";
 import IconFont from "@/components/IconFont";
 import { ColumnsType } from "antd/es/table";
-
 import { Row, Col, Table, Button, Modal, Popover, Space } from "antd";
 import { FormattedMessage, useIntl } from "react-intl";
-import { MyPositionType } from "../type";
 import classNames from "classnames";
 import LongOrShort from "@/views/trade/LongOrShort";
 import CloseModal from "@/views/trade/statistics/MyPosition/CloseModal";
-
 import TPAndSLModal from "@/views/trade/statistics/MyPosition/TPAndSLModal";
 import contractModel, {ContractState, PositioData} from "@/store/modules/contract"
 import {useDispatch, useSelector} from "react-redux";

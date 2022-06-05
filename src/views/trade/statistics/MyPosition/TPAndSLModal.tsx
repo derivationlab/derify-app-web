@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, {useCallback, useEffect, useState} from "react";
 import { Modal, Row, Col, Input } from "antd";
 import { ModalProps } from "antd/es/modal";
