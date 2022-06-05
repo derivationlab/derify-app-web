@@ -70,7 +70,9 @@ export default class ClosePositionModal extends React.Component<
               label="Amount to Close"
               unit="BTC"
             />
-            <Percent className="close-pos-percent" />
+            <Percent className="close-pos-percent" setValue={e => {
+            console.log(e)}
+            }/>
           </div>
         )}
 
