@@ -109,18 +109,17 @@ function Tool() {
       return;
     }
     window.onload = function () {
-      if(!window.ethereum){
-        return;
+      if(window.ethereum){
+        window.ethereum.on('accountsChanged', function () {
+          dispatch(userModel.actions.loadWallet())
+        })
+        window.ethereum.on('chainChanged', function () {
+          dispatch(userModel.actions.loadWallet())
+        })
+        window.addEventListener('ethereum#initialized', () => dispatch(userModel.actions.loadWallet()), {
+          once: true,
+        });
       }
-      window.ethereum.on('accountsChanged', function () {
-        dispatch(userModel.actions.loadWallet())
-      })
-      window.ethereum.on('chainChanged', function () {
-        dispatch(userModel.actions.loadWallet())
-      })
-      window.addEventListener('ethereum#initialized', () => dispatch(userModel.actions.loadWallet()), {
-        once: true,
-      });
     }
   }, [isLogin]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -200,14 +199,6 @@ function Tool() {
     }
   }
 
-  const {formatMessage} = useIntl()
-
-  function intl(id:string) {
-    return formatMessage({id})
-  }
-
-  const $t = intl;
-
   let onboarding: any = React.useRef();
 
   const onChangeWallet = useCallback((val) => {
@@ -227,6 +218,7 @@ function Tool() {
       setShowSettings(false);
       setShowLangs(false);
       setShowTheme(false);
+      setShowAddTokenList(false);
     }, false)
   }, [])
 
@@ -294,7 +286,10 @@ function Tool() {
 
       {
         // add-token button show if login
-        isLogin ?  <Col className="add-token">
+        isLogin ?  <Col className="add-token"
+          onClick={(e:any) => {
+            e.stopPropagation()
+          }}>
           <BorderButton text='Add Token' click={() => {
             setShowAddTokenList(!showAddTokenList);
           }}/>

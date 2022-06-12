@@ -166,7 +166,7 @@ function DataPanel() {
             </div>
             <div className="lists">
               {tokenPairs.map((item, index) => {
-                if (item.name.includes(searchValue)) {
+                if (item.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())) {
                   return (
                     <Item
                       data={item}

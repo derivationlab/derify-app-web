@@ -59,7 +59,7 @@ function WalletAccountModal(props: Iprops) {
   };
   const num1 = fck(accountData?.marginBalance, -8, 2);
   const num1Data = num1.split(".");
-  const num2 = fck(accountData?.totalMargin, -8, 2);
+  const num2 = fck(accountData?.availableMargin, -8, 2);
   const num2Data = num2.split(".");
   return (
     <Modal className="account-modal">

@@ -20,13 +20,10 @@ interface ErrorMessageProps {
 let timer:any = 0;
 const ErrorMessage: React.FC<ErrorMessageProps> = ({ msg, visible,style ,onCancel}) => {
   useEffect(() => {
-
     if(visible){
-
       if(timer != null){
         clearTimeout(timer);
       }
-
       timer = setTimeout(() => onCancel(), 3000);
     }
   }, [visible])
