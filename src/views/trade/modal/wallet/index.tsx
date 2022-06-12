@@ -41,7 +41,7 @@ export class TransferData {
 }
 
 export default function WalletModal(props: IWalletModalProps) {
-  const { close, confirm, type, address } = props;
+  const { close, type } = props;
   const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
   const walletInfo = useSelector((state:RootStore) => state.user);
   const { accountData } = useSelector((state: RootStore) => state.contract);
@@ -59,7 +59,7 @@ export default function WalletModal(props: IWalletModalProps) {
   const loadTransferData = async () => {
     const contract = web3Utils.contract(trader)
     const accountData = new TraderAccount();
-    transferData.operateType = TransferOperateType.deposit;
+    transferData.operateType = type === "deposit"  ? TransferOperateType.deposit : TransferOperateType.withdraw ;
     try{
       Object.assign(accountData, await contract.getTraderAccount(trader));
       transferData.accountData = accountData
@@ -73,12 +73,12 @@ export default function WalletModal(props: IWalletModalProps) {
       console.log('balanceOf error:')
     }
     setTransferData(transferData)
-    setMaxAmount(fck(transferData.balanceOfWallet, -8, 4))
+    setMaxAmount(fck(type === "deposit" ? transferData.balanceOfWallet : transferData.balanceOfDerify, -8, 4))
   };
 
   // check the number of input
   const checkAmount = (amount: any)=>{
-    const checkRet = checkNumber(amount, fromContractUnit(transferData.balanceOfWallet));
+    const checkRet = checkNumber(amount, fromContractUnit(type === "deposit" ? transferData.balanceOfWallet : transferData.balanceOfDerify));
     if(checkRet.value !== null) {
       setAmount(checkRet.value)
     }
@@ -92,23 +92,40 @@ export default function WalletModal(props: IWalletModalProps) {
   }
 
   const submit = () => {
-    if(type === "deposit"){
-      if(checkAmount(amount)) {
-        const action = contractModel.actions.depositAccount(trader, toContractUnit(amount));
-        action(dispatch).then((data) => {
-          dispatch(AppModel.actions.updateLoadStatus("account"))
-        }).catch((e) => {
-           console.log(e)
-        })
-      }else {
-        setErrorMsg("please input valid number")
-      }
+    if(!checkAmount(amount)){
+      setErrorMsg("The input value is incorrect, please re-enter it")
+      return;
     }
+    const fn = type === "deposit" ? 'depositAccount' : 'withdrawAccount';
+    const action = contractModel.actions[fn](trader, toContractUnit(amount));
+    action(dispatch).then((data) => {
+      dispatch(AppModel.actions.updateLoadStatus("account"))
+      close();
+    }).catch((e) => {
+      console.log(e)
+    })
   }
 
   useEffect(() => {
     loadTransferData();
-  }, [walletInfo])
+  }, [walletInfo, loadAccountStatus])
+
+  const unit = getUSDTokenName();
+
+  const fn1 = () => {
+    const data = transferData.accountData
+    return data.marginBalance - data.availableMargin;
+  }
+
+  const fn2 = () => {
+    const data = transferData.accountData
+    if(data.marginBalance){
+      let v =  data.marginBalance - data.availableMargin;
+      return ((v/data.marginBalance) * 100).toFixed(2) + '%'
+    }else {
+      return '0%'
+    }
+  }
 
   return (
     <ModalWithTitle
@@ -131,11 +148,11 @@ export default function WalletModal(props: IWalletModalProps) {
           <div className="num">
             <span className="big-num">{num1Data[0]}</span>
             <span className="small-num">.{num1Data[1]}</span>
-            <span className="per">{getUSDTokenName()}</span>
+            <span className="per">{unit}</span>
           </div>
           {type === "deposit" && <div className="addr">{walletInfo.selectedAddress}</div>}
           {type === "withdraw" && (
-            <div className="addr">Margin Usage: 34567.89 USDT ( 12.34%)</div>
+            <div className="addr">Margin Usage: {transferData.accountData.marginBalance ? fn1() : 0} {unit} {fn2()}</div>
           )}
         </div>
         <Input
@@ -143,11 +160,10 @@ export default function WalletModal(props: IWalletModalProps) {
           value={amount}
           onChange={(e: any) => amountChange(e)}
           label={`Amount to ${type}`}
-          unit={getUSDTokenName()}
+          unit={unit}
           btnName="Max"
           btnClick={() => {
-            // deposit
-            setAmount(fck(transferData.balanceOfWallet,  -8, 4));
+            setAmount(fck(type === "deposit" ? transferData.balanceOfWallet : transferData.balanceOfDerify,  -8, 4));
           }}
         />
       </div>
