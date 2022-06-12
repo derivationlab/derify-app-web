@@ -24,7 +24,7 @@ export default function WalletModal(props: WalletModalProps) {
       </div>
       <div className="sub-title">
         Before you connect wallet, you should have read, understand and agree
-        to Derivation Labs' <a href="#">Terms of Service.</a>
+        to Derivation Labs' <a href="https://dev.derify.finance/terms" target="_blank">Terms of Service.</a>
       </div>
       <div className="list">
         {
@@ -36,7 +36,7 @@ export default function WalletModal(props: WalletModalProps) {
             <span>MetaMask</span>
           </a>
         }
-        <div className="wallet">
+        {/* <div className="wallet">
           <img src={Wallet2} alt="" />
           <span>WalletConnect</span>
         </div>
@@ -44,10 +44,10 @@ export default function WalletModal(props: WalletModalProps) {
           <img src={Wallet3} alt="" />
           <span>Coinbase Wallet</span>
         </div>
-        <div className="wallet">
+        <div className="wallet" >
           <img src={Wallet4} alt="" />
           <span>Fortmatic</span>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );

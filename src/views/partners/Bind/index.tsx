@@ -30,7 +30,7 @@ const Bind: React.FC<BindProps> = props => {
   // the data of the broker, the user input
   const [brokerInfo, setBrokerInfo] = useState({} as any);
   // the modal show the broker data
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   function intl(id: string) {
     return formatMessage({ id });
