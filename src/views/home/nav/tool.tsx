@@ -7,17 +7,12 @@ import {changeLang, showFundsDetail, showTransfer} from "@/store/modules/app";
 import {FormattedMessage, useIntl} from "react-intl";
 
 // images
-import Eth from "@/assets/images/Eth.png";
 import BSC from "@/assets/images/bnb1.png";
 import ETH1 from "@/assets/images/eth1.png";
 import Polygon from "@/assets/images/polygon.png";
 import Avalanche from "@/assets/images/avalanche.png";
 import MenuOther from '@/assets/images/menu-others.png';
 import MenuOtherActive from '@/assets/images/menu-others-active.png';
-import HECO from "@/assets/images/huobi-token-ht-logo.png";
-import Binance from "@/assets/images/binance-coin-bnb-logo.png";
-import Solana from "@/assets/images/Solana.png";
-
 import userModel, {ChainEnum, mainChain, WalletEnum} from "@/store/modules/user";
 import TextOverflowView, {ShowPosEnum} from "@/components/TextOverflowView";
 import BorderButton from "@/components/buttons/borderButton";
@@ -27,25 +22,18 @@ import WalletListModal from '../walletListModal'
 import WalletOperateModal from "../../trade/modal/wallet"
 import AccountModal from '../walletAccountModal'
 
-const networkList: { url: string; name: string, chainEnum?: ChainEnum }[] = [
-  { url: Binance, name: ChainEnum.BSC.name, chainEnum: ChainEnum.BSC},
-  { url: Eth, name: ChainEnum.Rinkeby.name, chainEnum: ChainEnum.Rinkeby },
-  { url: HECO, name: "HECO", chainEnum: ChainEnum.Kovan },
-  { url: Solana, name: "Solana", chainEnum: ChainEnum.Morden},
-];
-
 const lang: any = 'en';
 const theme: any = 'light';
 
 const netWorks =  [
-  ['BSC', 'BNB Chain'],
+  ['BNBTest', 'BNBTest Chain'],
   //  ['POL', 'Polygon'],
   //  ['AVA', 'Avalanche'],
   //  ['ETH', 'Etherum']
 ];
 
 const icons: any = {}
-icons['BSC'] = BSC;
+icons['BNBTest'] = BSC;
 icons['POL'] = Polygon;
 icons['AVA'] = Avalanche;
 icons['ETH'] = ETH1;
@@ -63,7 +51,7 @@ function Tool() {
   const [modalAddr, setModalAddr] = useState<string>("");
   const [modalType, setModalType] = useState<"deposit" | "withdraw">("withdraw");
 
-  const [line, setLine] = useState<string>('BSC');
+  const [line, setLine] = useState<string>('BNBTest');
   const [showLineList, setShowLineList] = useState<boolean>(false);
   const locale: string = useSelector((state: RootStore) => state.app.locale);
   const [network, setNetwork] = useState<ChainEnum|undefined>(mainChain);
@@ -184,26 +172,7 @@ function Tool() {
     }
   }
 
-  const onChangeWallet = useCallback((val) => {
-    setWallet(val);
-  }, [checkLogin]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const {formatMessage} = useIntl()
-
-  function intl(id:string) {
-    return formatMessage({id})
-  }
-
-  const $t = intl;
-
-  let onboarding: any = React.useRef();
-  useEffect(() => {
-    if (!onboarding.current) {
-      onboarding.current = new MetaMaskOnboarding();
-    }
-    console.log(onboarding);
-  }, []);
-
+  // add token to wallet
   async function addToken(type: number) {
     const tokens = [
       '0xb86B85D13Cb4992c7A2f2AA811b678c664F274b5',
@@ -230,6 +199,36 @@ function Tool() {
        message.error("added failed, please try later");
     }
   }
+
+  const {formatMessage} = useIntl()
+
+  function intl(id:string) {
+    return formatMessage({id})
+  }
+
+  const $t = intl;
+
+  let onboarding: any = React.useRef();
+
+  const onChangeWallet = useCallback((val) => {
+    setWallet(val);
+  }, [checkLogin]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!onboarding.current) {
+      onboarding.current = new MetaMaskOnboarding();
+    }
+    console.log(onboarding);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("click", function(e){
+      setShowLineList(false);
+      setShowSettings(false);
+      setShowLangs(false);
+      setShowTheme(false);
+    }, false)
+  }, [])
 
   return (
     <Row align={"middle"} className="tool">
@@ -318,19 +317,23 @@ function Tool() {
       <Col className="change-line">
         <BorderButton
           className={`change-line-btn change-line-btn-${line.toLocaleLowerCase()}`}
-          icon={icons[line]} text={line} click={() => {
+          icon={icons[line]} text={line} click={(e: any) => {
+            e.stopPropagation();
             setShowLineList(!showLineList);
           }}/>
          {
          // this is the toggle chain list
          showLineList && (
-          <div className="change-line-list">
+          <div className="change-line-list" id="changeLineList" onClick={(e: any) => {
+            e.stopPropagation();
+          }}>
             <div className="title">Select a network</div>
             {
               netWorks.map(item =>
                 <BorderButton key={item[0]} className={`select-btn select-btn-${item[0].toLocaleLowerCase()} ${line === item[0] ? '' : 'select-normal'}`}
                   fill={true}
-                  icon={icons[item[0]]} text={item[1]} click={() => {
+                  icon={icons[item[0]]} text={item[1]} click={(e: any) => {
+                    e.stopPropagation();
                     setLine(item[0])
                     setShowLineList(false)
                   }}/>
@@ -342,7 +345,8 @@ function Tool() {
 
       <Col className="menu-other">
         <img src={(showSettings || showLangs || showTheme) ? MenuOtherActive : MenuOther } onClick={
-          () => {
+          (e: any) => {
+            e.stopPropagation();
             if(showTheme || showLangs){
               return false;
             }
@@ -351,7 +355,9 @@ function Tool() {
         }/>
         {
           showSettings &&  (
-            <div className="setting-list">
+            <div className="setting-list" onClick={(e: any) => {
+              e.stopPropagation();
+            }}>
               <div className="item" onClick={() => {
                 setShowLangs(true);
                 setShowSettings(false);
@@ -366,9 +372,9 @@ function Tool() {
                 <span>Theme</span>
                 <span>light &gt;</span>
               </div>
-              <div className="item">
+              <a className="item" href="https://docs.google.com/forms/d/e/1FAIpQLSelBo6du-kioL3kTWgMqCOtiwNZvw7D7kF82SSm3l314Ot9xA/viewform" target='_blank'>
                 <span>Feedback</span>
-              </div>
+              </a>
               <a className="item" href="https://docs.derify.finance/" target='_blank'>
                 <span>Docs</span>
               </a>

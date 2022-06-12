@@ -4,7 +4,7 @@ import "./borderButton.less";
 export interface BorderButton {
   text: string | ReactNode;
   className?: string;
-  click: () => void;
+  click: any;
   icon?: any;
   fill?: boolean;
 }

@@ -147,8 +147,7 @@ const Bind: React.FC<BindProps> = props => {
                 <Row align="middle">
                   <Col>
                     <Input
-                      type="password"
-                      className="broker-input"
+                      type="text" className="broker-input"
                       onChange={e => {
                         const { value } = e.target;
                         setBrokerId(value);
@@ -163,11 +162,7 @@ const Bind: React.FC<BindProps> = props => {
             <WalletConnectButtonWrapper type="primary">
               <Col>
                 <Spin spinning={loading}>
-                  <Button
-                    type="primary"
-                    className="broker-submit"
-                    onClick={() => startBindBroker(brokerId)}
-                  >
+                  <Button  type="primary" className="broker-submit"  onClick={() => startBindBroker(brokerId)}>
                     {intl("Trade.BrokerBind.BrokerCodes.Submit")}
                   </Button>
                 </Spin>
