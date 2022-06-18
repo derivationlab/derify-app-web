@@ -22,7 +22,7 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
   seriesData.forEach((data, index) => {
     seriers.push({
       name: 'Line 1',
-      type: 'line',
+      type: data?.type || 'line',
       stack: data.stack,
       smooth: false,
       lineStyle: {

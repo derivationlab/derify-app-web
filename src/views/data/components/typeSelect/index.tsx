@@ -50,7 +50,7 @@ export default function TypeSelect(props: ITypeSelectProps) {
                     key={item.label}
                     onClick={() => {
                       setTime(item.label);
-                      props.onChange(item.label);
+                      props.onChange(item.value);
                       setOpen(false);
                     }}
                   >

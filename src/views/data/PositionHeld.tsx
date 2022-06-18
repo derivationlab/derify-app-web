@@ -40,6 +40,7 @@ function PositionHeld() {
     { label: `BTC/${getUSDTokenName()}`, value: Token.BTC },
     { label: `ETH/${getUSDTokenName()}`, value: Token.ETH },
   ];
+  
 
   const onOptionChange = (value: string) => {
     setLoading(true);
@@ -50,10 +51,12 @@ function PositionHeld() {
         const xaxis: string[] = [];
         const longSeries: { stack: string; data: number[] } = {
           stack: "long",
+          type:'bar',
           data: [],
         };
         const shortSeries: { stack: string; data: number[] } = {
           stack: "short",
+          type:'bar',
           data: [],
         };
         const seriers = [longSeries, shortSeries];

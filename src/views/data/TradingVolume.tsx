@@ -114,7 +114,7 @@ const TradingVolume: React.FC = () => {
       <Spin spinning={loading}>
         <Row className="main-block trading-volume-container">
           <Col className="chart-out-wrapper">
-            <Row>
+            {/* <Row>
               <Col flex="50%">
                 <div>
                   <Badge color="#FAE247" />
@@ -141,7 +141,7 @@ const TradingVolume: React.FC = () => {
                   {getUSDTokenName()}
                 </div>
               </Col>
-            </Row>
+            </Row> */}
           </Col>
           <Col className="chart-out-wrapper">
             <CommonCharts ref={chartRef} height={330} />

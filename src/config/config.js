@@ -142,12 +142,12 @@ const data = {
   },
   "bsc": {
     "server": {
-      "development": "https://dev-bsctestnet-api.derify.exchange",
+      "development": "https://api.derify.exchange/bsc",
       "debug": "https://dev-bsctestnet-api.derify.exchange",
       "production": "https://api.derify.exchange/bsc"
     },
     "kdata": {
-      "development": "https://dev-api.derify.exchange",
+      "development": "https://api.derify.exchange",
       "debug": "https://dev-api.derify.exchange",
       "production": "https://api.derify.exchange"
     },
