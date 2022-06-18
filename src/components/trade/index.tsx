@@ -1,19 +1,19 @@
 import * as React from "react";
-import Notice1 from '../notice'
+import Notice1 from "../notice";
 import close from "@/assets/images/close1.png";
 import edit from "@/assets/images/edit1.png";
 import Type from "../type";
 import "./index.less";
 
-export interface ITradePosProps {}
+interface IPosProps {
 
-export interface ITradePosState {}
+}
 
-export class TradePosition extends React.Component<
-  ITradePosProps,
-  ITradePosState
-> {
-  constructor(props: ITradePosProps) {
+interface IPosState {
+}
+
+export class TradePosition extends React.Component<IPosProps, IPosState> {
+  constructor(props: IPosProps) {
     super(props);
     this.state = {};
   }
@@ -66,14 +66,14 @@ export class TradePosition extends React.Component<
   }
 }
 
-export interface ITradeOrderProps {}
+export interface ITradeOrderProps {
+}
 
-export interface ITradeOrderState {}
+export interface ITradeOrderState {
+}
 
-export class TradeOrder extends React.Component<
-  ITradeOrderProps,
-  ITradeOrderState
-> {
+export class TradeOrder extends React.Component<ITradeOrderProps,
+  ITradeOrderState> {
   constructor(props: ITradeOrderProps) {
     super(props);
 
@@ -106,14 +106,14 @@ export class TradeOrder extends React.Component<
   }
 }
 
-interface ITradeHistoryProps {}
+interface ITradeHistoryProps {
+}
 
-interface ITradeHistoryState {}
+interface ITradeHistoryState {
+}
 
-export class TradeHistory extends React.Component<
-  ITradeHistoryProps,
-  ITradeHistoryState
-> {
+export class TradeHistory extends React.Component<ITradeHistoryProps,
+  ITradeHistoryState> {
   constructor(props: ITradeHistoryProps) {
     super(props);
     this.state = {};
@@ -130,6 +130,7 @@ export class TradeHistory extends React.Component<
             <img src={close} alt="" />
           </span>
         </div>
+
         <div className="row row1">
           <div className="data">
             <Notice text="Type" />
@@ -140,7 +141,9 @@ export class TradeHistory extends React.Component<
           <Item title="Trading Fee" num="13.23 " />
           <Item title="Position Change Fee" num="-12313.23 " />
         </div>
+
         <div className="hr"></div>
+
         <div className="row row2">
           <Item title="Volume (Base)" num="4513.12" u="BTC" />
           <Item title="Volume (Quoted)" num="23124.32" />
@@ -152,29 +155,31 @@ export class TradeHistory extends React.Component<
   }
 }
 
-function Notice(props: { text: string }) {
+function Notice(props: { text: string, more?: string }) {
   return (
     <div className="line line-notice">
       <span>{props.text}</span>
-      <Notice1 title={props.text}/>
+      <Notice1 title={props.more || props.text} />
     </div>
   );
 }
 
 function Item({
-  title,
-  num,
-  u = true,
-  editFn,
-}: {
+                title,
+                more,
+                num,
+                u = true,
+                editFn,
+              }: {
   title: string;
+  more?: string;
   num: any;
   u?: boolean | string;
   editFn?: () => void;
 }) {
   return (
     <div className="data">
-      <Notice text={title} />
+      <Notice text={title} more={more} />
       <div className="line num">
         <span>{num}</span>
         {editFn && (
