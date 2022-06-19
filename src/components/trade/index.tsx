@@ -2,11 +2,15 @@ import * as React from "react";
 import Notice1 from "../notice";
 import close from "@/assets/images/close1.png";
 import edit from "@/assets/images/edit1.png";
+import { SideEnum as TradeTypes, fromContractUnit} from "@/utils/contractUtil";
+import { amountFormt } from "@/utils/utils";
 import Type from "../type";
 import "./index.less";
 
 interface IPosProps {
-
+  unit: string;
+  data: any;
+  getPairByAddress: any;
 }
 
 interface IPosState {
@@ -19,11 +23,16 @@ export class TradePosition extends React.Component<IPosProps, IPosState> {
   }
 
   render() {
+    const { props, state } = this;
+    const { data } = props;
+    const currentToken = props.getPairByAddress(data.token);
+    const volume = amountFormt(data.size, 4, false, "0", -8);
+    console.log(data);
     return (
       <div className="trade-item trade-postion-item">
         <div className="header">
-          <span className="title">BTC-USDT</span>
-          <Type t="Long" c={10} />
+          <span className="title">{currentToken.name}</span>
+          <Type t={data.side === TradeTypes.LONG ? 'Long' : 'Short'} c={fromContractUnit(data.leverage)} />
           <span className="close red">
             close
             <img src={close} alt="" />
@@ -33,32 +42,37 @@ export class TradePosition extends React.Component<IPosProps, IPosState> {
           <div className="data">
             <Notice text="Unrealized PnL" />
             <div className="line num red">
-              <span className="per">-12313.23%</span>
-              <span>( -12.34 BTC ) </span>
+              <span className="per">{amountFormt(data.returnRate, 2, true, "--", -6)}%</span>
+              <span>{amountFormt(data.unrealizedPnl, 2, true, "--", -8)}</span>
             </div>
-            <div className="line">USDT</div>
+            <div className="line">{props.unit}</div>
           </div>
-          <Item title="Volume" num="2.34 / 23124.32 " />
-          <Item title="Liq. Price" num="-12313.23 " />
-          <Item title="Avg. Price" num="-12313.23 " />
+          <Item title="Volume"
+                num={`${volume} / ${(currentToken.num * volume).toFixed(2)} `}
+                u={currentToken.key}
+          />
+          <Item title="Liq. Price" num="-12313.23 " u={props.unit} />
+          <Item title="Avg. Price" num={amountFormt(data.averagePrice, 2, false, "--", -8)} u={props.unit} />
         </div>
         <div className="hr"></div>
         <div className="row row2">
-          <Item title="Margin" num="4513.12" />
-          <Item title="Margin Rate" num="34.56%" u={false} />
+          <Item title="Margin" num={amountFormt(data.margin, 2, false, "--", -8)} u={props.unit} />
+          <Item title="Margin Rate" num={`${amountFormt(data.marginRate, 2, false, "--", -6)}%`} u={false} />
           <Item
             title="Take Profit"
-            num="-12313.23 "
+            num="--"
             editFn={() => {
               console.log("edit");
             }}
+            u={props.unit}
           />
           <Item
             title="Stop Loss"
-            num="-12313.23 "
+            num="--"
             editFn={() => {
               console.log("edit");
             }}
+            u={props.unit}
           />
         </div>
       </div>
