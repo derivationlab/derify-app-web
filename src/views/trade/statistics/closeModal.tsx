@@ -71,10 +71,7 @@ function ClosePositionModal(props: ClosePositionProps) {
       const trader = walletInfo.selectedAddress;
       const brokerId = walletInfo.brokerId;
       const sizeAmount = parseFloat(value);
-      if (!trader || !brokerId || !data) {
-        return;
-      }
-      if (sizeAmount > closeUpperBond || sizeAmount <= 0) {
+      if (!trader || !brokerId || !data || (sizeAmount > closeUpperBond ) || sizeAmount <= 0) {
         return;
       }
       const closePositionAction = contractModel.actions.closePosition(trader, data.token, data.side, toContractUnit(value), brokerId);
