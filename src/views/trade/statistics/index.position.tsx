@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AppModel, RootStore } from "@/store";
 import { TradePosition } from "@/components/trade";
 import closeImage from "@/assets/images/close2.png";
 import { getUSDTokenName } from "@/config";
 import { fromContractUnit, PositionView, SideEnum } from "@/utils/contractUtil";
 import contractModel from "@/store/modules/contract";
-import { amountFormt, fck } from "@/utils/utils";
 import ModalClosePosition from "./closeModal";
+import ModalCloseAllPosition from "../modal/cancelOrder";
+import { AppModel, RootStore } from "@/store";
+import { message } from "antd";
 
 const contractAction = contractModel.actions;
 
@@ -18,6 +19,8 @@ const Position = () => {
   const userInfo = useSelector((state: RootStore) => state.user);
   // the modal for show the close position
   const [showModal, setShowModal] = useState(false);
+  //  the modal for show the close all position
+  const [showModalForCloseAll, setShowModalForCloseAll] = useState(false);
   // the close data
   const [closeData, setCloseData] = useState<PositionView>();
   const [list, setList] = useState<PositionView[]>([]);
@@ -26,8 +29,20 @@ const Position = () => {
     return tokenPairs.find((pair) => pair.address === token) || { name: "unknown", key: "unknown" };
   };
 
+  // the close all position method
   const closeAll = () => {
-    console.log("closeAll");
+    const trader = userInfo.selectedAddress;
+    const brokerId = userInfo.brokerId;
+    if(trader && brokerId){
+      const closePositionAction = contractModel.actions.closeAllPositions(trader, brokerId);
+      setShowModalForCloseAll(false);
+      closePositionAction(dispatch).then(() => {
+        message.success("success");
+        dispatch(AppModel.actions.updateTradeLoadStatus());
+      }).catch((e) => {
+        message.error("error");
+      });
+    }
   };
 
   const unit = getUSDTokenName();
@@ -84,7 +99,7 @@ const Position = () => {
       {
         list.length && (
           <div className="close-all">
-            <div className="btn" onClick={closeAll}>
+            <div className="btn" onClick={() => {setShowModalForCloseAll(true);}}>
               <span>CLOSE ALL</span>
               <img src={closeImage} alt="" />
             </div>
@@ -99,6 +114,15 @@ const Position = () => {
           close={() => {
             setShowModal(false);
           }}
+        />
+      }
+      {
+        showModalForCloseAll && <ModalCloseAllPosition
+          type="allPosition"
+          close={() => {
+            setShowModalForCloseAll(false);
+          }}
+          confirm={closeAll}
         />
       }
     </div>

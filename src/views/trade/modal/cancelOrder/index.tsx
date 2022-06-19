@@ -1,5 +1,5 @@
 import * as React from "react";
-import Modal, { ModalWithTitle } from "@/components/modal";
+import { ModalWithTitle } from "@/components/modal";
 import Button1 from "@/components/buttons/borderButton";
 import "./index.less";
 
