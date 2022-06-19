@@ -40,6 +40,7 @@ function PositionHeld() {
     { label: `BTC/${getUSDTokenName()}`, value: Token.BTC },
     { label: `ETH/${getUSDTokenName()}`, value: Token.ETH },
   ];
+  
 
   const onOptionChange = (value: string) => {
     setLoading(true);
@@ -50,10 +51,12 @@ function PositionHeld() {
         const xaxis: string[] = [];
         const longSeries: { stack: string; data: number[] } = {
           stack: "long",
+          type:'bar',
           data: [],
         };
         const shortSeries: { stack: string; data: number[] } = {
           stack: "short",
+          type:'bar',
           data: [],
         };
         const seriers = [longSeries, shortSeries];
@@ -69,6 +72,23 @@ function PositionHeld() {
           return;
         }
         const options = generateDataEchartsOptions(color, xaxis, seriers);
+        const legend = {
+          data:[
+           {
+            name: "long",
+            lineStyle:{
+              color: '#00C49A'
+            }
+          },
+          {
+            name:"short",
+            lineStyle:{
+              color: '#EA446B'
+            }
+          }
+          ]
+        }
+        options.legend = legend;
         chartRef.current.setCharOptions(options);
       })
       .catch(e => {
