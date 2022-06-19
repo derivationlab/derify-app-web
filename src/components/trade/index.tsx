@@ -11,6 +11,8 @@ interface IPosProps {
   unit: string;
   data: any;
   getPairByAddress: any;
+  toggleModal: any;
+  setData: any;
 }
 
 interface IPosState {
@@ -27,13 +29,18 @@ export class TradePosition extends React.Component<IPosProps, IPosState> {
     const { data } = props;
     const currentToken = props.getPairByAddress(data.token);
     const volume = amountFormt(data.size, 4, false, "0", -8);
-    console.log(data);
     return (
       <div className="trade-item trade-postion-item">
         <div className="header">
           <span className="title">{currentToken.name}</span>
-          <Type t={data.side === TradeTypes.LONG ? 'Long' : 'Short'} c={fromContractUnit(data.leverage)} />
-          <span className="close red">
+          <Type
+            t={data.side === TradeTypes.LONG ? 'Long' : 'Short'}
+            c={fromContractUnit(data.leverage)}
+          />
+          <span className="close red" onClick={() => {
+            props.toggleModal(true);
+            props.setData(data);
+          }}>
             close
             <img src={close} alt="" />
           </span>

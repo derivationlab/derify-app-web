@@ -7,15 +7,15 @@ import { getUSDTokenName } from "@/config";
 import { fromContractUnit, PositionView, SideEnum } from "@/utils/contractUtil";
 import contractModel from "@/store/modules/contract";
 import { amountFormt, fck } from "@/utils/utils";
-import ModalClosePosition from "../modal/closePosition";
+import ModalClosePosition from "./closeModal";
 
 const contractAction = contractModel.actions;
 
 const Position = () => {
   const dispatch = useDispatch();
-  const reloadTrade = useSelector((state:RootStore) => state.app.reloadDataStatus.trade)
+  const reloadTrade = useSelector((state: RootStore) => state.app.reloadDataStatus.trade);
   const tokenPairs = useSelector((state: RootStore) => state.contract.pairs);
-  const userInfo = useSelector((state:RootStore) => state.user);
+  const userInfo = useSelector((state: RootStore) => state.user);
   // the modal for show the close position
   const [showModal, setShowModal] = useState(false);
   // the close data
@@ -36,7 +36,7 @@ const Position = () => {
     if (userInfo.selectedAddress) {
       const loadPositionDataAction = contractAction.loadPositionData(userInfo.selectedAddress);
       loadPositionDataAction(dispatch).then((res) => {
-        if(res && res.length){
+        if (res && res.length) {
           const positions: PositionView[] = [];
           res.forEach(position => {
             position.positionData?.positions.forEach((positionView: PositionView) => {
@@ -72,6 +72,8 @@ const Position = () => {
       {
         list.map(item => (
           <TradePosition
+            toggleModal={setShowModal}
+            setData={setCloseData}
             unit={unit}
             key={item.tx}
             data={item}
@@ -91,19 +93,11 @@ const Position = () => {
       }
       {
         showModal && <ModalClosePosition
-          operate="select"
-          data={{
-            token: {
-              name: "token",
-            },
-          }}
-          type="Short"
+          data={closeData}
           title="close position"
+          getPairByAddress={getPairByAddress}
           close={() => {
-            console.log("close");
-          }}
-          confirm={() => {
-            console.log("close");
+            setShowModal(false);
           }}
         />
       }
