@@ -85,12 +85,20 @@ function DataPanel() {
   // current token price array
   const curTokenPairVal = fck(curTokenPair.num, 0, 2).split(".");
 
+
+  useEffect(() => {
+    document.addEventListener("click", function(){
+      setShowList(false);
+    }, false)
+  }, [])
+
   return (
     <Row className="main-block data-panel-container">
       <Col className="list">
         <div
           className={`types ${showList ? "types-active" : ""}`}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setShowList(!showList);
           }}
         >
@@ -142,7 +150,9 @@ function DataPanel() {
         </div>
       </Col>
 
-      <div className="types-list-wrapper">
+      <div className="types-list-wrapper" onClick={(e) => {
+        e.stopPropagation();
+      }}>
         {showList && (
           <div className="types-list">
             <div className={`search ${searchFocus ? "search-active" : ""}`}>
