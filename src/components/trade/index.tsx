@@ -128,6 +128,8 @@ export class TradeOrder extends React.Component<ITradeOrderProps,
 }
 
 interface ITradeHistoryProps {
+  data: any;
+  getPairByAddress: any;
 }
 
 interface ITradeHistoryState {
@@ -141,17 +143,18 @@ export class TradeHistory extends React.Component<ITradeHistoryProps,
   }
 
   render() {
+    const {data, getPairByAddress} = this.props;
+    const currentToken = getPairByAddress(data.token);
     return (
       <div className="trade-item trade-history-item">
         <div className="header">
-          <span className="title">BTC-USDT</span>
-          <Type t="Long" c={10} />
+          <span className="title">{currentToken.name} </span>
+          <Type t={data.side === 0 ? 'Long' : 'Short'} c={10} />
           <span className="close red">
             close
             <img src={close} alt="" />
           </span>
         </div>
-
         <div className="row row1">
           <div className="data">
             <Notice text="Type" />
@@ -162,9 +165,7 @@ export class TradeHistory extends React.Component<ITradeHistoryProps,
           <Item title="Trading Fee" num="13.23 " />
           <Item title="Position Change Fee" num="-12313.23 " />
         </div>
-
         <div className="hr"></div>
-
         <div className="row row2">
           <Item title="Volume (Base)" num="4513.12" u="BTC" />
           <Item title="Volume (Quoted)" num="23124.32" />

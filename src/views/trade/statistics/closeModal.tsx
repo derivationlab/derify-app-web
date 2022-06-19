@@ -141,7 +141,6 @@ function ClosePositionModal(props: ClosePositionProps) {
       setTradeFee(fromContractUnit(val));
     })
   }, [data, walletInfo, value])
-  console.log(pcf)
   return (
     <ModalWithTitle
       title={props.title || "Close Position"}

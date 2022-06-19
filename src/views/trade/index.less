@@ -565,6 +565,42 @@
 
     .history-list {
       width: 100%;
+      .ant-pagination {
+        font-size: 18px;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        li {
+          width: 48px;
+          height: 48px;
+          line-height: 48px;
+          border-radius: 24px;
+          background: #fff;
+          border: 2px solid #e7e7e7;
+          a {
+            color: #888;
+          }
+        }
+        .ant-pagination-item-active {
+          background-color: #e7446b;
+          a {
+            color: #fff;
+          }
+        }
+        .ant-pagination-prev,
+        .ant-pagination-next {
+          button {
+            background-color: #fff;
+            border-radius: 24px;
+            color: #888;
+          }
+        }
+        .ant-pagination-disabled {
+          button {
+            background-color: #f6f6f6;
+            color: #e7e7e7;
+          }
+        }
+      }
     }
   }
 
