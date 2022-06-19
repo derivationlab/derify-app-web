@@ -20,6 +20,11 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
   const seriers = [];
 
   seriesData.forEach((data, index) => {
+    const itemStyle = data?.type === 'bar' ? {
+      normal:{
+          color: colors[index]
+      }
+    } : null;
     seriers.push({
       name: 'Line 1',
       type: data?.type || 'line',
@@ -30,6 +35,7 @@ export default function generateDataEchartsOptions(colors, xaxisDta, seriesData)
         type: 'solid',
         color: colors[index]
       },
+      itemStyle,
       showSymbol: false,
       areaStyle: {
         opacity: 0.2,

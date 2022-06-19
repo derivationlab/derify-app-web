@@ -72,6 +72,23 @@ function PositionHeld() {
           return;
         }
         const options = generateDataEchartsOptions(color, xaxis, seriers);
+        const legend = {
+          data:[
+           {
+            name: "long",
+            lineStyle:{
+              color: '#00C49A'
+            }
+          },
+          {
+            name:"short",
+            lineStyle:{
+              color: '#EA446B'
+            }
+          }
+          ]
+        }
+        options.legend = legend;
         chartRef.current.setCharOptions(options);
       })
       .catch(e => {
