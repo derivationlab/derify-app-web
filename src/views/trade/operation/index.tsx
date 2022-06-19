@@ -184,7 +184,6 @@ function Operation() {
       size: Number.parseFloat(size),
       leverage,
     };
-    console.log(params)
     setOpenConfirmData(params);
     setShowPositionModal(true)
   }, [openType, size, limitPrice, curPair, leverage, traderOpenUpperBound]);

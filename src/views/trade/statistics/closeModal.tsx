@@ -8,7 +8,13 @@ import Percent from "@/components/percent";
 import { getUSDTokenName } from "@/config";
 import { AppModel, RootStore } from "@/store";
 import contractModel from "@/store/modules/contract";
-import { SideEnum as TradeTypes, fromContractUnit, UnitTypeEnum, toContractUnit } from "@/utils/contractUtil";
+import {
+  SideEnum as TradeTypes,
+  fromContractUnit,
+  UnitTypeEnum,
+  toContractUnit,
+  convertAmount2TokenSize, toContractNum,
+} from "@/utils/contractUtil";
 import "./closeModa.less";
 import { fck, amountFormt, amountFormtNumberDefault } from "@/utils/utils";
 import { message } from "antd";
@@ -29,8 +35,13 @@ function ClosePositionModal(props: ClosePositionProps) {
   const [value, setValue] = useState("");
   const [percent, setPercent] = useState<any>(100);
   const [errorMsg, setErrorMsg] = useState<any>("");
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
+  // market price ...
   const [openType, setOpenType] = useState(0);
+  // the pcf of close position
+  const [pcf,setPcf] = useState<number>(0);
+  // the tradeFee of close position
+  const [tradeFee,setTradeFee] = useState<number>(0);
 
   const type = data.side === TradeTypes.LONG ? "Long" : (
     data.side === TradeTypes.SHORT ? "Short" : "2-Way"
@@ -104,6 +115,33 @@ function ClosePositionModal(props: ClosePositionProps) {
     updateCloseUpperBound();
   }, []);
 
+  // calculate the pcf and tradeFee
+  useEffect(() => {
+    const trader = walletInfo.selectedAddress;
+    const unit = UnitTypeEnum.USDT;
+    const size = parseFloat(value);
+    const price = currentToken.num;
+    let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price));
+    const params = {
+      trader,
+      side: data.side,
+      actionType: 0,
+      token: currentToken.address,
+      size: toContractNum(tokenSize),
+      price: toContractNum(price)
+    };
+    // @ts-ignore
+    const getPCFAction = contractModel.actions.getPositionChangeFee(params)
+    getPCFAction(dispatch).then((_pcf) => {
+      setPcf(fromContractUnit(_pcf))
+    }).catch(e => {});
+    // @ts-ignore
+    const tradeFeeAction = contractModel.actions.getTradingFee(params.token, params.trader, params.size,params.price);
+    tradeFeeAction.then((val) => {
+      setTradeFee(fromContractUnit(val));
+    })
+  }, [data, walletInfo, value])
+  console.log(pcf)
   return (
     <ModalWithTitle
       title={props.title || "Close Position"}
@@ -162,7 +200,7 @@ function ClosePositionModal(props: ClosePositionProps) {
               <span className="t1">{currentToken.name}</span>
               <Type t={type} c={fromContractUnit(data.leverage)} />
               <div className="n">
-                <span>12.34% </span> APY.
+                <span>{amountFormt(Math.max(currentToken.shortPmrRate, currentToken.longPmrRate), 2, false, "--", 0)}% </span> APY.
               </div>
             </div>
             {openType === 0 ? (
@@ -184,7 +222,7 @@ function ClosePositionModal(props: ClosePositionProps) {
               {
                 (type === "2-Way" || type === "Long") && (
                   <div className="l">
-                    <span className="n">{volume}</span>
+                    <span className="n">{value}</span>
                     <span className="t">{currentToken.key}</span>
                   </div>
                 )
@@ -192,7 +230,7 @@ function ClosePositionModal(props: ClosePositionProps) {
               {
                 (type === "2-Way" || type === "Short") && (
                   <div className="l">
-                    <span className="n">{volume}</span>
+                    <span className="n">{value}</span>
                     <span className="t">{currentToken.key}</span>
                   </div>
                 )
@@ -202,14 +240,14 @@ function ClosePositionModal(props: ClosePositionProps) {
           <div className="item">
             <span>PCF</span>
             <div>
-              <span className="n">pcf</span>
+              <span className="n">{amountFormtNumberDefault(-pcf,4, true, 0)}</span>
               <span className="t">{getUSDTokenName()}</span>
             </div>
           </div>
           <div className="item item1">
             <span>Trading Fee</span>
             <div>
-              <span className="n">fee</span>
+              <span className="n">{amountFormtNumberDefault(-tradeFee,4, true, 0)}</span>
               <span className="t">{getUSDTokenName()}</span>
             </div>
           </div>

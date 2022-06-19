@@ -44,6 +44,7 @@ function PositionModal(props: ClosePositionProps) {
   // calculate the pcf and tradeFee
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
+    // side 0 long token
     const {side,token,size,openType,unit, limitPrice} = data;
     const price = openType === OpenType.MarketOrder ? token.num : limitPrice;
     let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price));
@@ -64,6 +65,7 @@ function PositionModal(props: ClosePositionProps) {
     tradeFeeAction.then((val) => {
       setTradeFee(fromContractUnit(val));
     })
+
     const getSysOpenUpperBoundAction = contractModel.actions.getSysOpenUpperBound(trader, params.side,params.token);
     getSysOpenUpperBoundAction(dispatch).then((val:OpenUpperBound) => {
       setSysOpenUpperBound(val);

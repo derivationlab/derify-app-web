@@ -169,6 +169,7 @@ function DataPanel() {
                 if (item.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())) {
                   return (
                     <Item
+                      rate={Math.max(item.longPmrRate, item.shortPmrRate)}
                       data={item}
                       key={index}
                       name={item.name}
@@ -247,6 +248,7 @@ interface ItemProps {
   enable: boolean;
   data: any;
   click: any;
+  rate: any;
 }
 
 function Item(props: ItemProps) {
@@ -263,7 +265,7 @@ function Item(props: ItemProps) {
         </span>
       </div>
       <div className="per">
-        <span className="n">{0}%</span>
+        <span className="n">{amountFormt(props.rate, 2, false, "--", 0)}%</span>
         <span>APY</span>
       </div>
     </div>
