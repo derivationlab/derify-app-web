@@ -4,6 +4,7 @@ import "./index.less";
 export interface TypeProps {
   t: "Long" | "Short" | "2-Way";
   c?: number;
+  showL?: boolean
 }
 
 const classMap: any = {};
@@ -11,7 +12,7 @@ classMap["Long"] = "";
 classMap["Short"] = "trade-type-s";
 classMap["2-Way"] = "trade-type-2";
 
-export default function TradeType({ c, t }: TypeProps) {
+export default function TradeType({ c, t, showL=true }: TypeProps) {
   return (
     <>
       {c === undefined ? (
@@ -19,7 +20,7 @@ export default function TradeType({ c, t }: TypeProps) {
       ) : (
         <span className={`trade-type ${classMap[t]}`}>
           {t}
-          <span className="type-inner">{c}x</span>
+          <span className="type-inner">{c}{showL ? 'x': null}</span>
         </span>
       )}
     </>

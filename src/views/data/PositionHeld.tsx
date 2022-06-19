@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useIntl } from "react-intl";
 import { Row, Col, Select, Badge, Spin } from "antd";
 import CommonCharts from "@/components/charts";
@@ -11,6 +11,7 @@ import { fck } from "@/utils/utils";
 import { getUSDTokenName } from "@/config";
 import TimeSelect from "./components/timeSelect";
 import TypeSelect from "./components/typeSelect";
+import TradeType from "@/components/type"
 const color = ["#00C49A", "#EA446B"];
 
 function PositionHeld() {
@@ -108,8 +109,13 @@ function PositionHeld() {
       0,
       2
     );
-  }
-
+  }[]
+  const longPercent = useMemo(()=>{
+    return (Number(currentData?.long_position_amount) / Number(total)) * 100 || 0
+  }, [currentData, total])
+  const shortPercent = useMemo(()=>{
+    return (Number(currentData?.short_position_amount) / Number(total)) * 100 || 0
+  }, [currentData, total])
   return (
     <div className="position-volume-wrapper trading-data-wrapper">
       <div className="head">
@@ -128,7 +134,20 @@ function PositionHeld() {
       <Spin spinning={loading}>
         <Row className="main-block amount-container">
           <Col className="chart-out-wrapper">
-            <Row>
+            <div className="type-wrap">
+              <TradeType 
+              t="Long" 
+              c={fck(longPercent,0,0) + "%"}
+              showL={false}
+               />
+              &nbsp;
+              <TradeType 
+              t="Short"
+               c={fck(shortPercent,0,0) + "%"}
+               showL={false}
+               />
+            </div>
+            {/* <Row>
               <Col flex="50%">
                 <div>
                   <Badge color="#00C49A" />
@@ -149,7 +168,7 @@ function PositionHeld() {
                   {getUSDTokenName()}
                 </div>
               </Col>
-            </Row>
+            </Row> */}
           </Col>
           <Col className="chart-out-wrapper">
             <CommonCharts ref={chartRef} height={330} />
