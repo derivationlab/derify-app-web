@@ -2,8 +2,17 @@ import * as React from "react";
 import Modal from "./modal";
 import MainData from "./index.data";
 import "./index.less";
+import { connect } from "react-redux";
+import rewardModel, {RewardState} from '@/store/modules/reward'
+import {UserState} from '@/store/modules/user' 
+import {
+  BondAccountType,
+} from "@/utils/contractUtil";
 
-interface IEarnProps {}
+interface IEarnProps {
+  rewardState: RewardState;
+  userState: UserState;
+}
 
 interface IEarnState {
   showModal: boolean;
@@ -14,6 +23,8 @@ interface IEarnState {
   unit2: string;
   label: string;
   btn: string;
+  maxAmount: number;
+  confirmFun: Function;
 }
 
 class Earn extends React.Component<IEarnProps, IEarnState> {
@@ -28,21 +39,28 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
       unit2: "",
       label: "",
       btn: "",
+      maxAmount: 0,
+      confirmFun:()=>{}
     };
   }
 
-  showModal(title: string) {
+  showModal = (title: string)=> {
+    const {rewardState,userState} = this.props;
     let data: any = {};
     if (title === "Stake DRF") {
+      const maxAmount = rewardState.wallet.drfBalance;
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Stake DRF",
         title2: "Wallet Balance",
-        address: "123",
+        address: selectedAddress,
         unit: "DRF",
         unit2: "DRF",
         label: "Amount to stake",
         btn: "Stake",
+        maxAmount,
+        confirmFun: (trader: string, amount: number)=>rewardModel.actions.stakingDrf(selectedAddress, amount)
       };
     } else if (title === "Unstake DRF") {
       data = {
@@ -97,7 +115,7 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   }
 
   render() {
-    const { title, title2, address, unit, unit2, label, btn } = this.state;
+    const { title, title2, address, unit, unit2, label, btn,maxAmount,confirmFun=()=>{} } = this.state;
     return (
       <div className="earn-page">
         {this.state.showModal && (
@@ -109,16 +127,13 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
             unit2={unit2}
             label={label}
             btn={btn}
+            maxAmount={maxAmount}
             close={() => {
               this.setState({
                 showModal: false,
               });
             }}
-            confirm={() => {
-              this.setState({
-                showModal: false,
-              });
-            }}
+            confirm={confirmFun}
           />
         )}
         <MainData
@@ -133,4 +148,13 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   }
 }
 
-export default Earn;
+export default connect((state)=>{
+  const {
+    reward: rewardState,
+    user: userState,
+  } = state;
+  return {
+    rewardState,
+    userState
+  }
+})(Earn);

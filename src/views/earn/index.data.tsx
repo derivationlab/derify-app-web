@@ -153,14 +153,14 @@ export default function MainData(props: Props) {
             fill={true}
             text="Stake"
             click={() => {
-              console.log(111);
+              props.showModal('Stake DRF', )
             }}
           />
           <Button
             className="earn-btn earn-btn2"
             text="UnStake"
             click={() => {
-              console.log(111);
+              props.showModal('Unstake DRF')
             }}
           />
         </div>

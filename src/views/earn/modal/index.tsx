@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import Button from "@/components/buttons/borderButton";
 import Modal, { ModalWithTitle } from "@/components/modal";
 import Input from "@/components/input";
+import { fck } from "@/utils/utils";
 import "./index.less";
+
+function numFormat(num: any, bit = -8) {
+  let value = fck(num, bit, 2);
+  return value.split(".");
+}
 
 interface IEarnModalProps {
   close: () => void;
@@ -14,6 +20,7 @@ interface IEarnModalProps {
   btn: string;
   unit: string;
   unit2: string;
+  maxAmount: number;
 }
 
 export default function EarnModal({
@@ -26,8 +33,10 @@ export default function EarnModal({
   btn,
   unit,
   unit2,
+  maxAmount,
 }: IEarnModalProps) {
   const [value, setValue] = useState("");
+  const maxAmountArr = numFormat(maxAmount);
   return (
     <ModalWithTitle className="earn-wallet-modal" close={close} title={title}>
       <div className="list">
@@ -36,8 +45,8 @@ export default function EarnModal({
             <span className="t1">{title2}</span>
           </div>
           <div className="num">
-            <span className="big-num">22222</span>
-            <span className="small-num">.23</span>
+            <span className="big-num">{maxAmountArr[0]}</span>
+            <span className="small-num">.{maxAmountArr[1]}</span>
             <span className="per">{unit}</span>
           </div>
           {address && <div className="addr">{address}</div>}
@@ -50,7 +59,7 @@ export default function EarnModal({
           unit={unit2}
           btnName="Max"
           btnClick={() => {
-            console.log("all");
+            setValue(maxAmount)
           }}
         />
       </div>
