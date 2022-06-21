@@ -121,6 +121,8 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         }
       };
     } else if (title === "Exchange bDRF") {
+      const maxAmount = rewardState.exchangeBondSizeUpperBound
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Exchange bDRF",
@@ -130,6 +132,11 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "bDRF",
         label: "Amount to exchange",
         btn: "Exchange",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.exchangeBond(selectedAddress, amount, BondAccountType.WalletAccount);
+          this.setState({showModal: false})
+        }
       };
     }
     this.setState(data);
