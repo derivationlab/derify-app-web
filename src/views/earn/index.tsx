@@ -47,7 +47,25 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   showModal = (title: string)=> {
     const {rewardState,userState} = this.props;
     let data: any = {};
-    if (title === "Stake DRF") {
+    if(title === 'eDRFWithdraw'){
+      const maxAmount = rewardState.edrfInfo.edrfBalance
+      const {selectedAddress} = userState;
+      data = {
+        showModal: true,
+        title: "Claim DRF",
+        title2: "Wallet Balance",
+        address: selectedAddress,
+        unit: "DRF",
+        unit2: "DRF",
+        label: "Amount to Claim",
+        btn: "Claim",
+        maxAmount,
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.stakingDrf(selectedAddress, amount)
+          this.setState({showModal: false})
+        }
+      };
+    }else if (title === "Stake DRF") {
       const maxAmount = rewardState.wallet.drfBalance;
       const {selectedAddress} = userState;
       data = {
@@ -60,9 +78,14 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         label: "Amount to stake",
         btn: "Stake",
         maxAmount,
-        confirmFun: (trader: string, amount: number)=>rewardModel.actions.stakingDrf(selectedAddress, amount)
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.stakingDrf(selectedAddress, amount)
+          this.setState({showModal: false})
+        }
       };
     } else if (title === "Unstake DRF") {
+      const maxAmount = rewardState.edrfInfo.drfBalance
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Unstake DRF",
@@ -72,17 +95,40 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "DRF",
         label: "Amount to unstake",
         btn: "unstake",
+        maxAmount,
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.redeemDrf(selectedAddress, amount)
+          this.setState({showModal: false})
+        }
       };
-    } else if (title === "Deposit bDRF") {
+    } else if (title === "Stake bDRF") {
       data = {
         showModal: true,
-        title: "Deposit bDRF",
+        title: "Stake bDRF",
         title2: "Wallet Balance",
         address: "123",
         unit: "bDRF",
         unit2: "bDRF",
-        label: "Amount to deposit",
-        btn: "Deposit",
+        label: "Amount to Stake",
+        btn: "Stake",
+      };
+    } else if(title==="UnStake bDRF"){
+      const maxAmount = rewardState.edrfInfo.drfBalance
+      const {selectedAddress} = userState;
+      data = {
+        showModal: true,
+        title: "Unstake bDRF",
+        title2: "Staking Amount",
+        address: "",
+        unit: "bDRF",
+        unit2: "bDRF",
+        label: "Amount to unstake",
+        btn: "unstake",
+        maxAmount,
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.redeemDrf(selectedAddress, amount)
+          this.setState({showModal: false})
+        }
       };
     } else if (title === "Withdraw bDRF") {
       data = {

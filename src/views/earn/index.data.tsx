@@ -135,7 +135,7 @@ export default function MainData(props: Props) {
             fill={true}
             text="Claim All"
             click={() => {
-              console.log(111);
+              props.showModal('eDRFWithdraw')
             }}
           />
         </div>
@@ -153,7 +153,7 @@ export default function MainData(props: Props) {
             fill={true}
             text="Stake"
             click={() => {
-              props.showModal('Stake DRF', )
+              props.showModal('Stake DRF' )
             }}
           />
           <Button
@@ -219,14 +219,14 @@ export default function MainData(props: Props) {
             fill={true}
             text="Stake"
             click={() => {
-              console.log(111);
+              props.showModal('Stake bDRF')
             }}
           />
           <Button
             className="earn-btn earn-btn2"
             text="UnStake"
             click={() => {
-              console.log(111);
+              props.showModal('UnStake bDRF')
             }}
           />
         </div>
