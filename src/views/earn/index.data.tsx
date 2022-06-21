@@ -135,7 +135,6 @@ export default function MainData(props: Props) {
             fill={true}
             text="Claim All"
             click={() => {
-              props.showModal('eDRFWithdraw')
             }}
           />
         </div>

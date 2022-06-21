@@ -5,6 +5,7 @@ import "./index.less";
 import { connect } from "react-redux";
 import rewardModel, {RewardState} from '@/store/modules/reward'
 import {UserState} from '@/store/modules/user' 
+import { fck } from "@/utils/utils";
 import {
   BondAccountType,
 } from "@/utils/contractUtil";
@@ -47,25 +48,7 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   showModal = (title: string)=> {
     const {rewardState,userState} = this.props;
     let data: any = {};
-    if(title === 'eDRFWithdraw'){
-      const maxAmount = rewardState.edrfInfo.edrfBalance
-      const {selectedAddress} = userState;
-      data = {
-        showModal: true,
-        title: "Claim DRF",
-        title2: "Wallet Balance",
-        address: selectedAddress,
-        unit: "DRF",
-        unit2: "DRF",
-        label: "Amount to Claim",
-        btn: "Claim",
-        maxAmount,
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.stakingDrf(selectedAddress, amount)
-          this.setState({showModal: false})
-        }
-      };
-    }else if (title === "Stake DRF") {
+    if (title === "Stake DRF") {
       const maxAmount = rewardState.wallet.drfBalance;
       const {selectedAddress} = userState;
       data = {
@@ -77,7 +60,7 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "DRF",
         label: "Amount to stake",
         btn: "Stake",
-        maxAmount,
+        maxAmount: fck(maxAmount, -8, 2),
         confirmFun: (trader: string, amount: number)=>{
           rewardModel.actions.stakingDrf(selectedAddress, amount)
           this.setState({showModal: false})
@@ -95,13 +78,15 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "DRF",
         label: "Amount to unstake",
         btn: "unstake",
-        maxAmount,
+        maxAmount: fck(maxAmount, -8, 2),
         confirmFun: (trader: string, amount: number)=>{
           rewardModel.actions.redeemDrf(selectedAddress, amount)
           this.setState({showModal: false})
         }
       };
     } else if (title === "Stake bDRF") {
+      const maxAmount = rewardState.wallet.bdrfBalance
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Stake bDRF",
@@ -111,9 +96,14 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "bDRF",
         label: "Amount to Stake",
         btn: "Stake",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.depositBondToBank(selectedAddress, amount, BondAccountType.WalletAccount)
+          this.setState({showModal: false})
+        }
       };
     } else if(title==="UnStake bDRF"){
-      const maxAmount = rewardState.edrfInfo.drfBalance
+      const maxAmount = rewardState.bondInfo.bondReturnBalance
       const {selectedAddress} = userState;
       data = {
         showModal: true,
@@ -124,22 +114,11 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "bDRF",
         label: "Amount to unstake",
         btn: "unstake",
-        maxAmount,
+        maxAmount: fck(maxAmount, -8, 2),
         confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.redeemDrf(selectedAddress, amount)
+          rewardModel.actions.redeemBondFromBank(selectedAddress, amount, BondAccountType.WalletAccount);
           this.setState({showModal: false})
         }
-      };
-    } else if (title === "Withdraw bDRF") {
-      data = {
-        showModal: true,
-        title: "Withdraw bDRF",
-        title2: "Withdraw",
-        address: "",
-        unit: "bDRF",
-        unit2: "bDRF",
-        label: "Amount to withdraw",
-        btn: "Withdraw",
       };
     } else if (title === "Exchange bDRF") {
       data = {

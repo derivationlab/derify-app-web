@@ -6,8 +6,7 @@ import { fck } from "@/utils/utils";
 import "./index.less";
 
 function numFormat(num: any, bit = -8) {
-  let value = fck(num, bit, 2);
-  return value.split(".");
+  return num.split(".");
 }
 
 interface IEarnModalProps {
