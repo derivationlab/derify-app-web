@@ -48,7 +48,25 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   showModal = (title: string)=> {
     const {rewardState,userState} = this.props;
     let data: any = {};
-    if (title === "Stake DRF") {
+    if(title === 'Claim BUSD'){
+      const maxAmount = rewardState.pmrBalance;
+      const {selectedAddress} = userState;
+      data = {
+        showModal: true,
+        title: "Claim BUSD",
+        title2: "Wallet Balance",
+        address: selectedAddress,
+        unit: "BUSD",
+        unit2: "BUSD",
+        label: "Amount to claim",
+        btn: "claim",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (trader: string, amount: number)=>{
+          rewardModel.actions.withdrawPMReward(selectedAddress, amount)
+          this.setState({showModal: false})
+        }
+      };
+    }else if (title === "Stake DRF") {
       const maxAmount = rewardState.wallet.drfBalance;
       const {selectedAddress} = userState;
       data = {
