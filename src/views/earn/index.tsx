@@ -31,9 +31,9 @@ interface IEarnState {
   confirmFun: Function;
 }
 
-const maxNumber = (number, max=1)=>{
+const maxNumber = (number, max=0)=>{
   if(isNaN(Number(number))) return 0
-  const numberDecimal = new Decimal(Number(number)).mul(new Decimal(max))
+  const numberDecimal = new Decimal(Number(number)).mul(new Decimal(`1e${max}`))
   return numberDecimal.toNumber();
 }
 class Earn extends React.Component<IEarnProps, IEarnState> {
