@@ -1,8 +1,11 @@
 import * as React from "react";
+import {notification} from 'antd'
+import Decimal from "decimal.js"
 import Modal from "./modal";
 import MainData from "./index.data";
 import "./index.less";
 import { connect } from "react-redux";
+import {AppModel} from "@/store";
 import rewardModel, {RewardState} from '@/store/modules/reward'
 import {UserState} from '@/store/modules/user' 
 import { fck } from "@/utils/utils";
@@ -28,6 +31,11 @@ interface IEarnState {
   confirmFun: Function;
 }
 
+const maxNumber = (number, max=1)=>{
+  if(isNaN(Number(number))) return 0
+  const numberDecimal = new Decimal(Number(number)).mul(new Decimal(max))
+  return numberDecimal.toNumber();
+}
 class Earn extends React.Component<IEarnProps, IEarnState> {
   constructor(props: IEarnProps) {
     super(props);
@@ -61,9 +69,10 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         label: "Amount to claim",
         btn: "claim",
         maxAmount: fck(maxAmount, -8, 2),
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.withdrawPMReward(selectedAddress, amount)
-          this.setState({showModal: false})
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.withdrawPMReward(selectedAddress,maxNumber(amount,8))
+          this.commonTip(doSubmitAction)
+          
         }
       };
     }else if (title === "Stake DRF") {
@@ -79,9 +88,10 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         label: "Amount to stake",
         btn: "Stake",
         maxAmount: fck(maxAmount, -8, 2),
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.stakingDrf(selectedAddress, amount)
-          this.setState({showModal: false})
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.stakingDrf(selectedAddress,maxNumber(amount,8))
+          this.commonTip(doSubmitAction)
+          
         }
       };
     } else if (title === "Unstake DRF") {
@@ -97,9 +107,10 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         label: "Amount to unstake",
         btn: "unstake",
         maxAmount: fck(maxAmount, -8, 2),
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.redeemDrf(selectedAddress, amount)
-          this.setState({showModal: false})
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.redeemDrf(selectedAddress,maxNumber(amount,8))
+          this.commonTip(doSubmitAction)
+          
         }
       };
     } else if (title === "Stake bDRF") {
@@ -109,15 +120,16 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         showModal: true,
         title: "Stake bDRF",
         title2: "Wallet Balance",
-        address: "123",
+        address: selectedAddress,
         unit: "bDRF",
         unit2: "bDRF",
         label: "Amount to Stake",
         btn: "Stake",
         maxAmount: fck(maxAmount, -8, 2),
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.depositBondToBank(selectedAddress, amount, BondAccountType.WalletAccount)
-          this.setState({showModal: false})
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.depositBondToBank(selectedAddress,maxNumber(amount,8), BondAccountType.WalletAccount)
+          this.commonTip(doSubmitAction)
+          
         }
       };
     } else if(title==="UnStake bDRF"){
@@ -133,9 +145,10 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         label: "Amount to unstake",
         btn: "unstake",
         maxAmount: fck(maxAmount, -8, 2),
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.redeemBondFromBank(selectedAddress, amount, BondAccountType.WalletAccount);
-          this.setState({showModal: false})
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.redeemBondFromBank(selectedAddress,maxNumber(amount,8), BondAccountType.WalletAccount);
+          this.commonTip(doSubmitAction)
+          
         }
       };
     } else if (title === "Exchange bDRF") {
@@ -151,9 +164,10 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         label: "Amount to exchange",
         btn: "Exchange",
         maxAmount: fck(maxAmount, -8, 2),
-        confirmFun: (trader: string, amount: number)=>{
-          rewardModel.actions.exchangeBond(selectedAddress, amount, BondAccountType.WalletAccount);
-          this.setState({showModal: false})
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.exchangeBond(selectedAddress,maxNumber(amount,8), BondAccountType.WalletAccount);
+          this.commonTip(doSubmitAction)
+          
         }
       };
     }
@@ -163,7 +177,33 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   componentDidMount() {
     // this.showModal("Exchange bDRF");
   }
+  commonTip(doSubmitAction){
+    const {dispatch} = this.props;
+    if(!doSubmitAction){
+      return;
+    }
+    this.setState({showModal: false})
+    // pendding
+    notification.open({
+      description: 'pending...',
+      className: 'cunstom_notification'
+    })
+    doSubmitAction(dispatch).then(() => {
+      notification.open({
+        description: 'success',
+        className: 'cunstom_notification'
+      })
+      dispatch(AppModel.actions.updateLoadStatus("reward"));
+    }).catch((e) => {
+      notification.open({
+        description: 'failed',
+        className: 'cunstom_notification'
+      })
+      console.error('doSubmitAction type', e)
+    }).finally(() => {
 
+    });
+  }
   render() {
     const { title, title2, address, unit, unit2, label, btn,maxAmount,confirmFun=()=>{} } = this.state;
     return (

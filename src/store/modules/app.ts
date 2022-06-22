@@ -66,10 +66,10 @@ const reducers = createReducer(getInitialState(), {
 
     return update(state, {tiggerEvents:{[payload.name]:payload.args}})
   },
-  ['/updateTradeLoadStatus'](state, {payload}) {
+  '/updateTradeLoadStatus'(state, {payload}) {
     return update(state, {reloadDataStatus:{trade:{$set: state.reloadDataStatus.trade+1}}})
   },
-  ['/updateLoadStatus'](state, {payload}) {
+  '/updateLoadStatus'(state, {payload}) {
     const reloadDataStatus:any = state.reloadDataStatus;
     if(reloadDataStatus.hasOwnProperty(payload)){
       return update(state, {reloadDataStatus:{[payload]:{$set: (reloadDataStatus[payload])+1}}})
@@ -135,6 +135,7 @@ const actions = {
     }
   },
   updateLoadStatus: (key:string) => {
+    console.log(111, key)
     return async (commit:Dispatch) =>{
       commit({type:"/updateLoadStatus", payload:key});
     }

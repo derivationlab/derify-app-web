@@ -64,7 +64,7 @@ export default function EarnModal({
       </div>
       <Button
         text={btn}
-        click={confirm}
+        click={()=>confirm(value)}
         fill={true}
         className="earn-wallet-btn"
       />

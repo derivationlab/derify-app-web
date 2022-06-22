@@ -19,7 +19,6 @@ export default function MainData(props: Props) {
   const dispatch = useDispatch();
 
   const trader = useSelector((state: RootStore) => state.user.selectedAddress);
-  console.log(22, trader);
   const { bondInfo, pmrBalance, pmrAccumulatedBalance, edrfInfo, accountData } =
     useSelector((state: RootStore) => state.reward);
   const reloadRewardDataStatus = useSelector(

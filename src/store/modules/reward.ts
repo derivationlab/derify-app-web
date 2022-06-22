@@ -202,7 +202,6 @@ const actions = {
       if (!trader) {
         return;
       }
-
       const contract = web3Util.contract(trader);
       return await contract.depositBondToBank({ amount, bondAccountType });
     };
