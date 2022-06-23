@@ -7,6 +7,7 @@ import "./index.less";
 import { connect } from "react-redux";
 import {AppModel} from "@/store";
 import rewardModel, {RewardState} from '@/store/modules/reward'
+import {RewardModel, RootStore} from "@/store";
 import {UserState} from '@/store/modules/user' 
 import { fck } from "@/utils/utils";
 import {
@@ -176,6 +177,11 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
 
   componentDidMount() {
     // this.showModal("Exchange bDRF");
+    const {dispatch} = this.props;
+    const {userState} = this.props;
+    const {selectedAddress} = userState;
+    const getWalletBalanceAction = RewardModel.actions.getWalletBalance(selectedAddress, 'DRF');
+    getWalletBalanceAction(dispatch);
   }
   commonTip(doSubmitAction){
     const {dispatch} = this.props;
