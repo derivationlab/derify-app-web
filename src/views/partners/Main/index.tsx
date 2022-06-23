@@ -3,6 +3,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Row, Spin } from "antd";
 import Record from "./records";
 import { useDispatch, useSelector } from "react-redux";
+import {BondAccountType,} from "@/utils/contractUtil";
+
 import { BrokerModel, RootStore } from "@/store";
 import NotBroker from "./NotBroker";
 import BrokerInfo from "./brokerInfo";
@@ -10,6 +12,7 @@ import "./index.less";
 
 function Main(props: any) {
   const dispatch = useDispatch();
+  const {selectedAddress} = useSelector((state:RootStore) => state.user);
   const { trader, isLogin } = useSelector((state: RootStore) => state.user);
   const isBroker: boolean | undefined = useSelector(
     (state: RootStore) => state.broker.isBroker
@@ -38,7 +41,14 @@ function Main(props: any) {
   const onApplyBrokerSuccess = useCallback(() => {
     setShowEditModal(true);
   }, []);
+  
+  useEffect(() => {
+    if(!selectedAddress){
+      return;
+    }
 
+    dispatch(BrokerModel.actions.getBrokerBalance({trader: selectedAddress, accountType: BondAccountType.WalletAccount}));
+  }, [selectedAddress])
   return (
     <div className="broker-wrapper">
       <Spin spinning={loading}>
