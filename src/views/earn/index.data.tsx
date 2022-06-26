@@ -19,7 +19,6 @@ export default function MainData(props: Props) {
   const dispatch = useDispatch();
 
   const trader = useSelector((state: RootStore) => state.user.selectedAddress);
-  console.log(22, trader);
   const { bondInfo, pmrBalance, pmrAccumulatedBalance, edrfInfo, accountData } =
     useSelector((state: RootStore) => state.reward);
   const reloadRewardDataStatus = useSelector(
@@ -81,7 +80,7 @@ export default function MainData(props: Props) {
             fill={true}
             text="Claim All"
             click={() => {
-              props.showModal("Stake DRF");
+              props.showModal("Claim BUSD");
             }}
           />
         </div>
@@ -135,7 +134,6 @@ export default function MainData(props: Props) {
             fill={true}
             text="Claim All"
             click={() => {
-              console.log(111);
             }}
           />
         </div>
@@ -153,14 +151,14 @@ export default function MainData(props: Props) {
             fill={true}
             text="Stake"
             click={() => {
-              console.log(111);
+              props.showModal('Stake DRF' )
             }}
           />
           <Button
             className="earn-btn earn-btn2"
             text="UnStake"
             click={() => {
-              console.log(111);
+              props.showModal('Unstake DRF')
             }}
           />
         </div>
@@ -219,14 +217,14 @@ export default function MainData(props: Props) {
             fill={true}
             text="Stake"
             click={() => {
-              console.log(111);
+              props.showModal('Stake bDRF')
             }}
           />
           <Button
             className="earn-btn earn-btn2"
             text="UnStake"
             click={() => {
-              console.log(111);
+              props.showModal('UnStake bDRF')
             }}
           />
         </div>

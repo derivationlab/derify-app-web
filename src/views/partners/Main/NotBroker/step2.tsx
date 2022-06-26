@@ -3,6 +3,7 @@
  * and he want burn edrf to be
  */
 import React, { useCallback, useState } from "react";
+import {notification} from 'antd'
 import Notice from "@/components/notice";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "@/components/buttons/borderButton";
@@ -46,15 +47,26 @@ const Step2: React.FC<Step2Props> = props => {
       accountType: accountType,
       amount: toContractUnit(60000),
     });
-
+    notification.open({
+      description: 'pending...',
+      className: 'cunstom_notification'
+    })
     applyBrokerAction(dispatch)
       .then(() => {
+        notification.open({
+          description: 'success',
+          className: 'cunstom_notification'
+        })
         dispatch(
           BrokerModel.actions.getTraderBrokerInfo(user.selectedAddress as any)
         );
         props.confirm();
       })
       .catch(e => {
+        notification.open({
+          description: 'failed',
+          className: 'cunstom_notification'
+        })
         setErrorMsg("applyBrokerAction error!");
       });
   }

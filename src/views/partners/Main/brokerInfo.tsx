@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useCallback } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -12,9 +12,11 @@ import paste from "@/assets/images/paste.png";
 import Modal from "./modal";
 import { getUSDTokenName } from "@/config";
 import { fck } from "@/utils/utils";
+import EarnModal from './modal/index'
 
 function BrokerInfo() {
   const [showModal, setModal] = useState(false);
+  const [visible, setVisible] = useState(false);
   // @ts-ignore
   const brokerData = useSelector<RootStore, BrokerAccountInfo>(
     s => s.broker.broker
@@ -33,6 +35,8 @@ function BrokerInfo() {
   let balanceArr = fck(brokerData.rewardBalance, -8, 2).split(".");
   let accumulateArr = fck(brokerData.accumulatedReward, -8, 2);
   let dailyData = fck(brokerData.todayReward, -8, 2);
+  
+
 
   return (
     <div className="broker-info-part">
@@ -107,7 +111,7 @@ function BrokerInfo() {
             fill={true}
             className="card-btn"
             click={() => {
-              console.log(111);
+              setVisible(true)
             }}
             text="Extend"
           />
@@ -127,7 +131,7 @@ function BrokerInfo() {
               </span>
             </div>
             <div className="link">
-              <a href={brokerData.reference} target="_blank">
+              <a href={brokerData.reference} target="_blank" rel="noreferrer">
                 My promotion link
               </a>
               <img src={paste} alt="" />
@@ -136,6 +140,11 @@ function BrokerInfo() {
           </div>
         </div>
       </div>
+      {
+        visible? <EarnModal
+        closeModal={()=>setVisible(false)}
+        /> : null
+      }
     </div>
   );
 }

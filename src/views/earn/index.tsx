@@ -1,9 +1,23 @@
 import * as React from "react";
+import {notification} from 'antd'
+import Decimal from "decimal.js"
 import Modal from "./modal";
 import MainData from "./index.data";
 import "./index.less";
+import { connect } from "react-redux";
+import {AppModel} from "@/store";
+import rewardModel, {RewardState} from '@/store/modules/reward'
+import {RewardModel, RootStore} from "@/store";
+import {UserState} from '@/store/modules/user' 
+import { fck } from "@/utils/utils";
+import {
+  BondAccountType,
+} from "@/utils/contractUtil";
 
-interface IEarnProps {}
+interface IEarnProps {
+  rewardState: RewardState;
+  userState: UserState;
+}
 
 interface IEarnState {
   showModal: boolean;
@@ -14,8 +28,15 @@ interface IEarnState {
   unit2: string;
   label: string;
   btn: string;
+  maxAmount: number;
+  confirmFun: Function;
 }
 
+const maxNumber = (number, max=0)=>{
+  if(isNaN(Number(number))) return 0
+  const numberDecimal = new Decimal(Number(number)).mul(new Decimal(`1e${max}`))
+  return numberDecimal.toNumber();
+}
 class Earn extends React.Component<IEarnProps, IEarnState> {
   constructor(props: IEarnProps) {
     super(props);
@@ -28,23 +49,55 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
       unit2: "",
       label: "",
       btn: "",
+      maxAmount: 0,
+      confirmFun:()=>{}
     };
   }
 
-  showModal(title: string) {
+  showModal = (title: string)=> {
+    const {rewardState,userState} = this.props;
     let data: any = {};
-    if (title === "Stake DRF") {
+    if(title === 'Claim BUSD'){
+      const maxAmount = rewardState.pmrBalance;
+      const {selectedAddress} = userState;
+      data = {
+        showModal: true,
+        title: "Claim BUSD",
+        title2: "Wallet Balance",
+        address: selectedAddress,
+        unit: "BUSD",
+        unit2: "BUSD",
+        label: "Amount to claim",
+        btn: "claim",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.withdrawPMReward(selectedAddress,maxNumber(amount,8))
+          this.commonTip(doSubmitAction)
+          
+        }
+      };
+    }else if (title === "Stake DRF") {
+      const maxAmount = rewardState.wallet.drfBalance;
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Stake DRF",
         title2: "Wallet Balance",
-        address: "123",
+        address: selectedAddress,
         unit: "DRF",
         unit2: "DRF",
         label: "Amount to stake",
         btn: "Stake",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.stakingDrf(selectedAddress,maxNumber(amount,8))
+          this.commonTip(doSubmitAction)
+          
+        }
       };
     } else if (title === "Unstake DRF") {
+      const maxAmount = rewardState.edrfInfo.drfBalance
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Unstake DRF",
@@ -54,30 +107,54 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "DRF",
         label: "Amount to unstake",
         btn: "unstake",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.redeemDrf(selectedAddress,maxNumber(amount,8))
+          this.commonTip(doSubmitAction)
+          
+        }
       };
-    } else if (title === "Deposit bDRF") {
+    } else if (title === "Stake bDRF") {
+      const maxAmount = rewardState.wallet.bdrfBalance
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
-        title: "Deposit bDRF",
+        title: "Stake bDRF",
         title2: "Wallet Balance",
-        address: "123",
+        address: selectedAddress,
         unit: "bDRF",
         unit2: "bDRF",
-        label: "Amount to deposit",
-        btn: "Deposit",
+        label: "Amount to Stake",
+        btn: "Stake",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.depositBondToBank(selectedAddress,maxNumber(amount,8), BondAccountType.WalletAccount)
+          this.commonTip(doSubmitAction)
+          
+        }
       };
-    } else if (title === "Withdraw bDRF") {
+    } else if(title==="UnStake bDRF"){
+      const maxAmount = rewardState.bondInfo.bondReturnBalance
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
-        title: "Withdraw bDRF",
-        title2: "Withdraw",
+        title: "Unstake bDRF",
+        title2: "Staking Amount",
         address: "",
         unit: "bDRF",
         unit2: "bDRF",
-        label: "Amount to withdraw",
-        btn: "Withdraw",
+        label: "Amount to unstake",
+        btn: "unstake",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.redeemBondFromBank(selectedAddress,maxNumber(amount,8), BondAccountType.WalletAccount);
+          this.commonTip(doSubmitAction)
+          
+        }
       };
     } else if (title === "Exchange bDRF") {
+      const maxAmount = rewardState.exchangeBondSizeUpperBound
+      const {selectedAddress} = userState;
       data = {
         showModal: true,
         title: "Exchange bDRF",
@@ -87,6 +164,12 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
         unit2: "bDRF",
         label: "Amount to exchange",
         btn: "Exchange",
+        maxAmount: fck(maxAmount, -8, 2),
+        confirmFun: (amount: number)=>{
+          const doSubmitAction = rewardModel.actions.exchangeBond(selectedAddress,maxNumber(amount,8), BondAccountType.WalletAccount);
+          this.commonTip(doSubmitAction)
+          
+        }
       };
     }
     this.setState(data);
@@ -94,10 +177,41 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
 
   componentDidMount() {
     // this.showModal("Exchange bDRF");
+    const {dispatch} = this.props;
+    const {userState} = this.props;
+    const {selectedAddress} = userState;
+    const getWalletBalanceAction = RewardModel.actions.getWalletBalance(selectedAddress, 'DRF');
+    getWalletBalanceAction(dispatch);
   }
+  commonTip(doSubmitAction){
+    const {dispatch} = this.props;
+    if(!doSubmitAction){
+      return;
+    }
+    this.setState({showModal: false})
+    // pendding
+    notification.open({
+      description: 'pending...',
+      className: 'cunstom_notification'
+    })
+    doSubmitAction(dispatch).then(() => {
+      notification.open({
+        description: 'success',
+        className: 'cunstom_notification'
+      })
+      dispatch(AppModel.actions.updateLoadStatus("reward"));
+    }).catch((e) => {
+      notification.open({
+        description: 'failed',
+        className: 'cunstom_notification'
+      })
+      console.error('doSubmitAction type', e)
+    }).finally(() => {
 
+    });
+  }
   render() {
-    const { title, title2, address, unit, unit2, label, btn } = this.state;
+    const { title, title2, address, unit, unit2, label, btn,maxAmount,confirmFun=()=>{} } = this.state;
     return (
       <div className="earn-page">
         {this.state.showModal && (
@@ -109,16 +223,13 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
             unit2={unit2}
             label={label}
             btn={btn}
+            maxAmount={maxAmount}
             close={() => {
               this.setState({
                 showModal: false,
               });
             }}
-            confirm={() => {
-              this.setState({
-                showModal: false,
-              });
-            }}
+            confirm={confirmFun}
           />
         )}
         <MainData
@@ -133,4 +244,13 @@ class Earn extends React.Component<IEarnProps, IEarnState> {
   }
 }
 
-export default Earn;
+export default connect((state)=>{
+  const {
+    reward: rewardState,
+    user: userState,
+  } = state;
+  return {
+    rewardState,
+    userState
+  }
+})(Earn);

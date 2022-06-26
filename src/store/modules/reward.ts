@@ -202,7 +202,6 @@ const actions = {
       if (!trader) {
         return;
       }
-
       const contract = web3Util.contract(trader);
       return await contract.depositBondToBank({ amount, bondAccountType });
     };
@@ -278,7 +277,7 @@ const actions = {
       return await contract.withdrawEdrf(amount);
     };
   },
-  stakingDrf(trader: string, amount: string | number) {
+  stakingDrf(trader: string|null, amount: string | number) {
     return async (commit: Dispatch) => {
       if (!trader) {
         return;

@@ -790,7 +790,7 @@ export default class Contract {
           } else {
             approveRet = true
           }
-
+          console.log('approveRet',approveRet)
           if (approveRet) {
             resolve(await this.DerifyRewards.methods.depositBondToBank(amount, bondAccountType).send(cache))
           } else {
