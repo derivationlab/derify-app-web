@@ -41,7 +41,7 @@ function PositionHeld() {
     { label: `BTC/${getUSDTokenName()}`, value: Token.BTC },
     { label: `ETH/${getUSDTokenName()}`, value: Token.ETH },
   ];
-  
+
 
   const onOptionChange = (value: string) => {
     setLoading(true);
@@ -109,7 +109,7 @@ function PositionHeld() {
       0,
       2
     );
-  }[]
+  }
   const longPercent = useMemo(()=>{
     return (Number(currentData?.long_position_amount) / Number(total)) * 100 || 0
   }, [currentData, total])
@@ -135,13 +135,13 @@ function PositionHeld() {
         <Row className="main-block amount-container">
           <Col className="chart-out-wrapper">
             <div className="type-wrap">
-              <TradeType 
-              t="Long" 
+              <TradeType
+              t="Long"
               c={fck(longPercent,0,0) + "%"}
               showL={false}
                />
               &nbsp;
-              <TradeType 
+              <TradeType
               t="Short"
                c={fck(shortPercent,0,0) + "%"}
                showL={false}

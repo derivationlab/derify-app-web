@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState,useCallback } from "react";
 import { Link } from "react-router-dom";
 import moment from "moment";
@@ -35,7 +36,7 @@ function BrokerInfo() {
   let balanceArr = fck(brokerData.rewardBalance, -8, 2).split(".");
   let accumulateArr = fck(brokerData.accumulatedReward, -8, 2);
   let dailyData = fck(brokerData.todayReward, -8, 2);
-  
+
 
 
   return (

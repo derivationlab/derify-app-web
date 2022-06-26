@@ -2,6 +2,7 @@
  * this page show when the user is not a broker
  * and he want burn edrf to be
  */
+// @ts-nocheck
 import React, { useCallback, useState } from "react";
 import {notification} from 'antd'
 import Notice from "@/components/notice";

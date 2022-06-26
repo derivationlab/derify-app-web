@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import Button from "@/components/buttons/borderButton";
 import Modal, { ModalWithTitle } from "@/components/modal";

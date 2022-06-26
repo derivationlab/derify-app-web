@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState,useCallback } from "react";
 import Button from "@/components/buttons/borderButton";
 import Modal, { ModalWithTitle } from "@/components/modal";
@@ -96,7 +97,7 @@ export default function EarnModal({
     }
 
     const burnEdrfExtendValidPeriodAction = BrokerModel.actions.burnEdrfExtendValidPeriod({trader:selectedAddress,accountType: BondAccountType.WalletAccount, amount: toContractUnit(value)});
-    // pending 
+    // pending
     notification.open({
       description: 'pending...',
       className: 'cunstom_notification'
