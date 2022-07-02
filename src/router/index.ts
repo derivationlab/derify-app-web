@@ -10,6 +10,7 @@ import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
 import BrokerList from "@/views/partners/brokerList/index";
 import Faucet from "@/views/faucet";
+import Broker from '@/views/Broker';
 
 const routes: Array<any> = [
   {
@@ -21,6 +22,7 @@ const routes: Array<any> = [
         exact: false,
         component: Home,
         routes: [
+
           {
             path: "/trade",
             exact: false,
@@ -62,6 +64,11 @@ const routes: Array<any> = [
                 component: BindPartners,
               },
             ],
+          },
+          {
+            path: "/brokers",
+            exact: false,
+            component: Broker
           },
           {
             path: "/faucet",
