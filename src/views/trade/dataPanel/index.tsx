@@ -177,6 +177,9 @@ function DataPanel() {
             <div className="lists">
               {tokenPairs.map((item, index) => {
                 if (item.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())) {
+                  if(!item.enable){
+                    return null;
+                  }
                   return (
                     <Item
                       rate={Math.max(item.longPmrRate, item.shortPmrRate)}
