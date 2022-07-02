@@ -1,4 +1,5 @@
 import * as React from "react";
+import moment from "moment";
 import Notice1 from "../notice";
 import close from "@/assets/images/close1.png";
 import edit from "@/assets/images/edit1.png";
@@ -185,16 +186,16 @@ export class TradeHistory extends React.Component<ITradeHistoryProps,
             <div className="line num red">{this.getOpenOrClose(data.type)}</div>
             <div className="line">{this.getPriceType(data.type)}</div>
           </div>
-          <Item title="Unrealized PnL" num="23124.32" u={unit}/>
-          <Item title="Trading Fee" num="13.23 " />
-          <Item title="Position Change Fee" num="-12313.23 " />
+          <Item title="Unrealized PnL" num={amountFormt(data.pnl_usdt,2,true,"--")} u={unit}/>
+          <Item title="Trading Fee" num={amountFormt(-data.trading_fee, 2, false, '--')} u={unit}/>
+          <Item title="Position Change Fee" num={amountFormt(-data.position_change_fee,2,false,"--")} u={unit} />
         </div>
         <div className="hr"></div>
         <div className="row row2">
-          <Item title="Volume (Base)" num="4513.12" u="BTC" />
-          <Item title="Volume (Quoted)" num="23124.32" />
-          <Item title="Price" num="212313.23 " />
-          <Item title="Time" num="2022-12-31 23:59:59" u="1 minute ago" />
+          <Item title="Volume (Base)" num={amountFormt(data.size,4,false,"--")} u={currentToken.key} />
+          <Item title="Volume (Quoted)" num={amountFormt(data.amount,2, false, '--')} u={unit} />
+          <Item title="Price" num={amountFormt(data.price,2,false,"--")} u={unit} />
+          <Item title="Time" num={moment(data.event_time).format("YYYY-MM-DD HH:mm:ss")} u={moment(data.event_time).fromNow()} />
         </div>
       </div>
     );
