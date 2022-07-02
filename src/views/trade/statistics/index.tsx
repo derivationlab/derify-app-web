@@ -8,7 +8,7 @@ import History from "./index.history"
 const tabs = ['My Position', 'My Order', 'Trade History'];
 
 function Statistics() {
-  const [index, setIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(1);
   return (
     <div className="statistic-wrapper">
       <div className="tabs">

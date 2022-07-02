@@ -3,7 +3,7 @@ import moment from "moment";
 import Notice1 from "../notice";
 import close from "@/assets/images/close1.png";
 import edit from "@/assets/images/edit1.png";
-import { SideEnum as TradeTypes, fromContractUnit} from "@/utils/contractUtil";
+import { SideEnum as TradeTypes, fromContractUnit, OrderTypeEnum} from "@/utils/contractUtil";
 import { amountFormt } from "@/utils/utils";
 import Type from "../type";
 import "./index.less";
@@ -16,17 +16,9 @@ interface IPosProps {
   setData: any;
 }
 
-interface IPosState {
-}
-
-export class TradePosition extends React.Component<IPosProps, IPosState> {
-  constructor(props: IPosProps) {
-    super(props);
-    this.state = {};
-  }
-
+export class TradePosition extends React.Component<IPosProps> {
   render() {
-    const { props, state } = this;
+    const { props } = this;
     const { data } = props;
     const currentToken = props.getPairByAddress(data.token);
     const volume = amountFormt(data.size, 4, false, "0", -8);
@@ -88,40 +80,65 @@ export class TradePosition extends React.Component<IPosProps, IPosState> {
   }
 }
 
-export interface ITradeOrderProps {
+interface IOrderProps {
+  data: any;
+  getPairByAddress: any;
+  check: any;
+  unit: string;
 }
 
-export interface ITradeOrderState {
-}
+export class TradeOrder extends React.Component<IOrderProps> {
 
-export class TradeOrder extends React.Component<ITradeOrderProps,
-  ITradeOrderState> {
-  constructor(props: ITradeOrderProps) {
-    super(props);
-
-    this.state = {};
+  getType = (t: number) => {
+    if (t === OrderTypeEnum.LimitOrder) {
+      return ["Open","Limit"];
+    }
+    if (t=== OrderTypeEnum.StopProfitOrder) {
+      return ["Close", "TP"]
+    }
+    if (t === OrderTypeEnum.StopLossOrder) {
+      return ["Close", "SL"]
+    }
+    return ["", ""];
   }
 
   render() {
+    const {getPairByAddress, data, check, unit}= this.props;
+    const type = this.getType(data.orderType);
     return (
       <div className="trade-item trade-order-item">
         <div className="header">
-          <span className="title">BTC-USDT</span>
-          <Type t="Long" c={10} />
-          <span className="close red">
-            close
+          <span className="title">{getPairByAddress(data.token).name}</span>
+          <Type
+            t={data.side === TradeTypes.LONG ? 'Long' : 'Short'}
+            c={fromContractUnit(data.leverage)} />
+
+          <span className="close red" onClick={() => {
+            // @ts-ignore
+            window.cancelOrder = data;
+            check();
+          }}>
+            cancel
             <img src={close} alt="" />
           </span>
         </div>
         <div className="row row1">
           <div className="data">
             <Notice text="Type" />
-            <div className="line num red">open</div>
-            <div className="line">Limit Price</div>
+            <div className="line num red">{type[0]}</div>
+            <div className="line">{type[1]}</div>
           </div>
-          <Item title="Volume" num="2.34 / 23124.32 " u="BTC / USDT" />
-          <Item title="Price" num="-12313.23 " />
-          <Item title="Time" num="2022-12-31 23:59:59" u="1 minute ago" />
+          <Item title="Volume"
+                num={amountFormt(data.size, 4, false, "0", -8)} u={getPairByAddress(data.token).key}
+          />
+          <Item title="Price"
+                num={amountFormt(data.orderType === OrderTypeEnum.LimitOrder ? data.price : data.stopPrice, 2, false, "--", -8)}
+                u={unit}
+          />
+          <Item title="Time"
+                num={data.timestamp ? moment(data.timestamp).format("YYYY-MM-DD HH:mm:ss") : '-'}
+                u={data.timestamp ? (moment(data.timestamp).fromNow()) : '-'}
+          />
         </div>
       </div>
     );
@@ -134,15 +151,7 @@ interface ITradeHistoryProps {
   getPairByAddress: any;
 }
 
-interface ITradeHistoryState {
-}
-
-export class TradeHistory extends React.Component<ITradeHistoryProps,
-  ITradeHistoryState> {
-  constructor(props: ITradeHistoryProps) {
-    super(props);
-    this.state = {};
-  }
+export class TradeHistory extends React.Component<ITradeHistoryProps> {
 
   getOpenOrClose = (num: number) => {
     if(num < 4){

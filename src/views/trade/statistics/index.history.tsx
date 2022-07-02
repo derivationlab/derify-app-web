@@ -1,8 +1,6 @@
-import { TradeHistory } from "@/components/trade";
 import React, { useCallback, useEffect, useState } from "react";
+import { TradeHistory, Empty } from "@/components/trade";
 import { Pagination } from "antd";
-import classNames from "classnames";
-import LongOrShort from "@/views/trade/LongOrShort";
 import { getTradeList, TradeRecord } from "@/api/trade";
 import { useDispatch, useSelector } from "react-redux";
 import { RootStore } from "@/store";
@@ -66,7 +64,7 @@ const History = () => {
     }
     setPageData(pagenation);
   }, []);
-  console.log(pagenation);
+
   return (
     <div className="history-list">
       {
@@ -74,7 +72,7 @@ const History = () => {
           <TradeHistory key={index} data={item} getPairByAddress={getPairByAddress} unit={getUSDTokenName()}/>)
       }
       {
-        pagenation.records.length && (
+        pagenation.records.length ? (
           <Pagination
             pageSize={pagenation.pageSize}
             onChange={onPageChange}
@@ -82,6 +80,8 @@ const History = () => {
             total={pagenation.totalItems}
             showSizeChanger={false}
           />
+        ) : (
+          <Empty/>
         )
       }
     </div>
