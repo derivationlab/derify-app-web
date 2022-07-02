@@ -15,10 +15,8 @@ export async function getHistoryTradingData(token, days=7) {
     content.data.forEach((item) => {
       item.day_time = dateFormat(new Date(item.day_time), 'MM-dd')
     })
-
     return content.data;
   }
-
   return [{trading_amount: 0, trading_fee: 0, day_time: ''}];
 }
 

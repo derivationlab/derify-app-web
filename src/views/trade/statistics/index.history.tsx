@@ -70,8 +70,8 @@ const History = () => {
   return (
     <div className="history-list">
       {
-        pagenation.records.map((item, index) => <TradeHistory key={index} data={item}
-                                                              getPairByAddress={getPairByAddress} />)
+        pagenation.records.map((item, index) =>
+          <TradeHistory key={index} data={item} getPairByAddress={getPairByAddress} unit={getUSDTokenName()}/>)
       }
       {
         pagenation.records.length && (

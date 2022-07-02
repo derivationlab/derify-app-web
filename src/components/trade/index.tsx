@@ -129,6 +129,7 @@ export class TradeOrder extends React.Component<ITradeOrderProps,
 
 interface ITradeHistoryProps {
   data: any;
+  unit: any;
   getPairByAddress: any;
 }
 
@@ -142,26 +143,49 @@ export class TradeHistory extends React.Component<ITradeHistoryProps,
     this.state = {};
   }
 
+  getOpenOrClose = (num: number) => {
+    if(num < 4){
+      return 'Open'
+    }else {
+      return 'Close'
+    }
+  }
+
+  getPriceType = (num: number) => {
+    if(num === 0 || num === 1){
+      return "Market"
+    }
+    if(num === 2){
+      return "Limit"
+    }
+    if(num === 3 || num === 4){
+      return "TPSL"
+    }
+    if(num === 5){
+      return "Deleverage"
+    }
+    if(num === 6){
+      return "Liquidate"
+    }
+    return "Market"
+  }
+
   render() {
-    const {data, getPairByAddress} = this.props;
+    const {data, getPairByAddress, unit} = this.props;
     const currentToken = getPairByAddress(data.token);
     return (
       <div className="trade-item trade-history-item">
         <div className="header">
           <span className="title">{currentToken.name} </span>
           <Type t={data.side === 0 ? 'Long' : 'Short'} c={10} />
-          <span className="close red">
-            close
-            <img src={close} alt="" />
-          </span>
         </div>
         <div className="row row1">
           <div className="data">
             <Notice text="Type" />
-            <div className="line num red">open</div>
-            <div className="line">Market Price</div>
+            <div className="line num red">{this.getOpenOrClose(data.type)}</div>
+            <div className="line">{this.getPriceType(data.type)}</div>
           </div>
-          <Item title="Unrealized PnL" num="23124.32" />
+          <Item title="Unrealized PnL" num="23124.32" u={unit}/>
           <Item title="Trading Fee" num="13.23 " />
           <Item title="Position Change Fee" num="-12313.23 " />
         </div>
