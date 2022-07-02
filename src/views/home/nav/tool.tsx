@@ -345,7 +345,7 @@ function Tool() {
             if(showTheme || showLangs){
               return false;
             }
-            setShowSettings(true);
+            setShowSettings(!showSettings);
           }
         }/>
         {
@@ -369,6 +369,9 @@ function Tool() {
               </div>
               <a className="item" href="https://docs.google.com/forms/d/e/1FAIpQLSelBo6du-kioL3kTWgMqCOtiwNZvw7D7kF82SSm3l314Ot9xA/viewform" target='_blank'>
                 <span>Feedback</span>
+              </a>
+              <a className="item" href="https://docs.derify.finance/getting-started/tutorial" target='_blank'>
+                <span>Tutorial</span>
               </a>
               <a className="item" href="https://docs.derify.finance/" target='_blank'>
                 <span>Docs</span>
