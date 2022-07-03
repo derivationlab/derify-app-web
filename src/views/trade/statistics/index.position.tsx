@@ -86,8 +86,6 @@ const Position = () => {
     priceChangeAction(dispatch);
   }, []);
 
-  console.log(profitData);
-
   return (
     <div className="pos-list">
       {

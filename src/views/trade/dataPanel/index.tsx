@@ -1,21 +1,12 @@
 // @ts-nocheck
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState ,useMemo} from "react";
 import { Row, Col } from "antd";
-import Chart, { timeOptions } from "./chart";
-import { FormattedMessage, useIntl } from "react-intl";
+import Chart from "./chart";
 import { useDispatch, useSelector } from "react-redux";
-import contractModel, {
-  ContractState,
-  TokenPair,
-} from "@/store/modules/contract";
-import { RootStore } from "@/store";
+import contractModel, { ContractState, TokenPair, } from "@/store/modules/contract";
 import { amountFormt, fck } from "@/utils/utils";
-import {
-  fromContractUnit,
-  OpenType,
-  SideEnum,
-  Token,
-} from "@/utils/contractUtil";
+import { OpenType, SideEnum, } from "@/utils/contractUtil";
+import { DataModel, RootStore } from "@/store";
 import Notice from "@/components/notice";
 import arrow from "@/assets/images/arrowd.png";
 import arrow1 from "@/assets/images/arrow1.png";
@@ -29,12 +20,9 @@ function DataPanel() {
   const [showTimeList, setShowTimeList] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [holdVolume, setHoldVolume] = useState([0,0]);
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
-  function intl<T>(id: string, values: { [key: string]: T } = {}) {
-    return formatMessage({ id }, values);
-  }
-  const $t = intl;
+
   const contractState = useSelector<RootStore, ContractState>(
     state => state.contract
   );
@@ -85,12 +73,36 @@ function DataPanel() {
   // current token price array
   const curTokenPairVal = fck(curTokenPair.num, 0, 2).split(".");
 
-
   useEffect(() => {
     document.addEventListener("click", function(){
       setShowList(false);
     }, false)
-  }, [])
+    const firstToken = tokenPairs[0].address;
+    getHoldVolume(firstToken);
+  }, []);
+
+
+  function getHoldVolume(token) {
+    const loadHeldDataAction = DataModel.actions.loadHeldData(token);
+    loadHeldDataAction(dispatch).then(data => {
+      if(data && data.current){
+        setHoldVolume([data.current.long_position_amount, data.current.short_position_amount])
+      }
+    })
+  }
+
+  const net = useMemo(() => {
+    return holdVolume[0] - holdVolume[1]
+  }, [holdVolume]);
+
+  const netRate = useMemo(() => {
+    if(holdVolume[0] - holdVolume[1] === 0){
+      return 0;
+    }
+   let v =  (holdVolume[0] - holdVolume[1]) / (holdVolume[0] + holdVolume[1]);
+    return (v * 100).toFixed(2);
+  }, [holdVolume]);
+
 
   return (
     <Row className="main-block data-panel-container">
@@ -123,7 +135,7 @@ function DataPanel() {
             <span>Net Position Rate</span>
             <Notice title="Net Position Rate" />
           </div>
-          <div className="val">-1.23% ( -12.34 BTC )</div>
+          <div className="val">{netRate} % ( {net} {curTokenPair.key} )</div>
           <div className="vl" />
         </div>
 
@@ -191,6 +203,7 @@ function DataPanel() {
                       value={item.num}
                       click={() => {
                         if (item.enable) {
+                          getHoldVolume(item.address)
                           setShowList(false);
                           dispatch(
                             contractModel.actions.updateCurTokenPair(item)
