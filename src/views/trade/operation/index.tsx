@@ -6,7 +6,7 @@ import { OpenType, toContractUnit, SideEnum, UnitTypeEnum, } from "@/utils/contr
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, { TokenPair, OpenUpperBound, } from "@/store/modules/contract";
 import { ContractModel, RootStore } from "@/store";
-import { amountFormtNumberDefault, checkNumber, fck } from "@/utils/utils";
+import { amountFormtNumberDefault, checkNumber, fck, amountFormt } from "@/utils/utils";
 import { DerifyErrorNotice } from "@/components/ErrorMessage";
 import { getUSDTokenName } from "@/config";
 import notice from "@/assets/images/notice.png";
@@ -224,6 +224,7 @@ function Operation() {
   const num2 = fck(accountData?.totalMargin, -8, 2);
   const num2Data = num2.split(".");
   const unitName = getUSDTokenName();
+  console.log(curPair);
 
   // render the margin module
   function Margin(){
@@ -308,25 +309,29 @@ function Operation() {
           openPositionConfirm(0)
         }}>
           <div className="type">long</div>
-          <div className="num"> 12.34%</div>
+          <div className="num">{amountFormt(curPair.longPmrRate, 2, false, "--", 0)}%</div>
           <div className="t">APY</div>
         </div>
          <div className="btn" onClick={() => {
            openPositionConfirm(1)
           }}>
           <div className="type">short</div>
-          <div className="num"> 12.34%</div>
+          <div className="num">{amountFormt(curPair.shortPmrRate, 2, false, "--", 0)}%</div>
           <div className="t">APY</div>
         </div>
       </div>
 
-      <div className="btn2" onClick={() => {
-        openPositionConfirm(2)
-      }}>
-        2-Way
-        <div className="num"> 12.34%</div>
-        <div className="t">APY</div>
-      </div>
+      {
+        openType === OpenType.LimitOrder ? null : (
+          <div className="btn2" onClick={() => {
+            openPositionConfirm(2)
+          }}>
+            2-Way
+            <div className="num">{amountFormt(Math.max(curPair.shortPmrRate,curPair.longPmrRate), 2, false, "--", 0)}%</div>
+            <div className="t">APY</div>
+          </div>
+        )
+      }
 
       {showPositionModal && (
         <ModalClosePostion

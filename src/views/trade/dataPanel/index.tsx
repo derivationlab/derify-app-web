@@ -1,12 +1,13 @@
 // @ts-nocheck
 import React, { useCallback, useEffect, useState ,useMemo} from "react";
-import { Row, Col } from "antd";
+import { Row, Col, Tooltip } from "antd";
 import Chart from "./chart";
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, { ContractState, TokenPair, } from "@/store/modules/contract";
 import { amountFormt, fck } from "@/utils/utils";
 import { OpenType, SideEnum, } from "@/utils/contractUtil";
 import { DataModel, RootStore } from "@/store";
+import { getUSDTokenName } from "@/config";
 import Notice from "@/components/notice";
 import arrow from "@/assets/images/arrowd.png";
 import arrow1 from "@/assets/images/arrow1.png";
@@ -120,7 +121,7 @@ function DataPanel() {
           </div>
           <div className="data">
             <span className="num">{curTokenPairVal[0]}</span>
-            <span className="num1">{curTokenPairVal[1]}</span>
+            <span className="num1">.{curTokenPairVal[1]}</span>
             <span
               className={`per ${
                 curTokenPair.percent > 0 ? "per-green" : "per-red"
@@ -135,7 +136,10 @@ function DataPanel() {
             <span>Net Position Rate</span>
             <Notice title="Net Position Rate" />
           </div>
-          <div className="val">{netRate} % ( {net} {curTokenPair.key} )</div>
+
+          <Tooltip title={`${netRate} % ( ${net} ${getUSDTokenName()} )`}>
+            <div className="val val-hidden">{netRate} % ( {net} {getUSDTokenName()} )</div>
+          </Tooltip>
           <div className="vl" />
         </div>
 
