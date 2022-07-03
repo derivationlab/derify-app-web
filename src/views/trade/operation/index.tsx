@@ -13,7 +13,7 @@ import notice from "@/assets/images/notice.png";
 import Button1 from "@/components/buttons/borderButton";
 import Percent from "@/components/percent";
 import ModalCancelOrder from "../modal/cancelOrder";
-import ModalClosePostion from "../modal/closePosition";
+import ModalOpenPosition from "../modal/openPosition";
 import ModalWallet from "../modal/wallet";
 import ModalProfit from "../modal/profit";
 
@@ -163,7 +163,11 @@ function Operation() {
 
   const openPositionConfirm = useCallback((side: number) => {
     const t = ['Long', 'Short', '2-Way'];
+    let typeValue = openType;
     setType(t[side]);
+    if(size === '' || size === undefined){
+      return DerifyErrorNotice.error("Please input volume");
+    }
     let checkNumRet = checkNumber(size, getMaxSize(traderOpenUpperBound, token),);
     if (!checkNumRet.success || !size) {
       return DerifyErrorNotice.error($t("global.NumberError"));
@@ -174,10 +178,22 @@ function Operation() {
         return DerifyErrorNotice.error($t("global.NumberError"));
       }
     }
+    if(openType === 1){
+      if(side === 0) {
+        if (parseFloat(limitPrice) > curPair.num) {
+          typeValue = 0;
+        }
+      }
+      if(side === 1){
+        if(parseFloat(limitPrice) < curPair.num){
+          typeValue = 0;
+        }
+      }
+    }
     DerifyErrorNotice.error(null);
     const params: OpenConfirmData = {
       unit: token,
-      openType,
+      openType: typeValue,
       limitPrice: parseFloat(limitPrice),
       token: curPair,
       side,
@@ -333,7 +349,7 @@ function Operation() {
       }
 
       {showPositionModal && (
-        <ModalClosePostion
+        <ModalOpenPosition
           data={openConfirmData}
           title="Open Position"
           type={type}

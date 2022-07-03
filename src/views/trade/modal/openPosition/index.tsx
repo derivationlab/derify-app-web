@@ -22,7 +22,7 @@ import contractModel, { OpenUpperBound, TokenPair } from "@/store/modules/contra
 import { DerifyTradeModal } from "@/views/CommonViews/ModalTips";
 import "./index.less";
 
-interface ClosePositionProps {
+interface OpenPositionProps {
   close: () => void;
   confirm: () => void;
   type: "Short" | "Long" | "2-Way";
@@ -30,7 +30,7 @@ interface ClosePositionProps {
   data: any;
 }
 
-function PositionModal(props: ClosePositionProps) {
+function PositionModal(props: OpenPositionProps) {
   const { type, data } = props;
   const dispatch = useDispatch();
   const curPair = useSelector(state => state.contract.curPair);
