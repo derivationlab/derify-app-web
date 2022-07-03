@@ -224,7 +224,6 @@ function Operation() {
   const num2 = fck(accountData?.totalMargin, -8, 2);
   const num2Data = num2.split(".");
   const unitName = getUSDTokenName();
-  console.log(curPair);
 
   // render the margin module
   function Margin(){
@@ -335,7 +334,6 @@ function Operation() {
 
       {showPositionModal && (
         <ModalClosePostion
-          operate=""
           data={openConfirmData}
           title="Open Position"
           type={type}
