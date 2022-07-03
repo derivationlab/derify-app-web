@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { RootStore } from "@/store";
 import Bind from "@/views/partners/Bind";
 // import BindPartners from "@/views/partners/Bind";
+import NotConnectWalletSection from '@/components/NotConnectWalletSection'
 
 // export type RewardsType = "USDT" | "bDRF" | "eDRF";
 
@@ -19,7 +20,7 @@ const Partners: React.FC<PartnersProps> = props => {
   );
 
   if(!isLogin){
-    return null;
+    return <NotConnectWalletSection />;
   }
 
   if (!hasBroker) {

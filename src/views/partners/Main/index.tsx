@@ -10,6 +10,7 @@ import NotBroker from "./NotBroker";
 import BrokerInfo from "./brokerInfo";
 import "./index.less";
 
+
 function Main(props: any) {
   const dispatch = useDispatch();
   const {selectedAddress} = useSelector((state:RootStore) => state.user);
@@ -41,7 +42,7 @@ function Main(props: any) {
   const onApplyBrokerSuccess = useCallback(() => {
     setShowEditModal(true);
   }, []);
-  
+
   useEffect(() => {
     if(!selectedAddress){
       return;
