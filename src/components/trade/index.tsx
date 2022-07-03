@@ -3,15 +3,16 @@ import moment from "moment";
 import Notice1 from "../notice";
 import close from "@/assets/images/close1.png";
 import edit from "@/assets/images/edit1.png";
-import { SideEnum as TradeTypes, fromContractUnit, OrderTypeEnum} from "@/utils/contractUtil";
+import { SideEnum as TradeTypes, fromContractUnit, OrderTypeEnum, PositionView} from "@/utils/contractUtil";
 import { amountFormt } from "@/utils/utils";
 import Type from "../type";
 import "./index.less";
 
 interface IPosProps {
   unit: string;
-  data: any;
-  getPairByAddress: any;
+  data: PositionView;
+  getPairByAddress: (str: string) => any;
+  showProfitModal: (pos: PositionView) => any;
   toggleModal: any;
   setData: any;
 }
@@ -27,7 +28,7 @@ export class TradePosition extends React.Component<IPosProps> {
         <div className="header">
           <span className="title">{currentToken.name}</span>
           <Type
-            t={data.side === TradeTypes.LONG ? 'Long' : 'Short'}
+            t={data.side === TradeTypes.LONG ? 'Long' : (data.side === TradeTypes.SHORT ? 'Short' : '2-Way')}
             c={fromContractUnit(data.leverage)}
           />
           <span className="close red" onClick={() => {
@@ -62,7 +63,7 @@ export class TradePosition extends React.Component<IPosProps> {
             title="Take Profit"
             num="--"
             editFn={() => {
-              console.log("edit");
+              props.showProfitModal(data);
             }}
             u={props.unit}
           />
@@ -70,7 +71,7 @@ export class TradePosition extends React.Component<IPosProps> {
             title="Stop Loss"
             num="--"
             editFn={() => {
-              console.log("edit");
+              props.showProfitModal(data);
             }}
             u={props.unit}
           />

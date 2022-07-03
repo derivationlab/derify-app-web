@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { TradePosition } from "@/components/trade";
+import { TradePosition, Empty } from "@/components/trade";
 import closeImage from "@/assets/images/close2.png";
 import { getUSDTokenName } from "@/config";
-import { fromContractUnit, PositionView, SideEnum } from "@/utils/contractUtil";
+import { PositionView } from "@/utils/contractUtil";
 import contractModel from "@/store/modules/contract";
 import ModalClosePosition from "./closeModal";
 import ModalCloseAllPosition from "../modal/cancelOrder";
+import ProfitModal from "@/views/trade/modal/profit";
 import { AppModel, RootStore } from "@/store";
 import { message } from "antd";
 
@@ -24,6 +25,9 @@ const Position = () => {
   // the close data
   const [closeData, setCloseData] = useState<PositionView>();
   const [list, setList] = useState<PositionView[]>([]);
+
+  const [showProfitModal, setShowProfitModal] =  useState(false);
+  const [profitData, setProfitData] = useState<PositionView>();
 
   const getPairByAddress = (token: string) => {
     return tokenPairs.find((pair) => pair.address === token) || { name: "unknown", key: "unknown" };
@@ -82,6 +86,8 @@ const Position = () => {
     priceChangeAction(dispatch);
   }, []);
 
+  console.log(profitData);
+
   return (
     <div className="pos-list">
       {
@@ -93,17 +99,23 @@ const Position = () => {
             key={item.tx}
             data={item}
             getPairByAddress={getPairByAddress}
+            showProfitModal={(data:PositionView) => {
+              setProfitData(data)
+              setShowProfitModal(true)
+            }}
           />
         ))
       }
       {
-        list.length && (
+        list.length ? (
           <div className="close-all">
             <div className="btn" onClick={() => {setShowModalForCloseAll(true);}}>
               <span>CLOSE ALL</span>
               <img src={closeImage} alt="" />
             </div>
           </div>
+        ) : (
+          <Empty />
         )
       }
       {
@@ -124,6 +136,21 @@ const Position = () => {
           }}
           confirm={closeAll}
         />
+      }
+      {
+        showProfitModal && (
+          <ProfitModal
+            unit={unit}
+            getPairByAddress={getPairByAddress}
+            position={profitData}
+            close={() => {
+              setShowProfitModal(false)
+            }}
+            confirm={() => {
+              setShowProfitModal(false)
+            }}
+          />
+        )
       }
     </div>
   );

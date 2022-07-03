@@ -9,7 +9,16 @@ export interface CancelOrderProps {
   type: "order" | "allOrder" | "allPosition";
 }
 
-const dataMap: any = {};
+type DataItem = {
+  title: string;
+  content: string;
+}
+
+type DataMap = {
+  [key: string] : DataItem
+}
+
+const dataMap: DataMap= {};
 dataMap["order"] = {
   title: "Cancel Order",
   content: "Do you want to cancel this order IMMEDIATELY ?",
@@ -23,22 +32,12 @@ dataMap["allPosition"] = {
   content: "Do you want to close all positions at Market Price?",
 };
 
-export interface CancelOrderState {}
-
-export default class CancelOrder extends React.Component<
-  CancelOrderProps,
-  CancelOrderState
-> {
-  constructor(props: CancelOrderProps) {
-    super(props);
-    this.state = {};
-  }
-
+export default class CancelOrder extends React.Component<CancelOrderProps>{
   render() {
     const { confirm, type } = this.props;
     return (
       <ModalWithTitle
-        className="trade-cancal-order"
+        className="trade-cancel-order"
         title={dataMap[type].title}
         close={this.props.close}
       >
@@ -48,7 +47,7 @@ export default class CancelOrder extends React.Component<
             text="Confirm"
             click={confirm}
             fill={true}
-            className="cancal-order-btn"
+            className="cancel-order-btn"
           />
         </div>
       </ModalWithTitle>
