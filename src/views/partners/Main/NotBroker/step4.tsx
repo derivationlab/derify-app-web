@@ -1,7 +1,10 @@
 import React from "react";
 import Button from "@/components/buttons/borderButton";
+import { useHistory } from "react-router-dom";
 
 export default function Step4(props: { confirm: any }) {
+  const history = useHistory()
+
   return (
     <div className="not-a-broker-success">
       <div className="content">
@@ -12,7 +15,7 @@ export default function Step4(props: { confirm: any }) {
             text="Confirm"
             fill={true}
             className="btn1"
-            click={props.confirm}
+            click={() => history.push("/trade")}
           />
         </div>
       </div>

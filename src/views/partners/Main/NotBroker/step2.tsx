@@ -40,7 +40,7 @@ const Step2: React.FC<Step2Props> = props => {
   // click confirm
   function confirmFn() {
     if (getMaxSize(broker.wallet, accountType) < 60000) {
-      setErrorMsg("Insuffient account balance!");
+      setErrorMsg("Insufficient account balance!");
       return;
     }
     const applyBrokerAction = BrokerModel.actions.applyBroker({

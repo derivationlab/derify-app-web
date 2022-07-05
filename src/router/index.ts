@@ -8,6 +8,8 @@ import Earn from "@/views/earn";
 import Partners from "@/views/partners";
 import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
+import BrokerApply from "@/views/partners/Main/NotBroker/step2";
+import BrokerReady from "@/views/partners/Main/NotBroker/step4";
 import BrokerList from "@/views/partners/brokerList/index";
 import Faucet from "@/views/faucet";
 import Broker from '@/views/Broker';
@@ -62,6 +64,16 @@ const routes: Array<any> = [
                 path: "/bind",
                 exact: true,
                 component: BindPartners,
+              },
+              {
+                path: "/ready",
+                exact: true,
+                component: BrokerReady,
+              },
+              {
+                path: "/apply",
+                exact: true,
+                component: BrokerApply,
               },
             ],
           },

@@ -1,12 +1,8 @@
 import { isEmpty } from "lodash";
-import React, { FC, useCallback, useEffect, useState } from "react";
 import { Input } from "antd";
-import {
-  BrokerInfo,
-  getBrokerByBrokerId,
-  getBrokerByTrader,
-  updateBroker,
-} from "@/api/broker";
+import { useHistory } from 'react-router-dom'
+import React, { FC, useCallback, useEffect, useState } from "react";
+import { getBrokerByBrokerId, updateBroker } from "@/api/broker";
 import ErrorMessage from "@/components/ErrorMessage";
 import CheckBox from "@/components/checkbox";
 import Button from "@/components/buttons/borderButton";
@@ -15,6 +11,7 @@ import discord from "@/assets/images/social/discord2.png";
 import reddit from "@/assets/images/social/reddit2.png";
 import twitter from "@/assets/images/social/twitter2.png";
 import wechat from "@/assets/images/social/wechat2.png";
+import CUpload from "./Upload";
 
 const { TextArea } = Input;
 
@@ -23,27 +20,11 @@ interface Props {
   onCancel: () => void
 }
 
-let logo: any = null;
-
 const Step3: FC<Props> = () => {
+  const history = useHistory()
+
   const [formValues, setFormValues] = useState<Record<string, any>>({});
   const [errMessage, setErrMessage] = useState<string>("");
-
-  const onFileChangeEv = (e: any) => {
-    const files = e.target.files;
-    if (files.length) {
-      const file = files[0];
-      if (file.size > 2 * 1024 * 1024) {
-        setErrMessage("the file size can not bigger than 2 M");
-        return;
-      }
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e: any) => {
-        logo = e.target.result;
-      };
-    }
-  };
 
   const isUsableBroker = async (id: string): Promise<boolean> => {
     const response = await getBrokerByBrokerId(id);
@@ -58,12 +39,22 @@ const Step3: FC<Props> = () => {
     setFormValues((val) => ({ ...val, [key]: value }));
   }, []);
 
+  const onRightEv = (file: any) => {
+    setFormValues((val) => ({ ...val, logo: file }));
+  }
+
+  const onErrorEv = (err: string) => {
+    setErrMessage(err);
+  }
+
   const onConfirmFormCb = useCallback(async () => {
     const {
       broker,
       name,
       introduction,
       address,
+      logo,
+      file
     } = formValues;
     const _broker = broker?.trim();
     const _name = name?.trim();
@@ -74,6 +65,7 @@ const Step3: FC<Props> = () => {
       || isEmpty(_name)
       || isEmpty(_introduction)
       || isEmpty(_address)
+      || isEmpty(logo)
     ) {
       setErrMessage("Information is incomplete, please re-check.");
       return;
@@ -92,11 +84,11 @@ const Step3: FC<Props> = () => {
       name,
       introduction,
       id: address,
-      logo: "",
+      logo: file,
     })
       .then(({ success, msg }) => {
         if (success) {
-          // todo
+          history.push('/broker/ready')
         } else {
           setErrMessage(msg);
         }
@@ -125,7 +117,6 @@ const Step3: FC<Props> = () => {
       <div className="input-wrapper">
         <label>Account</label>
         <Input
-          placeholder="Account"
           value={formValues?.broker}
           onChange={e => formValuesChangeCb("broker", e.target.value)}
         />
@@ -140,7 +131,6 @@ const Step3: FC<Props> = () => {
       <div className="input-wrapper">
         <label>Name</label>
         <Input
-          placeholder="Name"
           value={formValues?.name}
           onChange={e => formValuesChangeCb("name", e.target.value)}
         />
@@ -151,15 +141,14 @@ const Step3: FC<Props> = () => {
       {/* Logo */}
       <div className="input-wrapper input-wrapper-upload">
         <label>Logo</label>
-        <div className="upload">
-          <input type="file" onChange={onFileChangeEv} />
-        </div>
+        <CUpload onRight={onRightEv} onError={onErrorEv} />
+        <span className='tips'>Logo size up to 400*400px and 2MB.</span>
       </div>
       {/* Address */}
       <div className="input-wrapper">
         <label>Address</label>
         <Input
-          placeholder="Address"
+          placeholder='0x0000...0000'
           value={formValues?.address}
           onChange={e => formValuesChangeCb("address", e.target.value)} />
       </div>
@@ -211,7 +200,6 @@ const Step3: FC<Props> = () => {
         </div>
         <div className="name">Telegram</div>
         <Input
-          placeholder="Telegram"
           value={formValues?.telegram}
           onChange={e => formValuesChangeCb("telegram", e.target.value)} />
       </div>
@@ -223,7 +211,6 @@ const Step3: FC<Props> = () => {
         </div>
         <div className="name">Discord</div>
         <Input
-          placeholder="Discord"
           value={formValues?.discord}
           onChange={e => formValuesChangeCb("discord", e.target.value)} />
       </div>
@@ -235,7 +222,6 @@ const Step3: FC<Props> = () => {
         </div>
         <div className="name">Twitter</div>
         <Input
-          placeholder="Twitter"
           value={formValues?.twitter}
           onChange={e => formValuesChangeCb("twitter", e.target.value)} />
       </div>
@@ -247,7 +233,6 @@ const Step3: FC<Props> = () => {
         </div>
         <div className="name">Reddit</div>
         <Input
-          placeholder="Reddit"
           value={formValues?.reddit}
           onChange={e => formValuesChangeCb("reddit", e.target.value)} />
       </div>
@@ -259,7 +244,6 @@ const Step3: FC<Props> = () => {
         </div>
         <div className="name">WeChat</div>
         <Input
-          placeholder="WeChat"
           value={formValues?.weChat}
           onChange={e => formValuesChangeCb("weChat", e.target.value)} />
       </div>
