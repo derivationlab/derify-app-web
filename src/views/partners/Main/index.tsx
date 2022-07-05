@@ -53,7 +53,7 @@ function Main(props: any) {
   return (
     <div className="broker-wrapper">
       <Spin spinning={loading}>
-        {loading ? null : isLogin && isBroker ? (
+        {loading ? null : isLogin && !isBroker ? (
           <Row className="opended-container" gutter={[0, 20]}>
             <BrokerInfo />
             <Record />

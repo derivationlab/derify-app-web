@@ -13,7 +13,7 @@ import "./index.less";
 
 export default function NotBroker(props: any) {
   const user = useSelector((state: RootStore) => state.user);
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(3);
 
   if (step === 1) {
     return (
@@ -40,10 +40,10 @@ export default function NotBroker(props: any) {
   if (step === 3) {
     return (
       <Step3
-        cancel={() => {
+        onCancel={() => {
           console.log("cancel");
         }}
-        confirm={() => {
+        onConfirm={() => {
           console.log("confirm");
         }}
       />
