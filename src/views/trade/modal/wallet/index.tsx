@@ -52,9 +52,6 @@ export default function WalletModal(props: IWalletModalProps) {
   const [amount, setAmount] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
-  // format the wallet balance
-  const num1 = fck(maxAmount, -8, 2);
-  const num1Data = num1.split(".");
 
   const loadTransferData = async () => {
     const contract = web3Utils.contract(trader)
@@ -72,6 +69,7 @@ export default function WalletModal(props: IWalletModalProps) {
     }catch (e) {
       console.log('balanceOf error:')
     }
+    console.log(transferData);
     setTransferData(transferData)
     setMaxAmount(fck(type === "deposit" ? transferData.balanceOfWallet : transferData.balanceOfDerify, -8, 4))
   };
@@ -127,6 +125,22 @@ export default function WalletModal(props: IWalletModalProps) {
     }
   }
 
+  function setMaxDom(){
+    let str = maxAmount + '';
+    if(str.includes(".")){
+      let arr = str.split(".");
+      return (
+       <>
+         <span className="big-num">{arr[0]}</span>
+         <span className="small-num">.{arr[1]}</span>
+       </>
+      )
+    }else {
+      return (
+        <span className="big-num">{str}</span>
+      )
+    }
+  }
   return (
     <ModalWithTitle
       className="trade-wallet-modal"
@@ -146,8 +160,7 @@ export default function WalletModal(props: IWalletModalProps) {
             </span>
           </div>
           <div className="num">
-            <span className="big-num">{num1Data[0]}</span>
-            <span className="small-num">.{num1Data[1]}</span>
+            {setMaxDom()}
             <span className="per">{unit}</span>
           </div>
           {type === "deposit" && <div className="addr">{walletInfo.selectedAddress}</div>}

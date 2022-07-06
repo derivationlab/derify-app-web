@@ -280,9 +280,9 @@ function Operation() {
       <div className="select-main">
         <Col flex="180px" className="select-type">
           <div className="select-label">Price Type</div>
-          <Select defaultValue={type1} onChange={openTypeChange} size={"large"}>
-            <Option value={type1}>{$t('Trade.OpenPosition.OpenPage.Market')}</Option>
-            <Option value={OpenType.LimitOrder}>{$t('Trade.OpenPosition.OpenPage.Limit')}</Option>
+          <Select defaultValue={type1} onChange={openTypeChange} size={"large"} dropdownClassName="trade-type-list">
+            <Option value={type1}>Market Price</Option>
+            <Option value={OpenType.LimitOrder}>Limit Price</Option>
           </Select>
         </Col>
         <Col flex="auto" className="select-lev">

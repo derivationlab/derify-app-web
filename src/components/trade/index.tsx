@@ -193,12 +193,22 @@ export class TradeHistory extends React.Component<ITradeHistoryProps> {
         <div className="row row1">
           <div className="data">
             <Notice text="Type" />
-            <div className="line num red">{this.getOpenOrClose(data.type)}</div>
+            <div className={`line num ${this.getOpenOrClose(data.type) === 'Open' ? 'green' : 'red'}`}>{this.getOpenOrClose(data.type)}</div>
             <div className="line">{this.getPriceType(data.type)}</div>
           </div>
-          <Item title="Unrealized PnL" num={amountFormt(data.pnl_usdt,2,true,"--")} u={unit}/>
-          <Item title="Trading Fee" num={amountFormt(-data.trading_fee, 2, false, '--')} u={unit}/>
-          <Item title="Position Change Fee" num={amountFormt(-data.position_change_fee,2,false,"--")} u={unit} />
+          <Item title="Unrealized PnL" num={amountFormt(data.pnl_usdt,2,true,"--")} u={unit} numColor={ isNaN(parseFloat(data.pnl_usdt)) ? 'red' : (parseFloat(data.pnl_usdt) > 0 ? 'green' : 'red')} />
+          <Item
+            title="Trading Fee"
+            num={amountFormt(-data.trading_fee, 2, false, '--')}
+            u={unit}
+            numColor={ isNaN(parseFloat(data.trading_fee)) ? 'red' : (-parseFloat(data.trading_fee) > 0 ? 'green' : 'red')}
+          />
+          <Item
+            title="Position Change Fee"
+            num={amountFormt(-data.position_change_fee,2,false,"--")}
+            u={unit}
+            numColor={ isNaN(parseFloat(data.position_change_fee)) ? 'red' : (-parseFloat(data.position_change_fee) > 0 ? 'green' : 'red')}
+          />
         </div>
         <div className="hr"></div>
         <div className="row row2">
@@ -227,17 +237,19 @@ function Item({
                 num,
                 u = true,
                 editFn,
+                numColor
               }: {
   title: string;
   more?: string;
   num: any;
   u?: boolean | string;
   editFn?: () => void;
+  numColor?:string;
 }) {
   return (
     <div className="data">
       <Notice text={title} more={more} />
-      <div className="line num">
+      <div className={`line num ${numColor || ''}`}>
         <span>{num}</span>
         {editFn && (
           <span className="edit" onClick={editFn}>
