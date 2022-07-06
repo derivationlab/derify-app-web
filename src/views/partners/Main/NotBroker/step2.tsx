@@ -16,6 +16,7 @@ import {
   fromContractUnit,
   toContractUnit,
 } from "@/utils/contractUtil";
+import { useHistory } from "react-router-dom";
 
 interface Step2Props {
   confirm: any;
@@ -23,6 +24,7 @@ interface Step2Props {
 }
 
 const Step2: React.FC<Step2Props> = props => {
+  const history = useHistory()
   const dispatch = useDispatch();
   const user = useSelector((state: RootStore) => state.user);
   const broker = useSelector((state: RootStore) => state.broker);
@@ -58,10 +60,10 @@ const Step2: React.FC<Step2Props> = props => {
           description: 'success',
           className: 'cunstom_notification'
         })
-        dispatch(
-          BrokerModel.actions.getTraderBrokerInfo(user.selectedAddress as any)
-        );
-        props.confirm();
+        // dispatch(
+        //   BrokerModel.actions.getTraderBrokerInfo(user.selectedAddress as any)
+        // );
+       history.push('/broker-info')
       })
       .catch(e => {
         notification.open({

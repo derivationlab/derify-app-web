@@ -9,6 +9,7 @@ import Partners from "@/views/partners";
 import BindPartners from "@/views/partners/Bind";
 import MainPartners from "@/views/partners/Main";
 import BrokerApply from "@/views/partners/Main/NotBroker/step2";
+import BrokerInfo from "@/views/partners/Main/NotBroker/step3";
 import BrokerReady from "@/views/partners/Main/NotBroker/step4";
 import BrokerList from "@/views/partners/brokerList/index";
 import Faucet from "@/views/faucet";
@@ -66,14 +67,19 @@ const routes: Array<any> = [
                 component: BindPartners,
               },
               {
-                path: "/ready",
+                path: "/broker-ready",
                 exact: true,
                 component: BrokerReady,
               },
               {
-                path: "/apply",
+                path: "/broker-apply",
                 exact: true,
                 component: BrokerApply,
+              },
+              {
+                path: "/broker-info",
+                exact: true,
+                component: BrokerInfo,
               },
             ],
           },

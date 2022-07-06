@@ -16,7 +16,7 @@ export default function NotBroker(props: any) {
     <Step1
       id={user.brokerId}
       join={() => {
-        history.push('/broker/apply')
+        history.push('/broker-apply')
       }}
     />
   );

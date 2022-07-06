@@ -88,7 +88,7 @@ const Step3: FC<Props> = () => {
     })
       .then(({ success, msg }) => {
         if (success) {
-          history.push('/broker/ready')
+          history.push('/broker-ready')
         } else {
           setErrMessage(msg);
         }
