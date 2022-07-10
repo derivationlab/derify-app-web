@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useIntl, FormattedMessage } from "react-intl";
 import { TradeOrder, Empty } from "@/components/trade";
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";
@@ -10,6 +11,8 @@ import { getUSDTokenName } from "@/config";
 import { message } from "antd";
 
 const Order = () => {
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
   const dispatch = useDispatch();
   const walletInfo = useSelector((state:RootStore) => state.user);
   const tokenPairs = useSelector((state:RootStore) => state.contract.pairs);
@@ -126,7 +129,7 @@ const Order = () => {
         dataSource.length ? (
           <div className="close-all">
             <div className="btn" onClick={() => {setShowCloseAll(true)}}>
-              <span>CLOSE ALL</span>
+              <span>{$t("cancelAll1")}</span>
               <img src={closeImage} alt="" />
             </div>
           </div>

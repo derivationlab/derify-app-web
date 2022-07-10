@@ -178,6 +178,9 @@
   "Trade.MyPosition.ClosePositionPopup.TradePendingMsg": "Pending ……",
   "Trade.MyPosition.ClosePositionPopup.TradeSuccessMsg": "Successful",
   "Trade.MyPosition.ClosePositionPopup.TradeFailedMsg": "Trade failed, please retry....",
+
+  "Trade.CurrentOrder.List.Open": "Open",
+  "Trade.CurrentOrder.List.Close": "Close",
   "Trade.CurrentOrder.List.CurrentOrder": "Current Order",
   "Trade.CurrentOrder.List.L": "L",
   "Trade.CurrentOrder.List.S": "S",
@@ -516,5 +519,9 @@
   "Tutorial": "Tutorial",
   "docs": "Docs",
   "Whitepaper": "Whitepaper",
-  "noData": "No record"
+  "noData": "No record",
+  "close": "close",
+  "closeAll": "Close All",
+  "cancel1": "Cancel",
+  "cancelAll1": "Cancel All"
 }

@@ -178,6 +178,9 @@
   "Trade.MyPosition.ClosePositionPopup.TradePendingMsg": "正在执行，请稍候",
   "Trade.MyPosition.ClosePositionPopup.TradeSuccessMsg": "执行成功",
   "Trade.MyPosition.ClosePositionPopup.TradeFailedMsg": "执行失败，请重试",
+
+  "Trade.CurrentOrder.List.Open": "开仓",
+  "Trade.CurrentOrder.List.Close": "平仓",
   "Trade.CurrentOrder.List.CurrentOrder": "当前委托",
   "Trade.CurrentOrder.List.L": "多",
   "Trade.CurrentOrder.List.S": "空",
@@ -516,5 +519,9 @@
   "Tutorial": "教程",
   "docs": "文档",
   "Whitepaper": "白皮书",
-  "noData": "暂无数据"
+  "noData": "暂无数据",
+  "close": "平仓",
+  "closeAll": "全部平仓",
+  "cancel1": "取消委托",
+  "cancelAll1": "取消全部委托"
 }

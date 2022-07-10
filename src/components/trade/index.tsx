@@ -4,6 +4,7 @@ import moment from "moment";
 import Notice1 from "../notice";
 import close from "@/assets/images/close1.png";
 import edit from "@/assets/images/edit1.png";
+import contractModel, {OrderPositionData, PositioData} from "@/store/modules/contract";
 import { SideEnum as TradeTypes, fromContractUnit, OrderTypeEnum, PositionView } from "@/utils/contractUtil";
 import { amountFormt } from "@/utils/utils";
 import Type from "../type";
@@ -36,7 +37,7 @@ export function TradePosition(props: IPosProps) {
           props.toggleModal(true);
           props.setData(data);
         }}>
-            close
+          {$t("close")}
             <img src={close} alt="" />
           </span>
       </div>
@@ -108,7 +109,8 @@ interface IOrderProps {
 }
 
 export function TradeOrder(props: IOrderProps) {
-
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
   const getType = (t: number) => {
     if (t === OrderTypeEnum.LimitOrder) {
       return ["Open", "Limit"];
@@ -121,6 +123,22 @@ export function TradeOrder(props: IOrderProps) {
     }
     return ["", ""];
   };
+
+  const getRecordType:(data: OrderPositionData) => ([string, string] | [string, string]) = (data:OrderPositionData) => {
+    if(data.orderType == OrderTypeEnum.LimitOrder) {
+      const [openType, opType]=$t("Trade.CurrentOrder.List.OpenLimit").split("/")
+      return [openType, opType];
+    }
+    if(data.orderType === OrderTypeEnum.StopProfitOrder) {
+      const [openType, opType]=$t("Trade.CurrentOrder.List.CloseTP").split("/")
+      return [openType, opType]
+    }
+    if(data.orderType === OrderTypeEnum.StopLossOrder) {
+      const [openType, opType]=$t("Trade.CurrentOrder.List.CloseSL").split("/");
+      return [openType, opType]
+    }
+    return ["",""]
+  }
 
   const { getPairByAddress, data, check, unit } = props;
   const type = getType(data.orderType);
@@ -142,25 +160,29 @@ export function TradeOrder(props: IOrderProps) {
           window.cancelOrder = data;
           check();
         }}>
-            cancel
+          {$t("cancel1")}
             <img src={close} alt="" />
           </span>
       </div>
       <div className="row row1">
         <div className="data">
-          <Notice text="Type" />
-          <div className={`line num ${type[0] === "Open" ? "green" : "red"}`}>{type[0]}</div>
-          <div className="line">{type[1]}</div>
+          <Notice text={$t("Trade.CurrentOrder.List.Type") }/>
+          <div className={`line num ${type[0] === "Open" ? "green" : "red"}`}>
+            {
+              $t(`Trade.CurrentOrder.List.${type[0]}`)
+            }
+          </div>
+          <div className="line">{getRecordType(data)[1]}</div>
         </div>
-        <Item title="Volume"
+        <Item title={$t(`Trade.CurrentOrder.List.Volume`)}
               num={`${volume} / ${total.toFixed(2)}`}
               u={`${getPairByAddress(data.token).key} / ${unit}`}
         />
-        <Item title="Price"
+        <Item title={$t(`Trade.CurrentOrder.List.Price`)}
               num={price}
               u={unit}
         />
-        <Item title="Time"
+        <Item title={$t(`Trade.CurrentOrder.List.Time`)}
               num={data.timestamp ? moment(+data.timestamp * 1000).format("YYYY-MM-DD HH:mm:ss") : "-"}
               u={data.timestamp ? (moment(+data.timestamp * 1000).fromNow()) : "-"}
         />
