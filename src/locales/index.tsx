@@ -13,8 +13,6 @@ import zhCN from 'antd/es/locale/zh_CN.js';
 
 const Locales: React.FC = ({ children }) => {
   const locale: string = useSelector((state: RootStore) => state.app.locale);
- 
-
   const chooseLocale = (str: any) => {
     return str === 'en' ? en : zh
   }

@@ -113,6 +113,8 @@
   "Trade.MyPosition.List.MyPosition": "我的持仓",
   "Trade.MyPosition.List.Long": "多",
   "Trade.MyPosition.List.Short": "空",
+  "Trade.MyPosition.List.2way": "双向",
+  "Trade.MyPosition.List.volume": "持仓量",
   "Trade.MyPosition.List.UnrealizedPnL": "未实现盈亏",
   "Trade.MyPosition.List.PositionHeld": "持仓量",
   "Trade.MyPosition.List.CurrentPrice": "当前价格",
@@ -123,6 +125,8 @@
   "Trade.MyPosition.List.Risk": "保证金率",
   "Trade.MyPosition.List.LiqPrice": "强平价格",
   "Trade.MyPosition.List.SetTPSL": "设置止盈止损",
+  "Trade.MyPosition.List.SetTPSL1": "设置止盈",
+  "Trade.MyPosition.List.SetTPSL2": "设置止损",
   "Trade.MyPosition.List.Close": "平仓",
   "Trade.MyPosition.List.NoMoreInfo": "没有更多了",
   "Trade.MyPosition.List.OneClickClose": "一键平仓",
@@ -135,6 +139,7 @@
   "Trade.MyPosition.Hint.CurrentPrice": "当前价格：",
   "Trade.MyPosition.Hint.CurrentPriceDetail": "当前平台的指数（交易）价格",
   "Trade.MyPosition.Hint.AveragePrice": "开仓均价：",
+  "Trade.MyPosition.Hint.AveragePrice1": "开仓均价：",
   "Trade.MyPosition.Hint.AveragePriceDetail": "此仓位的开仓平均价格",
   "Trade.MyPosition.Hint.PositionMargin": "持仓保证金：",
   "Trade.MyPosition.Hint.PositionMarginDetail": "仓位占用的保证金=持仓额/杠杆",
@@ -509,5 +514,6 @@
   "Feedback": "反馈",
   "Tutorial": "教程",
   "docs": "文档",
-  "Whitepaper": "白皮书"
+  "Whitepaper": "白皮书",
+  "noData": "暂无数据"
 }

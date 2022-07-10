@@ -111,8 +111,10 @@
   "Trade.OpenPosition.OpenPopup.TradeFailedMsg": "Trade failed, please retry...",
   "Trade.OpenPosition.OpenPopup.LiqLimitMsg": "Liquidity limit reached, maximum order is",
   "Trade.MyPosition.List.MyPosition": "My Position",
-  "Trade.MyPosition.List.Long": "L",
-  "Trade.MyPosition.List.Short": "S",
+  "Trade.MyPosition.List.Long": "Long",
+  "Trade.MyPosition.List.Short": "SHort",
+  "Trade.MyPosition.List.2way": "2-Way",
+  "Trade.MyPosition.List.volume": "Volume",
   "Trade.MyPosition.List.UnrealizedPnL": "Unrealized PnL",
   "Trade.MyPosition.List.PositionHeld": "Position Held",
   "Trade.MyPosition.List.CurrentPrice": "Current Price",
@@ -123,6 +125,8 @@
   "Trade.MyPosition.List.Risk": "Margin Rate",
   "Trade.MyPosition.List.LiqPrice": "Liq. Price",
   "Trade.MyPosition.List.SetTPSL": "Set TP / SL",
+  "Trade.MyPosition.List.SetTPSL1": "Take Profit",
+  "Trade.MyPosition.List.SetTPSL2": "Stop Loss",
   "Trade.MyPosition.List.Close": "Close",
   "Trade.MyPosition.List.NoMoreInfo": "there's nothing below",
   "Trade.MyPosition.List.OneClickClose": "One-Click Close",
@@ -135,6 +139,7 @@
   "Trade.MyPosition.Hint.CurrentPrice": "Current Price",
   "Trade.MyPosition.Hint.CurrentPriceDetail": "Current Derivative Price of the Platform",
   "Trade.MyPosition.Hint.AveragePrice": "Average Price",
+  "Trade.MyPosition.Hint.AveragePrice1": "Avg. Price",
   "Trade.MyPosition.Hint.AveragePriceDetail": "Average Opening Price for this Position",
   "Trade.MyPosition.Hint.PositionMargin": "Position Margin",
   "Trade.MyPosition.Hint.PositionMarginDetail": "Used Position Margin = Position Held/Leverage",
@@ -509,5 +514,6 @@
   "Feedback": "Feedback",
   "Tutorial": "Tutorial",
   "docs": "Docs",
-  "Whitepaper": "Whitepaper"
+  "Whitepaper": "Whitepaper",
+  "noData": "No record"
 }
