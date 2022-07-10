@@ -107,9 +107,9 @@ interface IOrderProps {
   unit: string;
 }
 
-export class TradeOrder extends React.Component<IOrderProps> {
+export function TradeOrder(props: IOrderProps) {
 
-  getType = (t: number) => {
+  const getType = (t: number) => {
     if (t === OrderTypeEnum.LimitOrder) {
       return ["Open", "Limit"];
     }
@@ -122,53 +122,51 @@ export class TradeOrder extends React.Component<IOrderProps> {
     return ["", ""];
   };
 
-  render() {
-    const { getPairByAddress, data, check, unit } = this.props;
-    const type = this.getType(data.orderType);
+  const { getPairByAddress, data, check, unit } = props;
+  const type = getType(data.orderType);
 
-    const volume = amountFormt(data.size, 4, false, "0", -8);
-    const price = amountFormt(data.orderType === OrderTypeEnum.LimitOrder ? data.price : data.stopPrice, 2, false, "--", -8);
-    const total = volume * price;
+  const volume = amountFormt(data.size, 4, false, "0", -8);
+  const price = amountFormt(data.orderType === OrderTypeEnum.LimitOrder ? data.price : data.stopPrice, 2, false, "--", -8);
+  const total = volume * price;
 
-    return (
-      <div className="trade-item trade-order-item">
-        <div className="header">
-          <span className="title">{getPairByAddress(data.token).name}</span>
-          <Type
-            t={data.side === TradeTypes.LONG ? "Long" : "Short"}
-            c={fromContractUnit(data.leverage)} />
+  return (
+    <div className="trade-item trade-order-item">
+      <div className="header">
+        <span className="title">{getPairByAddress(data.token).name}</span>
+        <Type
+          t={data.side === TradeTypes.LONG ? "Long" : "Short"}
+          c={fromContractUnit(data.leverage)} />
 
-          <span className="close red" onClick={() => {
-            // @ts-ignore
-            window.cancelOrder = data;
-            check();
-          }}>
+        <span className="close red" onClick={() => {
+          // @ts-ignore
+          window.cancelOrder = data;
+          check();
+        }}>
             cancel
             <img src={close} alt="" />
           </span>
-        </div>
-        <div className="row row1">
-          <div className="data">
-            <Notice text="Type" />
-            <div className={`line num ${type[0] === "Open" ? "green" : "red"}`}>{type[0]}</div>
-            <div className="line">{type[1]}</div>
-          </div>
-          <Item title="Volume"
-                num={`${volume} / ${total.toFixed(2)}`}
-                u={`${getPairByAddress(data.token).key} / ${unit}`}
-          />
-          <Item title="Price"
-                num={price}
-                u={unit}
-          />
-          <Item title="Time"
-                num={data.timestamp ? moment(+data.timestamp).format("YYYY-MM-DD HH:mm:ss") : "-"}
-                u={data.timestamp ? (moment(+data.timestamp).fromNow()) : "-"}
-          />
-        </div>
       </div>
-    );
-  }
+      <div className="row row1">
+        <div className="data">
+          <Notice text="Type" />
+          <div className={`line num ${type[0] === "Open" ? "green" : "red"}`}>{type[0]}</div>
+          <div className="line">{type[1]}</div>
+        </div>
+        <Item title="Volume"
+              num={`${volume} / ${total.toFixed(2)}`}
+              u={`${getPairByAddress(data.token).key} / ${unit}`}
+        />
+        <Item title="Price"
+              num={price}
+              u={unit}
+        />
+        <Item title="Time"
+              num={data.timestamp ? moment(+data.timestamp * 1000).format("YYYY-MM-DD HH:mm:ss") : "-"}
+              u={data.timestamp ? (moment(+data.timestamp * 1000).fromNow()) : "-"}
+        />
+      </div>
+    </div>
+  );
 }
 
 interface ITradeHistoryProps {
@@ -182,40 +180,50 @@ export function TradeHistory(props: ITradeHistoryProps) {
   const $t = (id: string) => formatMessage({ id });
 
   class OpTypeEnum {
-    opType:number;
-    opTypeDesc:string;
-    constructor(opType:number, opTypeDesc:string) {
-      this.opType = opType
-      this.opTypeDesc = opTypeDesc
+    opType: number;
+    opTypeDesc: string;
+
+    constructor(opType: number, opTypeDesc: string) {
+      this.opType = opType;
+      this.opTypeDesc = opTypeDesc;
     }
+
     static get OpenPosition() {
-      return new OpTypeEnum(1, "Open")
+      return new OpTypeEnum(1, "Open");
     }
 
     static get ClosePosition() {
-      return new OpTypeEnum(2, "Close")
+      return new OpTypeEnum(2, "Close");
     }
   }
 
-  const tradeTypeMap:{[key:number]:any} = {
-    0: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-MarketPriceOpen
-    1: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-HedgeMarketPriceOpen
-    2: {tradeType: 'Trade.TradeHistory.List.OpenLimit', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-LimitPriceOpen
-    3: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-StopProfitClose
-    4: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-StopLossClose
-    5: {tradeType: 'Trade.TradeHistory.List.CloseDeleverage', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-AutoDeleveragingClose
-    6: {tradeType: 'Trade.TradeHistory.List.CloseLiquidate', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-MandatoryLiquidationClose
-    7: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-SingleClose
-    8: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-AllCloseHedgePart
-    9: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'}//-AllCloseLeftPart
-  }
+  const tradeTypeMap: { [key: number]: any } = {
+    0: { tradeType: "Trade.TradeHistory.List.OpenMarket", opTypeEnum: OpTypeEnum.OpenPosition, showType: "main-green" },//-MarketPriceOpen
+    1: { tradeType: "Trade.TradeHistory.List.OpenMarket", opTypeEnum: OpTypeEnum.OpenPosition, showType: "main-green" },//-HedgeMarketPriceOpen
+    2: { tradeType: "Trade.TradeHistory.List.OpenLimit", opTypeEnum: OpTypeEnum.OpenPosition, showType: "main-green" },//-LimitPriceOpen
+    3: { tradeType: "Trade.TradeHistory.List.CloseTPSL", opTypeEnum: OpTypeEnum.ClosePosition, showType: "main-red" },//-StopProfitClose
+    4: { tradeType: "Trade.TradeHistory.List.CloseTPSL", opTypeEnum: OpTypeEnum.ClosePosition, showType: "main-red" },//-StopLossClose
+    5: {
+      tradeType: "Trade.TradeHistory.List.CloseDeleverage",
+      opTypeEnum: OpTypeEnum.ClosePosition,
+      showType: "main-red",
+    },//-AutoDeleveragingClose
+    6: {
+      tradeType: "Trade.TradeHistory.List.CloseLiquidate",
+      opTypeEnum: OpTypeEnum.ClosePosition,
+      showType: "main-red",
+    },//-MandatoryLiquidationClose
+    7: { tradeType: "Trade.TradeHistory.List.CloseMarket", opTypeEnum: OpTypeEnum.ClosePosition, showType: "main-red" },//-SingleClose
+    8: { tradeType: "Trade.TradeHistory.List.CloseMarket", opTypeEnum: OpTypeEnum.ClosePosition, showType: "main-red" },//-AllCloseHedgePart
+    9: { tradeType: "Trade.TradeHistory.List.CloseMarket", opTypeEnum: OpTypeEnum.ClosePosition, showType: "main-red" },//-AllCloseLeftPart
+  };
 
-  function getTradeType (tradeType:number):any{
-    const viewType = tradeTypeMap[tradeType]
-    if(viewType) {
-      return viewType
+  function getTradeType(tradeType: number): any {
+    const viewType = tradeTypeMap[tradeType];
+    if (viewType) {
+      return viewType;
     }
-    return {}
+    return {};
   }
 
   const getOpenOrClose = (num: number) => {
@@ -254,11 +262,11 @@ export function TradeHistory(props: ITradeHistoryProps) {
       </div>
       <div className="row row1">
         <div className="data">
-          <Notice text="Type" />
+          <Notice text={$t("Trade.TradeHistory.List.Type")} />
           <div className={`line num ${getOpenOrClose(data.type) === "Open" ? "green" : "red"}`}>
-            {$t(`Trade.TradeHistory.List.${getOpenOrClose(data.type) === 'Open' ? 'OpenMarket1' : 'CloseMarket1'}`)}
+            {$t(`Trade.TradeHistory.List.${getOpenOrClose(data.type) === "Open" ? "OpenMarket1" : "CloseMarket1"}`)}
           </div>
-          <div className="line">{$t(getTradeType(data.type).tradeType+"2").replace("/","")}</div>
+          <div className="line">{$t(getTradeType(data.type).tradeType + "2").replace("/", "")}</div>
         </div>
         <Item
           title={$t("Trade.MyPosition.List.UnrealizedPnL")}
