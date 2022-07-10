@@ -522,6 +522,8 @@
   "noData": "No record",
   "close": "close",
   "closeAll": "Close All",
+  "closeAllp": "Close  All Position",
+  "closeAllp1": "Do you want to close all positions at Market Price?",
   "cancel1": "Cancel",
   "cancelAll1": "Cancel All"
 }

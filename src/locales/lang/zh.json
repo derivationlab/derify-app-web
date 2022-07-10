@@ -522,6 +522,8 @@
   "noData": "暂无数据",
   "close": "平仓",
   "closeAll": "全部平仓",
+  "closeAllp": "全部平仓",
+  "closeAllp1": "您想以市价全部平仓吗？",
   "cancel1": "取消委托",
   "cancelAll1": "取消全部委托"
 }
