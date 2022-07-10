@@ -324,7 +324,9 @@ function Operation() {
         <div className="select-price-txt">{$t("Trade.OpenPosition.OpenPage.Price")}</div>
         {openType === type1
           ? <Col flex="100%"><Button disabled>{$t("Trade.OpenPosition.OpenPage.MarketPrice")}</Button></Col>
-          : <Col flex="100%" className="price-input"><Input value={limitPrice} onChange={e=> priceChange(e.target.value)} /></Col>
+          : <Col flex="100%" className="price-input">
+              <input value={limitPrice} onChange={e=> priceChange(e.target.value)} />
+            </Col>
         }
       </div>
 
@@ -363,17 +365,13 @@ function Operation() {
         </div>
       </div>
 
-      {
-        openType === OpenType.LimitOrder ? null : (
-          <div className="btn2" onClick={() => {
-            openPositionConfirm(2)
-          }}>
-            2-Way
-            <div className="num">{amountFormt(Math.max(curPair.shortPmrRate,curPair.longPmrRate), 2, false, "--", 0)}%</div>
-            <div className="t">APY</div>
-          </div>
-        )
-      }
+        <div className="btn2"
+             style={{visibility: openType === OpenType.LimitOrder ? 'hidden' : 'initial'}}
+             onClick={() => {openPositionConfirm(2)}}>
+          2-Way
+          <div className="num">{amountFormt(Math.max(curPair.shortPmrRate,curPair.longPmrRate), 2, false, "--", 0)}%</div>
+          <div className="t">APY</div>
+        </div>
 
       {showPositionModal && (
         <ModalOpenPosition
