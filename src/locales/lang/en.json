@@ -84,7 +84,7 @@
   "Trade.OpenPosition.OpenPage.Price": "Price",
   "Trade.OpenPosition.OpenPage.PriceType": "Price Type",
   "Trade.OpenPosition.OpenPage.MarketPrice": "Market Price",
-  "Trade.OpenPosition.OpenPage.LimitPrice": "Market Price",
+  "Trade.OpenPosition.OpenPage.LimitPrice": "Limit Price",
   "Trade.OpenPosition.OpenPage.NumberError": "Number error, please retry...",
   "Trade.OpenPosition.OpenPage.Amount": "Amount",
   "Trade.OpenPosition.OpenPage.Max": "Max",
