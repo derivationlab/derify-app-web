@@ -357,27 +357,27 @@ function Tool() {
                 setShowLangs(true);
                 setShowSettings(false);
               }}>
-                <span>Language</span>
+                <span><FormattedMessage id="language" /></span>
                 <span>{locale === 'en' ? 'English' : '简体中文'} &gt;</span>
               </div>
               <div className="item" onClick={() => {
                 setShowTheme(true);
                 setShowSettings(false);
               }}>
-                <span>Theme</span>
-                <span>light &gt;</span>
+                <span><FormattedMessage id="theme" /></span>
+                <span> <FormattedMessage id="theme1" /> &gt;</span>
               </div>
               <a className="item" href="https://docs.google.com/forms/d/e/1FAIpQLSelBo6du-kioL3kTWgMqCOtiwNZvw7D7kF82SSm3l314Ot9xA/viewform" target='_blank'>
-                <span>Feedback</span>
+                <span><FormattedMessage id="Feedback" /></span>
               </a>
               <a className="item" href="https://docs.derify.finance/getting-started/tutorial" target='_blank'>
-                <span>Tutorial</span>
+                <span><FormattedMessage id="Tutorial" /></span>
               </a>
               <a className="item" href="https://docs.derify.finance/" target='_blank'>
-                <span>Docs</span>
+                <span><FormattedMessage id="docs" /></span>
               </a>
               <a className="item" href="https://docs.derify.finance/whitepaper/introduction" target='_blank'>
-                <span>Whitepaper</span>
+                <span><FormattedMessage id="Whitepaper" /></span>
               </a>
             </div>
           )
@@ -410,12 +410,12 @@ function Tool() {
                <div className={theme === 'light' ? 'lang-active':'lang'} onClick={() => {
                  setShowTheme(false)
                }}>
-                 Light
+                 <FormattedMessage id="theme1" />
                </div>
                <div className={theme === 'dark' ? 'lang-active':'lang'} onClick={
                  () => setShowTheme(false)
                }>
-                 Dark
+                 <FormattedMessage id="theme2" />
                </div>
             </div>
           )

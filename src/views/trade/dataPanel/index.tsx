@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState ,useMemo} from "react";
 import { Row, Col, Tooltip } from "antd";
 import Chart from "./chart";
+import { useIntl, FormattedMessage} from "react-intl";
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, { ContractState, TokenPair, } from "@/store/modules/contract";
 import { amountFormt, fck } from "@/utils/utils";
@@ -133,7 +134,7 @@ function DataPanel() {
         </div>
         <div className="item item0">
           <div className="t">
-            <span>Net Position Rate</span>
+            <span><FormattedMessage id={"Trade.OpenPosition.Kline.NPRate"} /></span>
             <Notice title="Net Position Rate" />
           </div>
 
@@ -145,7 +146,7 @@ function DataPanel() {
 
         <div className="item">
           <div className="t">
-            <span>PCF Rate</span>
+            <span><FormattedMessage id={"Trade.OpenPosition.Kline.PCFRate"} /></span>
             <Notice title="PCF Rate" />
           </div>
           <div className="val">{amountFormt(pcRate, 4, true, "0", -6)}</div>
@@ -154,7 +155,7 @@ function DataPanel() {
 
         <div className="item">
           <div className="t">
-            <span>Position Mining APY.</span>
+            <span> <FormattedMessage id={"Trade.OpenPosition.Kline.PMAPY"} /> </span>
             <Notice title="Position Mining APY." />
           </div>
           <div className="val">

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
 import { Row, Col, Select, Button } from "antd";
-import { useIntl } from "react-intl";
+import { useIntl, FormattedMessage} from "react-intl";
 import { OpenType, toContractUnit, SideEnum, UnitTypeEnum, } from "@/utils/contractUtil";
 import { useDispatch, useSelector } from "react-redux";
 import contractModel, { TokenPair, OpenUpperBound, } from "@/store/modules/contract";
@@ -265,17 +265,18 @@ function Operation() {
   const num2Data = num2.split(".");
   const unitName = getUSDTokenName();
 
+  //
   // render the margin module
   function Margin(){
     return (
       <div className="data-block">
-        <div className="t">Margin Balance <img src={notice} alt="" /></div>
+        <div className="t">{$t("Trade.Account.MarginAccount.MarginBalance")} <img src={notice} alt="" /></div>
         <div className="num1">
           <span className="big-num">{num1Data[0]}</span>
           <span className="small-num">.{num1Data[1]}</span>
           <span className="unit">{unitName}</span>
         </div>
-        <div className="t t1">Avaliable Margin Balance <img src={notice} alt="" /></div>
+        <div className="t t1">{$t("Trade.Account.MarginAccount.MarginAvailable")}<img src={notice} alt="" /></div>
         <div className="num1">
           <span className="big-num">{num2Data[0]}</span>
           <span className="small-num">.{num2Data[1]}</span>
@@ -286,12 +287,12 @@ function Operation() {
             click={() => {setWalletType("deposit");}}
             fill={true}
             className="deposit"
-            text="Deposit"
+            text={$t("Trade.Account.MarginAccount.Deposit")}
           />
           <Button1
             click={() => {setWalletType("withdraw");}}
             className="withdaw"
-            text="Withdraw"
+            text={$t("Trade.Account.MarginAccount.Withdraw")}
           />
         </div>
       </div>
@@ -303,14 +304,14 @@ function Operation() {
       <Margin />
       <div className="select-main">
         <Col flex="180px" className="select-type">
-          <div className="select-label">Price Type</div>
+          <div className="select-label">{$t("Trade.OpenPosition.OpenPage.PriceType")}</div>
           <Select defaultValue={type1} onChange={openTypeChange} size={"large"} dropdownClassName="trade-type-list">
-            <Option value={type1}>Market Price</Option>
-            <Option value={OpenType.LimitOrder}>Limit Price</Option>
+            <Option value={type1}>{$t("Trade.OpenPosition.OpenPage.MarketPrice")}</Option>
+            <Option value={OpenType.LimitOrder}>{$t("Trade.OpenPosition.OpenPage.LimitPrice")}</Option>
           </Select>
         </Col>
         <Col flex="auto" className="select-lev">
-          <div className="select-label">Leverage</div>
+          <div className="select-label">{$t("Trade.OpenPosition.OpenPopup.Leverage")}</div>
           <Select value={leverage} size={'large'} onChange={v => levChange(v)}>
             {LEVERAGES.map(item => <Option value={item} key={item}>{item}x</Option>)}
           </Select>
@@ -329,7 +330,7 @@ function Operation() {
 
       <div className="volumes">
         <div className="vol">
-          <span className="tag tag1">Volume</span>
+          <span className="tag tag1">{$t("Trade.CurrentOrder.List.Volume")}</span>
           <input type="text" value={size} onChange={e => sizeChange(e.target.value)}/>
         </div>
         <div className="unit">
@@ -349,14 +350,14 @@ function Operation() {
         <div className="btn long" onClick={() => {
           openPositionConfirm(0)
         }}>
-          <div className="type">long</div>
+          <div className="type">{$t("Trade.OpenPosition.Kline.Long")}</div>
           <div className="num">{amountFormt(curPair.longPmrRate, 2, false, "--", 0)}%</div>
           <div className="t">APY</div>
         </div>
          <div className="btn" onClick={() => {
            openPositionConfirm(1)
           }}>
-          <div className="type">short</div>
+          <div className="type">{$t("Trade.OpenPosition.Kline.Short")}</div>
           <div className="num">{amountFormt(curPair.shortPmrRate, 2, false, "--", 0)}%</div>
           <div className="t">APY</div>
         </div>
@@ -365,7 +366,7 @@ function Operation() {
         <div className="btn2"
              style={{visibility: openType === OpenType.LimitOrder ? 'hidden' : 'initial'}}
              onClick={() => {openPositionConfirm(2)}}>
-          2-Way
+          {$t("Trade.OpenPosition.OpenPage.TwoWay")}
           <div className="num">{amountFormt(Math.max(curPair.shortPmrRate,curPair.longPmrRate), 2, false, "--", 0)}%</div>
           <div className="t">APY</div>
         </div>

@@ -1,13 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState } from "react";
+import { useIntl, FormattedMessage} from "react-intl";
 import { Row } from "antd";
 import Position from "./index.position"
 import Order from "./index.order"
 import History from "./index.history"
 
-const tabs = ['My Position', 'My Order', 'Trade History'];
-
 function Statistics() {
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
+  const tabs = [
+    $t("Trade.MyPosition.List.MyPosition"),
+    $t("Trade.CurrentOrder.List.CurrentOrder"),
+    $t("Trade.TradeHistory.List.TradeHistory"),
+  ];
   const [index, setIndex] = useState<number>(0);
   return (
     <div className="statistic-wrapper">
