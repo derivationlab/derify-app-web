@@ -66,6 +66,7 @@ const Order = () => {
     const cancelAllOrderAction = contractModel.actions.cancleAllOrderedPositions(trader)
     cancelAllOrderAction(dispatch).then(() => {
       message.success("success")
+      setShowCloseAll(false)
       dispatch(AppModel.actions.updateTradeLoadStatus());
     }).catch(e => {
       message.error("failed")
@@ -99,6 +100,7 @@ const Order = () => {
     const cancelAllOrderAction = contractModel.actions.cancleOrderedPosition(params);
     cancelAllOrderAction(dispatch).then(() => {
       message.success("success")
+      setShowClose(false)
       dispatch(AppModel.actions.updateTradeLoadStatus());
     }).catch(e => {
       message.error("failed")
@@ -145,7 +147,7 @@ const Order = () => {
       {
         showClose && (
           <ModalCloseAll
-            type='allOrder'
+            type='order'
             confirm={cancelOne}
             close={() => {
               setShowClose(false)

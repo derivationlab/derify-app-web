@@ -42,15 +42,19 @@ export class TradePosition extends React.Component<IPosProps> {
         <div className="row row1">
           <div className="data">
             <Notice text="Unrealized PnL" />
-            <div className="line num red">
-              <span className="per">{amountFormt(data.returnRate, 2, true, "--", -6)}%</span>
-              <span>{amountFormt(data.unrealizedPnl, 2, true, "--", -8)}</span>
+            <div className={`line num ${data.unrealizedPnl > 0 ? 'green' : 'red'}`}>
+              <span>
+                {amountFormt(data.unrealizedPnl, 2, true, "--", -8)}
+              </span>
+              <span className="per">
+                ({amountFormt(data.returnRate, 2, true, "--", -6)}%)
+              </span>
             </div>
             <div className="line">{props.unit}</div>
           </div>
           <Item title="Volume"
                 num={`${volume} / ${(currentToken.num * volume).toFixed(2)} `}
-                u={currentToken.key}
+                u={`${currentToken.key} / ${props.unit}`}
           />
           <Item title="Liq. Price" num="-12313.23 " u={props.unit} />
           <Item title="Avg. Price" num={amountFormt(data.averagePrice, 2, false, "--", -8)} u={props.unit} />
@@ -106,6 +110,11 @@ export class TradeOrder extends React.Component<IOrderProps> {
   render() {
     const {getPairByAddress, data, check, unit}= this.props;
     const type = this.getType(data.orderType);
+
+    const volume = amountFormt(data.size, 4, false, "0", -8);
+    const price = amountFormt(data.orderType === OrderTypeEnum.LimitOrder ? data.price : data.stopPrice, 2, false, "--", -8);
+    const total = volume * price;
+
     return (
       <div className="trade-item trade-order-item">
         <div className="header">
@@ -126,19 +135,20 @@ export class TradeOrder extends React.Component<IOrderProps> {
         <div className="row row1">
           <div className="data">
             <Notice text="Type" />
-            <div className="line num red">{type[0]}</div>
+            <div className={`line num ${type[0] === 'Open' ? 'green' : 'red'}`}>{type[0]}</div>
             <div className="line">{type[1]}</div>
           </div>
           <Item title="Volume"
-                num={amountFormt(data.size, 4, false, "0", -8)} u={getPairByAddress(data.token).key}
+                num={`${volume} / ${total.toFixed(2)}`}
+                u={`${getPairByAddress(data.token).key} / ${unit}`}
           />
           <Item title="Price"
-                num={amountFormt(data.orderType === OrderTypeEnum.LimitOrder ? data.price : data.stopPrice, 2, false, "--", -8)}
+                num={price}
                 u={unit}
           />
           <Item title="Time"
-                num={data.timestamp ? moment(data.timestamp).format("YYYY-MM-DD HH:mm:ss") : '-'}
-                u={data.timestamp ? (moment(data.timestamp).fromNow()) : '-'}
+                num={data.timestamp ? moment(+data.timestamp).format("YYYY-MM-DD HH:mm:ss") : '-'}
+                u={data.timestamp ? (moment(+data.timestamp).fromNow()) : '-'}
           />
         </div>
       </div>
