@@ -1,5 +1,6 @@
 .round-input-wrapper {
   width: 368px;
+  position: relative;
   .label {
     height: 16px;
     line-height: 16px;
@@ -16,6 +17,7 @@
     flex-direction: row;
     background: #fff;
     overflow: hidden;
+    position: relative;
     input {
       flex: 1;
       border: none;
@@ -30,8 +32,15 @@
       padding-right: 20px;
       font-size: 18px;
       color: #888;
-      line-height: 44px;
+      line-height: 40px;
       text-align: right;
+      position: relative;
+      img {
+        position: absolute;
+        width: 14px;
+        right: 20px;
+        top: 14px;
+      }
     }
     .extras {
       display: flex;
@@ -52,6 +61,32 @@
         color: #fff;
         cursor: pointer;
         margin-left: 6px;
+      }
+    }
+    .extra-list {
+      border-left: 1px solid #ccc;
+      text-align: center;
+      cursor: pointer;
+    }
+  }
+  .type-list {
+    position: absolute;
+    right: 20px;
+    width: 80px;
+    text-align: center;
+    background: #fff;
+    z-index: 100;
+    border: 1px solid #e7e7e7;
+    border-bottom: none;
+    > div {
+      height: 42px;
+      line-height: 42px;
+      border-bottom: 1px solid #e7e7e7;
+      cursor: pointer;
+      font-size: 18px;
+      color: #888;
+      &:hover {
+        color:#f64242;
       }
     }
   }

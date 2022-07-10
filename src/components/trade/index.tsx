@@ -56,7 +56,7 @@ export class TradePosition extends React.Component<IPosProps> {
                 num={`${volume} / ${(currentToken.num * volume).toFixed(2)} `}
                 u={`${currentToken.key} / ${props.unit}`}
           />
-          <Item title="Liq. Price" num="-12313.23 " u={props.unit} />
+          <Item title="Liq. Price" num={amountFormt(data.liquidatePrice, 2, false,"--",-8)} u={props.unit} />
           <Item title="Avg. Price" num={amountFormt(data.averagePrice, 2, false, "--", -8)} u={props.unit} />
         </div>
         <div className="hr"></div>

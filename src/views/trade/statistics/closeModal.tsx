@@ -27,6 +27,7 @@ interface ClosePositionProps {
 }
 
 function ClosePositionModal(props: ClosePositionProps) {
+  const unit = getUSDTokenName();
   const { data } = props;
   const dispatch = useDispatch();
   const trader = useSelector((state: RootStore) => state.user.selectedAddress);
@@ -42,15 +43,16 @@ function ClosePositionModal(props: ClosePositionProps) {
   const [pcf,setPcf] = useState<number>(0);
   // the tradeFee of close position
   const [tradeFee,setTradeFee] = useState<number>(0);
+  let [typeUnit, setTypeUnit] = useState<any>(null);
 
   const type = data.side === TradeTypes.LONG ? "Long" : (
     data.side === TradeTypes.SHORT ? "Short" : "2-Way"
   );
   const currentToken = props.getPairByAddress(data.token);
   const maxSize = fromContractUnit(data.size);
+  const maxAmount =  currentToken.num * maxSize;
   const priceArr = (currentToken.num + "").split(".");
   const volume = amountFormt(data.size, 4, false, "0", -8);
-
   // get the upperbond
   const updateCloseUpperBound = useCallback(() => {
     if (trader && data) {
@@ -70,11 +72,17 @@ function ClosePositionModal(props: ClosePositionProps) {
     } else {
       const trader = walletInfo.selectedAddress;
       const brokerId = walletInfo.brokerId;
-      const sizeAmount = parseFloat(value);
+      let sizeAmount: any = 0;
+      // get the amount
+      if(typeUnit === unit){
+        sizeAmount = parseFloat(value) / currentToken.num
+      }else {
+        sizeAmount = parseFloat(value);
+      }
       if (!trader || !brokerId || !data || (sizeAmount > closeUpperBond ) || sizeAmount <= 0) {
         return;
       }
-      const closePositionAction = contractModel.actions.closePosition(trader, data.token, data.side, toContractUnit(value), brokerId);
+      const closePositionAction = contractModel.actions.closePosition(trader, data.token, data.side, toContractUnit(sizeAmount), brokerId);
       props.close();
       closePositionAction(dispatch).then(() => {
         message.success("success");
@@ -90,13 +98,30 @@ function ClosePositionModal(props: ClosePositionProps) {
     let v = e.target.value;
     if (/^\d+(.\d*)?$/.test(v)) {
       let size = parseFloat(v);
-      if (size > maxSize) {
-        v = maxSize.toString();
+      if(typeUnit === unit){
+        if(size > maxAmount){
+          v = maxAmount.toString()
+        }
+      }else {
+        if (size > maxSize) {
+          v = maxSize.toString();
+        }
       }
       setValue(v.replace(/[^0-9.]/g, ""));
       setPercent("");
     }
   };
+
+  // change key or busd
+  const changeType = (type: string) => {
+    setTypeUnit(type);
+    setPercent(100)
+    if(type === unit){
+      setValue(maxAmount.toString())
+    }else {
+      setValue(maxSize.toString())
+    }
+  }
 
   useEffect(() => {
     if (trader && data) {
@@ -115,10 +140,16 @@ function ClosePositionModal(props: ClosePositionProps) {
   // calculate the pcf and tradeFee
   useEffect(() => {
     const trader = walletInfo.selectedAddress;
-    const unit = UnitTypeEnum.USDT;
-    const size = parseFloat(value);
+    const unit1 = UnitTypeEnum.USDT;
     const price = currentToken.num;
-    let tokenSize = convertAmount2TokenSize(unit, toContractNum(size), toContractNum(price));
+    let size = 0;
+    if(typeUnit === unit){
+      size = parseFloat(value) / price;
+    }else {
+      size = parseFloat(value);
+    }
+    console.log(size);
+    let tokenSize = convertAmount2TokenSize(unit1, toContractNum(size), toContractNum(price));
     const params = {
       trader,
       side: data.side,
@@ -163,22 +194,26 @@ function ClosePositionModal(props: ClosePositionProps) {
               </div>
               <div className="line">
                 Position Held : <span className="line-num">{volume}</span> BTC /
-                <span className="line-num">{(currentToken.num * volume).toFixed(2)}</span> {getUSDTokenName()}
+                <span className="line-num">{(maxAmount).toFixed(2)}</span> {unit}
               </div>
             </div>
             <Input
+              changeType={changeType}
               className="close-pos-input"
               value={value}
               onChange={inputValueChange}
               label="Amount to Close"
-              unit={currentToken.key}
+              unit={
+                [ currentToken.key, unit]
+              }
             />
             <Percent
               className="close-pos-percent"
               value={percent}
               setValue={e => {
                 setPercent(e);
-                const sizeAmount = fck((e / 100.0 * maxSize), 0, 8);
+                const sizeAmount = fck((e / 100.0 * (typeUnit === unit ? maxAmount : maxSize)), 0, 8);
+
                 setValue(sizeAmount + "");
                 if (parseFloat(sizeAmount) > 0) {
                   setErrorMsg("");
@@ -217,18 +252,33 @@ function ClosePositionModal(props: ClosePositionProps) {
             <div className="rights">
               {
                 (type === "2-Way" || type === "Long") && (
-                  <div className="l">
-                    <span className="n">{value}</span>
-                    <span className="t">{currentToken.key}</span>
-                  </div>
+                  typeUnit === unit ? (
+                    <div className="l">
+                      <span className="n">{value}</span>
+                      <span className="t">{unit}</span>
+                    </div>
+                    ) : (
+                    <div className="l">
+                      <span className="n">{value}</span>
+                      <span className="t">{currentToken.key}</span>
+                    </div>
+                    )
                 )
               }
               {
                 (type === "2-Way" || type === "Short") && (
-                  <div className="l">
-                    <span className="n">{value}</span>
-                    <span className="t">{currentToken.key}</span>
-                  </div>
+                  typeUnit === unit ? (
+                    <div className="l">
+                      <span className="n">{value}</span>
+                      <span className="t">{unit}</span>
+                    </div>
+                    ) : (
+                    <div className="l">
+                      <span className="n">{value}</span>
+                      <span className="t">{currentToken.key}</span>
+                    </div>
+                    )
+
                 )
               }
             </div>
@@ -237,14 +287,14 @@ function ClosePositionModal(props: ClosePositionProps) {
             <span>PCF</span>
             <div>
               <span className="n">{amountFormtNumberDefault(-pcf,4, true, 0)}</span>
-              <span className="t">{getUSDTokenName()}</span>
+              <span className="t">{unit}</span>
             </div>
           </div>
           <div className="item item1">
             <span>Trading Fee</span>
             <div>
               <span className="n">{amountFormtNumberDefault(-tradeFee,4, true, 0)}</span>
-              <span className="t">{getUSDTokenName()}</span>
+              <span className="t">{unit}</span>
             </div>
           </div>
         </div>
