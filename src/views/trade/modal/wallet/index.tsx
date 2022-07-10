@@ -40,18 +40,17 @@ export class TransferData {
 }
 
 export default function WalletModal(props: IWalletModalProps) {
+  const unit = getUSDTokenName();
   const dispatch = useDispatch();
   const { close, type } = props;
   const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
   const walletInfo = useSelector((state:RootStore) => state.user);
   const { accountData } = useSelector((state: RootStore) => state.contract);
   const trader = walletInfo.selectedAddress;
-
   const [maxAmount, setMaxAmount]  = useState(0)
   const [transferData, setTransferData]  = useState<TransferData>(new TransferData())
   const [amount, setAmount] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-
 
   const loadTransferData = async () => {
     const contract = web3Utils.contract(trader)
@@ -65,11 +64,11 @@ export default function WalletModal(props: IWalletModalProps) {
       console.log('getTraderAccount error:')
     }
     try{
-      transferData.balanceOfWallet = await contract.balanceOf(trader, Token.DUSD)
+      let num = await contract.balanceOf(trader, Token.DUSD)
+      transferData.balanceOfWallet = num;
     }catch (e) {
       console.log('balanceOf error:')
     }
-    console.log(transferData);
     setTransferData(transferData)
     setMaxAmount(fck(type === "deposit" ? transferData.balanceOfWallet : transferData.balanceOfDerify, -8, 4))
   };
@@ -108,11 +107,9 @@ export default function WalletModal(props: IWalletModalProps) {
     loadTransferData();
   }, [walletInfo, loadAccountStatus])
 
-  const unit = getUSDTokenName();
-
   const fn1 = () => {
     const data = transferData.accountData
-    return data.marginBalance - data.availableMargin;
+    return fck(data.marginBalance - data.availableMargin, -8, 2)
   }
 
   const fn2 = () => {
@@ -125,8 +122,8 @@ export default function WalletModal(props: IWalletModalProps) {
     }
   }
 
-  function setMaxDom(){
-    let str = maxAmount + '';
+  function setMaxDom(num?: any){
+    let str = (num!==undefined ? num : maxAmount) + '';
     if(str.includes(".")){
       let arr = str.split(".");
       return (
@@ -141,6 +138,7 @@ export default function WalletModal(props: IWalletModalProps) {
       )
     }
   }
+
   return (
     <ModalWithTitle
       className="trade-wallet-modal"
@@ -160,7 +158,7 @@ export default function WalletModal(props: IWalletModalProps) {
             </span>
           </div>
           <div className="num">
-            {setMaxDom()}
+            {type === "deposit" ? setMaxDom(fck(accountData.balance, -8, 2)) : setMaxDom()}
             <span className="per">{unit}</span>
           </div>
           {type === "deposit" && <div className="addr">{walletInfo.selectedAddress}</div>}
