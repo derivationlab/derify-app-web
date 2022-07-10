@@ -1,7 +1,6 @@
 /**
  * the wallet modal to withdraw or deposit
  */
-// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import * as web3Utils from "@/utils/web3Utils"
 import Button from "@/components/buttons/borderButton";
@@ -13,8 +12,8 @@ import {TraderAccount, TransferOperateType} from "@/utils/types";
 import {fromContractUnit, toContractUnit, Token} from "@/utils/contractUtil";
 import {checkNumber, fck} from "@/utils/utils";
 import contractModel from "@/store/modules/contract"
-import { useSelector } from "react-redux";
-import { RootStore } from "@/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppModel, RootStore } from "@/store";
 import "./index.less";
 
 interface IWalletModalProps {
@@ -41,6 +40,7 @@ export class TransferData {
 }
 
 export default function WalletModal(props: IWalletModalProps) {
+  const dispatch = useDispatch();
   const { close, type } = props;
   const loadAccountStatus = useSelector((state:RootStore) => state.app.reloadDataStatus.account);
   const walletInfo = useSelector((state:RootStore) => state.user);
@@ -95,7 +95,7 @@ export default function WalletModal(props: IWalletModalProps) {
       return;
     }
     const fn = type === "deposit" ? 'depositAccount' : 'withdrawAccount';
-    const action = contractModel.actions[fn](trader, toContractUnit(amount));
+    const action = contractModel.actions[fn](trader as any, toContractUnit(amount));
     action(dispatch).then((data) => {
       dispatch(AppModel.actions.updateLoadStatus("account"))
       close();

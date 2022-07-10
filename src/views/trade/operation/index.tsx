@@ -48,6 +48,7 @@ function Operation() {
     state => state.contract.curPair,
   );
   const { accountData } = useSelector((state: RootStore) => state.contract);
+  const loadAccountStatus = useSelector((state: RootStore) => state.app.reloadDataStatus.account);
 
   // state local
   const [closeType, setCloseType] = useState<"" | "order" | "allOrder" | "allPosition">("");
@@ -235,9 +236,35 @@ function Operation() {
     onClosePositionAction(dispatch);
   }, [walletInfo, openType, curPair, leverage, limitPrice, token]);
 
+
+  useEffect(() => {
+    if (walletInfo.selectedAddress) {
+      const loadAccountAction = ContractModel.actions.loadAccountData(walletInfo.selectedAddress);
+      loadAccountAction(dispatch);
+      const onDepositAction = ContractModel.actions.onDeposit(walletInfo.selectedAddress, function() {
+        loadAccountAction(dispatch);
+      });
+      onDepositAction(dispatch);
+      const onWithdrawAction = ContractModel.actions.onWithDraw(walletInfo.selectedAddress, function() {
+        loadAccountAction(dispatch);
+      });
+      onWithdrawAction(dispatch);
+      const onOpenPositionAction = ContractModel.actions.onOpenPosition(walletInfo.selectedAddress, function() {
+        loadAccountAction(dispatch);
+      });
+      onOpenPositionAction(dispatch);
+      const onClosePositionAction = ContractModel.actions.onClosePosition(walletInfo.selectedAddress, function() {
+        loadAccountAction(dispatch);
+      });
+      onClosePositionAction(dispatch);
+    }
+  }, [walletInfo.selectedAddress, loadAccountStatus]);
+
+
+
   const num1 = fck(accountData?.marginBalance, -8, 2);
   const num1Data = num1.split(".");
-  const num2 = fck(accountData?.totalMargin, -8, 2);
+  const num2 = fck(accountData?.availableMargin, -8, 2);
   const num2Data = num2.split(".");
   const unitName = getUSDTokenName();
 
