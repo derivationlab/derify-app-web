@@ -14,8 +14,6 @@ import {
 import { ModalWithTitle } from "@/components/modal";
 import { amountFormtNumberDefault, checkNumber, fck, amountFormt } from "@/utils/utils";
 import Type from "@/components/type";
-import Input from "@/components/input";
-import Percent from "@/components/percent";
 import { getUSDTokenName } from "@/config";
 import { AppModel, RootStore } from "@/store";
 import contractModel, { OpenUpperBound, TokenPair } from "@/store/modules/contract";

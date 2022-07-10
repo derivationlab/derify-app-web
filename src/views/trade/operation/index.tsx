@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React, { useCallback, useEffect, useState } from "react";
-import { Row, Col, Select, Button, Input } from "antd";
+import { Row, Col, Select, Button } from "antd";
 import { useIntl } from "react-intl";
 import { OpenType, toContractUnit, SideEnum, UnitTypeEnum, } from "@/utils/contractUtil";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,6 @@ import { getUSDTokenName } from "@/config";
 import notice from "@/assets/images/notice.png";
 import Button1 from "@/components/buttons/borderButton";
 import Percent from "@/components/percent";
-import ModalCancelOrder from "../modal/cancelOrder";
 import ModalOpenPosition from "../modal/openPosition";
 import ModalWallet from "../modal/wallet";
 import ModalProfit from "../modal/profit";
@@ -51,7 +50,6 @@ function Operation() {
   const loadAccountStatus = useSelector((state: RootStore) => state.app.reloadDataStatus.account);
 
   // state local
-  const [closeType, setCloseType] = useState<"" | "order" | "allOrder" | "allPosition">("");
   const [walletType, setWalletType] = useState<"" | "withdraw" | "deposit">("");
   const [type, setType] = useState<"Short" | "Long" | "2-Way">("Long");
   const [showPositionModal, setShowPositionModal] = useState(false);
@@ -91,7 +89,6 @@ function Operation() {
       setSize(checkNumRet.value);
     }
   },[traderOpenUpperBound,token])
-
 
   const levChange = (v: number) => {
     setLeverage(v);
@@ -400,17 +397,6 @@ function Operation() {
           }}
         />
       )}
-
-      {
-        // modal - cancal order
-        closeType && (
-          <ModalCancelOrder
-            type={closeType}
-            confirm={() => {setCloseType("");}}
-            close={() => {setCloseType("");}}
-          />
-        )
-      }
 
     </Row>
   );

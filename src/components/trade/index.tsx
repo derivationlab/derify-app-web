@@ -65,7 +65,7 @@ export class TradePosition extends React.Component<IPosProps> {
           <Item title="Margin Rate" num={`${amountFormt(data.marginRate, 2, false, "--", -6)}%`} u={false} />
           <Item
             title="Take Profit"
-            num="--"
+            num={amountFormt(data.stopProfitPrice,2,false,"--",-8)}
             editFn={() => {
               props.showProfitModal(data);
             }}
@@ -73,7 +73,7 @@ export class TradePosition extends React.Component<IPosProps> {
           />
           <Item
             title="Stop Loss"
-            num="--"
+            num={amountFormt(data.stopLossPrice,2,false,"--",-8)}
             editFn={() => {
               props.showProfitModal(data);
             }}
