@@ -117,6 +117,7 @@
   "Trade.MyPosition.List.volume": "持仓量",
   "Trade.MyPosition.List.UnrealizedPnL": "未实现盈亏",
   "Trade.MyPosition.List.PositionHeld": "持仓量",
+  "Trade.MyPosition.List.PCF": "动仓费",
   "Trade.MyPosition.List.CurrentPrice": "当前价格",
   "Trade.MyPosition.List.AveragePrice": "开仓均价",
   "Trade.MyPosition.List.StopLoss": "止损",

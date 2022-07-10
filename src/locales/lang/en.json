@@ -117,6 +117,7 @@
   "Trade.MyPosition.List.volume": "Volume",
   "Trade.MyPosition.List.UnrealizedPnL": "Unrealized PnL",
   "Trade.MyPosition.List.PositionHeld": "Position Held",
+  "Trade.MyPosition.List.PCF": "Position Change Fee",
   "Trade.MyPosition.List.CurrentPrice": "Current Price",
   "Trade.MyPosition.List.AveragePrice": "Average Price",
   "Trade.MyPosition.List.StopLoss": "SL",

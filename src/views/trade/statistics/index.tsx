@@ -14,7 +14,7 @@ function Statistics() {
     $t("Trade.CurrentOrder.List.CurrentOrder"),
     $t("Trade.TradeHistory.List.TradeHistory"),
   ];
-  const [index, setIndex] = useState<number>(0);
+  const [index, setIndex] = useState<number>(2);
   return (
     <div className="statistic-wrapper">
       <div className="tabs">

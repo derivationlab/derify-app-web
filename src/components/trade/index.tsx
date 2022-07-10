@@ -29,7 +29,7 @@ export function TradePosition(props: IPosProps) {
       <div className="header">
         <span className="title">{currentToken.name}</span>
         <Type
-          t={data.side === TradeTypes.LONG ? 'Long' : (data.side === TradeTypes.SHORT ? 'Short' : '2-Way')}
+          t={data.side === TradeTypes.LONG ? "Long" : (data.side === TradeTypes.SHORT ? "Short" : "2-Way")}
           c={fromContractUnit(data.leverage)}
         />
         <span className="close red" onClick={() => {
@@ -177,17 +177,55 @@ interface ITradeHistoryProps {
   getPairByAddress: any;
 }
 
-export class TradeHistory extends React.Component<ITradeHistoryProps> {
+export function TradeHistory(props: ITradeHistoryProps) {
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
 
-  getOpenOrClose = (num: number) => {
+  class OpTypeEnum {
+    opType:number;
+    opTypeDesc:string;
+    constructor(opType:number, opTypeDesc:string) {
+      this.opType = opType
+      this.opTypeDesc = opTypeDesc
+    }
+    static get OpenPosition() {
+      return new OpTypeEnum(1, "Open")
+    }
+
+    static get ClosePosition() {
+      return new OpTypeEnum(2, "Close")
+    }
+  }
+
+  const tradeTypeMap:{[key:number]:any} = {
+    0: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-MarketPriceOpen
+    1: {tradeType: 'Trade.TradeHistory.List.OpenMarket', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-HedgeMarketPriceOpen
+    2: {tradeType: 'Trade.TradeHistory.List.OpenLimit', opTypeEnum: OpTypeEnum.OpenPosition, showType: 'main-green'},//-LimitPriceOpen
+    3: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-StopProfitClose
+    4: {tradeType: 'Trade.TradeHistory.List.CloseTPSL', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-StopLossClose
+    5: {tradeType: 'Trade.TradeHistory.List.CloseDeleverage', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-AutoDeleveragingClose
+    6: {tradeType: 'Trade.TradeHistory.List.CloseLiquidate', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-MandatoryLiquidationClose
+    7: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-SingleClose
+    8: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'},//-AllCloseHedgePart
+    9: {tradeType: 'Trade.TradeHistory.List.CloseMarket', opTypeEnum: OpTypeEnum.ClosePosition, showType: 'main-red'}//-AllCloseLeftPart
+  }
+
+  function getTradeType (tradeType:number):any{
+    const viewType = tradeTypeMap[tradeType]
+    if(viewType) {
+      return viewType
+    }
+    return {}
+  }
+
+  const getOpenOrClose = (num: number) => {
     if (num < 4) {
       return "Open";
     } else {
       return "Close";
     }
   };
-
-  getPriceType = (num: number) => {
+  const getPriceType = (num: number) => {
     if (num === 0 || num === 1) {
       return "Market";
     }
@@ -206,48 +244,66 @@ export class TradeHistory extends React.Component<ITradeHistoryProps> {
     return "Market";
   };
 
-  render() {
-    const { data, getPairByAddress, unit } = this.props;
-    const currentToken = getPairByAddress(data.token);
-    return (
-      <div className="trade-item trade-history-item">
-        <div className="header">
-          <span className="title">{currentToken.name} </span>
-          <Type t={data.side === 0 ? "Long" : "Short"} c={10} />
-        </div>
-        <div className="row row1">
-          <div className="data">
-            <Notice text="Type" />
-            <div
-              className={`line num ${this.getOpenOrClose(data.type) === "Open" ? "green" : "red"}`}>{this.getOpenOrClose(data.type)}</div>
-            <div className="line">{this.getPriceType(data.type)}</div>
-          </div>
-          <Item title="Unrealized PnL" num={amountFormt(data.pnl_usdt, 2, true, "--")} u={unit}
-                numColor={isNaN(parseFloat(data.pnl_usdt)) ? "red" : (parseFloat(data.pnl_usdt) > 0 ? "green" : "red")} />
-          <Item
-            title="Trading Fee"
-            num={amountFormt(-data.trading_fee, 2, false, "--")}
-            u={unit}
-            numColor={isNaN(parseFloat(data.trading_fee)) ? "red" : (-parseFloat(data.trading_fee) > 0 ? "green" : "red")}
-          />
-          <Item
-            title="Position Change Fee"
-            num={amountFormt(-data.position_change_fee, 2, false, "--")}
-            u={unit}
-            numColor={isNaN(parseFloat(data.position_change_fee)) ? "red" : (-parseFloat(data.position_change_fee) > 0 ? "green" : "red")}
-          />
-        </div>
-        <div className="hr"></div>
-        <div className="row row2">
-          <Item title="Volume (Base)" num={amountFormt(data.size, 4, false, "--")} u={currentToken.key} />
-          <Item title="Volume (Quoted)" num={amountFormt(data.amount, 2, false, "--")} u={unit} />
-          <Item title="Price" num={amountFormt(data.price, 2, false, "--")} u={unit} />
-          <Item title="Time" num={moment(data.event_time).format("YYYY-MM-DD HH:mm:ss")}
-                u={moment(data.event_time).fromNow()} />
-        </div>
+  const { data, getPairByAddress, unit } = props;
+  const currentToken = getPairByAddress(data.token);
+  return (
+    <div className="trade-item trade-history-item">
+      <div className="header">
+        <span className="title">{currentToken.name} </span>
+        <Type t={data.side === 0 ? "Long" : "Short"} c={10} />
       </div>
-    );
-  }
+      <div className="row row1">
+        <div className="data">
+          <Notice text="Type" />
+          <div className={`line num ${getOpenOrClose(data.type) === "Open" ? "green" : "red"}`}>
+            {$t(`Trade.TradeHistory.List.${getOpenOrClose(data.type) === 'Open' ? 'OpenMarket1' : 'CloseMarket1'}`)}
+          </div>
+          <div className="line">{$t(getTradeType(data.type).tradeType+"2").replace("/","")}</div>
+        </div>
+        <Item
+          title={$t("Trade.MyPosition.List.UnrealizedPnL")}
+          num={amountFormt(data.pnl_usdt, 2, true, "--")}
+          u={unit}
+          numColor={isNaN(parseFloat(data.pnl_usdt)) ? "red" : (parseFloat(data.pnl_usdt) > 0 ? "green" : "red")}
+        />
+        <Item
+          title={$t("Trade.TradeHistory.Hint.TradingFee")}
+          num={amountFormt(-data.trading_fee, 2, false, "--")}
+          u={unit}
+          numColor={isNaN(parseFloat(data.trading_fee)) ? "red" : (-parseFloat(data.trading_fee) > 0 ? "green" : "red")}
+        />
+        <Item
+          title={$t("Trade.MyPosition.List.PCF")}
+          num={amountFormt(-data.position_change_fee, 2, false, "--")}
+          u={unit}
+          numColor={isNaN(parseFloat(data.position_change_fee)) ? "red" : (-parseFloat(data.position_change_fee) > 0 ? "green" : "red")}
+        />
+      </div>
+      <div className="hr"></div>
+      <div className="row row2">
+        <Item
+          title={$t("Trade.TradeHistory.List.Volume")}
+          num={amountFormt(data.size, 4, false, "--")}
+          u={currentToken.key}
+        />
+        <Item
+          title={$t("Trade.TradeHistory.List.Amount")}
+          num={amountFormt(data.amount, 2, false, "--")}
+          u={unit}
+        />
+        <Item
+          title={$t("Trade.TradeHistory.List.Price")}
+          num={amountFormt(data.price, 2, false, "--")}
+          u={unit}
+        />
+        <Item
+          title={$t("Trade.TradeHistory.List.Time")}
+          num={moment(data.event_time).format("YYYY-MM-DD HH:mm:ss")}
+          u={moment(data.event_time).fromNow()}
+        />
+      </div>
+    </div>
+  );
 }
 
 function Notice(props: { text: string, more?: string }) {
@@ -259,21 +315,8 @@ function Notice(props: { text: string, more?: string }) {
   );
 }
 
-function Item({
-                title,
-                more,
-                num,
-                u = true,
-                editFn,
-                numColor,
-              }: {
-  title: string;
-  more?: string;
-  num: any;
-  u?: boolean | string;
-  editFn?: () => void;
-  numColor?: string;
-}) {
+function Item(props: { title: string; more?: string; num: any; u?: boolean | string; editFn?: () => void; numColor?: string; }) {
+  const { title, more, num, u = true, editFn, numColor } = props;
   return (
     <div className="data">
       <Notice text={title} more={more} />
