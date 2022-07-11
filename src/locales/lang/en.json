@@ -530,6 +530,12 @@
   "terms" : "Terms of Service.",
   "terms1" : "Before you connect wallet, you should have read, understand and agree to Derivation Labs'",
   "addToken": "Add Token",
+  "addToken1": "Add DRF Token to Wallet",
+  "addToken2": "Add eDRF Token to Wallet",
+  "addToken3": "Add bDRF Token to Wallet",
+  "buyToken1": "Buy DRF Token at PancakeSwap",
+  "buyToken2": "Buy eDRF Token at PancakeSwap",
+  "buyToken3": "Sell bDRF Token at PancakeSwap",
   "openMine": "Open position to earn position mining rewards.",
   "DRFPool": "DRF Pool",
   "DRFPool1": "Stake DRF to mint and use eDRF, the ultilized token of Derify protocol.",
@@ -542,5 +548,11 @@
   "Earn-current-pool-size": "current pool size",
   "Stake": "Stake",
   "Unstake": "Unstake",
-  "Exchange": "Exchange"
+  "Exchange": "Exchange",
+  "nav-Select-network": "Select a network",
+  "earn-Exchangeable": "Exchangeable",
+  "earn-total-earn": "Total earned",
+  "Interests": "Interests",
+  "earn-Deposited": "Deposited",
+  "earn-Deposited-total": "Total deposited"
 }

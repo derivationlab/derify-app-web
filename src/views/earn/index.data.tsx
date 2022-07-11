@@ -71,7 +71,7 @@ export default function MainData(props: Props) {
           />
           <Value unit="DRF" b="*" s=".*" />
           <div className="desc">
-            Total earned :{" "}
+            {$t("earn-total-earn")}  :{" "}
             <span className="v">{accumlateValueArr.join(".")}</span> {getUSDTokenName()} and{" "}
             <span className="v">*.*</span> DRF
           </div>
@@ -127,7 +127,7 @@ export default function MainData(props: Props) {
           />
           <div className="t2"></div>
           <div className="desc">
-            Total earned : <span className="v">**.**</span>eDRF
+            {$t("earn-total-earn")} : <span className="v">**.**</span>eDRF
           </div>
           <Button
             className="earn-btn"
@@ -179,7 +179,7 @@ export default function MainData(props: Props) {
       <div className="datas">
         <CenterData b={edrfAPYarr[0]} s={`.${edrfAPYarr[1]}%`} />
         <div className="b2">
-          <div className="t1">Intrests</div>
+          <div className="t1">{$t("Interests")}</div>
           <Value
             unit="bDRF"
             b={bondBalanceArr[0]}
@@ -187,7 +187,7 @@ export default function MainData(props: Props) {
           />
           <div className="t2"></div>
           <div className="desc">
-            Exchangeable : <span className="v">**.*</span>bDRF
+            {$t("earn-Exchangeable")} : <span className="v">**.*</span>bDRF
           </div>
           <Button
             className="earn-btn"
@@ -206,11 +206,11 @@ export default function MainData(props: Props) {
           />
         </div>
         <div className="b2 b3">
-          <div className="t1">Deposited</div>
+          <div className="t1">{$t("earn-Deposited")}</div>
           <Value unit="bDRF" b={depositArr[0]} s={`.${depositArr[1]}`} />
           <div className="t2" />
           <div className="desc">
-            Total deposited : <span className="v">**.*M</span> bDRF
+            {$t("earn-Deposited-total")} : <span className="v">**.*M</span> bDRF
           </div>
           <Button
             className="earn-btn"

@@ -297,13 +297,13 @@ function Tool() {
           {
             showAddTokenList && (
               <div className="add-token-list">
-                <div className="token" onClick={() => addToken(0)} >Add DRF Token to wallet</div>
-                <div className="token" onClick={() => addToken(1)} >Add eDRF Token to wallet</div>
-                <div className="token" onClick={() => addToken(2)} >Add bDRF Token to wallet</div>
+                <div className="token" onClick={() => addToken(0)} >{$t("addToken1")} </div>
+                <div className="token" onClick={() => addToken(1)} >{$t("addToken2")} </div>
+                <div className="token" onClick={() => addToken(2)} >{$t("addToken3")} </div>
                 <div className="hr" />
-                <div className="token">Buy DRF Token at pancakeswap</div>
-                <div className="token">Buy eDRF Token at pancakeswap</div>
-                <div className="token">Buy bDRF Token at pancakeswap</div>
+                <div className="token">{$t("buyToken1")}</div>
+                <div className="token">{$t("buyToken2")}</div>
+                <div className="token">{$t("buyToken3")}</div>
               </div>
             )
           }
@@ -323,7 +323,7 @@ function Tool() {
           <div className="change-line-list" id="changeLineList" onClick={(e: any) => {
             e.stopPropagation();
           }}>
-            <div className="title">Select a network</div>
+            <div className="title">{$t("nav-Select-network")}</div>
             {
               netWorks.map(item =>
                 <BorderButton key={item[0]} className={`select-btn select-btn-${item[0].toLocaleLowerCase()} ${line === item[0] ? '' : 'select-normal'}`}

@@ -530,6 +530,12 @@
   "terms" : "服务条款。",
   "terms1" : "在连接钱包之前，你应该阅读、理解并同意 Derivation Labs的",
   "addToken": "添加 Token",
+  "addToken1": "将DRF添加到钱包",
+  "addToken2": "将eDRF添加到钱包",
+  "addToken3": "将bDRF添加到钱包",
+  "buyToken1": "去pancakeswap买DRF",
+  "buyToken2": "去pancakeswap买eDRF",
+  "buyToken3": "去pancakeswap 卖bDRF",
   "openMine": "开仓赚取持仓挖矿收益",
   "DRFPool": "DRF 池",
   "DRFPool1": "质押DRF可以获得协议的治理token——eDRF",
@@ -542,5 +548,11 @@
   "Earn-current-pool-size": "当前质押量",
   "Stake": "质押",
   "Unstake": "解除质押",
-  "Exchange": "兑换"
+  "Exchange": "兑换",
+  "nav-Select-network": "选择网络",
+  "earn-Exchangeable": "可兑换量",
+  "earn-total-earn": "总收益",
+  "Interests": "利息",
+  "earn-Deposited": "我的存入",
+  "earn-Deposited-total": "总计存入"
 }
