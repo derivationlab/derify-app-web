@@ -324,6 +324,7 @@ function Operation() {
           ? <Col flex="100%"><Button disabled>{$t("Trade.OpenPosition.OpenPage.MarketPrice")}</Button></Col>
           : <Col flex="100%" className="price-input">
               <input value={limitPrice} onChange={e=> priceChange(e.target.value)} />
+              <div className="tag">{getUSDTokenName()}</div>
             </Col>
         }
       </div>

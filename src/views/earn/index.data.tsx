@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import IconFont from "@/components/IconFont";
 import { FormattedMessage, useIntl } from "react-intl";
 import { Title, Value, CenterData } from "./index.component";
 import Button from "@/components/buttons/borderButton";
@@ -17,7 +16,8 @@ type Props = {
 
 export default function MainData(props: Props) {
   const dispatch = useDispatch();
-
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
   const trader = useSelector((state: RootStore) => state.user.selectedAddress);
   const { bondInfo, pmrBalance, pmrAccumulatedBalance, edrfInfo, accountData } =
     useSelector((state: RootStore) => state.reward);
@@ -57,13 +57,13 @@ export default function MainData(props: Props) {
         // -----  Position Mining start ------
       }
       <Title
-        t1="Position Mining"
-        t2="Open position to earn position mining rewards."
+        t1={$t("Rewards.Mining.History.PositionMining")}
+        t2={$t("openMine")}
       />
       <div className="datas">
         <CenterData b="**" s=".**%(max)" />
         <div className="b2">
-          <div className="t1">Claimable</div>
+          <div className="t1">{$t("Claimable")}</div>
           <Value
             unit={uName}
             b={claimableValueArr[0]}
@@ -72,20 +72,20 @@ export default function MainData(props: Props) {
           <Value unit="DRF" b="*" s=".*" />
           <div className="desc">
             Total earned :{" "}
-            <span className="v">{accumlateValueArr.join(".")}</span> USDT and{" "}
+            <span className="v">{accumlateValueArr.join(".")}</span> {getUSDTokenName()} and{" "}
             <span className="v">*.*</span> DRF
           </div>
           <Button
             className="earn-btn"
             fill={true}
-            text="Claim All"
+            text={$t("Claim-All")}
             click={() => {
               props.showModal("Claim BUSD");
             }}
           />
         </div>
         <div className="b2 b3">
-          <div className="t1">Positions</div>
+          <div className="t1">{$t("Earn-Positions")}</div>
           <Value
             unit={uName}
             b={totalPosValueArr[0]}
@@ -93,12 +93,12 @@ export default function MainData(props: Props) {
           />
           <div className="t2" />
           <div className="desc">
-            Total positions : <span className="v">**</span> USDT
+            {$t("Earn-Positions-total")} : <span className="v">**</span> {getUSDTokenName()}
           </div>
           <Button
             className="earn-btn"
             fill={true}
-            text="Open Position"
+            text={$t("Rewards.Mining.Card.OpenPosition")}
             click={props.toTrade}
           />
         </div>
@@ -112,14 +112,14 @@ export default function MainData(props: Props) {
       }
 
       <Title
-        t1="DRF Pool"
-        t2="Stake DRF to mint and use eDRF, the ultilized token of Derify protocol."
+        t1={$t("DRFPool")}
+        t2={$t("DRFPool1")}
       />
 
       <div className="datas">
         <CenterData b="**" s=".**%" />
         <div className="b2">
-          <div className="t1">Claimable</div>
+          <div className="t1">{$t("Claimable")}</div>
           <Value
             unit="eDRF"
             b={edrfBalanceArr[0]}
@@ -132,7 +132,7 @@ export default function MainData(props: Props) {
           <Button
             className="earn-btn"
             fill={true}
-            text="Claim All"
+            text={$t("Claim-All")}
             click={() => {
             }}
           />
@@ -143,20 +143,20 @@ export default function MainData(props: Props) {
           <Value unit="DRF" b={drfBalanceArr[0]} s={`.${drfBalanceArr[1]}`} />
           <div className="t2" />
           <div className="desc">
-            Current pool size :{" "}
+            {$t("Earn-current-pool-size")} :
             <span className="v">{drfBalanceArr.join(".")}</span> DRF
           </div>
           <Button
             className="earn-btn"
             fill={true}
-            text="Stake"
+            text={$t("Stake")}
             click={() => {
               props.showModal('Stake DRF' )
             }}
           />
           <Button
             className="earn-btn earn-btn2"
-            text="UnStake"
+            text={$t("Unstake")}
             click={() => {
               props.showModal('Unstake DRF')
             }}
@@ -172,8 +172,8 @@ export default function MainData(props: Props) {
         // -----  bDRF Pool start ------
       }
       <Title
-        t1="bDRF Pool"
-        t2="Deposit bDRF to earn stable interests, or exchange bDRF to stable coin."
+        t1={$t("bDRFPool")}
+        t2={$t("bDRFPool1")}
       />
 
       <div className="datas">
@@ -192,14 +192,14 @@ export default function MainData(props: Props) {
           <Button
             className="earn-btn"
             fill={true}
-            text="Claim All"
+            text={$t("Claim-All")}
             click={() => {
               console.log(111);
             }}
           />
           <Button
             className="earn-btn earn-btn2"
-            text="Exchange"
+            text={$t("Exchange")}
             click={() => {
               console.log(111);
             }}
@@ -215,14 +215,14 @@ export default function MainData(props: Props) {
           <Button
             className="earn-btn"
             fill={true}
-            text="Stake"
+            text={$t("Stake")}
             click={() => {
               props.showModal('Stake bDRF')
             }}
           />
           <Button
             className="earn-btn earn-btn2"
-            text="UnStake"
+            text={$t("Unstake")}
             click={() => {
               props.showModal('UnStake bDRF')
             }}

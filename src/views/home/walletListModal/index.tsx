@@ -4,11 +4,9 @@
 import * as React from "react";
 import "./index.less";
 import Wallet1 from "@/assets/images/wallet/wallet1.png";
-import Wallet2 from "@/assets/images/wallet/wallet2.png";
-import Wallet3 from "@/assets/images/wallet/wallet3.png";
-import Wallet4 from "@/assets/images/wallet/wallet4.png";
 import close from "@/assets/images/close.png";
 import Modal from "@/components/modal";
+import { useIntl } from "react-intl";
 
 interface WalletModalProps {
   close: () => void;
@@ -17,14 +15,16 @@ interface WalletModalProps {
 }
 
 export default function WalletModal(props: WalletModalProps) {
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
   return (
     <Modal className="wallet-modal">
       <div className="title">
-        Select a wallet <img src={close} alt="" onClick={props.close} />
+        {$t("selectWallet")} <img src={close} alt="" onClick={props.close} />
       </div>
       <div className="sub-title">
-        Before you connect wallet, you should have read, understand and agree
-        to Derivation Labs' <a href="https://dev.derify.finance/terms" target="_blank">Terms of Service.</a>
+        {$t("terms1")}
+        <a href="https://dev.derify.finance/terms" target="_blank">{$t("terms")}</a>
       </div>
       <div className="list">
         {

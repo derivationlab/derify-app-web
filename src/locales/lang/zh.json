@@ -525,5 +525,22 @@
   "closeAllp": "全部平仓",
   "closeAllp1": "您想以市价全部平仓吗？",
   "cancel1": "取消委托",
-  "cancelAll1": "取消全部委托"
+  "cancelAll1": "取消全部委托",
+  "selectWallet": "选择钱包",
+  "terms" : "服务条款。",
+  "terms1" : "在连接钱包之前，你应该阅读、理解并同意 Derivation Labs的",
+  "addToken": "添加 Token",
+  "openMine": "开仓赚取持仓挖矿收益",
+  "DRFPool": "DRF 池",
+  "DRFPool1": "质押DRF可以获得协议的治理token——eDRF",
+  "bDRFPool": "bDRF 池",
+  "bDRFPool1": "存入bDRF可以获得稳定的利息，或者将bDRF兑换成稳定币",
+  "Claimable": "可提现",
+  "Earn-Positions": "我的持仓",
+  "Earn-Positions-total": "系统总持仓",
+  "Claim-All": "全部提现",
+  "Earn-current-pool-size": "当前质押量",
+  "Stake": "质押",
+  "Unstake": "解除质押",
+  "Exchange": "兑换"
 }

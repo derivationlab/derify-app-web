@@ -525,5 +525,22 @@
   "closeAllp": "Close  All Position",
   "closeAllp1": "Do you want to close all positions at Market Price?",
   "cancel1": "Cancel",
-  "cancelAll1": "Cancel All"
+  "cancelAll1": "Cancel All",
+  "selectWallet": "Select a wallet",
+  "terms" : "Terms of Service.",
+  "terms1" : "Before you connect wallet, you should have read, understand and agree to Derivation Labs'",
+  "addToken": "Add Token",
+  "openMine": "Open position to earn position mining rewards.",
+  "DRFPool": "DRF Pool",
+  "DRFPool1": "Stake DRF to mint and use eDRF, the ultilized token of Derify protocol.",
+  "bDRFPool": "bDRF Pool",
+  "bDRFPool1": "Deposit bDRF to earn stable interests, or exchange bDRF to stable coin.",
+  "Claimable": "Claimable",
+  "Earn-Positions": "Positions",
+  "Earn-Positions-total": "total positions",
+  "Claim-All": "Claim All",
+  "Earn-current-pool-size": "current pool size",
+  "Stake": "Stake",
+  "Unstake": "Unstake",
+  "Exchange": "Exchange"
 }

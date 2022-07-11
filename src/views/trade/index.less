@@ -281,13 +281,30 @@
       }
 
       .price-input {
+        position: relative;
         input {
+          width:100%;
           background: #fff;
           color: #222;
           padding: 6.5px 11px;
           font-size: 16px;
           text-indent: 10px;
           border-radius: 30px;
+          border: 2px solid #e7e7e7;
+          padding-right: 70px;
+          &:focus-visible {
+            outline-color: #E7446B !important;
+            color: #E7446B !important;
+          }
+        }
+        .tag {
+          position: absolute;
+          height: 42px;
+          right: 18px;
+          top: 0;
+          line-height: 42px;
+          font-size: 18px;
+          color: #888;
         }
       }
 

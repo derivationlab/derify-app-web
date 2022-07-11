@@ -39,7 +39,8 @@ icons['AVA'] = Avalanche;
 icons['ETH'] = ETH1;
 
 function Tool() {
-
+  const { formatMessage } = useIntl();
+  const $t = (id: string) => formatMessage({ id });
   const dispatch = useDispatch();
   const [showAccountModal, setshowAccountModal] = useState<boolean>(false);
   const [showWalletModal, setShowWalletModal] = useState<boolean>(false);
@@ -290,7 +291,7 @@ function Tool() {
           onClick={(e:any) => {
             e.stopPropagation()
           }}>
-          <BorderButton text='Add Token' click={() => {
+          <BorderButton text={$t("addToken")} click={() => {
             setShowAddTokenList(!showAddTokenList);
           }}/>
           {
